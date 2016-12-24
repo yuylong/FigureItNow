@@ -39,8 +39,10 @@ public:
     /*! \enum finErrorCodeType
      *  \brief The Error Code definitions
      *
-     * All the definitions of the Error Codes used by the FIN-7 system is here. You shall use its instances to store
-     * the Error Codes.
+     * All the definitions of the Error Codes used by the FIN-7 system is here. Other modules use its instances to
+     * store the Error Codes. The Error codes have three categories, SUCCESS, WARNING and FAILURE, where SUCCESS means
+     * the operation is finished without any problem, and the result is gotten; WARNING means the result is achieved
+     * while there is something distrubed the process; FAILURE means the operation failed and no result returns.
      */
     enum finErrorCodeType {
         FIN_EC_SUCCESS       =     0,  //!< Execution Success, no error happened.
@@ -56,44 +58,33 @@ public:
         FIN_EC_PRECISE_LOSS  =    21,  //!< Execution Success, but the result is not very precise, some error is
                                        //!< introduced into the result, but the error is accepted.
 
-        FIN_EC_NORMAL_WARN   =    55,  //!< Execution Success, but some
-                                       //!< warnings are there. The warning is
-                                       //!< not a certain one.
+        FIN_EC_NORMAL_WARN   =    55,  //!< Execution Success, but some warnings are there. The warning is not a
+                                       //!< specific type.
 
-        FIN_EC_NULL_POINTER  =    -1,  //!< The inputs or arguments contain
-                                       //!< null pointer.
+        FIN_EC_NULL_POINTER  =    -1,  //!< The inputs or arguments contain null pointer.
 
-        FIN_EC_FILE_NOT_OPEN =    -2,  //!< The required file is not open, the
-                                       //!< data cannot be read.
+        FIN_EC_FILE_NOT_OPEN =    -2,  //!< The required file is not open, the data cannot be read.
 
-        FIN_EC_OUT_OF_MEMORY =    -3,  //!< There is no memory left for a
-                                       //!< certain operation.
+        FIN_EC_OUT_OF_MEMORY =    -3,  //!< There is no memory left for the given operation.
 
-        FIN_EC_OVERFLOW      =    -4,  //!< The calculation results cannot be
-                                       //!< presented in current computer
-                                       //!< system.
+        FIN_EC_OVERFLOW      =    -4,  //!< The calculation results cannot be presented in current computer system,
+                                       //!< because the data structure bit width is too narrow.
 
         FIN_EC_NOT_FOUND     =    -7,  //!< The target object is not found.
 
-        FIN_EC_READ_ERROR    =    -8,  //!< The input string is error, no more
-                                       //!< check is necessary.
+        FIN_EC_READ_ERROR    =    -8,  //!< The input string is error, no more check is necessary.
 
-        FIN_EC_INVALID_PARAM =   -12,  //!< The parameter is unsupported in
-                                       //!< the certain invocation.
+        FIN_EC_INVALID_PARAM =   -12,  //!< The parameter is unsupported in the certain invocation.
 
-        FIN_EC_STATE_ERROR   =   -33,  //!< The operation is taken at a wrong
-                                       //!< state.
+        FIN_EC_STATE_ERROR   =   -33,  //!< The operation is taken at a wrong state.
 
         FIN_EC_UNKNOWN_ERROR = -9099,  //!< Unkonwn error.
 
-        FIN_EC_NON_IMPLEMENT = -9999,  //!< The function is not implemented
-                                       //!< currently, it should not appear in
-                                       //!< the released code
+        FIN_EC_NON_IMPLEMENT = -9999,  //!< The function is not implemented currently, it should not appear in the
+                                       //!< released code
 
-        FIN_EC_DUMMY         = 0xFFFF  //!< An invalid error code value. Some
-                                       //!< serious fetal internal error will
-                                       //!< lead this error code, and should
-                                       //!< not appear in a normal case.
+        FIN_EC_DUMMY         = 0xFFFF  //!< An invalid error code value. Some serious fetal internal error will lead
+                                       //!< this error code, and should not appear in a normal case.
     };
 
 public:
