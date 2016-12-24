@@ -91,17 +91,16 @@ public:
     /*! \fn finErrorCodeKits
      * \brief The constructor of class finErrorCodeKits.
      *
-     * This function should not be called due to you should not build an
-     * instance of class finErrorCodeKits.
+     * This function should not be called due to its should not build an instance of class finErrorCodeKits. All the
+     * methods in finErrorCodeKits is static, and no instance is necessary.
      */
     finErrorCodeKits();
 
     /*! \fn errcodeToString
      *  \brief Convert a error code value to a readable string.
      *
-     * This function converts the given error code to a readable string, which
-     * is used to output the error to the user interface to tell the user what
-     * happens inside the FIN-7 system.
+     * This function converts the given error code to a readable string, which is used to output the error to the user
+     * interface to tell the user what happens inside the FIN-7 system.
      *
      * \param errcode
      *        The give error code.
@@ -114,14 +113,12 @@ public:
     /*! \fn isErrorResult
      *  \brief The given error code represents an error or just a warning.
      *
-     * This function is used to judge the given error code is an error which
-     * will affect the next step executing, or just a warning which will not
-     * affect the executing.
+     * This function is used to judge the given error code is an error which will affect the next step executing, or
+     * just a warning which will not affect the executing.
      *
      * \param errcode
      *        The given error code.
-     * \return The judgement result. TRUE if the given error code reperesents
-     *         an error, else a FALSE is returned.
+     * \return The judgement result. TRUE if the given error code reperesents an error, else a FALSE is returned.
      *
      * \see finErrorCodeType
      */
@@ -131,8 +128,8 @@ public:
 /*! \typedef finErrorCode
  *  \brief A mirror declaration of finErrorCodeType for short.
  *
- * The other part of code in FIN-7 use this short type-define instead of
- * directly use finErrorCodeKits::finErrorCodeType for short.
+ * The other part of code in FIN-7 use this short type-define instead of directly use
+ * finErrorCodeKits::finErrorCodeType for short.
  */
 typedef enum finErrorCodeKits::finErrorCodeType finErrorCode;
 

@@ -26,10 +26,16 @@ const static struct {
         QString("No error")                                      },
 
     // Warnings
-    { finErrorCodeKits::FIN_EC_NORMAL_WARN,
-        QString("Success with warning")                          },
+    { finErrorCodeKits::FIN_EC_DUPLICATE_OP,
+        QString("Duplicated operations")                         },
+    { finErrorCodeKits::FIN_EC_REACH_BOTTOM,
+        QString("Reach accessing bottom")                        },
+    { finErrorCodeKits::FIN_EC_UNREADY_WARN,
+        QString("Unready object detected")                       },
     { finErrorCodeKits::FIN_EC_PRECISE_LOSS,
         QString("Success with precise loss")                     },
+    { finErrorCodeKits::FIN_EC_NORMAL_WARN,
+        QString("Success with warning")                          },
 
     // Errors
     { finErrorCodeKits::FIN_EC_NULL_POINTER,
@@ -40,6 +46,14 @@ const static struct {
         QString("Out of memory")                                 },
     { finErrorCodeKits::FIN_EC_OVERFLOW,
         QString("Calculation overflow")                          },
+    { finErrorCodeKits::FIN_EC_NOT_FOUND,
+        QString("Object not found")                              },
+    { finErrorCodeKits::FIN_EC_READ_ERROR,
+        QString("Reading object failure")                        },
+    { finErrorCodeKits::FIN_EC_INVALID_PARAM,
+        QString("Invalid Parameter")                             },
+    { finErrorCodeKits::FIN_EC_STATE_ERROR,
+        QString("Operation on a wrong state")                    },
     { finErrorCodeKits::FIN_EC_UNKNOWN_ERROR,
         QString("Unkown error")                                  },
     { finErrorCodeKits::FIN_EC_NON_IMPLEMENT,
@@ -54,7 +68,9 @@ static const QString _finDefaultErrString("Unknown error");
 
 finErrorCodeKits::finErrorCodeKits()
 {
-    // Do Nothing.
+    // We keep this function public, not private or protected, allowing the upper layered code create the instance of
+    // this class. But it is not reaaly necessary, because currently all the functions in this class is static.
+    return;
 }
 
 const QString *
@@ -62,8 +78,8 @@ finErrorCodeKits::errcodeToString(enum finErrorCodeType errcode)
 {
     int i = 0;
 
-    // Iterate all the error codes, and return the corresponding error
-    // description string defined in _finErrorCodeStringMap.
+    // Iterate all the error codes, and return the corresponding error description string defined in
+    // _finErrorCodeStringMap.
     while (true) {
         if (_finErrorCodeStringMap[i]._errCode == finErrorCodeKits::FIN_EC_DUMMY)
             break;
