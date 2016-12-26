@@ -13,7 +13,6 @@
  * 20161223    2  Yulong Yu    Refine the comment styles and the copyright license.
  */
 
-
 #include "finErrorCode.h"
 
 const static struct {
