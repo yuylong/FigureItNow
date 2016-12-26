@@ -15,7 +15,7 @@
 
 finExecOperartorClac::finExecOperartorClac()
 {
-
+    return;
 }
 
 struct finExecOperartorClacDatabase {
@@ -25,9 +25,11 @@ struct finExecOperartorClacDatabase {
 };
 
 static finErrorCode _addOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode _subOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 
 static struct finExecOperartorClacDatabase _glOperatorClacDb[] = {
     { finLexNode::FIN_LN_OPTYPE_ADD, 2, _addOpCall },
+    { finLexNode::FIN_LN_OPTYPE_SUB, 2, _subOpCall },
 };
 static int _glOperatorCalcDbCnt = sizeof (_glOperatorClacDb) / sizeof (struct finExecOperartorClacDatabase);
 
@@ -99,3 +101,7 @@ bad:
     return finErrorCodeKits::FIN_EC_READ_ERROR;
 }
 
+static finErrorCode _subOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    return finErrorCode::FIN_EC_NON_IMPLEMENT;
+}
