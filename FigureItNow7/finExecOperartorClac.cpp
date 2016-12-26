@@ -103,5 +103,28 @@ bad:
 
 static finErrorCode _subOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
-    return finErrorCode::FIN_EC_NON_IMPLEMENT;
+    finExecVariable *oprand1 = oprands->at(0);
+    finExecVariable *oprand2 = oprands->at(1);
+    *retval = new finExecVariable();
+
+    if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+        switch ( oprand2->getType() ) {
+          case finExecVariable::FIN_VR_TYPE_NUMERIC:
+            (*retval)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+            (*retval)->setNumericValue(oprand1->getNumericValue() -
+                                       oprand2->getNumericValue());
+            break;
+
+          default:
+            goto bad;
+        }
+    } else {
+        goto bad;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+
+bad:
+    delete *retval;
+    *retval = NULL;
+    return finErrorCodeKits::FIN_EC_READ_ERROR;
 }
