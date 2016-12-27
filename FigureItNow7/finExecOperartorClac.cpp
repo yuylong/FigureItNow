@@ -26,10 +26,12 @@ struct finExecOperartorClacDatabase {
 
 static finErrorCode _addOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _subOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode _mulOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 
 static struct finExecOperartorClacDatabase _glOperatorClacDb[] = {
     { finLexNode::FIN_LN_OPTYPE_ADD, 2, _addOpCall },
     { finLexNode::FIN_LN_OPTYPE_SUB, 2, _subOpCall },
+    { finLexNode::FIN_LN_OPTYPE_MUL, 2, _mulOpCall },
 };
 static int _glOperatorCalcDbCnt = sizeof (_glOperatorClacDb) / sizeof (struct finExecOperartorClacDatabase);
 
@@ -112,6 +114,34 @@ static finErrorCode _subOpCall(QList<finExecVariable *> *oprands, finExecVariabl
           case finExecVariable::FIN_VR_TYPE_NUMERIC:
             (*retval)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
             (*retval)->setNumericValue(oprand1->getNumericValue() -
+                                       oprand2->getNumericValue());
+            break;
+
+          default:
+            goto bad;
+        }
+    } else {
+        goto bad;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+
+bad:
+    delete *retval;
+    *retval = NULL;
+    return finErrorCodeKits::FIN_EC_READ_ERROR;
+}
+
+static finErrorCode _mulOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    finExecVariable *oprand1 = oprands->at(0);
+    finExecVariable *oprand2 = oprands->at(1);
+    *retval = new finExecVariable();
+
+    if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+        switch ( oprand2->getType() ) {
+          case finExecVariable::FIN_VR_TYPE_NUMERIC:
+            (*retval)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+            (*retval)->setNumericValue(oprand1->getNumericValue() *
                                        oprand2->getNumericValue());
             break;
 
