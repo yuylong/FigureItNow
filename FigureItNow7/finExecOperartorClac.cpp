@@ -24,18 +24,25 @@ struct finExecOperartorClacDatabase {
     finErrorCode (*_opcall)(QList<finExecVariable *> *oprands, finExecVariable **retval);
 };
 
-static finErrorCode _addOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
-static finErrorCode _subOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
-static finErrorCode _mulOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode
+_addOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode
+_subOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode
+_mulOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode
+_divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 
 static struct finExecOperartorClacDatabase _glOperatorClacDb[] = {
     { finLexNode::FIN_LN_OPTYPE_ADD, 2, _addOpCall },
     { finLexNode::FIN_LN_OPTYPE_SUB, 2, _subOpCall },
     { finLexNode::FIN_LN_OPTYPE_MUL, 2, _mulOpCall },
+    { finLexNode::FIN_LN_OPTYPE_DIV, 2, _divOpCall },
 };
 static int _glOperatorCalcDbCnt = sizeof (_glOperatorClacDb) / sizeof (struct finExecOperartorClacDatabase);
 
-finErrorCode finExecOperartorClac::execOpCalc(
+finErrorCode
+finExecOperartorClac::execOpCalc(
         finLexOperatorType optype, QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     if ( oprands == NULL || retval == NULL )
@@ -59,51 +66,42 @@ finErrorCode finExecOperartorClac::execOpCalc(
     return curitem->_opcall(oprands, retval);
 }
 
-static finErrorCode _addOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+static finErrorCode
+_addOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand1 = oprands->at(0);
     finExecVariable *oprand2 = oprands->at(1);
-    *retval = new finExecVariable();
+    finExecVariable *tmpretval = new finExecVariable();
 
-    if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC ) {
-        switch ( oprand2->getType() ) {
-          case finExecVariable::FIN_VR_TYPE_NUMERIC:
-            (*retval)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
-            (*retval)->setNumericValue(oprand1->getNumericValue() +
-                                       oprand2->getNumericValue());
-            break;
-
-          default:
-            goto bad;
-        }
-    } else if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_STRING ) {
-        switch ( oprand2->getType() ) {
-          case finExecVariable::FIN_VR_TYPE_STRING:
-            (*retval)->setType(finExecVariable::FIN_VR_TYPE_STRING);
-            (*retval)->setStringValue(oprand1->getStringValue().append(oprand2->getStringValue()));
-            break;
-
-          case finExecVariable::FIN_VR_TYPE_NUMERIC:
-            (*retval)->setType(finExecVariable::FIN_VR_TYPE_STRING);
-            (*retval)->setStringValue(oprand1->getStringValue().append(
+    if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC &&
+         oprand2->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+        tmpretval->clearLeftValue();
+        tmpretval->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        tmpretval->setNumericValue(oprand1->getNumericValue() +
+                                   oprand2->getNumericValue());
+    } else if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_STRING &&
+                oprand2->getType() == finExecVariable::FIN_VR_TYPE_STRING ) {
+        tmpretval->clearLeftValue();
+        tmpretval->setType(finExecVariable::FIN_VR_TYPE_STRING);
+        tmpretval->setStringValue(oprand1->getStringValue().append(oprand2->getStringValue()));
+    } else if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_STRING &&
+                oprand2->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+        tmpretval->clearLeftValue();
+        tmpretval->setType(finExecVariable::FIN_VR_TYPE_STRING);
+        tmpretval->setStringValue(oprand1->getStringValue().append(
                                           QString::number(oprand2->getNumericValue())));
-            break;
-
-          default:
-            goto bad;
-        }
     } else {
-        goto bad;
+        delete tmpretval;
+        *retval = NULL;
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
 
-bad:
-    delete *retval;
-    *retval = NULL;
-    return finErrorCodeKits::FIN_EC_READ_ERROR;
+    *retval = tmpretval;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-static finErrorCode _subOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+static finErrorCode
+_subOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand1 = oprands->at(0);
     finExecVariable *oprand2 = oprands->at(1);
@@ -131,7 +129,8 @@ bad:
     return finErrorCodeKits::FIN_EC_READ_ERROR;
 }
 
-static finErrorCode _mulOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+static finErrorCode
+_mulOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand1 = oprands->at(0);
     finExecVariable *oprand2 = oprands->at(1);
@@ -157,4 +156,39 @@ bad:
     delete *retval;
     *retval = NULL;
     return finErrorCodeKits::FIN_EC_READ_ERROR;
+}
+
+static finErrorCode
+_divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    finExecVariable *oprand1 = oprands->at(0);
+    finExecVariable *oprand2 = oprands->at(1);
+    *retval = new finExecVariable();
+    finErrorCode errcode = finErrorCodeKits::FIN_EC_READ_ERROR;
+
+    if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+        switch ( oprand2->getType() ) {
+          case finExecVariable::FIN_VR_TYPE_NUMERIC:
+            if ( oprand2->getNumericValue() == 0.0 ) {
+                errcode = finErrorCodeKits::FIN_EC_OVERFLOW;
+                goto bad;
+            }
+
+            (*retval)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+            (*retval)->setNumericValue(oprand1->getNumericValue() /
+                                       oprand2->getNumericValue());
+            break;
+
+          default:
+            goto bad;
+        }
+    } else {
+        goto bad;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+
+bad:
+    delete *retval;
+    *retval = NULL;
+    return errcode;
 }
