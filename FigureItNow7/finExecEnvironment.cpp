@@ -65,25 +65,55 @@ finExecEnvironment::setEnvironmentName(const QString &envname)
 finExecVariable *
 finExecEnvironment::getVariableHere(const QString &varname)
 {
+    for ( int i = 0; i < this->_varList.count(); i++ ) {
+        finExecVariable *var = this->_varList.at(i);
+
+        if ( QString::compare(var->getName(), varname) == 0 )
+            return var;
+    }
     return NULL;
 }
 
 finExecVariable *
 finExecEnvironment::findVariable(const QString &varname)
 {
-    return NULL;
+    finExecVariable *retvar;
+
+    retvar = this->getVariableHere(varname);
+    if ( retvar != NULL )
+        return retvar;
+
+    if ( this->_prevEnv != NULL )
+        return this->_prevEnv->findVariable(varname);
+    else
+        return NULL;
 }
 
 finExecFunction *
 finExecEnvironment::getFunctionHere(const QString &funcname)
 {
+    for ( int i = 0; i < this->_funcList.count(); i++ ) {
+        finExecFunction *func = this->_funcList.at(i);
+
+        if ( QString::compare(func->getFunctionName(), funcname) == 0 )
+            return func;
+    }
     return NULL;
 }
 
 finExecFunction *
 finExecEnvironment::findFunction(const QString &funcname)
 {
-    return NULL;
+    finExecFunction *retfunc;
+
+    retfunc = this->getFunctionHere(funcname);
+    if ( retfunc != NULL )
+        return retfunc;
+
+    if ( this->_prevEnv != NULL )
+        return this->_prevEnv->findFunction(funcname);
+    else
+        return NULL;
 }
 
 finErrorCode
