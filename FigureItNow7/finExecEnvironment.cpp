@@ -119,13 +119,25 @@ finExecEnvironment::findFunction(const QString &funcname)
 finErrorCode
 finExecEnvironment::addVariable(finExecVariable *var)
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finExecVariable *oldvar = this->getVariableHere(var->getName());
+
+    if ( oldvar != NULL )
+        return finErrorCodeKits::FIN_EC_CONTENTION;
+
+    this->_varList.append(var);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
 finExecEnvironment::addFunction(finExecFunction *func)
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finExecFunction *oldfunc = this->getFunctionHere(func->getFunctionName());
+
+    if ( oldfunc != NULL )
+        return finErrorCodeKits::FIN_EC_CONTENTION;
+
+    this->_funcList.append(func);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finFigureContainer *

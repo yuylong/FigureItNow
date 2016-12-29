@@ -74,6 +74,9 @@ public:
 
         FIN_EC_READ_ERROR    =    -8,  //!< The input string is error, no more check is necessary.
 
+        FIN_EC_CONTENTION    =    -9,  //!< The insertion operation cannot taken because the position or the index key
+                                       //!< is occupied by others.
+
         FIN_EC_INVALID_PARAM =   -12,  //!< The parameter is unsupported in the certain invocation.
 
         FIN_EC_STATE_ERROR   =   -33,  //!< The operation is taken at a wrong state.

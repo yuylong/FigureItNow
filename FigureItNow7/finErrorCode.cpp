@@ -49,6 +49,8 @@ const static struct {
         QString("Object not found")                              },
     { finErrorCodeKits::FIN_EC_READ_ERROR,
         QString("Reading object failure")                        },
+    { finErrorCodeKits::FIN_EC_CONTENTION,
+        QString("Requested position is occupied.")               },
     { finErrorCodeKits::FIN_EC_INVALID_PARAM,
         QString("Invalid Parameter")                             },
     { finErrorCodeKits::FIN_EC_STATE_ERROR,
