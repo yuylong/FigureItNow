@@ -41,12 +41,18 @@ finExecEnvironment::~finExecEnvironment()
 finErrorCode
 finExecEnvironment::buildChildEnvironment(finExecEnvironment **chdenv)
 {
-    finExecEnvironment *newchdenv = new finExecEnvironment();
+    if ( chdenv == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
+    finExecEnvironment *newchdenv = new finExecEnvironment();
     if ( newchdenv == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    newchdenv->_figContainer = this->_figContainer;
+    newchdenv->_prevEnv = this;
+
+    *chdenv = newchdenv;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 QString
