@@ -29,6 +29,11 @@ finExecVariable::finExecVariable(const QString &name)
     this->_numVal = 0.0;
 }
 
+finExecVariable::~finExecVariable()
+{
+    this->dispose();
+}
+
 QString finExecVariable::getName() const
 {
     return this->_varName;
@@ -329,7 +334,7 @@ finErrorCode finExecVariable::dispose()
     this->_type = FIN_VR_TYPE_NULL;
     this->_strVal.clear();
 
-    while ( this->_itemList.count() > 0 ) {
+    while ( !this->_itemList.empty() ) {
         finExecVariable *subvar = this->_itemList.first();
         this->_itemList.removeFirst();
         subvar->dispose();

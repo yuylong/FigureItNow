@@ -72,6 +72,7 @@ protected:
 public:
     finExecVariable();
     finExecVariable(const QString &name);
+    ~finExecVariable();
 
     QString getName() const;
     bool isSameName(const QString &name) const;
