@@ -47,15 +47,15 @@ public:
     finErrorCode setLexReader(finLexReader *newlexreader);
     finErrorCode setScriptCode(const QString &scriptcode);
 
-    QList<finSyntaxNode *> *getSyntaxStack() { return &this->_syntaxStack; }
-
     finErrorCode startRead();
     finErrorCode stopRead();
-
     finErrorCode readNextToken();
 
+    QList<finSyntaxNode *> *getSyntaxStack() { return &this->_syntaxStack; }
     finSyntaxTree *getSyntaxTree();
+
     finErrorCode disposeSyntaxTree();
+    finErrorCode disposeAllRead();
 
 private:
     finErrorCode processTypedNextToken(finLexNode *lexnode, finLexNodeType lextype);

@@ -13,17 +13,47 @@
 /*! \file finExecMachine.h
  *  \brief The declarations of the runtime executor.
  *
- * This file declares the runtime executor.
+ * This file declares the runtime executor. The execution procedure of script is taken here.
  */
 
 #ifndef FINEXECMACHINE_H
 #define FINEXECMACHINE_H
 
+#include "finErrorCode.h"
+#include "finExecEnvironment.h"
+#include "finFigureContainer.h"
+#include "finSyntaxReader.h"
+
 
 class finExecMachine
 {
+private:
+    QString _name;
+
+    finExecEnvironment *_baseEnv;
+    finFigureContainer *_baseFigContainer;
+
+    finSyntaxReader _syntaxRdr;
+
 public:
     finExecMachine();
+    finExecMachine(const QString &name);
+    ~finExecMachine();
+
+    QString getName() const;
+    finExecEnvironment *getBaseEnvironment();
+    finFigureContainer *getFigureContainer();
+    QString getScriptCode() const;
+
+    finErrorCode setName(const QString &name);
+
+    finErrorCode initEnvironment(finExecEnvironment *prevenv);
+    finErrorCode initEnvironmentFromRoot();
+
+    finErrorCode setFigureContainer(finFigureContainer *figcontainer);
+    finErrorCode setScriptCode(const QString &script);
+
+
 };
 
 #endif // FINEXECMACHINE_H

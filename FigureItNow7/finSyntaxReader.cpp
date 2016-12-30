@@ -60,27 +60,15 @@ finErrorCode finSyntaxReader::startRead()
 {
     if ( this->_isReading )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
-    if ( this->_syntaxTree != NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     finErrorCode errcode = this->_lexReader->resetPosition();
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
-    while ( this->_syntaxStack.count() > 0 ) {
-        finSyntaxNode *syntk = this->_syntaxStack.at(0);
-        this->_syntaxStack.removeFirst();
-        syntk->disposeAll();
-        delete syntk;
-    }
-    while ( this->_errList.count() > 0 ) {
-        finSyntaxError *synerr = this->_errList.at(0);
-        this->_errList.removeFirst();
-        delete synerr;
-    }
+    this->disposeAllRead();
 
     this->_isReading = true;
-    return errcode;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finSyntaxReader::stopRead()
@@ -89,7 +77,7 @@ finErrorCode finSyntaxReader::stopRead()
         return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
 
     this->_isReading = false;
-    this->_syntaxTree = NULL;
+    this->disposeAllRead();
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
@@ -165,6 +153,27 @@ finErrorCode finSyntaxReader::disposeSyntaxTree()
     delete roottk;
 
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode finSyntaxReader::disposeAllRead()
+{
+    if ( this->_syntaxTree != NULL )
+        this->disposeSyntaxTree();
+
+    while ( !this->_syntaxStack.empty() ) {
+        finSyntaxNode *syntk = this->_syntaxStack.first();
+        this->_syntaxStack.removeFirst();
+        syntk->disposeAll();
+        delete syntk;
+    }
+
+    while ( !this->_errList.empty() ) {
+        finSyntaxError *synerr = this->_errList.first();
+        this->_errList.removeFirst();
+        delete synerr;
+    }
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finSyntaxReader::processTypedNextToken(finLexNode *lexnode, finLexNodeType lextype)
