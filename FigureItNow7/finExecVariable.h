@@ -26,6 +26,8 @@
 
 #include "finErrorCode.h"
 
+class finExecEnvironment;
+
 /*! \class finExecVariable
  *  \brief The script runtime variable.
  *
@@ -105,6 +107,8 @@ public:
     finErrorCode appendList(const QList<finExecVariable *> &vallist);
 
     finErrorCode dispose();
+
+    static finErrorCode installSystemVariables (finExecEnvironment *rootenv);
 
 private:
     finErrorCode copyArrayVariable(const finExecVariable *srcvar);

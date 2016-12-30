@@ -27,10 +27,10 @@
 
 #include "finErrorCode.h"
 #include "finSyntaxNode.h"
-#include "finExecVariable.h"
 #include "finExecOperartorClac.h"
 #include "finFigureContainer.h"
 
+class finExecVariable;
 class finExecFunction;
 
 class finExecEnvironment

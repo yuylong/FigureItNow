@@ -13,6 +13,7 @@
 
 #include "finExecEnvironment.h"
 
+#include "finExecVariable.h"
 #include "finExecFunction.h"
 
 finExecEnvironment::finExecEnvironment()

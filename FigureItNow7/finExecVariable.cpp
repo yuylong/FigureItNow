@@ -11,7 +11,12 @@
  * 20151229    0  Yulong Yu    Create this file.
  */
 
+#include <QtMath>
+
 #include "finExecVariable.h"
+
+#include "finExecEnvironment.h"
+
 
 finExecVariable::finExecVariable()
     : _varName()
@@ -342,4 +347,94 @@ finErrorCode finExecVariable::dispose()
     }
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finExecVariable *_sysvar_pi();
+static finExecVariable *_sysvar_e();
+
+typedef finExecVariable *(*_finSysvarGencall)();
+
+_finSysvarGencall _finSysvarGencallList[] = {
+    _sysvar_pi,
+    _sysvar_e,
+    NULL
+};
+
+finErrorCode
+finExecVariable::installSystemVariables (finExecEnvironment *rootenv)
+{
+    finErrorCode errcode;
+    int success = 0, failed = 0;
+
+    for ( int i = 0; _finSysvarGencallList[i] != NULL; i++ ) {
+        finExecVariable *curvar = _finSysvarGencallList[i]();
+        if ( curvar == NULL )
+            goto item_bad;
+
+        errcode = rootenv->addVariable(curvar);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            goto item_bad;
+
+        success++;
+
+item_bad:
+        if ( curvar != NULL )
+            delete curvar;
+        failed++;
+    }
+
+    if ( success == 0 && failed == 0 )
+        return finErrorCodeKits::FIN_EC_REACH_BOTTOM;
+    else if ( success == 0 )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    else if ( failed != 0 )
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+    else
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static inline finExecVariable *
+_sysvar_gen_num_var(const QString &name, double val)
+{
+    finExecVariable *retvar = new finExecVariable();
+    finErrorCode errcode;
+
+    if ( retvar == NULL )
+        return NULL;
+
+    errcode = retvar->setName(name);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto err;
+
+    errcode = retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto err;
+
+    errcode = retvar->setNumericValue(val);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto err;
+
+    errcode = retvar->setLeftValue();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto err;
+
+    errcode = retvar->setWriteProtected();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto err;
+
+    return retvar;
+
+err:
+    delete retvar;
+    return NULL;
+}
+
+static finExecVariable *_sysvar_pi()
+{
+    return _sysvar_gen_num_var(QString("PI"), M_PI);
+}
+
+static finExecVariable *_sysvar_e()
+{
+    return _sysvar_gen_num_var(QString("E"), M_E);
 }
