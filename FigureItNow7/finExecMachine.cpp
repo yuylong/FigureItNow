@@ -5,6 +5,8 @@ finExecMachine::finExecMachine()
     this->_name = QString();
     this->_baseEnv = NULL;
     this->_baseFigContainer = NULL;
+    this->_scriptCode = QString();
+    this->_isCompiled = false;
 }
 
 finExecMachine::finExecMachine(const QString &name)
@@ -12,6 +14,8 @@ finExecMachine::finExecMachine(const QString &name)
     this->_name = name;
     this->_baseEnv = NULL;
     this->_baseFigContainer = NULL;
+    this->_scriptCode = QString();
+    this->_isCompiled = false;
 }
 
 finExecMachine::~finExecMachine()
@@ -36,6 +40,11 @@ finFigureContainer *finExecMachine::getFigureContainer()
 }
 
 QString finExecMachine::getScriptCode() const
+{
+    return this->_scriptCode;
+}
+
+QString finExecMachine::getCompiledScriptCode() const
 {
     return this->_syntaxRdr.getScriptCode();
 }
@@ -96,5 +105,33 @@ finErrorCode finExecMachine::setFigureContainer(finFigureContainer *figcontainer
 
 finErrorCode finExecMachine::setScriptCode(const QString &script)
 {
-    return this->_syntaxRdr.setScriptCode(script);
+    return this->_scriptCode = script;
 }
+
+finErrorCode finExecMachine::compile()
+{
+    if ( this->_isCompiled )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode finExecMachine::releaseCompile()
+{
+    if ( !this->_isCompiled )
+        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode finExecMachine::execute()
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode
+finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+

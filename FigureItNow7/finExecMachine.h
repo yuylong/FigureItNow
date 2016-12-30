@@ -33,6 +33,8 @@ private:
     finExecEnvironment *_baseEnv;
     finFigureContainer *_baseFigContainer;
 
+    QString _scriptCode;
+    bool _isCompiled;
     finSyntaxReader _syntaxRdr;
 
 public:
@@ -44,6 +46,7 @@ public:
     finExecEnvironment *getBaseEnvironment();
     finFigureContainer *getFigureContainer();
     QString getScriptCode() const;
+    QString getCompiledScriptCode() const;
 
     finErrorCode setName(const QString &name);
 
@@ -53,6 +56,11 @@ public:
     finErrorCode setFigureContainer(finFigureContainer *figcontainer);
     finErrorCode setScriptCode(const QString &script);
 
+    finErrorCode compile();
+    finErrorCode releaseCompile();
+
+    finErrorCode execute();
+    static finErrorCode instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
 
 };
 
