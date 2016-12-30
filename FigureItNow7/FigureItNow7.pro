@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     finGraphPanelQTWidget.cpp \
     finGraphConfig.cpp \
     finFigureContainer.cpp \
-    finExecOperartorClac.cpp
+    finExecOperartorClac.cpp \
+    finExecMachine.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
@@ -49,6 +50,7 @@ HEADERS  += MainWindow.h \
     finGraphPanelQTWidget.h \
     finGraphConfig.h \
     finFigureContainer.h \
-    finExecOperartorClac.h
+    finExecOperartorClac.h \
+    finExecMachine.h
 
 FORMS    += MainWindow.ui

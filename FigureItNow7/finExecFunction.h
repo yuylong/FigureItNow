@@ -8,6 +8,8 @@
 #include "finExecVariable.h"
 
 class finExecEnvironment;
+class finExecFunction;
+typedef finErrorCode (*finFunctionCall)(finExecFunction *self, finExecVariable *retval, finExecEnvironment *execenv);
 
 class finExecFunction
 {
@@ -26,9 +28,7 @@ protected:
 
     union {
         finSyntaxNode *_funcNode;
-        finErrorCode (*_funcCall)(finExecFunction *self,
-                                  finExecVariable *retval,
-                                  finExecEnvironment *execenv);
+        finFunctionCall _funcCall;
         void *_rawPointer;
     } _u;
 
@@ -45,8 +45,13 @@ public:
     finErrorCode appendParameterName(const QString &paramname);
     finErrorCode clearParameterNames();
 
-    finErrorCode execFunction(finSyntaxNode *curnode, finExecVariable *retval,
+    finErrorCode setFunctionSyntaxNode(finSyntaxNode *funcnode);
+    finErrorCode setFunctionCall(finFunctionCall funccall);
+
+    finErrorCode execFunction(finSyntaxNode *curnode, finExecVariable **retval,
                               finExecEnvironment *execenv);
+
+    static finErrorCode installSystemFunctions (finExecEnvironment *rootenv);
 
 private:
     finErrorCode execUserFunction(finExecVariable *retval,

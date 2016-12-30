@@ -79,7 +79,25 @@ finErrorCode finExecFunction::clearParameterNames()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finExecFunction::execFunction(finSyntaxNode *curnode, finExecVariable *retval,
+finErrorCode finExecFunction::setFunctionSyntaxNode(finSyntaxNode *funcnode)
+{
+    if ( this->_type != finExecFunction::FIN_FN_TYPE_USER )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    this->_u._funcNode = funcnode;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecFunction::setFunctionCall(finFunctionCall funccall)
+{
+    if ( this->_type != finExecFunction::FIN_FN_TYPE_SYSTEM )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    this->_u._funcCall = funccall;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecFunction::execFunction(finSyntaxNode *curnode, finExecVariable **retval,
                                            finExecEnvironment *execenv)
 {
     if ( curnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS )
@@ -101,6 +119,98 @@ finErrorCode finExecFunction::execFunction(finSyntaxNode *curnode, finExecVariab
     if ( fnlexnd == NULL || fnlexnd->getType() != finLexNode::FIN_LN_TYPE_VARIABLE )
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
+
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+static finErrorCode
+_sysfunc_mat_add (finExecFunction *self, finExecVariable *retval, finExecEnvironment *execenv);
+
+static struct {
+    QString _funcName;
+    QString _paramCsvList;
+    finFunctionCall _funcCall;
+} _finSystemFunctionList[] = {
+    { QString("mat_add"), QString("mat1,mat2"), _sysfunc_mat_add },
+
+    { QString(), QString(), NULL }
+};
+
+finErrorCode
+finExecFunction::installSystemFunctions (finExecEnvironment *rootenv)
+{
+    finErrorCode errcode;
+    int i, succcnt = 0;
+
+    if ( rootenv == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    for ( i = 0; !_finSystemFunctionList[i]._funcName.isNull(); i++ ) {
+
+        QStringList paramlist;
+        finExecFunction *curfunc = new finExecFunction();
+        if ( curfunc == NULL )
+            goto item_bad;
+
+        errcode = curfunc->setFunctionType(finExecFunction::FIN_FN_TYPE_SYSTEM);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            goto item_bad;
+
+        errcode = curfunc->setFunctionName(_finSystemFunctionList[i]._funcName);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            goto item_bad;
+
+        paramlist = _finSystemFunctionList[i]._paramCsvList.split(',');
+        curfunc->clearParameterNames();
+        for ( int j = 0; j < paramlist.count(); j++ ) {
+            errcode = curfunc->appendParameterName(paramlist.at(i));
+            if ( finErrorCodeKits::isErrorResult(errcode) )
+                goto item_bad;
+        }
+
+        errcode = curfunc->setFunctionCall(_finSystemFunctionList[i]._funcCall);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            goto item_bad;
+
+        errcode = rootenv->addFunction(curfunc);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            goto item_bad;
+
+        succcnt++;
+        continue;
+
+item_bad:
+        if ( curfunc != NULL )
+            delete curfunc;
+    }
+
+    if ( succcnt == i ) {
+        if ( succcnt > 0 )
+            return finErrorCodeKits::FIN_EC_SUCCESS;
+        else
+            return finErrorCodeKits::FIN_EC_REACH_BOTTOM;
+    } else {
+        if ( succcnt > 0 )
+            return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        else
+            return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    }
+}
+
+static finErrorCode
+_sysfunc_mat_add (finExecFunction *self, finExecVariable *retval, finExecEnvironment *execenv)
+{
+    finExecVariable *mat1var, *mat2var;
+
+    if ( self == NULL || retval == NULL || execenv == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    mat1var = execenv->findVariable("mat1");
+    mat2var = execenv->findVariable("mat2");
+
+    if ( mat1var->getType() != finExecVariable::FIN_VR_TYPE_ARRAY ||
+         mat2var->getType() != finExecVariable::FIN_VR_TYPE_ARRAY )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
