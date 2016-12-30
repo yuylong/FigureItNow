@@ -159,7 +159,46 @@ finExecEnvironment::getParentEnvironment()
 }
 
 finErrorCode
-finExecEnvironment::getSyntaxNodeValue(finSyntaxNode *synnode, finExecVariable *retval)
+finExecEnvironment::setFigureContainer(finFigureContainer *figcontainer)
+{
+    this->_figContainer = figcontainer;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finExecEnvironment::setParentEnvironment(finExecEnvironment *prevenv)
+{
+    this->_prevEnv = prevenv;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finExecEnvironment *finExecEnvironment::_rootEnv = NULL;
+
+finErrorCode
+finExecEnvironment::setupRootEnvironment()
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode
+finExecEnvironment::disposeRootEnvironment()
+{
+    if ( _rootEnv == NULL )
+        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+
+    delete _rootEnv;
+    _rootEnv = NULL;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finExecEnvironment *
+finExecEnvironment::getRootEnvironment()
+{
+    return _rootEnv;
+}
+
+finErrorCode
+finExecEnvironment::buildRootChildEnvironment(finExecEnvironment **chdenv)
+{
+    return _rootEnv->buildChildEnvironment(chdenv);
 }

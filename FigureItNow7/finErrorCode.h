@@ -1,8 +1,3 @@
-/*! \file finErrorCode.h
- *  \brief The declarations of the Error Codes.
- *
- * This file includes all the declaration and the inline defintions about the Error codes used by the FIN-7 system.
- */
 /*-
  * GNU GENERAL PUBLIC LICENSE, version 3
  * See LICENSE file for detail.
@@ -16,6 +11,11 @@
  * 20151101    0  Yulong Yu    Create this file.
  * 20160526    1  Yulong Yu    Add the doxygen-styled comments.
  * 20161223    2  Yulong Yu    Refine the comment styles and the copyright license.
+ */
+/*! \file finErrorCode.h
+ *  \brief The declarations of the Error Codes.
+ *
+ * This file includes all the declaration and the inline defintions about the Error codes used by the FIN-7 system.
  */
 
 #ifndef FINERRORCODE_H

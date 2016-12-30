@@ -1,9 +1,3 @@
-/*! \file finExecOperatorClac.h
- *  \brief The calculator of operators defined in FIN-7 system.
- *
- * This file declares the calculations of all the operators defined in FIN-7 system. When the execution a script and
- * it encounters an operator, the actural computation is taken by the methods defined in this file.
- */
 /*-
  * GNU GENERAL PUBLIC LICENSE, version 3
  * See LICENSE file for detail.
@@ -15,6 +9,12 @@
  *
  * DATE      REV  AUTHOR       COMMENTS
  * 20151226    0  Yulong Yu    Create this file.
+ */
+/*! \file finExecOperatorClac.h
+ *  \brief The calculator of operators defined in FIN-7 system.
+ *
+ * This file declares the calculations of all the operators defined in FIN-7 system. When the execution a script and
+ * it encounters an operator, the actural computation is taken by the methods defined in this file.
  */
 
 #ifndef FINEXECOPERARTORCLAC_H
