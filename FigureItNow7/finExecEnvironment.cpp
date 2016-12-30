@@ -178,7 +178,20 @@ finExecEnvironment *finExecEnvironment::_rootEnv = NULL;
 finErrorCode
 finExecEnvironment::setupRootEnvironment()
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    if ( _rootEnv != NULL )
+        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+
+    _rootEnv = new finExecEnvironment();
+    if ( _rootEnv == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    _rootEnv->setEnvironmentName(QString("root"));
+    finExecVariable::installSystemVariables(_rootEnv);
+    finExecFunction::installSystemFunctions(_rootEnv);
+    _rootEnv->setFigureContainer(NULL);
+    _rootEnv->setParentEnvironment(NULL);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
