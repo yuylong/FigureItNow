@@ -1,26 +1,30 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu, Dec 31st, 2016
+ * Copyright(c) 2015-2016 Yulong Yu. All rights reserved.
+ *
+ * History:
+ *
+ * DATE      REV  AUTHOR       COMMENTS
+ * 20151231    0  Yulong Yu    Create this file.
+ */
+
 #include "finfigureobject.h"
 
-unsigned int finFigureObject::_NextObjectId = 0;
-
 finFigureObject::finFigureObject()
-    : _referCount(1)
 {
-    this->_objectId = _NextObjectId++;
+    this->_type = finFigureObject::FIN_FO_TYPE_DUMMY;
 }
 
-int finFigureObject::retainObject()
+finFigureObjectType finFigureObject::getFigureType() const
 {
-    int retVal;
-    retVal = this->_referCount.fetchAndAddRelaxed(1);
-    return retVal + 1;
+    return this->_type;
 }
 
-int finFigureObject::releaseObject()
+finFigureObjectDot::finFigureObjectDot()
 {
-    int retVal;
-    retVal = this->_referCount.fetchAndSubRelaxed(1);
-    if ( retVal == 0 )
-        delete (this);
-    return retVal - 1;
+    this->_type = finFigureObject::FIN_FO_TYPE_DOT;
+    this->_point = QPointF(0.0, 0.0);
 }
-

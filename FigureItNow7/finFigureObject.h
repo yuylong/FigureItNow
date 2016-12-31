@@ -1,8 +1,24 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu, Dec 31st, 2016
+ * Copyright(c) 2015-2016 Yulong Yu. All rights reserved.
+ *
+ * History:
+ *
+ * DATE      REV  AUTHOR       COMMENTS
+ * 20161231    0  Yulong Yu    Create this file.
+ */
+
 #ifndef FINFIGUREOBJECT_H
 #define FINFIGUREOBJECT_H
 
-#include <QAtomicInteger>
+#include <QString>
+#include <QList>
+#include <QPointF>
 
+#include "finErrorCode.h"
 
 class finFigureObject
 {
@@ -16,17 +32,26 @@ public:
         FIN_FO_TYPE_MAX
     };
 
-private:
-    static unsigned int _NextObjectId;
-
-    unsigned int _objectId;
-    QAtomicInteger<int> _referCount;
+protected:
+    finFigureObjectType _type;
 
 public:
     finFigureObject();
 
-    virtual int retainObject();
-    virtual int releaseObject();
+    finFigureObjectType getFigureType() const;
+};
+
+typedef finFigureObject::finFigureObjectType finFigureObjectType;
+
+class finFigureObjectDot : public finFigureObject
+{
+protected:
+    QPointF _point;
+
+public:
+    finFigureObjectDot();
+
+
 };
 
 #endif // FINFIGUREOBJECT_H

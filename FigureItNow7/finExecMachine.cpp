@@ -105,7 +105,8 @@ finErrorCode finExecMachine::setFigureContainer(finFigureContainer *figcontainer
 
 finErrorCode finExecMachine::setScriptCode(const QString &script)
 {
-    return this->_scriptCode = script;
+    this->_scriptCode = script;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finExecMachine::compile()

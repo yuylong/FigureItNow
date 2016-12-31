@@ -1,3 +1,24 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu, Dec 29th, 2016
+ * Copyright(c) 2015-2016 Yulong Yu. All rights reserved.
+ *
+ * History:
+ *
+ * DATE      REV  AUTHOR       COMMENTS
+ * 20161229    0  Yulong Yu    Create this file.
+ */
+/*! \file finExecFunction.h
+ *  \brief The declarations of the runtime function.
+ *
+ * This file declares the runtime function. All system functions and user script defined functions share this data
+ * structure defined in this file. The system functions are the function predefined in FIN-7 system, which the script
+ * can directly cite them without any declaration. The user script defined functions are defined in the script
+ * language, and specific among each script.
+ */
+
 #ifndef FINEXECFUNCTION_H
 #define FINEXECFUNCTION_H
 
