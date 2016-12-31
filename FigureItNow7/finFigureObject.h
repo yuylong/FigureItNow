@@ -19,6 +19,7 @@
 #include <QPointF>
 
 #include "finErrorCode.h"
+#include "finFigureConfig.h"
 
 class finFigureObject
 {
@@ -34,6 +35,7 @@ public:
 
 protected:
     finFigureObjectType _type;
+    finFigureConfig _figCfg;
 
 public:
     finFigureObject();

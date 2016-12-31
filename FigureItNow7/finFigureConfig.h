@@ -21,30 +21,48 @@
 class finFigureConfig
 {
 public:
-    enum figFigureEdgeShape {
+    enum finFigureEndShape {
         FIN_ES_ROUND,
         FIN_ES_RECT_FULL,
         FIN_ES_RECT_CUT
     };
 
+    enum finFigureColorIdx {
+        FIN_CI_RED = 0,
+        FIN_CI_GREEN = 1,
+        FIN_CI_BLUE = 2,
+        FIN_CI_TRANSPARENCY = 3,
+        FIN_CI_MAX
+    };
+
 protected:
     double _dotSizeX;
     double _dotSizeY;
-    figFigureEdgeShape _edgeShape;
+    finFigureEndShape _endShape;
 
-    bool _isBoundTransparent;
-    bool _isFillTransparent;
-    double _boundColor[3];
-    double _fillColor[3];
+    double _borderColor[FIN_CI_MAX];
+    double _fillColor[FIN_CI_MAX];
     quint32 _linePattern;
 
     QString _fontName;
     double _fontSize;
 
+    static finFigureConfig *_defFigCfg;
+
 public:
     finFigureConfig();
+
+    double getDotSizeX() const;
+    double getDotSizeY() const;
+    finFigureEndShape getEndShape() const;
+
+    bool isBorderTransparent() const;
+    bool isFillTransparent() const;
+    double getBorderColorSingle(finFigureColorIdx coloridx) const;
+    double getFillColorSingle(finFigureColorIdx coloridx) const;
 };
 
-typedef finFigureConfig::figFigureEdgeShape finFigureEdgeShape;
+typedef finFigureConfig::finFigureEndShape finFigureEndShape;
+typedef finFigureConfig::finFigureColorIdx finFigureColorIdx;
 
 #endif // FINFIGURECONFIG_H
