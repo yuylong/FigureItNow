@@ -3,11 +3,14 @@
 
 #include <QList>
 
+#include "finErrorCode.h"
+#include "finFigureConfig.h"
 #include "finFigureObject.h"
 
 class finFigureContainer
 {
 protected:
+    finFigureConfig _curFigCfg;
     QList<finFigureObject *> _figList;
 
 public:

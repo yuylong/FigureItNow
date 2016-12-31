@@ -75,3 +75,18 @@ double finFigureConfig::getFillColorSingle(finFigureColorIdx coloridx) const
 
     return this->_fillColor[coloridx];
 }
+
+quint32 finFigureConfig::getLinePattern() const
+{
+    return this->_linePattern;
+}
+
+QString finFigureConfig::getFontName() const
+{
+    return this->_fontName;
+}
+
+double finFigureConfig::getFontSize() const
+{
+    return this->_fontSize;
+}

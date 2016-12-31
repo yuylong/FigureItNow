@@ -60,6 +60,11 @@ public:
     bool isFillTransparent() const;
     double getBorderColorSingle(finFigureColorIdx coloridx) const;
     double getFillColorSingle(finFigureColorIdx coloridx) const;
+    quint32 getLinePattern() const;
+
+    QString getFontName() const;
+    double getFontSize() const;
+
 };
 
 typedef finFigureConfig::finFigureEndShape finFigureEndShape;
