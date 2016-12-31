@@ -69,6 +69,11 @@ public:
     finErrorCode setDotSize(double sizex, double sizey);
     finErrorCode setDotSizeX(double sizex);
     finErrorCode setDotSizeY(double sizey);
+    finErrorCode setEndShape(finFigureEndShape endshape);
+
+    finErrorCode setBorderColor(double bdrcolor[]);
+    finErrorCode setBorderColor(double red, double green, double blue, double transparent = 0.0);
+    finErrorCode setBorderColorSingle(double colorval, finFigureColorIdx coloridx);
 };
 
 typedef finFigureConfig::finFigureEndShape finFigureEndShape;

@@ -128,3 +128,35 @@ finErrorCode finFigureConfig::setDotSizeY(double sizey)
     this->_dotSizeY = sizey;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+finErrorCode finFigureConfig::setEndShape(finFigureEndShape endshape)
+{
+    this->_endShape = endshape;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setBorderColor(double bdrcolor[])
+{
+    for ( int i = 0; i < finFigureConfig::FIN_CI_MAX; i++ ) {
+        this->_borderColor[i] = bdrcolor[i];
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setBorderColor(double red, double green, double blue, double transparent)
+{
+    this->_borderColor[finFigureConfig::FIN_CI_RED] = red;
+    this->_borderColor[finFigureConfig::FIN_CI_GREEN] = green;
+    this->_borderColor[finFigureConfig::FIN_CI_BLUE] = blue;
+    this->_borderColor[finFigureConfig::FIN_CI_TRANSPARENCY] = transparent;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setBorderColorSingle(double colorval, finFigureColorIdx coloridx)
+{
+    if ( coloridx >= finFigureConfig::FIN_CI_MAX )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    this->_borderColor[coloridx] = colorval;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
