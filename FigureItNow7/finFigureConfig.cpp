@@ -90,3 +90,41 @@ double finFigureConfig::getFontSize() const
 {
     return this->_fontSize;
 }
+
+finErrorCode finFigureConfig::setDotSize(double size)
+{
+    if ( size < 0.0 )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    this->_dotSizeX = size;
+    this->_dotSizeY = size;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setDotSize(double sizex, double sizey)
+{
+    if ( sizex < 0.0 || sizey < 0.0 )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    this->_dotSizeX = sizex;
+    this->_dotSizeY = sizey;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setDotSizeX(double sizex)
+{
+    if ( sizex < 0.0 )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    this->_dotSizeX = sizex;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setDotSizeY(double sizey)
+{
+    if ( sizey < 0.0 )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    this->_dotSizeY = sizey;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}

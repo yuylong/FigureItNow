@@ -40,8 +40,8 @@ protected:
     double _dotSizeY;
     finFigureEndShape _endShape;
 
-    double _borderColor[FIN_CI_MAX];
-    double _fillColor[FIN_CI_MAX];
+    double _borderColor[finFigureConfig::FIN_CI_MAX];
+    double _fillColor[finFigureConfig::FIN_CI_MAX];
     quint32 _linePattern;
 
     QString _fontName;
@@ -65,6 +65,10 @@ public:
     QString getFontName() const;
     double getFontSize() const;
 
+    finErrorCode setDotSize(double size);
+    finErrorCode setDotSize(double sizex, double sizey);
+    finErrorCode setDotSizeX(double sizex);
+    finErrorCode setDotSizeY(double sizey);
 };
 
 typedef finFigureConfig::finFigureEndShape finFigureEndShape;
