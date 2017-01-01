@@ -160,3 +160,41 @@ finErrorCode finFigureConfig::setBorderColorSingle(double colorval, finFigureCol
     this->_borderColor[coloridx] = colorval;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+finErrorCode finFigureConfig::setFillColor(double filcolor[])
+{
+    for ( int i = 0; i < finFigureConfig::FIN_CI_MAX; i++ ) {
+        this->_fillColor[i] = filcolor[i];
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setFillColor(double red, double green, double blue, double transparent)
+{
+    this->_fillColor[finFigureConfig::FIN_CI_RED] = red;
+    this->_fillColor[finFigureConfig::FIN_CI_GREEN] = green;
+    this->_fillColor[finFigureConfig::FIN_CI_BLUE] = blue;
+    this->_fillColor[finFigureConfig::FIN_CI_TRANSPARENCY] = transparent;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setFillColorSingle(double colorval, finFigureColorIdx coloridx)
+{
+    if ( coloridx >= finFigureConfig::FIN_CI_MAX )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    this->_fillColor[coloridx] = colorval;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setFontName(const QString &fontname)
+{
+    this->_fontName = fontname;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setFontSize(double fontsize)
+{
+    this->_fontSize = fontsize;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}

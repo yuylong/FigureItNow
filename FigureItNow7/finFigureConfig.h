@@ -74,6 +74,12 @@ public:
     finErrorCode setBorderColor(double bdrcolor[]);
     finErrorCode setBorderColor(double red, double green, double blue, double transparent = 0.0);
     finErrorCode setBorderColorSingle(double colorval, finFigureColorIdx coloridx);
+    finErrorCode setFillColor(double filcolor[]);
+    finErrorCode setFillColor(double red, double green, double blue, double transparent = 0.0);
+    finErrorCode setFillColorSingle(double colorval, finFigureColorIdx coloridx);
+
+    finErrorCode setFontName(const QString &fontname);
+    finErrorCode setFontSize(double fontsize);
 };
 
 typedef finFigureConfig::finFigureEndShape finFigureEndShape;
