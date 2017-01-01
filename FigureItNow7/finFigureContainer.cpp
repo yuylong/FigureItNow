@@ -17,7 +17,7 @@ finFigureConfig *finFigureContainer::getFigureConfig()
 
 finErrorCode finFigureContainer::setFigureConfigForObject(finFigureObject *figobj) const
 {
-    this->_curFigCfg.cloneFigureConfig(figobj->getFigureConfig());
+    return this->_curFigCfg.cloneFigureConfig(figobj->getFigureConfig());
 }
 
 int finFigureContainer::getFigureObjectCount() const
@@ -32,6 +32,12 @@ finFigureObject *finFigureContainer::getFigureObjectAt(int idx)
 
 finErrorCode finFigureContainer::appendFigureObject(finFigureObject *figobj)
 {
+    finErrorCode errcode;
+
+    errcode = this->setFigureConfigForObject(figobj);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
     this->_figList.append(figobj);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
