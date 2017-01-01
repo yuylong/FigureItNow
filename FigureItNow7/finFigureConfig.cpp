@@ -205,15 +205,15 @@ finErrorCode finFigureConfig::setFontSize(double fontsize)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::cloneFigureConfig(finFigureConfig *outcfg)
+finErrorCode finFigureConfig::cloneFigureConfig(finFigureConfig *outcfg) const
 {
     if ( outcfg == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
     outcfg->setDotSize(this->_dotSizeX, this->_dotSizeY);
     outcfg->setEndShape(this->_endShape);
-    outcfg->setBorderColor(this->_borderColor);
-    outcfg->setFillColor(this->_fillColor);
+    outcfg->setBorderColor((double *)this->_borderColor);
+    outcfg->setFillColor((double *)this->_fillColor);
     outcfg->setLinePattern(this->_linePattern);
     outcfg->setFontName(this->_fontName);
     outcfg->setFontSize(this->_fontSize);

@@ -82,7 +82,7 @@ public:
     finErrorCode setFontName(const QString &fontname);
     finErrorCode setFontSize(double fontsize);
 
-    finErrorCode cloneFigureConfig(finFigureConfig *outcfg);
+    finErrorCode cloneFigureConfig(finFigureConfig *outcfg) const;
 
     static finFigureConfig *getDefaultFigureConfig();
     static finErrorCode releaseDefaultFigureConfig();

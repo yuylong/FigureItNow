@@ -23,6 +23,16 @@ finFigureObjectType finFigureObject::getFigureType() const
     return this->_type;
 }
 
+const finFigureConfig *finFigureObject::getFigureConfig() const
+{
+    return &this->_figCfg;
+}
+
+finFigureConfig *finFigureObject::getFigureConfig()
+{
+    return &this->_figCfg;
+}
+
 finFigureObjectDot::finFigureObjectDot()
 {
     this->_type = finFigureObject::FIN_FO_TYPE_DOT;

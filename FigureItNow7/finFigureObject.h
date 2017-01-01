@@ -41,6 +41,8 @@ public:
     finFigureObject();
 
     finFigureObjectType getFigureType() const;
+    const finFigureConfig *getFigureConfig() const;
+    finFigureConfig *getFigureConfig();
 };
 
 typedef finFigureObject::finFigureObjectType finFigureObjectType;

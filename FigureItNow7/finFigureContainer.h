@@ -18,8 +18,12 @@ public:
 
     const finFigureConfig *getFigureConfig() const;
     finFigureConfig *getFigureConfig();
+    finErrorCode setFigureConfigForObject(finFigureObject *figobj) const;
 
+    int getFigureObjectCount() const;
+    finFigureObject *getFigureObjectAt(int idx);
 
+    finErrorCode appendFigureObject(finFigureObject *figobj);
 };
 
 #endif // FINFIGURECONTAINER_H
