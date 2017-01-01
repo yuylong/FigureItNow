@@ -219,3 +219,24 @@ finErrorCode finFigureConfig::cloneFigureConfig(finFigureConfig *outcfg)
     outcfg->setFontSize(this->_fontSize);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+finFigureConfig *finFigureConfig::getDefaultFigureConfig()
+{
+    if ( finFigureConfig::_defFigCfg == NULL )
+        finFigureConfig::_defFigCfg = new finFigureConfig();
+
+    return finFigureConfig::_defFigCfg;
+}
+
+finErrorCode finFigureConfig::releaseDefaultFigureConfig()
+{
+    if ( finFigureConfig::_defFigCfg == NULL )
+        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::cloneFromDefaultFigureConfig(finFigureConfig *outfig)
+{
+    return finFigureConfig::getDefaultFigureConfig()->cloneFigureConfig(outfig);
+}

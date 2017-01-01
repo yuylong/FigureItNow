@@ -83,6 +83,10 @@ public:
     finErrorCode setFontSize(double fontsize);
 
     finErrorCode cloneFigureConfig(finFigureConfig *outcfg);
+
+    static finFigureConfig *getDefaultFigureConfig();
+    static finErrorCode releaseDefaultFigureConfig();
+    static finErrorCode cloneFromDefaultFigureConfig(finFigureConfig *outfig);
 };
 
 typedef finFigureConfig::finFigureEndShape finFigureEndShape;
