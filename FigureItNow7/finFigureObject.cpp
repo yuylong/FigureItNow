@@ -8,7 +8,8 @@
  * History:
  *
  * DATE      REV  AUTHOR       COMMENTS
- * 20151231    0  Yulong Yu    Create this file.
+ * 20161231    0  Yulong Yu    Create this file.
+ * 20170102    1  Yulong Yu    Add dot and line figure objects.
  */
 
 #include "finfigureobject.h"

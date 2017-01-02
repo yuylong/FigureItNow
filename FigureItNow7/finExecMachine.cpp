@@ -1,3 +1,16 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu, Dec 30th, 2016
+ * Copyright(c) 2015-2016 Yulong Yu. All rights reserved.
+ *
+ * History:
+ *
+ * DATE      REV  AUTHOR       COMMENTS
+ * 20161230    0  Yulong Yu    Create this file.
+ */
+
 #include "finExecMachine.h"
 
 finExecMachine::finExecMachine()
