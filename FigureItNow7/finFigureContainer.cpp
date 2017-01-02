@@ -15,6 +15,16 @@ finFigureConfig *finFigureContainer::getFigureConfig()
     return &this->_curFigCfg;
 }
 
+const finGraphConfig *finFigureContainer::getGraphConfig() const
+{
+    return &this->_graphCfg;
+}
+
+finGraphConfig *finFigureContainer::getGraphConfig()
+{
+    return &this->_graphCfg;
+}
+
 finErrorCode finFigureContainer::setFigureConfigForObject(finFigureObject *figobj) const
 {
     return this->_curFigCfg.cloneFigureConfig(figobj->getFigureConfig());

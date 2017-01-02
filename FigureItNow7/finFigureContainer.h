@@ -5,12 +5,14 @@
 
 #include "finErrorCode.h"
 #include "finFigureConfig.h"
+#include "finGraphConfig.h"
 #include "finFigureObject.h"
 
 class finFigureContainer
 {
 protected:
     finFigureConfig _curFigCfg;
+    finGraphConfig _graphCfg;
     QList<finFigureObject *> _figList;
 
 public:
@@ -18,6 +20,8 @@ public:
 
     const finFigureConfig *getFigureConfig() const;
     finFigureConfig *getFigureConfig();
+    const finGraphConfig *getGraphConfig() const;
+    finGraphConfig *getGraphConfig();
     finErrorCode setFigureConfigForObject(finFigureObject *figobj) const;
 
     int getFigureObjectCount() const;
