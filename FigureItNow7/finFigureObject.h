@@ -69,6 +69,14 @@ protected:
 
 public:
     finFigureObjectLine();
+
+    QPointF getPoint1() const;
+    QPointF getPoint2() const;
+
+    finErrorCode setPoint1(const QPointF &qpt);
+    finErrorCode setPoint1(double ptx, double pty);
+    finErrorCode setPoint2(const QPointF &qpt);
+    finErrorCode setPoint2(double ptx, double pty);
 };
 
 #endif // FINFIGUREOBJECT_H

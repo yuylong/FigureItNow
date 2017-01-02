@@ -62,3 +62,39 @@ finFigureObjectLine::finFigureObjectLine()
     this->_pt1 = QPointF(0.0, 0.0);
     this->_pt2 = QPointF(0.0, 0.0);
 }
+
+QPointF finFigureObjectLine::getPoint1() const
+{
+    return this->_pt1;
+}
+
+QPointF finFigureObjectLine::getPoint2() const
+{
+    return this->_pt2;
+}
+
+finErrorCode finFigureObjectLine::setPoint1(const QPointF &qpt)
+{
+    this->_pt1 = qpt;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectLine::setPoint1(double ptx, double pty)
+{
+    this->_pt1.setX(ptx);
+    this->_pt1.setY(pty);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectLine::setPoint2(const QPointF &qpt)
+{
+    this->_pt2 = qpt;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectLine::setPoint2(double ptx, double pty)
+{
+    this->_pt2.setX(ptx);
+    this->_pt2.setY(pty);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
