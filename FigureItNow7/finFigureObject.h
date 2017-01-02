@@ -62,4 +62,13 @@ public:
     finErrorCode setPoint(double ptx, double pty);
 };
 
+class finFigureObjectLine : public finFigureObject
+{
+protected:
+    QPointF _pt1, _pt2;
+
+public:
+    finFigureObjectLine();
+};
+
 #endif // FINFIGUREOBJECT_H

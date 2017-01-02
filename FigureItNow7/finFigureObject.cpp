@@ -56,3 +56,9 @@ finErrorCode finFigureObjectDot::setPoint(double ptx, double pty)
     this->_point.setY(pty);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+finFigureObjectLine::finFigureObjectLine()
+{
+    this->_pt1 = QPointF(0.0, 0.0);
+    this->_pt2 = QPointF(0.0, 0.0);
+}
