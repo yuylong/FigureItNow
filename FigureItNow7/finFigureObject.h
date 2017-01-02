@@ -30,6 +30,7 @@ public:
         FIN_FO_TYPE_LINE,
         FIN_FO_TYPE_RECT,
         FIN_FO_TYPE_POLYLINE,
+        FIN_FO_TYPE_POLYGON,
         FIN_FO_TYPE_MAX
     };
 
@@ -55,7 +56,10 @@ protected:
 public:
     finFigureObjectDot();
 
+    QPointF getPoint() const;
 
+    finErrorCode setPoint(const QPointF &qpt);
+    finErrorCode setPoint(double ptx, double pty);
 };
 
 #endif // FINFIGUREOBJECT_H

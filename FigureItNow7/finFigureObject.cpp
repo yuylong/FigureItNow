@@ -38,3 +38,21 @@ finFigureObjectDot::finFigureObjectDot()
     this->_type = finFigureObject::FIN_FO_TYPE_DOT;
     this->_point = QPointF(0.0, 0.0);
 }
+
+QPointF finFigureObjectDot::getPoint() const
+{
+    return this->_point;
+}
+
+finErrorCode finFigureObjectDot::setPoint(const QPointF &qpt)
+{
+    this->_point = qpt;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectDot::setPoint(double ptx, double pty)
+{
+    this->_point.setX(ptx);
+    this->_point.setY(pty);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
