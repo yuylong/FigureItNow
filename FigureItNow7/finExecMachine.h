@@ -25,6 +25,7 @@
 #include "finErrorCode.h"
 #include "finExecEnvironment.h"
 #include "finFigureContainer.h"
+#include "finLexNode.h"
 #include "finSyntaxReader.h"
 #include "finSyntaxError.h"
 
@@ -70,8 +71,20 @@ public:
     finErrorCode execute();
     void disposeExecutionError();
 
-    static finErrorCode instantExecute(finSyntaxNode *synnode, finExecEnvironment *env,
-                                       finExecVariable **retvar, QList<finSyntaxError *> *errlist);
+    finErrorCode instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+    finErrorCode appendExecutionError(finLexNode *lexnode, const QString &errinfo);
+
+private:
+    finErrorCode instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+    finErrorCode instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+    finErrorCode instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+    finErrorCode instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+    finErrorCode instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+    finErrorCode instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+    finErrorCode instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+    finErrorCode instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+    finErrorCode instExecJump(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+    finErrorCode instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
 };
 
 #endif // FINEXECMACHINE_H
