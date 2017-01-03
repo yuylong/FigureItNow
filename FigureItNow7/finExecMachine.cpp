@@ -315,16 +315,6 @@ finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
 
-    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
-        this->appendExecutionError(lexnode, QString("Declaration on invalid syntax symbol."));
-        return finErrorCodeKits::FIN_EC_READ_ERROR;
-    }
-
-    if ( lexnode->getType() != finLexNode::FIN_LN_TYPE_VARIABLE ) {
-        this->appendExecutionError(lexnode, QString("Declaration on invalid lex symbol."));
-        return finErrorCodeKits::FIN_EC_READ_ERROR;
-    }
-
     finExecVariable *newvar = new finExecVariable();
     if ( newvar == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
@@ -352,16 +342,6 @@ finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironme
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
 
-    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
-        this->appendExecutionError(lexnode, QString("Declaration on invalid syntax symbol."));
-        return finErrorCodeKits::FIN_EC_READ_ERROR;
-    }
-
-    if ( lexnode->getType() !=  finLexNode::FIN_LN_TYPE_OPERATOR ||
-         lexnode->getOperator() != finLexNode::FIN_LN_OPTYPE_LET) {
-        this->appendExecutionError(lexnode, QString("Declaration with invalid expression."));
-    }
-
     if ( synnode->getSubListCount() < 2 ) {
         this->appendExecutionError(lexnode, QString("Definition incompleted."));
         return finErrorCodeKits::FIN_EC_READ_ERROR;
@@ -374,24 +354,73 @@ finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironme
 
     finExecVariable *tmpretvar;
     errcode = this->instantExecute(synnode, env, &tmpretvar);
-    tmpretvar->releaseNonLeftVariable(tmpretvar);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
+    tmpretvar->releaseNonLeftVariable(tmpretvar);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
 finExecMachine::instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment *env)
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finErrorCode errcode;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    if ( synnode->getSubListCount() < 1 ) {
+        this->appendExecutionError(lexnode, QString("Declaration incompleted."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    for ( int i = 0; i < synnode->getSubListCount(); i++ ) {
+        errcode = this->instExecDeclareExpr(synnode->getSubSyntaxNode(i), env);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finExecMachine::instExecDeclareExpr(finSyntaxNode *synnode, finExecEnvironment *env)
+{
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+        this->appendExecutionError(lexnode, QString("Declaration on invalid syntax symbol."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    if ( lexnode->getType() == finLexNode::FIN_LN_TYPE_VARIABLE ) {
+        return this->instExecDeclareDirect(synnode, env);
+    } else if ( lexnode->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+                lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_LET ) {
+        return this->instExecDeclareAssigned(synnode, env);
+    } else if ( lexnode->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+                lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_COMMA ) {
+        return this->instExecDeclareComma(synnode, env);
+    }
+
+    this->appendExecutionError(lexnode, QString("Declaration with invalid expression."));
+    return finErrorCodeKits::FIN_EC_READ_ERROR;
 }
 
 finErrorCode
 finExecMachine::instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
 {
+    finErrorCode errcode;
+    finLexNode *lexnode = synnode->getCommandLexNode();
 
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    if ( synnode->getSubListCount() != 1 ) {
+        this->appendExecutionError(lexnode, QString("Declaration with invalid code."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    errcode = this->instExecDeclareExpr(synnode, env);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    *retvar = NULL;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode

@@ -89,6 +89,7 @@ private:
     finErrorCode instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment *env);
     finErrorCode instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironment *env);
     finErrorCode instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment *env);
+    finErrorCode instExecDeclareExpr(finSyntaxNode *synnode, finExecEnvironment *env);
 };
 
 #endif // FINEXECMACHINE_H
