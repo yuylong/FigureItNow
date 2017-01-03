@@ -19,10 +19,14 @@
 #ifndef FINEXECMACHINE_H
 #define FINEXECMACHINE_H
 
+#include <QString>
+#include <QList>
+
 #include "finErrorCode.h"
 #include "finExecEnvironment.h"
 #include "finFigureContainer.h"
 #include "finSyntaxReader.h"
+#include "finSyntaxError.h"
 
 
 class finExecMachine
@@ -36,6 +40,7 @@ private:
     QString _scriptCode;
     bool _isCompiled;
     finSyntaxReader _syntaxRdr;
+    QList<finSyntaxError *> _errList;
 
 public:
     finExecMachine();
@@ -47,6 +52,8 @@ public:
     finFigureContainer *getFigureContainer();
     QString getScriptCode() const;
     QString getCompiledScriptCode() const;
+    int getExecuteErrorCount() const;
+    const finSyntaxError *getExecuteErrorAt(int idx) const;
 
     finErrorCode setName(const QString &name);
 
@@ -61,7 +68,10 @@ public:
     finErrorCode releaseCompile();
 
     finErrorCode execute();
-    static finErrorCode instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+    void disposeExecutionError();
+
+    static finErrorCode instantExecute(finSyntaxNode *synnode, finExecEnvironment *env,
+                                       finExecVariable **retvar, QList<finSyntaxError *> *errlist);
 };
 
 #endif // FINEXECMACHINE_H

@@ -35,6 +35,10 @@ finExecMachine::~finExecMachine()
 {
     if ( this->_baseEnv != NULL )
         delete this->_baseEnv;
+
+    this->_syntaxRdr.stopRead();
+    this->_syntaxRdr.disposeAllRead();
+    this->disposeExecutionError();
 }
 
 QString finExecMachine::getName() const
@@ -60,6 +64,16 @@ QString finExecMachine::getScriptCode() const
 QString finExecMachine::getCompiledScriptCode() const
 {
     return this->_syntaxRdr.getScriptCode();
+}
+
+int finExecMachine::getExecuteErrorCount() const
+{
+    return this->_errList.count();
+}
+
+const finSyntaxError *finExecMachine::getExecuteErrorAt(int idx) const
+{
+    return this->_errList.at(idx);
 }
 
 finErrorCode finExecMachine::setName(const QString &name)
@@ -178,7 +192,7 @@ finErrorCode finExecMachine::execute()
         return finErrorCodeKits::FIN_EC_READ_ERROR;
 
     finExecVariable *retvar = NULL;
-    errcode = finExecMachine::instantExecute(syntree->getRootNode(), this->_baseEnv, &retvar);
+    errcode = finExecMachine::instantExecute(syntree->getRootNode(), this->_baseEnv, &retvar, &this->_errList);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
@@ -187,18 +201,38 @@ finErrorCode finExecMachine::execute()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-typedef finErrorCode (*finExecCall)(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+void finExecMachine::disposeExecutionError()
+{
+    while ( !this->_errList.empty() ) {
+        finSyntaxError *synerr = this->_errList.first();
+        this->_errList.removeFirst();
+        delete synerr;
+    }
+}
 
-static finErrorCode instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-static finErrorCode instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-static finErrorCode instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-static finErrorCode instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-static finErrorCode instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-static finErrorCode instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-static finErrorCode instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-static finErrorCode instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-static finErrorCode instExecJump(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-static finErrorCode instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+typedef finErrorCode (*finExecCall)(finSyntaxNode *synnode, finExecEnvironment *env,
+                                    finExecVariable **retvar, QList<finSyntaxError *> *errlist);
+
+static finErrorCode instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env,
+                                   finExecVariable **retvar, QList<finSyntaxError *> *errlist);
+static finErrorCode instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
+                                    finExecVariable **retvar, QList<finSyntaxError *> *errlist);
+static finErrorCode instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env,
+                                      finExecVariable **retvar, QList<finSyntaxError *> *errlist);
+static finErrorCode instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env,
+                                    finExecVariable **retvar, QList<finSyntaxError *> *errlist);
+static finErrorCode instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env,
+                                     finExecVariable **retvar, QList<finSyntaxError *> *errlist);
+static finErrorCode instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env,
+                                   finExecVariable **retvar, QList<finSyntaxError *> *errlist);
+static finErrorCode instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env,
+                                 finExecVariable **retvar, QList<finSyntaxError *> *errlist);
+static finErrorCode instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env,
+                                  finExecVariable **retvar, QList<finSyntaxError *> *errlist);
+static finErrorCode instExecJump(finSyntaxNode *synnode, finExecEnvironment *env,
+                                 finExecVariable **retvar, QList<finSyntaxError *> *errlist);
+static finErrorCode instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env,
+                                    finExecVariable **retvar, QList<finSyntaxError *> *errlist);
 
 struct {
     finSyntaxNodeType _type;
@@ -218,7 +252,8 @@ struct {
 };
 
 finErrorCode
-finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env,
+                               finExecVariable **retvar, QList<finSyntaxError *> *errlist)
 {
     if ( synnode == NULL || env == NULL || retvar == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
@@ -231,67 +266,107 @@ finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, 
         if ( finExecCallMap[i]._func == NULL )
             return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 
-        return finExecCallMap[i]._func(synnode, env, retvar);
+        return finExecCallMap[i]._func(synnode, env, retvar, errlist);
     }
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 static finErrorCode
-instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env,
+               finExecVariable **retvar, QList<finSyntaxError *> *errlist)
+{
+    finExecVariable *tmpretvar;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    finLexNodeType lextype = lexnode->getType();
+
+    if ( lextype == finLexNode::FIN_LN_TYPE_VARIABLE ) {
+        tmpretvar = env->findVariable(lexnode->getString());
+        if ( tmpretvar == NULL ) {
+            finSyntaxError::appendExecutionError(lexnode, errlist, QString("Cannot find variable."));
+            return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        }
+    } else if ( lextype == finLexNode::FIN_LN_TYPE_DECIMAL || lextype == finLexNode::FIN_LN_TYPE_STRING ) {
+        tmpretvar = new finExecVariable();
+        if ( tmpretvar == NULL )
+            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+        if ( lextype == finLexNode::FIN_LN_TYPE_DECIMAL ) {
+            tmpretvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+            tmpretvar->setNumericValue(lexnode->getFloatValue());
+        } else /*if ( lexttype == finLexNode::FIN_LN_TYPE_STRING )*/ {
+            tmpretvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
+            tmpretvar->setStringValue(lexnode->getStringValue());
+        }
+        tmpretvar->clearLeftValue();
+        tmpretvar->setWriteProtected();
+    } else {
+        finSyntaxError::appendExecutionError(lexnode, errlist, QString("Unrecognized symbol."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    *retvar = tmpretvar;
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+static finErrorCode
+instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
+                finExecVariable **retvar, QList<finSyntaxError *> *errlist)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 static finErrorCode
-instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env,
+                  finExecVariable **retvar, QList<finSyntaxError *> *errlist)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 static finErrorCode
-instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env,
+                finExecVariable **retvar, QList<finSyntaxError *> *errlist)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 static finErrorCode
-instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env,
+                 finExecVariable **retvar, QList<finSyntaxError *> *errlist)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 static finErrorCode
-instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env,
+               finExecVariable **retvar, QList<finSyntaxError *> *errlist)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 static finErrorCode
-instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env,
+             finExecVariable **retvar, QList<finSyntaxError *> *errlist)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 static finErrorCode
-instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env,
+              finExecVariable **retvar, QList<finSyntaxError *> *errlist)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 static finErrorCode
-instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+instExecJump(finSyntaxNode *synnode, finExecEnvironment *env,
+             finExecVariable **retvar, QList<finSyntaxError *> *errlist)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 static finErrorCode
-instExecJump(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
-{
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
-}
-
-static finErrorCode
-instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env,
+                finExecVariable **retvar, QList<finSyntaxError *> *errlist)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }

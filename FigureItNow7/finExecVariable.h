@@ -107,8 +107,9 @@ public:
     finErrorCode appendList(const QList<finExecVariable *> &vallist);
 
     finErrorCode dispose();
+    static void releaseNonLeftVariable(finExecVariable *var);
 
-    static finErrorCode installSystemVariables (finExecEnvironment *rootenv);
+    static finErrorCode installSystemVariables(finExecEnvironment *rootenv);
 
 private:
     finErrorCode copyArrayVariable(const finExecVariable *srcvar);

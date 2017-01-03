@@ -5,6 +5,7 @@
 #include <QString>
 
 #include "finErrorCode.h"
+#include "finLexNode.h"
 
 class finSyntaxError
 {
@@ -23,6 +24,9 @@ public:
     finErrorCode setRow(unsigned int row);
     finErrorCode setColumn(unsigned int col);
     finErrorCode setErrorString(const QString &errstr);
+
+    static finErrorCode appendExecutionError(finLexNode *lexnode, QList<finSyntaxError *> *errlist,
+                                             const QString &errinfo);
 };
 
 #endif // FINSYNTAXERROR_H

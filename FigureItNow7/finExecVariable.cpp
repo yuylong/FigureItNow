@@ -349,6 +349,12 @@ finErrorCode finExecVariable::dispose()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+void finExecVariable::releaseNonLeftVariable(finExecVariable *var)
+{
+    if ( !var->isLeftValue() )
+        delete var;
+}
+
 static finExecVariable *_sysvar_pi();
 static finExecVariable *_sysvar_e();
 
