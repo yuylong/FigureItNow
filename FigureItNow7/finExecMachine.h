@@ -62,11 +62,6 @@ public:
 
     finErrorCode execute();
     static finErrorCode instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-
-private:
-    static finErrorCode instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-    static finErrorCode instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-
 };
 
 #endif // FINEXECMACHINE_H

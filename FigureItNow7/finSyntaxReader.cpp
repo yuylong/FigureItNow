@@ -907,8 +907,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
         }
 
         // Process D <- var E;
-        if ( QString::compare(prevlex->getString(), QString("goto")) == 0 ||
-             QString::compare(prevlex->getString(), QString("return")) == 0 ) {
+        if ( QString::compare(prevlex->getString(), QString("var")) == 0 ) {
             int prevsubcnt = prevtk->getSubListCount();
             int sttsubcnt = stttk->getSubListCount();
             if ( prevsubcnt != 0 || sttsubcnt != 1 )

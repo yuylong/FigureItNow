@@ -187,19 +187,111 @@ finErrorCode finExecMachine::execute()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+typedef finErrorCode (*finExecCall)(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+
+static finErrorCode instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+static finErrorCode instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+static finErrorCode instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+static finErrorCode instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+static finErrorCode instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+static finErrorCode instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+static finErrorCode instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+static finErrorCode instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+static finErrorCode instExecJump(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+static finErrorCode instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+
+struct {
+    finSyntaxNodeType _type;
+    finExecCall _func;
+} finExecCallMap[] = {
+    { finSyntaxNode::FIN_SN_TYPE_SINGLE,    instExecSingle    },
+    { finSyntaxNode::FIN_SN_TYPE_DECLARE,   instExecDeclare   },
+    { finSyntaxNode::FIN_SN_TYPE_STATEMENT, instExecStatement },
+    { finSyntaxNode::FIN_SN_TYPE_EXPRESS,   instExecExpress   },
+    { finSyntaxNode::FIN_SN_TYPE_FUNCTION,  instExecFunction  },
+    { finSyntaxNode::FIN_SN_TYPE_BRANCH,    instExecBranch    },
+    { finSyntaxNode::FIN_SN_TYPE_LOOP,      instExecLoop      },
+    { finSyntaxNode::FIN_SN_TYPE_LABEL,     instExecLabel     },
+    { finSyntaxNode::FIN_SN_TYPE_JUMP,      instExecJump      },
+    { finSyntaxNode::FIN_SN_TYPE_PROGRAM,   instExecProgram   },
+    { finSyntaxNode::FIN_SN_TYPE_MAX,       NULL              },
+};
+
 finErrorCode
 finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
 {
+    if ( synnode == NULL || env == NULL || retvar == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    finSyntaxNodeType syntype = synnode->getType();
+    for ( int i = 0; finExecCallMap[i]._type != finSyntaxNode::FIN_SN_TYPE_MAX; i++ ) {
+        if ( finExecCallMap[i]._type != syntype )
+            continue;
+
+        if ( finExecCallMap[i]._func == NULL )
+            return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+
+        return finExecCallMap[i]._func(synnode, env, retvar);
+    }
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
-finErrorCode instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+static finErrorCode
+instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
-finErrorCode instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+static finErrorCode
+instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
 
+static finErrorCode
+instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+static finErrorCode
+instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+static finErrorCode
+instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+static finErrorCode
+instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+static finErrorCode
+instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+static finErrorCode
+instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+static finErrorCode
+instExecJump(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+static finErrorCode
+instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
