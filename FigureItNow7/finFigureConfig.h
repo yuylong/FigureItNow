@@ -9,6 +9,7 @@
  *
  * DATE      REV  AUTHOR       COMMENTS
  * 20161231    0  Yulong Yu    Create this file.
+ * 20170103    1  Yulong Yu    Change to use Qt data structures.
  */
 
 #ifndef FINFIGURECONFIG_H

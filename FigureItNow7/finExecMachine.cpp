@@ -122,12 +122,36 @@ finErrorCode finExecMachine::setScriptCode(const QString &script)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+bool finExecMachine::isCompiled() const
+{
+    return this->_isCompiled;
+}
+
 finErrorCode finExecMachine::compile()
 {
+    finErrorCode errcode;
+
     if ( this->_isCompiled )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    this->_syntaxRdr.stopRead();
+    errcode = this->_syntaxRdr.setScriptCode(this->_scriptCode);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    errcode = this->_syntaxRdr.startRead();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    errcode = finErrorCodeKits::FIN_EC_SUCCESS;
+    while ( errcode != finErrorCodeKits::FIN_EC_REACH_BOTTOM ) {
+        errcode = this->_syntaxRdr.readNextToken();
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+    }
+
+    this->_isCompiled = true;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finExecMachine::releaseCompile()
@@ -135,12 +159,32 @@ finErrorCode finExecMachine::releaseCompile()
     if ( !this->_isCompiled )
         return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
 
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    this->_syntaxRdr.stopRead();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finExecMachine::execute()
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finErrorCode errcode;
+
+    if ( this->_baseEnv == NULL || this->_baseFigContainer == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    if ( !this->_isCompiled )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    finSyntaxTree *syntree = this->_syntaxRdr.getSyntaxTree();
+    if ( syntree == NULL )
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+
+    finExecVariable *retvar = NULL;
+    errcode = finExecMachine::instantExecute(syntree->getRootNode(), this->_baseEnv, &retvar);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    if ( retvar != NULL )
+        delete retvar;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
@@ -149,3 +193,13 @@ finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, 
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
+finErrorCode instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+
+}
