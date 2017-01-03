@@ -17,6 +17,7 @@
 #include <QString>
 #include <QList>
 #include <QPointF>
+#include <QSizeF>
 
 #include "finErrorCode.h"
 #include "finFigureConfig.h"
@@ -31,6 +32,9 @@ public:
         FIN_FO_TYPE_RECT,
         FIN_FO_TYPE_POLYLINE,
         FIN_FO_TYPE_POLYGON,
+        FIN_FO_TYPE_ELLIPSE,
+        FIN_FO_TYPE_TEXT,
+        FIN_FO_TYPE_AXIS,
         FIN_FO_TYPE_MAX
     };
 
@@ -77,6 +81,17 @@ public:
     finErrorCode setPoint1(double ptx, double pty);
     finErrorCode setPoint2(const QPointF &qpt);
     finErrorCode setPoint2(double ptx, double pty);
+};
+
+class finFigureObjectRect : public finFigureObject
+{
+protected:
+    QPointF _center;
+    QSizeF _size;
+    double _radian;
+
+public:
+    finFigureObjectRect();
 };
 
 #endif // FINFIGUREOBJECT_H

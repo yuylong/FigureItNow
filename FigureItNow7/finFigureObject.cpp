@@ -60,6 +60,7 @@ finErrorCode finFigureObjectDot::setPoint(double ptx, double pty)
 
 finFigureObjectLine::finFigureObjectLine()
 {
+    this->_type = finFigureObject::FIN_FO_TYPE_LINE;
     this->_pt1 = QPointF(0.0, 0.0);
     this->_pt2 = QPointF(0.0, 0.0);
 }
@@ -98,4 +99,12 @@ finErrorCode finFigureObjectLine::setPoint2(double ptx, double pty)
     this->_pt2.setX(ptx);
     this->_pt2.setY(pty);
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finFigureObjectRect::finFigureObjectRect()
+{
+    this->_type = finFigureObject::FIN_FO_TYPE_RECT;
+    this->_center = QPointF(0.0, 0.0);
+    this->_size = QSizeF(0.0, 0.0);
+    this->_radian = 0.0;
 }
