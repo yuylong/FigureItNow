@@ -14,7 +14,9 @@
 #ifndef FINGRAPHCONFIG_H
 #define FINGRAPHCONFIG_H
 
-#include <QRectF>
+#include <QSizeF>
+#include <QPointF>
+#include <QColor>
 
 #include "finErrorCode.h"
 #include "finFigureConfig.h"
@@ -22,13 +24,10 @@
 class finGraphConfig
 {
 protected:
-    unsigned long _panelWidth;
-    unsigned long _panelHeight;
+    QSizeF _panelSize;
+    QPointF _startPos, _endPos;
 
-    double _startX, _endX;
-    double _startY, _endY;
-
-    double _bgColor[finFigureConfig::FIN_CI_MAX];
+    QColor _bgColor;
 
 public:
     finGraphConfig();

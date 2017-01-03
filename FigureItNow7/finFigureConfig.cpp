@@ -17,32 +17,29 @@ finFigureConfig *finFigureConfig::_defFigCfg = NULL;
 
 finFigureConfig::finFigureConfig()
 {
-    this->_dotSizeX = 1.0;
-    this->_dotSizeY = 1.0;
+    this->_dotSize = QSizeF(1.0, 1.0);
     this->_endShape = finFigureConfig::FIN_ES_ROUND;
 
-    this->_borderColor[finFigureConfig::FIN_CI_RED] = 0.0;
-    this->_borderColor[finFigureConfig::FIN_CI_GREEN] = 0.0;
-    this->_borderColor[finFigureConfig::FIN_CI_BLUE] = 0.0;
-    this->_borderColor[finFigureConfig::FIN_CI_TRANSPARENCY] = 0.0;
-    this->_fillColor[finFigureConfig::FIN_CI_RED] = 1.0;
-    this->_fillColor[finFigureConfig::FIN_CI_GREEN] = 1.0;
-    this->_fillColor[finFigureConfig::FIN_CI_RED] = 1.0;
-    this->_fillColor[finFigureConfig::FIN_CI_GREEN] = 1.0;
+    this->_borderColor = QColor(Qt::black);
+    this->_fillColor = QColor(Qt::transparent);
     this->_linePattern = 0xFFFFFFFF;
 
-    this->_fontName = QString("Arial");
-    this->_fontSize = 12.0;
+    this->_font = QFont(QString("Arial"), 12);
+}
+
+QSizeF finFigureConfig::getDotSize() const
+{
+    return this->_dotSize;
 }
 
 double finFigureConfig::getDotSizeX() const
 {
-    return this->_dotSizeX;
+    return this->_dotSize.width();
 }
 
 double finFigureConfig::getDotSizeY() const
 {
-    return this->_dotSizeY;
+    return this->_dotSize.height();
 }
 
 finFigureEndShape finFigureConfig::getEndShape() const
@@ -50,30 +47,14 @@ finFigureEndShape finFigureConfig::getEndShape() const
     return this->_endShape;
 }
 
-bool finFigureConfig::isBorderTransparent() const
+QColor finFigureConfig::getBorderColor() const
 {
-    return (this->_borderColor[finFigureConfig::FIN_CI_TRANSPARENCY] >= 1.0);
+    return this->_borderColor;
 }
 
-bool finFigureConfig::isFillTransparent() const
+QColor finFigureConfig::getFillColor() const
 {
-    return (this->_fillColor[finFigureConfig::FIN_CI_TRANSPARENCY] >= 1.0);
-}
-
-double finFigureConfig::getBorderColorSingle(finFigureColorIdx coloridx) const
-{
-    if ( coloridx >= finFigureConfig::FIN_CI_MAX )
-        return -1.0;
-
-    return this->_borderColor[coloridx];
-}
-
-double finFigureConfig::getFillColorSingle(finFigureColorIdx coloridx) const
-{
-    if ( coloridx >= finFigureConfig::FIN_CI_MAX )
-            return -1.0;
-
-    return this->_fillColor[coloridx];
+    return this->_fillColor;
 }
 
 quint32 finFigureConfig::getLinePattern() const
@@ -81,33 +62,14 @@ quint32 finFigureConfig::getLinePattern() const
     return this->_linePattern;
 }
 
-QString finFigureConfig::getFontName() const
+QFont finFigureConfig::getFont() const
 {
-    return this->_fontName;
+    return this->_font;
 }
 
-double finFigureConfig::getFontSize() const
+finErrorCode finFigureConfig::setDotSize(const QSizeF &size)
 {
-    return this->_fontSize;
-}
-
-finErrorCode finFigureConfig::setDotSize(double size)
-{
-    if ( size < 0.0 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
-
-    this->_dotSizeX = size;
-    this->_dotSizeY = size;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
-finErrorCode finFigureConfig::setDotSize(double sizex, double sizey)
-{
-    if ( sizex < 0.0 || sizey < 0.0 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
-
-    this->_dotSizeX = sizex;
-    this->_dotSizeY = sizey;
+    this->_dotSize = size;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -116,7 +78,7 @@ finErrorCode finFigureConfig::setDotSizeX(double sizex)
     if ( sizex < 0.0 )
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
-    this->_dotSizeX = sizex;
+    this->_dotSize.setWidth(sizex);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -125,7 +87,7 @@ finErrorCode finFigureConfig::setDotSizeY(double sizey)
     if ( sizey < 0.0 )
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
-    this->_dotSizeY = sizey;
+    this->_dotSize.setHeight(sizey);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -135,55 +97,15 @@ finErrorCode finFigureConfig::setEndShape(finFigureEndShape endshape)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setBorderColor(double bdrcolor[])
+finErrorCode finFigureConfig::setBorderColor(const QColor &brcolor)
 {
-    for ( int i = 0; i < finFigureConfig::FIN_CI_MAX; i++ ) {
-        this->_borderColor[i] = bdrcolor[i];
-    }
+    this->_borderColor = brcolor;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setBorderColor(double red, double green, double blue, double transparent)
+finErrorCode finFigureConfig::setFillColor(const QColor &filcolor)
 {
-    this->_borderColor[finFigureConfig::FIN_CI_RED] = red;
-    this->_borderColor[finFigureConfig::FIN_CI_GREEN] = green;
-    this->_borderColor[finFigureConfig::FIN_CI_BLUE] = blue;
-    this->_borderColor[finFigureConfig::FIN_CI_TRANSPARENCY] = transparent;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
-finErrorCode finFigureConfig::setBorderColorSingle(double colorval, finFigureColorIdx coloridx)
-{
-    if ( coloridx >= finFigureConfig::FIN_CI_MAX )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
-
-    this->_borderColor[coloridx] = colorval;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
-finErrorCode finFigureConfig::setFillColor(double filcolor[])
-{
-    for ( int i = 0; i < finFigureConfig::FIN_CI_MAX; i++ ) {
-        this->_fillColor[i] = filcolor[i];
-    }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
-finErrorCode finFigureConfig::setFillColor(double red, double green, double blue, double transparent)
-{
-    this->_fillColor[finFigureConfig::FIN_CI_RED] = red;
-    this->_fillColor[finFigureConfig::FIN_CI_GREEN] = green;
-    this->_fillColor[finFigureConfig::FIN_CI_BLUE] = blue;
-    this->_fillColor[finFigureConfig::FIN_CI_TRANSPARENCY] = transparent;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
-finErrorCode finFigureConfig::setFillColorSingle(double colorval, finFigureColorIdx coloridx)
-{
-    if ( coloridx >= finFigureConfig::FIN_CI_MAX )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
-
-    this->_fillColor[coloridx] = colorval;
+    this->_fillColor = filcolor;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -193,15 +115,9 @@ finErrorCode finFigureConfig::setLinePattern(quint32 lnpat)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setFontName(const QString &fontname)
+finErrorCode finFigureConfig::setFont(const QFont &font)
 {
-    this->_fontName = fontname;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
-finErrorCode finFigureConfig::setFontSize(double fontsize)
-{
-    this->_fontSize = fontsize;
+    this->_font = font;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -210,13 +126,12 @@ finErrorCode finFigureConfig::cloneFigureConfig(finFigureConfig *outcfg) const
     if ( outcfg == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    outcfg->setDotSize(this->_dotSizeX, this->_dotSizeY);
+    outcfg->setDotSize(this->_dotSize);
     outcfg->setEndShape(this->_endShape);
-    outcfg->setBorderColor((double *)this->_borderColor);
-    outcfg->setFillColor((double *)this->_fillColor);
+    outcfg->setBorderColor(this->_borderColor);
+    outcfg->setFillColor(this->_fillColor);
     outcfg->setLinePattern(this->_linePattern);
-    outcfg->setFontName(this->_fontName);
-    outcfg->setFontSize(this->_fontSize);
+    outcfg->setFont(this->_font);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

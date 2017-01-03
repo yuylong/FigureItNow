@@ -15,6 +15,9 @@
 #define FINFIGURECONFIG_H
 
 #include <QString>
+#include <QSizeF>
+#include <QColor>
+#include <QFont>
 
 #include "finErrorCode.h"
 
@@ -27,60 +30,42 @@ public:
         FIN_ES_RECT_CUT
     };
 
-    enum finFigureColorIdx {
-        FIN_CI_RED = 0,
-        FIN_CI_GREEN = 1,
-        FIN_CI_BLUE = 2,
-        FIN_CI_TRANSPARENCY = 3,
-        FIN_CI_MAX
-    };
-
 protected:
-    double _dotSizeX;
-    double _dotSizeY;
+    QSizeF _dotSize;
     finFigureEndShape _endShape;
 
-    double _borderColor[finFigureConfig::FIN_CI_MAX];
-    double _fillColor[finFigureConfig::FIN_CI_MAX];
+    QColor _borderColor;
+    QColor _fillColor;
     quint32 _linePattern;
 
-    QString _fontName;
-    double _fontSize;
+    QFont _font;
 
     static finFigureConfig *_defFigCfg;
 
 public:
     finFigureConfig();
 
+    QSizeF getDotSize() const;
     double getDotSizeX() const;
     double getDotSizeY() const;
     finFigureEndShape getEndShape() const;
 
-    bool isBorderTransparent() const;
-    bool isFillTransparent() const;
-    double getBorderColorSingle(finFigureColorIdx coloridx) const;
-    double getFillColorSingle(finFigureColorIdx coloridx) const;
+    QColor getBorderColor() const;
+    QColor getFillColor() const;
     quint32 getLinePattern() const;
 
-    QString getFontName() const;
-    double getFontSize() const;
+    QFont getFont() const;
 
-    finErrorCode setDotSize(double size);
-    finErrorCode setDotSize(double sizex, double sizey);
+    finErrorCode setDotSize(const QSizeF &size);
     finErrorCode setDotSizeX(double sizex);
     finErrorCode setDotSizeY(double sizey);
     finErrorCode setEndShape(finFigureEndShape endshape);
 
-    finErrorCode setBorderColor(double bdrcolor[]);
-    finErrorCode setBorderColor(double red, double green, double blue, double transparent = 0.0);
-    finErrorCode setBorderColorSingle(double colorval, finFigureColorIdx coloridx);
-    finErrorCode setFillColor(double filcolor[]);
-    finErrorCode setFillColor(double red, double green, double blue, double transparent = 0.0);
-    finErrorCode setFillColorSingle(double colorval, finFigureColorIdx coloridx);
+    finErrorCode setBorderColor(const QColor &brcolor);
+    finErrorCode setFillColor(const QColor &filcolor);
     finErrorCode setLinePattern(quint32 lnpat);
 
-    finErrorCode setFontName(const QString &fontname);
-    finErrorCode setFontSize(double fontsize);
+    finErrorCode setFont(const QFont &font);
 
     finErrorCode cloneFigureConfig(finFigureConfig *outcfg) const;
 
@@ -90,6 +75,5 @@ public:
 };
 
 typedef finFigureConfig::finFigureEndShape finFigureEndShape;
-typedef finFigureConfig::finFigureColorIdx finFigureColorIdx;
 
 #endif // FINFIGURECONFIG_H
