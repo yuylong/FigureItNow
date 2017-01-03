@@ -108,3 +108,36 @@ finFigureObjectRect::finFigureObjectRect()
     this->_size = QSizeF(0.0, 0.0);
     this->_radian = 0.0;
 }
+
+QPointF finFigureObjectRect::getCenterPoint() const
+{
+    return this->_center;
+}
+
+QSizeF finFigureObjectRect::getSize() const
+{
+    return this->_size;
+}
+
+double finFigureObjectRect::getRadian() const
+{
+    return this->_radian;
+}
+
+finErrorCode finFigureObjectRect::setCenterPoint(const QPointF &ctrpt)
+{
+    this->_center = ctrpt;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectRect::setSize(const QSizeF &size)
+{
+    this->_size = size;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectRect::setRadian(double rad)
+{
+    this->_radian = rad;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
