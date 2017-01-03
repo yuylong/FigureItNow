@@ -85,6 +85,10 @@ private:
     finErrorCode instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
     finErrorCode instExecJump(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
     finErrorCode instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+
+    finErrorCode instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment *env);
+    finErrorCode instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironment *env);
+    finErrorCode instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment *env);
 };
 
 #endif // FINEXECMACHINE_H

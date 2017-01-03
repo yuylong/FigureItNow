@@ -311,6 +311,83 @@ finExecMachine::instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, 
 }
 
 finErrorCode
+finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment *env)
+{
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+        this->appendExecutionError(lexnode, QString("Declaration on invalid syntax symbol."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    if ( lexnode->getType() != finLexNode::FIN_LN_TYPE_VARIABLE ) {
+        this->appendExecutionError(lexnode, QString("Declaration on invalid lex symbol."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    finExecVariable *newvar = new finExecVariable();
+    if ( newvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    newvar->setName(lexnode->getString());
+    newvar->setType(finExecVariable::FIN_VR_TYPE_NULL);
+    newvar->setLeftValue();
+    newvar->clearWriteProtected();
+
+    finErrorCode errcode;
+    errcode = env->addVariable(newvar);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( errcode == finErrorCodeKits::FIN_EC_CONTENTION )
+            this->appendExecutionError(lexnode, QString("Variable has already existed."));
+        else
+            this->appendExecutionError(lexnode, QString("Environment reject the variable."));
+        delete newvar;
+        return errcode;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironment *env)
+{
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+        this->appendExecutionError(lexnode, QString("Declaration on invalid syntax symbol."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    if ( lexnode->getType() !=  finLexNode::FIN_LN_TYPE_OPERATOR ||
+         lexnode->getOperator() != finLexNode::FIN_LN_OPTYPE_LET) {
+        this->appendExecutionError(lexnode, QString("Declaration with invalid expression."));
+    }
+
+    if ( synnode->getSubListCount() < 2 ) {
+        this->appendExecutionError(lexnode, QString("Definition incompleted."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    finSyntaxNode *varname_synnode = synnode->getSubSyntaxNode(0);
+    finErrorCode errcode = this->instExecDeclareDirect(varname_synnode, env);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    finExecVariable *tmpretvar;
+    errcode = this->instantExecute(synnode, env, &tmpretvar);
+    tmpretvar->releaseNonLeftVariable(tmpretvar);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finExecMachine::instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment *env)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode
 finExecMachine::instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
 {
 
