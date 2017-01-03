@@ -92,6 +92,14 @@ protected:
 
 public:
     finFigureObjectRect();
+
+    QPointF getCenterPoint() const;
+    QSizeF getSize() const;
+    double getRadian() const;
+
+    finErrorCode setCenterPoint(const QPointF &ctrpt);
+    finErrorCode setSize(const QSizeF &size);
+    finErrorCode setRadian(double rad);
 };
 
 #endif // FINFIGUREOBJECT_H
