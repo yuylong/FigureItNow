@@ -3,8 +3,8 @@
 
 #include <QString>
 
-#include "finerrorcode.h"
-#include "finlexnode.h"
+#include "finErrorCode.h"
+#include "finLexNode.h"
 
 class finLexReader
 {

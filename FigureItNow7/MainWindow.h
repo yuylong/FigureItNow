@@ -3,12 +3,11 @@
 
 #include <QMainWindow>
 
-#include "finlexnode.h"
-#include "finerrorcode.h"
-#include "finlexreader.h"
+#include "finLexNode.h"
+#include "finErrorCode.h"
+#include "finLexReader.h"
 #include "finSyntaxReader.h"
 
-#include "finfigureobject.h"
 
 namespace Ui {
 class MainWindow;

@@ -1,4 +1,4 @@
-#include "finlexreader.h"
+#include "finLexReader.h"
 
 #include <QStringBuilder>
 

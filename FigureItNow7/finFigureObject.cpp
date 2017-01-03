@@ -12,7 +12,7 @@
  * 20170102    1  Yulong Yu    Add dot and line figure objects.
  */
 
-#include "finfigureobject.h"
+#include "finFigureObject.h"
 
 finFigureObject::finFigureObject()
 {

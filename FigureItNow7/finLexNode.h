@@ -3,8 +3,7 @@
 
 #include <QString>
 
-#include "finerrorcode.h"
-#include "finfigureobject.h"
+#include "finErrorCode.h"
 
 class finLexNode
 {

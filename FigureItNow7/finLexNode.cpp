@@ -1,4 +1,4 @@
-#include "finlexnode.h"
+#include "finLexNode.h"
 
 #include <stdlib.h>
 
