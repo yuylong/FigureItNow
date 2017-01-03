@@ -415,7 +415,7 @@ finExecMachine::instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
 
-    errcode = this->instExecDeclareExpr(synnode, env);
+    errcode = this->instExecDeclareExpr(synnode->getSubSyntaxNode(0), env);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
