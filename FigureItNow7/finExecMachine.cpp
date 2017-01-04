@@ -13,6 +13,8 @@
 
 #include "finExecMachine.h"
 
+#include "finExecOperartorClac.h"
+
 finExecMachine::finExecMachine()
 {
     this->_name = QString();
@@ -281,38 +283,13 @@ finErrorCode
 finExecMachine::instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env,
                                finExecVariable **retvar, finExecFlowControl *flowctl)
 {
-    finExecVariable *tmpretvar;
+    if ( synnode == NULL || env == NULL || retvar == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
     finLexNode *lexnode = synnode->getCommandLexNode();
-    finLexNodeType lextype = lexnode->getType();
 
-    if ( lextype == finLexNode::FIN_LN_TYPE_VARIABLE ) {
-        tmpretvar = env->findVariable(lexnode->getString());
-        if ( tmpretvar == NULL ) {
-            this->appendExecutionError(lexnode, QString("Cannot find variable."));
-            return finErrorCodeKits::FIN_EC_NOT_FOUND;
-        }
-    } else if ( lextype == finLexNode::FIN_LN_TYPE_DECIMAL || lextype == finLexNode::FIN_LN_TYPE_STRING ) {
-        tmpretvar = new finExecVariable();
-        if ( tmpretvar == NULL )
-            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-
-        if ( lextype == finLexNode::FIN_LN_TYPE_DECIMAL ) {
-            tmpretvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
-            tmpretvar->setNumericValue(lexnode->getFloatValue());
-        } else /*if ( lexttype == finLexNode::FIN_LN_TYPE_STRING )*/ {
-            tmpretvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
-            tmpretvar->setStringValue(lexnode->getStringValue());
-        }
-        tmpretvar->clearLeftValue();
-        tmpretvar->setWriteProtected();
-    } else {
-        this->appendExecutionError(lexnode, QString("Unrecognized symbol."));
-        return finErrorCodeKits::FIN_EC_READ_ERROR;
-    }
-
-    *retvar = tmpretvar;
-    flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    this->appendExecutionError(lexnode, QString("Unrecognized symbol."));
+    return finErrorCodeKits::FIN_EC_READ_ERROR;
 }
 
 finErrorCode
@@ -489,12 +466,122 @@ out:
 }
 
 finErrorCode
+finExecMachine::instExecExprVar(finSyntaxNode *synnode, finExecEnvironment *env,
+                                finExecVariable **retvar, finExecFlowControl *flowctl)
+{
+    finExecVariable *tmpretvar;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    tmpretvar = env->findVariable(lexnode->getString());
+    if ( tmpretvar == NULL ) {
+        this->appendExecutionError(lexnode, QString("Cannot find variable."));
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    }
+
+    *retvar = tmpretvar;
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finExecMachine::instExecExprNum(finSyntaxNode *synnode, finExecVariable **retvar, finExecFlowControl *flowctl)
+{
+    finExecVariable *tmpretvar = new finExecVariable();;
+    if ( tmpretvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    tmpretvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    tmpretvar->setNumericValue(lexnode->getFloatValue());
+    tmpretvar->clearLeftValue();
+    tmpretvar->setWriteProtected();
+
+    *retvar = tmpretvar;
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finExecMachine::instExecExprStr(finSyntaxNode *synnode, finExecVariable **retvar, finExecFlowControl *flowctl)
+{
+    finExecVariable *tmpretvar = new finExecVariable();;
+    if ( tmpretvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    tmpretvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
+    tmpretvar->setStringValue(lexnode->getStringValue());
+    tmpretvar->clearLeftValue();
+    tmpretvar->setWriteProtected();
+
+    *retvar = tmpretvar;
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env,
+                                 finExecVariable **retvar, finExecFlowControl *flowctl)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode
+finExecMachine::instExecExprOper(finSyntaxNode *synnode, finExecEnvironment *env,
+                                 finExecVariable **retvar, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode = finErrorCodeKits::FIN_EC_SUCCESS;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    QList<finExecVariable *> oprands;
+
+    for ( int i = 0; i < synnode->getSubListCount(); i++ ) {
+        finExecVariable *oprand;
+
+        errcode = instantExecute(synnode->getSubSyntaxNode(i), env, &oprand, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            goto out;
+
+        oprands.append(oprand);
+    }
+
+    errcode = finExecOperartorClac::execOpCalc(lexnode->getOperator(), &oprands, retvar);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        this->appendExecutionError(lexnode, QString("Invalid expression."));
+        return errcode;
+    }
+
+out:
+    while ( !oprands.empty() ) {
+        finExecVariable *var = oprands.first();
+        oprands.removeFirst();
+        finExecVariable::releaseNonLeftVariable(var);
+    }
+    flowctl->setFlowNext();
+    return errcode;
+}
+
+
+finErrorCode
 finExecMachine::instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env,
                                 finExecVariable **retvar, finExecFlowControl *flowctl)
 {
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    finLexNodeType lextype = lexnode->getType();
 
+    if ( lextype == finLexNode::FIN_LN_TYPE_VARIABLE ) {
+        return this->instExecExprVar(synnode, env, retvar, flowctl);
+    } else if ( lextype == finLexNode::FIN_LN_TYPE_DECIMAL ) {
+        return this->instExecExprNum(synnode, retvar, flowctl);
+    } else if ( lextype == finLexNode::FIN_LN_TYPE_STRING ) {
+        return this->instExecExprStr(synnode, retvar, flowctl);
+    } else if ( lextype == finLexNode::FIN_LN_TYPE_OPERATOR &&
+                lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_FUNCTION ) {
+        return this->instExecExprFunc(synnode, env, retvar, flowctl);
+    } else if ( lextype == finLexNode::FIN_LN_TYPE_OPERATOR ) {
+        return this->instExecExprFunc(synnode, env, retvar, flowctl);
+    }
 
-    flowctl->setFlowNext();
+    this->appendExecutionError(lexnode, QString("Invalid expression found."));
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 

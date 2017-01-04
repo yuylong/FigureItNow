@@ -103,6 +103,16 @@ private:
     finErrorCode instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
     finErrorCode instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
     finErrorCode instExecDeclareExpr(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
+
+    finErrorCode instExecExprVar(finSyntaxNode *synnode, finExecEnvironment *env,
+                                 finExecVariable **retvar, finExecFlowControl *flowctl);
+    finErrorCode instExecExprNum(finSyntaxNode *synnode, finExecVariable **retvar, finExecFlowControl *flowctl);
+    finErrorCode instExecExprStr(finSyntaxNode *synnode, finExecVariable **retvar, finExecFlowControl *flowctl);
+    finErrorCode instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env,
+                                  finExecVariable **retvar, finExecFlowControl *flowctl);
+    finErrorCode instExecExprOper(finSyntaxNode *synnode, finExecEnvironment *env,
+                                  finExecVariable **retvar, finExecFlowControl *flowctl);
+
 };
 
 #endif // FINEXECMACHINE_H
