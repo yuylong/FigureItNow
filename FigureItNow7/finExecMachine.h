@@ -32,6 +32,22 @@
 
 class finExecMachine
 {
+public:
+    enum finFlowControlType {
+        FIN_FC_NEXT,
+        FIN_FC_RETURN,
+        FIN_FC_CONTINUE,
+        FIN_FC_BREAK,
+        FIN_FC_GOTO,
+        FIN_FC_EXIT,
+        FIN_EC_ERROR
+    };
+
+    struct finFlowControl {
+        finFlowControlType _type;
+        QString _label;
+    };
+
 private:
     QString _name;
 

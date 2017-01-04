@@ -426,7 +426,39 @@ finExecMachine::instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
 finErrorCode
 finExecMachine::instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar)
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finErrorCode errcode = finErrorCodeKits::FIN_EC_SUCCESS;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    finExecEnvironment *curenv = env;
+    finExecVariable *tmpvar = NULL;
+
+    if ( lexnode->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+         lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_L_FLW_BRCKT ) {
+        env->buildChildEnvironment(&curenv);
+    }
+
+    for ( int i = 0; i < synnode->getSubListCount(); i++ ) {
+        finExecVariable::releaseNonLeftVariable(tmpvar);
+
+        errcode = this->instantExecute(synnode->getSubSyntaxNode(i), curenv, &tmpvar);
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            finExecVariable::releaseNonLeftVariable(tmpvar);
+            goto out;
+        }
+    }
+
+    *retvar = new finExecVariable();
+    if ( *retvar != NULL ) {
+        (*retvar)->copyVariable(tmpvar);
+        (*retvar)->setName(QString());
+        (*retvar)->clearLeftValue();
+        (*retvar)->setWriteProtected();
+    }
+    finExecVariable::releaseNonLeftVariable(tmpvar);
+
+out:
+    if ( curenv != env )
+        delete curenv;
+    return errcode;
 }
 
 finErrorCode
