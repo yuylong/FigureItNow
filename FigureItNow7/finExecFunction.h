@@ -26,10 +26,13 @@
 
 #include "finErrorCode.h"
 #include "finSyntaxNode.h"
-#include "finExecVariable.h"
+#include "finExecFlowControl.h"
 
-class finExecEnvironment;
+class finExecVariable;
 class finExecFunction;
+class finExecEnvironment;
+class finExecMachine;
+
 typedef finErrorCode (*finFunctionCall)(finExecFunction *self, finExecVariable *retval, finExecEnvironment *execenv);
 
 class finExecFunction

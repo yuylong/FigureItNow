@@ -14,7 +14,10 @@
 #include "finExecFunction.h"
 
 #include "finLexNode.h"
+#include "finExecVariable.h"
+#include "finExecFunction.h"
 #include "finExecEnvironment.h"
+#include "finExecOperartorClac.h"
 
 finExecFunction::finExecFunction()
 {

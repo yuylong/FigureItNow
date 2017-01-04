@@ -23,14 +23,16 @@
 #include <QList>
 
 #include "finErrorCode.h"
-#include "finExecEnvironment.h"
-#include "finExecVariable.h"
 #include "finExecFlowControl.h"
 #include "finFigureContainer.h"
 #include "finLexNode.h"
 #include "finSyntaxReader.h"
 #include "finSyntaxError.h"
 
+class finExecVariable;
+class finExecFunction;
+class finExecEnvironment;
+class finExecMachine;
 
 class finExecMachine
 {

@@ -26,7 +26,10 @@
 
 #include "finErrorCode.h"
 
+class finExecVariable;
+class finExecFunction;
 class finExecEnvironment;
+class finExecMachine;
 
 /*! \class finExecVariable
  *  \brief The script runtime variable.
