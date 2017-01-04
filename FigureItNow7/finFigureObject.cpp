@@ -34,6 +34,11 @@ finFigureConfig *finFigureObject::getFigureConfig()
     return &this->_figCfg;
 }
 
+void finFigureObject::dump() const
+{
+    printf(" * Fig Type: dummy\n");
+}
+
 finFigureObjectDot::finFigureObjectDot()
 {
     this->_type = finFigureObject::FIN_FO_TYPE_DOT;
@@ -56,6 +61,11 @@ finErrorCode finFigureObjectDot::setPoint(double ptx, double pty)
     this->_point.setX(ptx);
     this->_point.setY(pty);
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+void finFigureObjectDot::dump() const
+{
+    printf(" * Fig Type: dot; Point: (%lf, %lf)\n", (double)this->_point.x(), (double)this->_point.y());
 }
 
 finFigureObjectLine::finFigureObjectLine()
@@ -101,6 +111,12 @@ finErrorCode finFigureObjectLine::setPoint2(double ptx, double pty)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+void finFigureObjectLine::dump() const
+{
+    printf(" * Fig Type: line; (%lf, %lf) -- (%lf, %lf)\n",
+           (double)this->_pt1.x(), (double)this->_pt1.y(), (double)this->_pt2.x(), (double)this->_pt2.y());
+}
+
 finFigureObjectRect::finFigureObjectRect()
 {
     this->_type = finFigureObject::FIN_FO_TYPE_RECT;
@@ -140,4 +156,11 @@ finErrorCode finFigureObjectRect::setRadian(double rad)
 {
     this->_radian = rad;
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+void finFigureObjectRect::dump() const
+{
+    printf(" * Fig Type: rect; C: (%lf, %lf) S: %lf x %lf rad: %lf\n",
+           (double)this->_center.x(), (double)this->_center.y(),
+           (double)this->_size.width(), (double)this->_size.height(), this->_radian);
 }

@@ -48,6 +48,8 @@ public:
     finFigureObjectType getFigureType() const;
     const finFigureConfig *getFigureConfig() const;
     finFigureConfig *getFigureConfig();
+
+    virtual void dump() const;
 };
 
 typedef finFigureObject::finFigureObjectType finFigureObjectType;
@@ -64,6 +66,8 @@ public:
 
     finErrorCode setPoint(const QPointF &qpt);
     finErrorCode setPoint(double ptx, double pty);
+
+    virtual void dump() const;
 };
 
 class finFigureObjectLine : public finFigureObject
@@ -81,6 +85,8 @@ public:
     finErrorCode setPoint1(double ptx, double pty);
     finErrorCode setPoint2(const QPointF &qpt);
     finErrorCode setPoint2(double ptx, double pty);
+
+    virtual void dump() const;
 };
 
 class finFigureObjectRect : public finFigureObject
@@ -100,6 +106,8 @@ public:
     finErrorCode setCenterPoint(const QPointF &ctrpt);
     finErrorCode setSize(const QSizeF &size);
     finErrorCode setRadian(double rad);
+
+    virtual void dump() const;
 };
 
 #endif // FINFIGUREOBJECT_H
