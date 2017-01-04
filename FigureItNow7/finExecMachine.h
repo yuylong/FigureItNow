@@ -40,7 +40,7 @@ public:
         FIN_FC_BREAK,
         FIN_FC_GOTO,
         FIN_FC_EXIT,
-        FIN_EC_ERROR
+        FIN_FC_ERROR
     };
 
     struct finFlowControl {

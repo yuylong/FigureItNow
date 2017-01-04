@@ -75,6 +75,8 @@ public:
     static bool isExpressLevelType(finSyntaxNodeType type);
     static bool isStatementLevelType(finSyntaxNodeType type);
 
+    int findLabelIdx(const QString &labelname);
+
 private:
     void dumpLeveled(int level) const;
 

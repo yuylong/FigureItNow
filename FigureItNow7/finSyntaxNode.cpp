@@ -148,3 +148,16 @@ void finSyntaxNode::dumpLeveled(int level) const
     }
 }
 
+int finSyntaxNode::findLabelIdx(const QString &labelname)
+{
+    for ( int i = 0; i < this->getSubListCount(); i++ ) {
+        finSyntaxNode *subnode = this->getSubSyntaxNode(i);
+        if ( subnode->getType() != finSyntaxNode::FIN_SN_TYPE_LABEL )
+            continue;
+
+        finLexNode *lexnode = subnode->getCommandLexNode();
+        if ( QString::compare(lexnode->getString(), labelname) == 0 )
+            return i;
+    }
+    return -1;
+}
