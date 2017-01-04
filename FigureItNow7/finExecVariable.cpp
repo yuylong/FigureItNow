@@ -351,6 +351,9 @@ finErrorCode finExecVariable::dispose()
 
 void finExecVariable::releaseNonLeftVariable(finExecVariable *var)
 {
+    if ( var == NULL )
+        return;
+
     if ( !var->isLeftValue() )
         delete var;
 }
