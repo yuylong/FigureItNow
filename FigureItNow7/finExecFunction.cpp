@@ -15,9 +15,12 @@
 
 #include "finLexNode.h"
 #include "finExecVariable.h"
-#include "finExecFunction.h"
 #include "finExecEnvironment.h"
+#include "finExecMachine.h"
 #include "finExecOperartorClac.h"
+
+
+QString finExecFunction::_extArgPrefix("__ext_arg_");
 
 finExecFunction::finExecFunction()
 {
@@ -42,7 +45,12 @@ int finExecFunction::getParameterCount() const
 
 QString finExecFunction::getParameterName(int idx) const
 {
-    return this->_paramList.at(idx);
+    if ( idx < 0 )
+        return QString();
+    else if ( idx < this->_paramList.count() )
+        return this->_paramList.at(idx);
+    else
+        return finExecFunction::_extArgPrefix.append(QString::number(idx - this->_paramList.count()));
 }
 
 finErrorCode finExecFunction::setFunctionType(finExecFunctionType type)
@@ -100,30 +108,135 @@ finErrorCode finExecFunction::setFunctionCall(finFunctionCall funccall)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finExecFunction::execFunction(finSyntaxNode *curnode, finExecVariable **retval,
-                                           finExecEnvironment *execenv)
+finErrorCode
+finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, finExecMachine *machine,
+                              finExecVariable **retval, finExecFlowControl *flowctl)
 {
-    if ( curnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    finErrorCode errcode;
+    finLexNode *lexnode = argnode->getCommandLexNode();
 
-    finLexNode *lexnode = curnode->getCommandLexNode();
-    if ( lexnode == NULL || lexnode->getType() != finLexNode::FIN_LN_TYPE_OPERATOR ||
-         lexnode->getOperator() != finLexNode::FIN_LN_OPTYPE_FUNCTION )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    if ( argnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+        machine->appendExecutionError(lexnode, QString("Unrecognized function arguments."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
 
-    if ( curnode->getSubListCount() < 2 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    if ( lexnode->getType() != finLexNode::FIN_LN_TYPE_OPERATOR ||
+         lexnode->getOperator() != finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
+        machine->appendExecutionError(lexnode, QString("Unrecognized function arguments."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
 
-    finSyntaxNode *fnsyntk = curnode->getSubSyntaxNode(0);
-    if ( fnsyntk->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    finExecEnvironment *subenv;
+    errcode = env->buildChildEnvironment(&subenv);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        machine->appendExecutionError(lexnode, QString("Internal error."));
+        return errcode;
+    }
 
-    finLexNode *fnlexnd = fnsyntk->getCommandLexNode();
-    if ( fnlexnd == NULL || fnlexnd->getType() != finLexNode::FIN_LN_TYPE_VARIABLE )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    if ( argnode->getSubListCount() > 0 ) {
+        errcode = this->processArgsInSubEnv(argnode->getSubSyntaxNode(0), subenv, machine);
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            delete subenv;
+            return errcode;
+        }
+    }
 
+    if ( this->_type == finExecFunction::FIN_FN_TYPE_SYSTEM ) {
+        errcode = this->execSysFunction(subenv, machine, retval, flowctl);
+    } else if ( this->_type == finExecFunction::FIN_FN_TYPE_USER ) {
+        errcode = this->execUserFunction(subenv, machine, retval, flowctl);
+    } else {
+        machine->appendExecutionError(lexnode, QString("Function type unrecognized."));
+        errcode = finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+    delete subenv;
+    return errcode;
+}
 
+finErrorCode
+finExecFunction::processArgsInSubEnv(finSyntaxNode *argnode, finExecEnvironment *env, finExecMachine *machine)
+{
+    if ( argnode == NULL )
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+
+    finLexNode *lexnode = argnode->getCommandLexNode();
+    if ( argnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+        machine->appendExecutionError(lexnode, QString("Unrecognized function arguments."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    finErrorCode errcode;
+    if ( lexnode->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+         lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_COMMA ) {
+        for ( int i = 0; i < argnode->getSubListCount(); i++ ) {
+            errcode = this->appendArgToSubenv(i, argnode->getSubSyntaxNode(i), env, machine);
+            if ( finErrorCodeKits::isErrorResult(errcode) )
+                return errcode;
+        }
+    } else {
+        errcode = this->appendArgToSubenv(0, argnode, env, machine);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finExecFunction::appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvironment *env, finExecMachine *machine)
+{
+    finErrorCode errcode;
+    finLexNode *lexnode = argnode->getCommandLexNode();
+    finExecVariable *expvar, *argvar;
+    finExecFlowControl flowctl;
+
+    errcode = machine->instantExecute(argnode, env->getParentEnvironment(), &expvar, &flowctl);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    if ( expvar->isLeftValue() ) {
+        argvar = new finExecVariable();
+        if ( argvar == NULL )
+            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+        errcode = argvar->copyVariable(expvar);
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            machine->appendExecutionError(lexnode, QString("Internal error."));
+            delete argvar;
+            return errcode;
+        }
+    } else {
+        argvar = expvar;
+    }
+    argvar->clearWriteProtected();
+    argvar->setLeftValue();
+    argvar->setName(this->getParameterName(idx));
+
+    errcode = env->addVariable(argvar);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        machine->appendExecutionError(lexnode, QString("Internal error."));
+        delete argvar;
+        return errcode;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finExecFunction::execUserFunction(finExecEnvironment *env, finExecMachine *machine,
+                                  finExecVariable **retval, finExecFlowControl *flowctl)
+{
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode
+finExecFunction::execSysFunction(finExecEnvironment *env, finExecMachine *machine,
+                                 finExecVariable **retval, finExecFlowControl *flowctl)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+QString finExecFunction::getExtArgPrefix()
+{
+    return finExecFunction::_extArgPrefix;
 }
 
 static finErrorCode

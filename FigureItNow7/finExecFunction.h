@@ -56,6 +56,8 @@ protected:
         void *_rawPointer;
     } _u;
 
+    static QString _extArgPrefix;
+
 public:
     finExecFunction();
 
@@ -72,16 +74,20 @@ public:
     finErrorCode setFunctionSyntaxNode(finSyntaxNode *funcnode);
     finErrorCode setFunctionCall(finFunctionCall funccall);
 
-    finErrorCode execFunction(finSyntaxNode *curnode, finExecVariable **retval,
-                              finExecEnvironment *execenv);
+    finErrorCode execFunction(finSyntaxNode *argnode, finExecEnvironment *env, finExecMachine *machine,
+                              finExecVariable **retval, finExecFlowControl *flowctl);
 
+    static QString getExtArgPrefix();
     static finErrorCode installSystemFunctions (finExecEnvironment *rootenv);
 
 private:
-    finErrorCode execUserFunction(finExecVariable *retval,
-                                  finExecEnvironment *execenv);
-    finErrorCode execSysFunction(finExecVariable *retval,
-                                 finExecEnvironment *execenv);
+    finErrorCode processArgsInSubEnv(finSyntaxNode *argnode, finExecEnvironment *env, finExecMachine *machine);
+    finErrorCode appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvironment *env, finExecMachine *machine);
+
+    finErrorCode execUserFunction(finExecEnvironment *env, finExecMachine *machine,
+                                  finExecVariable **retval, finExecFlowControl *flowctl);
+    finErrorCode execSysFunction(finExecEnvironment *env, finExecMachine *machine,
+                                 finExecVariable **retval, finExecFlowControl *flowctl);
 
 };
 
