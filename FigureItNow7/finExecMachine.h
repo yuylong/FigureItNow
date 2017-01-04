@@ -87,25 +87,36 @@ public:
     finErrorCode execute();
     void disposeExecutionError();
 
-    finErrorCode instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+    finErrorCode instantExecute(finSyntaxNode *synnode, finExecEnvironment *env,
+                                finExecVariable **retvar, finFlowControl *flowctl);
     finErrorCode appendExecutionError(finLexNode *lexnode, const QString &errinfo);
 
 private:
-    finErrorCode instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-    finErrorCode instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-    finErrorCode instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-    finErrorCode instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-    finErrorCode instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-    finErrorCode instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-    finErrorCode instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-    finErrorCode instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-    finErrorCode instExecJump(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
-    finErrorCode instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env, finExecVariable **retvar);
+    finErrorCode instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env,
+                                finExecVariable **retvar, finFlowControl *flowctl);
+    finErrorCode instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
+                                 finExecVariable **retvar, finFlowControl *flowctl);
+    finErrorCode instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env,
+                                   finExecVariable **retvar, finFlowControl *flowctl);
+    finErrorCode instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env,
+                                 finExecVariable **retvar, finFlowControl *flowctl);
+    finErrorCode instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env,
+                                  finExecVariable **retvar, finFlowControl *flowctl);
+    finErrorCode instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env,
+                                finExecVariable **retvar, finFlowControl *flowctl);
+    finErrorCode instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env,
+                              finExecVariable **retvar, finFlowControl *flowctl);
+    finErrorCode instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env,
+                               finExecVariable **retvar, finFlowControl *flowctl);
+    finErrorCode instExecJump(finSyntaxNode *synnode, finExecEnvironment *env,
+                              finExecVariable **retvar, finFlowControl *flowctl);
+    finErrorCode instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env,
+                                 finExecVariable **retvar, finFlowControl *flowctl);
 
-    finErrorCode instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment *env);
-    finErrorCode instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironment *env);
-    finErrorCode instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment *env);
-    finErrorCode instExecDeclareExpr(finSyntaxNode *synnode, finExecEnvironment *env);
+    finErrorCode instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment *env, finFlowControl *flowctl);
+    finErrorCode instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironment *env, finFlowControl *flowctl);
+    finErrorCode instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment *env, finFlowControl *flowctl);
+    finErrorCode instExecDeclareExpr(finSyntaxNode *synnode, finExecEnvironment *env, finFlowControl *flowctl);
 };
 
 #endif // FINEXECMACHINE_H
