@@ -56,6 +56,8 @@ protected:
 public:
     finSyntaxNode();
 
+    finErrorCode copyNode(finSyntaxNode *srcnode);
+
     finSyntaxNodeType getType() const;
     finLexNode *getCommandLexNode() const;
     int getSubListCount() const;

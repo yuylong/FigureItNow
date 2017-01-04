@@ -80,6 +80,8 @@ private:
 public:
     finLexNode();
 
+    finErrorCode copyNode(finLexNode *srcnode);
+
     finLexNodeType getType() const;
     QString getString() const;
     double getFloatValue() const;

@@ -11,6 +11,33 @@ finLexNode::finLexNode() :
     this->_column = 0;
 }
 
+finErrorCode finLexNode::copyNode(finLexNode *srcnode)
+{
+    if ( srcnode == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    this->_string = srcnode->getString();
+    this->_type = srcnode->getType();
+    this->_stringValue = srcnode->getStringValue();
+    this->_row = srcnode->getRow();
+    this->_column = srcnode->getColumn();
+
+    switch ( this->_type ) {
+      case finLexNode::FIN_LN_TYPE_DECIMAL:
+        this->_u._floatValue = srcnode->getFloatValue();
+        break;
+
+      case finLexNode::FIN_LN_TYPE_OPERATOR:
+        this->_u._operator = srcnode->getOperator();
+        break;
+
+      default:
+        memset(this->_u._rawData, 0, sizeof (this->_u));
+        break;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finLexNodeType finLexNode::getType() const
 {
     return this->_type;

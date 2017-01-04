@@ -7,6 +7,46 @@ finSyntaxNode::finSyntaxNode()
     this->_cmdLexNode = NULL;
 }
 
+finErrorCode finSyntaxNode::copyNode(finSyntaxNode *srcnode)
+{
+    finErrorCode errcode;
+    this->disposeAll();
+    this->_type = srcnode->getType();
+
+    finLexNode *lexnode = new finLexNode();
+    if ( lexnode == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    errcode = lexnode->copyNode(srcnode->getCommandLexNode());
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete lexnode;
+        this->_cmdLexNode = NULL;
+    } else {
+        this->_cmdLexNode = lexnode;
+    }
+
+    for ( int i = 0; i < srcnode->getSubListCount(); i++ ) {
+        finSyntaxNode *synnode = new finSyntaxNode();
+        if ( srcnode == NULL )
+            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+        errcode = synnode->copyNode(srcnode->getSubSyntaxNode(i));
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            srcnode->disposeAll();
+            delete srcnode;
+            return errcode;
+        }
+
+        errcode = this->appendSubSyntaxNode(synnode);
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            srcnode->disposeAll();
+            delete srcnode;
+            return errcode;
+        }
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finSyntaxNodeType finSyntaxNode::getType() const
 {
     return this->_type;
