@@ -224,14 +224,14 @@ finErrorCode
 finExecFunction::execUserFunction(finExecEnvironment *env, finExecMachine *machine,
                                   finExecVariable **retval, finExecFlowControl *flowctl)
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    return machine->instantExecute(this->_u._funcNode, env, retval, flowctl);
 }
 
 finErrorCode
 finExecFunction::execSysFunction(finExecEnvironment *env, finExecMachine *machine,
                                  finExecVariable **retval, finExecFlowControl *flowctl)
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    return this->_u._funcCall(this, env, machine, retval, flowctl);
 }
 
 QString finExecFunction::getExtArgPrefix()
@@ -240,7 +240,8 @@ QString finExecFunction::getExtArgPrefix()
 }
 
 static finErrorCode
-_sysfunc_mat_add (finExecFunction *self, finExecVariable *retval, finExecEnvironment *execenv);
+_sysfunc_mat_add(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine,
+                 finExecVariable **retval, finExecFlowControl *flowctl);
 
 static struct {
     QString _funcName;
@@ -314,19 +315,21 @@ item_bad:
 }
 
 static finErrorCode
-_sysfunc_mat_add (finExecFunction *self, finExecVariable *retval, finExecEnvironment *execenv)
+_sysfunc_mat_add (finExecFunction *self, finExecEnvironment *env, finExecMachine *machine,
+                  finExecVariable **retval, finExecFlowControl *flowctl)
 {
     finExecVariable *mat1var, *mat2var;
 
-    if ( self == NULL || retval == NULL || execenv == NULL )
+    if ( self == NULL || retval == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    mat1var = execenv->findVariable("mat1");
-    mat2var = execenv->findVariable("mat2");
+    mat1var = env->findVariable("mat1");
+    mat2var = env->findVariable("mat2");
 
     if ( mat1var->getType() != finExecVariable::FIN_VR_TYPE_ARRAY ||
          mat2var->getType() != finExecVariable::FIN_VR_TYPE_ARRAY )
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
+    flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }

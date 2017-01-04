@@ -33,8 +33,8 @@ class finExecFunction;
 class finExecEnvironment;
 class finExecMachine;
 
-typedef finErrorCode (*finFunctionCall)(finExecFunction *self, finExecVariable *retval, finExecEnvironment *execenv);
-
+typedef finErrorCode (*finFunctionCall)(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine,
+                                        finExecVariable **retval, finExecFlowControl *flowctl);
 class finExecFunction
 {
 public:
