@@ -210,6 +210,9 @@ finErrorCode finExecVariable::setWriteProtected()
         return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
 
     this->_writeProtect = true;
+    for ( int i = 0; i < this->_itemList.count(); i++ ) {
+        this->_itemList.at(i)->setWriteProtected();
+    }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -219,6 +222,9 @@ finErrorCode finExecVariable::clearWriteProtected()
         return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
 
     this->_writeProtect = false;
+    for ( int i = 0; i < this->_itemList.count(); i++ ) {
+        this->_itemList.at(i)->clearWriteProtected();
+    }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -228,6 +234,9 @@ finErrorCode finExecVariable::setLeftValue()
         return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
 
     this->_leftValue = true;
+    for ( int i = 0; i < this->_itemList.count(); i++ ) {
+        this->_itemList.at(i)->setLeftValue();
+    }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -237,6 +246,9 @@ finErrorCode finExecVariable::clearLeftValue()
         return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
 
     this->_leftValue = false;
+    for ( int i = 0; i < this->_itemList.count(); i++ ) {
+        this->_itemList.at(i)->clearLeftValue();
+    }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -269,19 +281,16 @@ finErrorCode finExecVariable::copyVariable(const finExecVariable *srcvar)
     if ( srcvar == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    if ( this->_writeProtect )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
-
     bool leftval = this->_leftValue;
+    bool wrtprotect = this->_writeProtect;
     finErrorCode errcode = finErrorCodeKits::FIN_EC_SUCCESS;
 
-    if ( this->_type == FIN_VR_TYPE_ARRAY && srcvar->_type != FIN_VR_TYPE_ARRAY )
-        this->dispose();
-
+    this->dispose();
     this->_type = srcvar->_type;
     this->_leftValue = leftval;
+    this->_writeProtect = wrtprotect;
 
-    switch ( this->_type ) {
+    switch ( srcvar->_type ) {
       case FIN_VR_TYPE_NUMERIC:
         this->_numVal = srcvar->_numVal;
         break;
@@ -297,7 +306,6 @@ finErrorCode finExecVariable::copyVariable(const finExecVariable *srcvar)
       default:
         break;
     }
-
     return errcode;
 }
 
