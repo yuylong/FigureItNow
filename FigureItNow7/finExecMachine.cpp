@@ -191,9 +191,8 @@ finErrorCode finExecMachine::execute()
     if ( syntree == NULL )
         return finErrorCodeKits::FIN_EC_READ_ERROR;
 
-    finFlowControl flowctl;
-    flowctl._type = finExecMachine::FIN_FC_NEXT;
-    flowctl._label = QString();
+    finExecFlowControl flowctl;
+    flowctl.setFlowNext();
 
     finExecVariable *retvar = NULL;
     errcode = this->instantExecute(syntree->getRootNode(), this->_baseEnv, &retvar, &flowctl);
@@ -216,7 +215,7 @@ void finExecMachine::disposeExecutionError()
 
 finErrorCode
 finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env,
-                               finExecVariable **retvar, finFlowControl *flowctl)
+                               finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     if ( synnode == NULL || env == NULL || retvar == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
@@ -280,7 +279,7 @@ finExecMachine::appendExecutionError(finLexNode *lexnode, const QString &errinfo
 
 finErrorCode
 finExecMachine::instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env,
-                               finExecVariable **retvar, finFlowControl *flowctl)
+                               finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     finExecVariable *tmpretvar;
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -312,11 +311,12 @@ finExecMachine::instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env,
     }
 
     *retvar = tmpretvar;
+    flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment *env, finFlowControl *flowctl)
+finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
 
@@ -340,13 +340,12 @@ finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment
         return errcode;
     }
 
-    flowctl->_type = finExecMachine::FIN_FC_NEXT;
-    flowctl->_label = QString();
+    flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironment *env, finFlowControl *flowctl)
+finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
 
@@ -366,12 +365,12 @@ finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironme
         return errcode;
 
     tmpretvar->releaseNonLeftVariable(tmpretvar);
-    // Directly pass the flow ctl.
+    flowctl->directPass();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecMachine::instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment *env, finFlowControl *flowctl)
+finExecMachine::instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -386,14 +385,15 @@ finExecMachine::instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment 
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
 
-        if ( flowctl->_type != finExecMachine::FIN_FC_NEXT )
+        if ( !flowctl->isFlowNext() )
             break;
     }
+    flowctl->directPass();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecMachine::instExecDeclareExpr(finSyntaxNode *synnode, finExecEnvironment *env, finFlowControl *flowctl)
+finExecMachine::instExecDeclareExpr(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
 
@@ -413,13 +413,12 @@ finExecMachine::instExecDeclareExpr(finSyntaxNode *synnode, finExecEnvironment *
     }
 
     this->appendExecutionError(lexnode, QString("Declaration with invalid expression."));
-    // Directly pass the flow ctl.
     return finErrorCodeKits::FIN_EC_READ_ERROR;
 }
 
 finErrorCode
 finExecMachine::instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
-                                finExecVariable **retvar, finFlowControl *flowctl)
+                                finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -434,13 +433,13 @@ finExecMachine::instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
         return errcode;
 
     *retvar = NULL;
-    // Directly pass the flow ctl.
+    flowctl->directPass();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
 finExecMachine::instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env,
-                                  finExecVariable **retvar, finFlowControl *flowctl)
+                                  finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     finErrorCode errcode = finErrorCodeKits::FIN_EC_SUCCESS;
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -462,16 +461,15 @@ finExecMachine::instExecStatement(finSyntaxNode *synnode, finExecEnvironment *en
         }
 
         // Handle 'goto' sub-statement, and other flow control cases.
-        if ( flowctl->_type == finExecMachine::FIN_FC_GOTO ) {
-            int labelidx = synnode->findLabelIdx(flowctl->_label);
+        if ( flowctl->isFlowGoto() ) {
+            int labelidx = synnode->findLabelIdx(flowctl->getGotoLabel());
             if ( labelidx >= 0 ) {
-                flowctl->_type = finExecMachine::FIN_FC_NEXT;
-                flowctl->_label = QString();
-                i = labelidx;
+                flowctl->setFlowNext();
+                i = labelidx - 1;
                 continue;
             }
         }
-        if ( flowctl->_type != finExecMachine::FIN_FC_NEXT )
+        if ( !flowctl->isFlowNext() )
             break;
     }
 
@@ -492,53 +490,52 @@ out:
 
 finErrorCode
 finExecMachine::instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env,
-                                finExecVariable **retvar, finFlowControl *flowctl)
+                                finExecVariable **retvar, finExecFlowControl *flowctl)
 {
 
 
-    flowctl->_type = finExecMachine::FIN_FC_NEXT;
-    flowctl->_label = QString();
+    flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 finErrorCode
 finExecMachine::instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env,
-                                 finExecVariable **retvar, finFlowControl *flowctl)
+                                 finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 finErrorCode
 finExecMachine::instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env,
-                               finExecVariable **retvar, finFlowControl *flowctl)
+                               finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 finErrorCode
 finExecMachine::instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env,
-                             finExecVariable **retvar, finFlowControl *flowctl)
+                             finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 finErrorCode
 finExecMachine::instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env,
-                              finExecVariable **retvar, finFlowControl *flowctl)
+                              finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 finErrorCode
 finExecMachine::instExecJump(finSyntaxNode *synnode, finExecEnvironment *env,
-                             finExecVariable **retvar, finFlowControl *flowctl)
+                             finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 finErrorCode
 finExecMachine::instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env,
-                                finExecVariable **retvar, finFlowControl *flowctl)
+                                finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }

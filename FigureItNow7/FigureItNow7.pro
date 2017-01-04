@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     finFigureContainer.cpp \
     finExecOperartorClac.cpp \
     finExecMachine.cpp \
-    finFigureConfig.cpp
+    finFigureConfig.cpp \
+    finExecFlowControl.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
@@ -53,6 +54,7 @@ HEADERS  += MainWindow.h \
     finFigureContainer.h \
     finExecOperartorClac.h \
     finExecMachine.h \
-    finFigureConfig.h
+    finFigureConfig.h \
+    finExecFlowControl.h
 
 FORMS    += MainWindow.ui
