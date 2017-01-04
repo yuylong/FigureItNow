@@ -526,7 +526,37 @@ finErrorCode
 finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env,
                                  finExecVariable **retvar, finExecFlowControl *flowctl)
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finErrorCode errcode;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    if ( synnode->getSubListCount() != 2 ) {
+        this->appendExecutionError(lexnode, QString("Invalid function call."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    finSyntaxNode *fnsynn = synnode->getSubSyntaxNode(0);
+    finLexNode *fnlexn = fnsynn->getCommandLexNode();
+
+    if ( fnsynn->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+         fnlexn->getType() != finLexNode::FIN_LN_TYPE_VARIABLE ) {
+        this->appendExecutionError(fnlexn, QString("Invalid function name."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    QString funcname = fnlexn->getString();
+    finExecFunction *func = env->findFunction(funcname);
+    if ( func == NULL ) {
+        this->appendExecutionError(fnlexn, QString("Function name not found."));
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    }
+
+    errcode = func->execFunction(synnode->getSubSyntaxNode(1), env, this, retvar, flowctl);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        this->appendExecutionError(lexnode, QString("Execute function failed."));
+        return errcode;
+    }
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
