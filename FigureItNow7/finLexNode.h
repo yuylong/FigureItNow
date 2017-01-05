@@ -80,7 +80,7 @@ private:
 public:
     finLexNode();
 
-    finErrorCode copyNode(finLexNode *srcnode);
+    finErrorCode copyNode(const finLexNode *srcnode);
 
     finLexNodeType getType() const;
     QString getString() const;

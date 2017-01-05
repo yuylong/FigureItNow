@@ -50,23 +50,24 @@ public:
 
 protected:
     finSyntaxNodeType _type;
-    finLexNode *_cmdLexNode;
+    finLexNode _cmdLexNode;
     QList<finSyntaxNode *> _subSyntaxList;
 
 public:
     finSyntaxNode();
 
-    finErrorCode copyNode(finSyntaxNode *srcnode);
+    finErrorCode copyNode(const finSyntaxNode *srcnode);
 
     finSyntaxNodeType getType() const;
-    finLexNode *getCommandLexNode() const;
+    const finLexNode *getCommandLexNode() const;
+    finLexNode *getCommandLexNode();
     int getSubListCount() const;
     finSyntaxNode *getSubSyntaxNode(int idx) const;
 
     void dump() const;
 
     finErrorCode setType(finSyntaxNodeType type);
-    finErrorCode setCommandLexNode(finLexNode *lexnode);
+    finErrorCode setCommandLexNode(const finLexNode *lexnode);
     finErrorCode appendSubSyntaxNode(finSyntaxNode *synnode);
     finErrorCode prependSubSyntaxNode(finSyntaxNode *synnode);
 

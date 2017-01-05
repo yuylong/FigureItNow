@@ -11,7 +11,7 @@ finLexNode::finLexNode() :
     this->_column = 0;
 }
 
-finErrorCode finLexNode::copyNode(finLexNode *srcnode)
+finErrorCode finLexNode::copyNode(const finLexNode *srcnode)
 {
     if ( srcnode == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;

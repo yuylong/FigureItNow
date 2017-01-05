@@ -1,29 +1,20 @@
 #include "finSyntaxNode.h"
 
 finSyntaxNode::finSyntaxNode()
-    : _subSyntaxList()
+    : _cmdLexNode(), _subSyntaxList()
 {
     this->_type = FIN_SN_TYPE_DUMMY;
-    this->_cmdLexNode = NULL;
 }
 
-finErrorCode finSyntaxNode::copyNode(finSyntaxNode *srcnode)
+finErrorCode finSyntaxNode::copyNode(const finSyntaxNode *srcnode)
 {
     finErrorCode errcode;
     this->disposeAll();
     this->_type = srcnode->getType();
 
-    finLexNode *lexnode = new finLexNode();
-    if ( lexnode == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-
-    errcode = lexnode->copyNode(srcnode->getCommandLexNode());
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        delete lexnode;
-        this->_cmdLexNode = NULL;
-    } else {
-        this->_cmdLexNode = lexnode;
-    }
+    errcode = this->_cmdLexNode.copyNode(srcnode->getCommandLexNode());
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
 
     for ( int i = 0; i < srcnode->getSubListCount(); i++ ) {
         finSyntaxNode *synnode = new finSyntaxNode();
@@ -32,15 +23,15 @@ finErrorCode finSyntaxNode::copyNode(finSyntaxNode *srcnode)
 
         errcode = synnode->copyNode(srcnode->getSubSyntaxNode(i));
         if ( finErrorCodeKits::isErrorResult(errcode) ) {
-            srcnode->disposeAll();
-            delete srcnode;
+            synnode->disposeAll();
+            delete synnode;
             return errcode;
         }
 
         errcode = this->appendSubSyntaxNode(synnode);
         if ( finErrorCodeKits::isErrorResult(errcode) ) {
-            srcnode->disposeAll();
-            delete srcnode;
+            synnode->disposeAll();
+            delete synnode;
             return errcode;
         }
     }
@@ -52,9 +43,20 @@ finSyntaxNodeType finSyntaxNode::getType() const
     return this->_type;
 }
 
-finLexNode *finSyntaxNode::getCommandLexNode() const
+const finLexNode *finSyntaxNode::getCommandLexNode() const
 {
-    return this->_cmdLexNode;
+    if ( this->_cmdLexNode.getType() == finLexNode::FIN_LN_TYPE_DUMMY )
+        return NULL;
+    else
+        return &this->_cmdLexNode;
+}
+
+finLexNode *finSyntaxNode::getCommandLexNode()
+{
+    if ( this->_cmdLexNode.getType() == finLexNode::FIN_LN_TYPE_DUMMY )
+        return NULL;
+    else
+        return &this->_cmdLexNode;
 }
 
 int finSyntaxNode::getSubListCount() const
@@ -80,9 +82,9 @@ finErrorCode finSyntaxNode::setType(finSyntaxNodeType type)
         return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finSyntaxNode::setCommandLexNode(finLexNode *lexnode)
+finErrorCode finSyntaxNode::setCommandLexNode(const finLexNode *lexnode)
 {
-    this->_cmdLexNode = lexnode;
+    this->_cmdLexNode.copyNode(lexnode);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -112,11 +114,7 @@ bool finSyntaxNode::isExpressLevelType(finSyntaxNodeType type)
 
 finErrorCode finSyntaxNode::disposeCommandLexNode()
 {
-    if ( this->_cmdLexNode == NULL )
-        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
-
-    delete this->_cmdLexNode;
-    this->_cmdLexNode = NULL;
+    this->_cmdLexNode.setType(finLexNode::FIN_LN_TYPE_DUMMY);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -170,7 +168,7 @@ void finSyntaxNode::dump() const
 
 void finSyntaxNode::dumpLeveled(int level) const
 {
-    finLexNode *cmdlex = this->getCommandLexNode();
+    const finLexNode *cmdlex = this->getCommandLexNode();
 
     for (int i = 0; i < level; i++)
         printf("  ");

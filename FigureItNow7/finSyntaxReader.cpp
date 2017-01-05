@@ -790,7 +790,6 @@ finErrorCode finSyntaxReader::meshAllCommas()
             }
 
             this->_syntaxStack.removeFirst();
-            delete curlex;
             delete cursyn;
             hasinst = false;
         } else {
@@ -857,7 +856,6 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
             this->_syntaxStack.removeFirst();
             this->_syntaxStack.removeFirst();
             delete prevtk;
-            delete prevlex;
             if ( this->_syntaxStack.count() <= 0 )
                 return finErrorCodeKits::FIN_EC_READ_ERROR;
 
