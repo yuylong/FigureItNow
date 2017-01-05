@@ -71,6 +71,11 @@ QString finExecMachine::getCompiledScriptCode() const
     return this->_syntaxRdr.getScriptCode();
 }
 
+finSyntaxTree *finExecMachine::getSyntaxTree()
+{
+    return this->_syntaxRdr.getSyntaxTree();
+}
+
 int finExecMachine::getExecuteErrorCount() const
 {
     return this->_errList.count();
@@ -185,25 +190,25 @@ finErrorCode finExecMachine::releaseCompile()
 finErrorCode finExecMachine::execute()
 {
     finErrorCode errcode;
-
+printf("A\n");
     if ( this->_baseEnv == NULL || this->_baseFigContainer == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
-
+printf("B\n");
     if ( !this->_isCompiled )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
-
+printf("C\n");
     finSyntaxTree *syntree = this->_syntaxRdr.getSyntaxTree();
     if ( syntree == NULL )
         return finErrorCodeKits::FIN_EC_READ_ERROR;
-
+printf("D\n");
     finExecFlowControl flowctl;
     flowctl.setFlowNext();
-
+printf("E\n");
     finExecVariable *retvar = NULL;
     errcode = this->instantExecute(syntree->getRootNode(), this->_baseEnv, &retvar, &flowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
-
+printf("F\n");
     if ( retvar != NULL )
         delete retvar;
     return finErrorCodeKits::FIN_EC_SUCCESS;
@@ -286,6 +291,7 @@ finErrorCode
 finExecMachine::instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env,
                                finExecVariable **retvar, finExecFlowControl *flowctl)
 {
+    printf("Single!"); synnode->dump();
     if ( synnode == NULL || env == NULL || retvar == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
@@ -298,6 +304,7 @@ finExecMachine::instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env,
 finErrorCode
 finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
+    printf("Declared Direct!"); synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
 
     finExecVariable *newvar = new finExecVariable();
@@ -327,6 +334,7 @@ finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment
 finErrorCode
 finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
+    printf("Declared Assigned!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
 
     if ( synnode->getSubListCount() < 2 ) {
@@ -352,6 +360,7 @@ finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironme
 finErrorCode
 finExecMachine::instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
+    printf("Declared Comma!");synnode->dump();
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
 
@@ -375,6 +384,7 @@ finExecMachine::instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment 
 finErrorCode
 finExecMachine::instExecDeclareExpr(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
+    printf("Declared Expr!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
 
     if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
@@ -400,6 +410,7 @@ finErrorCode
 finExecMachine::instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
                                 finExecVariable **retvar, finExecFlowControl *flowctl)
 {
+    printf("Declare!");synnode->dump();
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
 
@@ -418,26 +429,20 @@ finExecMachine::instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
 }
 
 finErrorCode
-finExecMachine::instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env,
-                                  finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecStatIn(finSyntaxNode *synnode, finExecEnvironment *env,
+                               finExecVariable **retvar, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode = finErrorCodeKits::FIN_EC_SUCCESS;
-    finLexNode *lexnode = synnode->getCommandLexNode();
-    finExecEnvironment *curenv = env;
+    printf("Statement Inner!");synnode->dump();
+    finErrorCode errcode;
     finExecVariable *tmpvar = NULL;
-
-    if ( lexnode->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
-         lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_L_FLW_BRCKT ) {
-        env->buildChildEnvironment(&curenv);
-    }
 
     for ( int i = 0; i < synnode->getSubListCount(); i++ ) {
         finExecVariable::releaseNonLeftVariable(tmpvar);
 
-        errcode = this->instantExecute(synnode->getSubSyntaxNode(i), curenv, &tmpvar, flowctl);
+        errcode = this->instantExecute(synnode->getSubSyntaxNode(i), env, &tmpvar, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) ) {
             finExecVariable::releaseNonLeftVariable(tmpvar);
-            goto out;
+            return errcode;
         }
 
         // Handle 'goto' sub-statement, and other flow control cases.
@@ -462,7 +467,25 @@ finExecMachine::instExecStatement(finSyntaxNode *synnode, finExecEnvironment *en
     }
     finExecVariable::releaseNonLeftVariable(tmpvar);
 
-out:
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finExecMachine::instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env,
+                                  finExecVariable **retvar, finExecFlowControl *flowctl)
+{
+    printf("Statement!");synnode->dump();
+    finErrorCode errcode;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    finExecEnvironment *curenv = env;
+
+    if ( lexnode->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+         lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_L_FLW_BRCKT ) {
+        env->buildChildEnvironment(&curenv);
+    }
+
+    errcode = instExecStatIn(synnode, env, retvar, flowctl);
+
     if ( curenv != env )
         delete curenv;
     return errcode;
@@ -472,6 +495,7 @@ finErrorCode
 finExecMachine::instExecExprVar(finSyntaxNode *synnode, finExecEnvironment *env,
                                 finExecVariable **retvar, finExecFlowControl *flowctl)
 {
+    printf("Expr Var!");synnode->dump();
     finExecVariable *tmpretvar;
     finLexNode *lexnode = synnode->getCommandLexNode();
 
@@ -489,7 +513,8 @@ finExecMachine::instExecExprVar(finSyntaxNode *synnode, finExecEnvironment *env,
 finErrorCode
 finExecMachine::instExecExprNum(finSyntaxNode *synnode, finExecVariable **retvar, finExecFlowControl *flowctl)
 {
-    finExecVariable *tmpretvar = new finExecVariable();;
+    printf("Expr Num!");synnode->dump();
+    finExecVariable *tmpretvar = new finExecVariable();
     if ( tmpretvar == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
@@ -507,6 +532,7 @@ finExecMachine::instExecExprNum(finSyntaxNode *synnode, finExecVariable **retvar
 finErrorCode
 finExecMachine::instExecExprStr(finSyntaxNode *synnode, finExecVariable **retvar, finExecFlowControl *flowctl)
 {
+    printf("Expr Str!");synnode->dump();
     finExecVariable *tmpretvar = new finExecVariable();;
     if ( tmpretvar == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
@@ -526,6 +552,7 @@ finErrorCode
 finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env,
                                  finExecVariable **retvar, finExecFlowControl *flowctl)
 {
+    printf("Expr Func!");synnode->dump();
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
 
@@ -563,6 +590,7 @@ finErrorCode
 finExecMachine::instExecExprOper(finSyntaxNode *synnode, finExecEnvironment *env,
                                  finExecVariable **retvar, finExecFlowControl *flowctl)
 {
+    printf("Expr Operator!");synnode->dump();
     finErrorCode errcode = finErrorCodeKits::FIN_EC_SUCCESS;
     finLexNode *lexnode = synnode->getCommandLexNode();
     QList<finExecVariable *> oprands;
@@ -598,6 +626,7 @@ finErrorCode
 finExecMachine::instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env,
                                 finExecVariable **retvar, finExecFlowControl *flowctl)
 {
+    printf("Expression!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
     finLexNodeType lextype = lexnode->getType();
 
@@ -622,6 +651,7 @@ finErrorCode
 finExecMachine::instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env,
                                  finExecVariable **retvar, finExecFlowControl *flowctl)
 {
+    printf("Function!");synnode->dump();
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
@@ -629,6 +659,7 @@ finErrorCode
 finExecMachine::instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env,
                                finExecVariable **retvar, finExecFlowControl *flowctl)
 {
+    printf("Branch!");synnode->dump();
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
@@ -636,6 +667,7 @@ finErrorCode
 finExecMachine::instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env,
                              finExecVariable **retvar, finExecFlowControl *flowctl)
 {
+    printf("Loop!");synnode->dump();
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
@@ -643,6 +675,7 @@ finErrorCode
 finExecMachine::instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env,
                               finExecVariable **retvar, finExecFlowControl *flowctl)
 {
+    printf("Label!");synnode->dump();
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
@@ -650,6 +683,7 @@ finErrorCode
 finExecMachine::instExecJump(finSyntaxNode *synnode, finExecEnvironment *env,
                              finExecVariable **retvar, finExecFlowControl *flowctl)
 {
+    printf("Jump!");synnode->dump();
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
@@ -657,5 +691,11 @@ finErrorCode
 finExecMachine::instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env,
                                 finExecVariable **retvar, finExecFlowControl *flowctl)
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    printf("Program!");synnode->dump();
+    finExecEnvironment *curenv;
+    env->buildChildEnvironment(&curenv);
+
+    finErrorCode errcode = instExecStatIn(synnode, env, retvar, flowctl);
+    delete curenv;
+    return errcode;
 }

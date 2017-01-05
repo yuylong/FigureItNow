@@ -211,6 +211,9 @@ finExecEnvironment::disposeRootEnvironment()
 finExecEnvironment *
 finExecEnvironment::getRootEnvironment()
 {
+    if ( _rootEnv == NULL )
+        finExecEnvironment::setupRootEnvironment();
+
     return _rootEnv;
 }
 

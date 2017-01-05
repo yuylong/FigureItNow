@@ -57,6 +57,7 @@ public:
     finFigureContainer *getFigureContainer();
     QString getScriptCode() const;
     QString getCompiledScriptCode() const;
+    finSyntaxTree *getSyntaxTree();
     int getExecuteErrorCount() const;
     const finSyntaxError *getExecuteErrorAt(int idx) const;
 
@@ -105,6 +106,9 @@ private:
     finErrorCode instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
     finErrorCode instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
     finErrorCode instExecDeclareExpr(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
+
+    finErrorCode instExecStatIn(finSyntaxNode *synnode, finExecEnvironment *env,
+                                finExecVariable **retvar, finExecFlowControl *flowctl);
 
     finErrorCode instExecExprVar(finSyntaxNode *synnode, finExecEnvironment *env,
                                  finExecVariable **retvar, finExecFlowControl *flowctl);

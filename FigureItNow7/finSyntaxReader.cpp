@@ -104,7 +104,7 @@ finErrorCode finSyntaxReader::readNextToken()
 
 finSyntaxTree *finSyntaxReader::getSyntaxTree()
 {
-    if ( this->_isReading )
+    if ( !this->_isReading )
         return NULL;
 
     if ( this->_syntaxTree != NULL )

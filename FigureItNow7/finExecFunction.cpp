@@ -285,7 +285,7 @@ finExecFunction::installSystemFunctions (finExecEnvironment *rootenv)
         paramlist = _finSystemFunctionList[i]._paramCsvList.split(',');
         curfunc->clearParameterNames();
         for ( int j = 0; j < paramlist.count(); j++ ) {
-            errcode = curfunc->appendParameterName(paramlist.at(i));
+            errcode = curfunc->appendParameterName(paramlist.at(j));
             if ( finErrorCodeKits::isErrorResult(errcode) )
                 goto item_bad;
         }

@@ -5,10 +5,14 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    finErrorCode errcode;
     this->synreader = NULL;
-    this->machine.initEnvironmentFromRoot();
-    this->machine.setFigureContainer(&this->figContainer);
+    errcode = this->machine.initEnvironmentFromRoot();
+    printf ("init Env (errno=%d)\n", errcode);
+    errcode = this->machine.setFigureContainer(&this->figContainer);
+    printf ("init Fig Container (errno=%d)\n", errcode);
     ui->setupUi(this);
+    fflush(stdout);
 }
 
 MainWindow::~MainWindow()
@@ -68,15 +72,19 @@ void MainWindow::on_pushButton_3_clicked()
 {
     finErrorCode errcode;
 
-    this->machine.setScriptCode(this->ui->lineEdit->text());
-    this->machine.releaseCompile();
+    this->machine.setScriptCode(ui->plainTextEdit->toPlainText());
     errcode = this->machine.compile();
     if ( finErrorCodeKits::isErrorResult(errcode) )
-        printf("ERROR when compile!\n");
+        printf("ERROR when compile! (%d)\n", errcode);
 
     errcode = this->machine.execute();
     if ( finErrorCodeKits::isErrorResult(errcode) )
-        printf("ERROR when execute!\n");
+        printf("ERROR when execute! (%d)\n", errcode);
 
+    if (this->machine.getSyntaxTree() != NULL)
+        this->machine.getSyntaxTree()->getRootNode()->dump();
+    else
+        printf("Syntax Tree is NULL\n");
     this->figContainer.dump();
+    fflush(stdout);
 }
