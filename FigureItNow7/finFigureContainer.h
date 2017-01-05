@@ -42,6 +42,8 @@ public:
     finFigureObject *getFigureObjectAt(int idx);
 
     finErrorCode appendFigureObject(finFigureObject *figobj);
+
+    void dump() const;
 };
 
 #endif // FINFIGURECONTAINER_H

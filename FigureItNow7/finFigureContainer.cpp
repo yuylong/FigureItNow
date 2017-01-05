@@ -65,3 +65,11 @@ finErrorCode finFigureContainer::appendFigureObject(finFigureObject *figobj)
     this->_figList.append(figobj);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+void finFigureContainer::dump() const
+{
+    printf ("Figure Container (Cnt: %d)\n", this->_figList.count());
+
+    for ( int i = 0; i < this->_figList.count(); i++ )
+        this->_figList.at(i)->dump();
+}
