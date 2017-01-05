@@ -1,38 +1,26 @@
 #include "finSyntaxReader.h"
 
 finSyntaxReader::finSyntaxReader()
-    : _syntaxStack()
+    : _lexReader(), _syntaxStack()
 {
     this->_syntaxTree = NULL;
     this->_isReading = false;
-    this->_lexReader = NULL;
-    this->_isExternLexReader = false;
 }
 
-finLexReader *finSyntaxReader::getLexReader() const
+const finLexReader *finSyntaxReader::getLexReader() const
 {
-    return this->_lexReader;
+    return &this->_lexReader;
 }
+
+finLexReader *finSyntaxReader::getLexReader()
+{
+    return &this->_lexReader;
+}
+
 
 QString finSyntaxReader::getScriptCode() const
 {
-    if ( this->_lexReader != NULL )
-        return this->_lexReader->getString();
-    else
-        return QString();
-}
-
-finErrorCode finSyntaxReader::setLexReader(finLexReader *newlexreader)
-{
-    if ( this->_isReading )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
-
-    if ( this->_lexReader != NULL && !this->_isExternLexReader )
-        delete this->_lexReader;
-
-    this->_lexReader = newlexreader;
-    this->_isExternLexReader = true;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return this->_lexReader.getString();
 }
 
 finErrorCode finSyntaxReader::setScriptCode(const QString &scriptcode)
@@ -40,20 +28,11 @@ finErrorCode finSyntaxReader::setScriptCode(const QString &scriptcode)
     if ( this->_isReading )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
-    finLexReader *newlexreader = new finLexReader();
-    if ( newlexreader == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-
-    finErrorCode errcode = newlexreader->setString(scriptcode);
+    finErrorCode errcode = this->_lexReader.setString(scriptcode);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
-    if ( this->_lexReader != NULL && !this->_isExternLexReader )
-        delete this->_lexReader;
-
-    this->_lexReader = newlexreader;
-    this->_isExternLexReader = false;
-    return errcode;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finSyntaxReader::startRead()
@@ -61,7 +40,7 @@ finErrorCode finSyntaxReader::startRead()
     if ( this->_isReading )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
-    finErrorCode errcode = this->_lexReader->resetPosition();
+    finErrorCode errcode = this->_lexReader.resetPosition();
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
@@ -91,7 +70,7 @@ finErrorCode finSyntaxReader::readNextToken()
     if ( lexnode == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
-    finErrorCode errcode = this->_lexReader->getNextLextNode(lexnode);
+    finErrorCode errcode = this->_lexReader.getNextLextNode(lexnode);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
     if ( errcode == finErrorCodeKits::FIN_EC_REACH_BOTTOM )
@@ -129,7 +108,7 @@ finSyntaxTree *finSyntaxReader::getSyntaxTree()
         return NULL;
 
     syntree->setRootNode(roottk);
-    syntree->setScriptCode(this->_lexReader->getString());
+    syntree->setScriptCode(this->_lexReader.getString());
     for ( int i = 0; i < this->_errList.count(); i++ ) {
         finSyntaxError *synerr = this->_errList.at(i);
         syntree->appendSyntaxError(synerr);

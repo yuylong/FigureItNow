@@ -35,16 +35,15 @@ protected:
     finSyntaxTree *_syntaxTree;
     bool _isReading;
 
-    finLexReader *_lexReader;
-    bool _isExternLexReader;
+    finLexReader _lexReader;
 
 public:
     finSyntaxReader();
 
-    finLexReader *getLexReader() const;
+    const finLexReader *getLexReader() const;
+    finLexReader *getLexReader();
     QString getScriptCode() const;
 
-    finErrorCode setLexReader(finLexReader *newlexreader);
     finErrorCode setScriptCode(const QString &scriptcode);
 
     finErrorCode startRead();
