@@ -36,8 +36,6 @@ protected:
     QList<finSyntaxNode *> _syntaxStack;
     QList<finSyntaxError *> _errList;
 
-    finSyntaxTree *_syntaxTree;
-
 public:
     finSyntaxReader();
 
@@ -54,7 +52,6 @@ public:
     QList<finSyntaxNode *> *getSyntaxStack() { return &this->_syntaxStack; }
     finSyntaxTree *getSyntaxTree();
 
-    finErrorCode disposeSyntaxTree();
     finErrorCode disposeAllRead();
 
 private:

@@ -29,7 +29,9 @@ public:
 
     finErrorCode setRootNode(const finSyntaxNode *rtnode);
     finErrorCode appendSyntaxNode(const finSyntaxNode *synnode);
+    finErrorCode prependSyntaxNode(const finSyntaxNode *synnode);
     finErrorCode appendSyntaxNodeList(const QList<finSyntaxNode *> *list);
+    finErrorCode appendSyntaxNodeStack(const QList<finSyntaxNode *> *list);
     finErrorCode clearSyntaxNodes();
 
     finErrorCode setScriptCode(const QString &script);

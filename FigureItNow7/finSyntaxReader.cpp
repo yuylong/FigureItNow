@@ -3,7 +3,6 @@
 finSyntaxReader::finSyntaxReader()
     : _lexReader(), _syntaxStack()
 {
-    this->_syntaxTree = NULL;
     this->_isReading = false;
 }
 
@@ -83,55 +82,21 @@ finSyntaxTree *finSyntaxReader::getSyntaxTree()
     if ( !this->_isReading )
         return NULL;
 
-    if ( this->_syntaxTree != NULL )
-        return this->_syntaxTree;
-
-    finSyntaxNode roottk;
-    roottk.setType(finSyntaxNode::FIN_SN_TYPE_PROGRAM);
-    for ( int i = 0; i < this->_syntaxStack.count(); i++ ) {
-        finSyntaxNode *subtk = this->_syntaxStack.at(i);
-        if ( finSyntaxNode::isExpressLevelType(subtk->getType()) ) {
-            // TODO: Set a warning
-        }
-        roottk.prependSubSyntaxNode(subtk);
-    }
-
     finSyntaxTree *syntree = new finSyntaxTree();
     if ( syntree == NULL )
         return NULL;
 
-    syntree->setRootNode(&roottk);
-    syntree->setScriptCode(this->_lexReader.getString());
-    for ( int i = 0; i < this->_errList.count(); i++ ) {
-        finSyntaxError *synerr = this->_errList.at(i);
-        syntree->appendSyntaxError(synerr);
+    finErrorCode errcode = syntree->appendSyntaxNodeStack(&this->_syntaxStack);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete syntree;
+        return NULL;
     }
-
-    this->_syntaxTree = syntree;
     return syntree;
 }
 
-finErrorCode finSyntaxReader::disposeSyntaxTree()
-{
-    if ( this->_isReading )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
-
-    if ( this->_syntaxTree == NULL )
-        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
-
-    finSyntaxNode *roottk = this->_syntaxTree->getRootNode();
-    delete this->_syntaxTree;
-    this->_syntaxTree = NULL;
-    delete roottk;
-
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
-}
 
 finErrorCode finSyntaxReader::disposeAllRead()
 {
-    if ( this->_syntaxTree != NULL )
-        this->disposeSyntaxTree();
-
     while ( !this->_syntaxStack.empty() ) {
         finSyntaxNode *syntk = this->_syntaxStack.first();
         this->_syntaxStack.removeFirst();

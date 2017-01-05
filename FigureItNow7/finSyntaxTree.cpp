@@ -62,15 +62,85 @@ finErrorCode finSyntaxTree::appendSyntaxNode(const finSyntaxNode *synnode)
     if ( synnode == NULL)
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    if ( !finSyntaxNode::isStatementLevelType(synnode->getType()) )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    finSyntaxNode *mynode = new finSyntaxNode();
+    if ( mynode == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    finErrorCode errcode = mynode->copyNode(synnode);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        mynode->disposeAll();
+        delete mynode;
+        return errcode;
+    }
+
+    errcode = this->_rootNode.appendSubSyntaxNode(mynode);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        mynode->disposeAll();
+        delete mynode;
+        return errcode;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finSyntaxTree::prependSyntaxNode(const finSyntaxNode *synnode)
+{
+    if ( synnode == NULL)
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    if ( !finSyntaxNode::isStatementLevelType(synnode->getType()) )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    finSyntaxNode *mynode = new finSyntaxNode();
+    if ( mynode == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    finErrorCode errcode = mynode->copyNode(synnode);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        mynode->disposeAll();
+        delete mynode;
+        return errcode;
+    }
+
+    errcode = this->_rootNode.prependSubSyntaxNode(mynode);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        mynode->disposeAll();
+        delete mynode;
+        return errcode;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finSyntaxTree::appendSyntaxNodeList(const QList<finSyntaxNode *> *list)
 {
-    if ( list == NULL)
+    if ( list == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    for ( int i = 0; i < list->count(); i++ ) {
+        const finSyntaxNode *synnode = list->at(i);
+
+        finErrorCode errcode = this->appendSyntaxNode(synnode);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finSyntaxTree::appendSyntaxNodeStack(const QList<finSyntaxNode *> *list)
+{
+    if ( list == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    for ( int i = list->count() - 1; i >= 0; i-- ) {
+        const finSyntaxNode *synnode = list->at(i);
+
+        finErrorCode errcode = this->appendSyntaxNode(synnode);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finSyntaxTree::clearSyntaxNodes()
