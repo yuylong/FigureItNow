@@ -71,14 +71,12 @@ finErrorCode finSyntaxTree::appendSyntaxNode(const finSyntaxNode *synnode)
 
     finErrorCode errcode = mynode->copyNode(synnode);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        mynode->disposeAll();
         delete mynode;
         return errcode;
     }
 
     errcode = this->_rootNode.appendSubSyntaxNode(mynode);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        mynode->disposeAll();
         delete mynode;
         return errcode;
     }
@@ -99,14 +97,12 @@ finErrorCode finSyntaxTree::prependSyntaxNode(const finSyntaxNode *synnode)
 
     finErrorCode errcode = mynode->copyNode(synnode);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        mynode->disposeAll();
         delete mynode;
         return errcode;
     }
 
     errcode = this->_rootNode.prependSubSyntaxNode(mynode);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        mynode->disposeAll();
         delete mynode;
         return errcode;
     }

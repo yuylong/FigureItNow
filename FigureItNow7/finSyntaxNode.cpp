@@ -6,6 +6,11 @@ finSyntaxNode::finSyntaxNode()
     this->_type = FIN_SN_TYPE_DUMMY;
 }
 
+finSyntaxNode::~finSyntaxNode()
+{
+    this->disposeAll();
+}
+
 finErrorCode finSyntaxNode::copyNode(const finSyntaxNode *srcnode)
 {
     finErrorCode errcode;
@@ -102,6 +107,16 @@ finErrorCode finSyntaxNode::prependSubSyntaxNode(finSyntaxNode *synnode)
 {
     this->_subSyntaxList.prepend(synnode);
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finSyntaxNode *finSyntaxNode::pickSubSyntaxNode(int idx)
+{
+    if ( idx < 0 || idx >= this->_subSyntaxList.count() )
+        return NULL;
+
+    finSyntaxNode *retnode = this->_subSyntaxList.at(idx);
+    this->_subSyntaxList.removeAt(idx);
+    return retnode;
 }
 
 bool finSyntaxNode::isExpressLevelType(finSyntaxNodeType type)

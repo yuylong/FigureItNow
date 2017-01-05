@@ -55,6 +55,7 @@ protected:
 
 public:
     finSyntaxNode();
+    ~finSyntaxNode();
 
     finErrorCode copyNode(const finSyntaxNode *srcnode);
 
@@ -70,6 +71,7 @@ public:
     finErrorCode setCommandLexNode(const finLexNode *lexnode);
     finErrorCode appendSubSyntaxNode(finSyntaxNode *synnode);
     finErrorCode prependSubSyntaxNode(finSyntaxNode *synnode);
+    finSyntaxNode *pickSubSyntaxNode(int idx);
 
     finErrorCode disposeCommandLexNode();
     finErrorCode disposeSubSyntaxNodes();

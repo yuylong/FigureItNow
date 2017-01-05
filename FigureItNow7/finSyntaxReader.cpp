@@ -16,7 +16,6 @@ finLexReader *finSyntaxReader::getLexReader()
     return &this->_lexReader;
 }
 
-
 QString finSyntaxReader::getScriptCode() const
 {
     return this->_lexReader.getString();
@@ -109,7 +108,6 @@ finErrorCode finSyntaxReader::disposeAllRead()
     while ( !this->_syntaxStack.empty() ) {
         finSyntaxNode *syntk = this->_syntaxStack.first();
         this->_syntaxStack.removeFirst();
-        syntk->disposeAll();
         delete syntk;
     }
 
@@ -447,7 +445,7 @@ finErrorCode finSyntaxReader::processRightBracket(finLexNode *lexnode)
 
     bool foundcosbrk = false;
     while ( this->_syntaxStack.count() > 0) {
-        finSyntaxNode *curnode = this->_syntaxStack.at(0);
+        finSyntaxNode *curnode = this->_syntaxStack.first();
         finLexNode *curlex = curnode->getCommandLexNode();
         this->_syntaxStack.removeFirst();
 
@@ -704,7 +702,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
 
     bool hasinst = false;
     while ( this->_syntaxStack.count() > 0 ) {
-        finSyntaxNode *cursyn = this->_syntaxStack.at(0);
+        finSyntaxNode *cursyn = this->_syntaxStack.first();
         finLexNode *curlex = cursyn->getCommandLexNode();
 
         if ( cursyn->getType() ==  finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
@@ -754,7 +752,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
          prevlex->getType() != finLexNode::FIN_LN_TYPE_KEYWORD )
         return finErrorCodeKits::FIN_EC_SUCCESS;
 
-    finSyntaxNode *stttk = this->_syntaxStack.at(0);
+    finSyntaxNode *stttk = this->_syntaxStack.first();
     finLexNode *sttlex = stttk->getCommandLexNode();
 
     if ( sttlex->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
@@ -786,7 +784,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
         if ( handleelse ) {
             finSyntaxNode *condtk = NULL;
             if ( prevtk->getSubListCount() > 0 )
-                condtk = prevtk->getSubSyntaxNode(0);
+                condtk = prevtk->pickSubSyntaxNode(0);
 
             this->_syntaxStack.removeFirst();
             this->_syntaxStack.removeFirst();
@@ -794,7 +792,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
             if ( this->_syntaxStack.count() <= 0 )
                 return finErrorCodeKits::FIN_EC_READ_ERROR;
 
-            prevtk = this->_syntaxStack.at(0);
+            prevtk = this->_syntaxStack.first();
             if ( prevtk->getType() != finSyntaxNode::FIN_SN_TYPE_BRANCH )
                 return finErrorCodeKits::FIN_EC_READ_ERROR;
             if ( prevtk->getSubListCount() % 2 != 0 )
@@ -831,7 +829,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
                 return finErrorCodeKits::FIN_EC_READ_ERROR;
 
             if ( sttsubcnt > 0 )
-                prevtk->appendSubSyntaxNode(stttk->getSubSyntaxNode(0));
+                prevtk->appendSubSyntaxNode(stttk->pickSubSyntaxNode(0));
 
             this->_syntaxStack.removeFirst();
             delete stttk;
@@ -846,7 +844,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
             if ( prevsubcnt != 0 || sttsubcnt != 1 )
                 return finErrorCodeKits::FIN_EC_READ_ERROR;
 
-            prevtk->appendSubSyntaxNode(stttk->getSubSyntaxNode(0));
+            prevtk->appendSubSyntaxNode(stttk->pickSubSyntaxNode(0));
 
             this->_syntaxStack.removeFirst();
             delete stttk;
