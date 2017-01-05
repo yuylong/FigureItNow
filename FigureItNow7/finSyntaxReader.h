@@ -45,6 +45,7 @@ public:
 
     finErrorCode setScriptCode(const QString &scriptcode);
 
+    bool isReading() const;
     finErrorCode startRead();
     finErrorCode stopRead();
     finErrorCode readNextToken();

@@ -27,6 +27,7 @@ finErrorCode finSyntaxReader::setScriptCode(const QString &scriptcode)
     if ( this->_isReading )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
+    this->_lexReader.resetPosition();
     finErrorCode errcode = this->_lexReader.setString(scriptcode);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
@@ -34,16 +35,21 @@ finErrorCode finSyntaxReader::setScriptCode(const QString &scriptcode)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+bool finSyntaxReader::isReading() const
+{
+    return this->_isReading;
+}
+
 finErrorCode finSyntaxReader::startRead()
 {
     if ( this->_isReading )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
+    this->disposeAllRead();
+
     finErrorCode errcode = this->_lexReader.resetPosition();
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
-
-    this->disposeAllRead();
 
     this->_isReading = true;
     return finErrorCodeKits::FIN_EC_SUCCESS;

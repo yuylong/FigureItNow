@@ -148,41 +148,42 @@ finErrorCode finExecMachine::setScriptCode(const QString &script)
 
 bool finExecMachine::isCompiled() const
 {
-    return this->_isCompiled;
+    return this->_syntaxRdr.isReading();
 }
 
 finErrorCode finExecMachine::compile()
 {
     finErrorCode errcode;
-
-    if ( this->_isCompiled )
+printf("0 (reading:%d)\n", this->_syntaxRdr.isReading());
+    if ( this->isCompiled() )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
-
-    this->_syntaxRdr.stopRead();
+printf("1\n");
+    //this->_syntaxRdr.stopRead();
     errcode = this->_syntaxRdr.setScriptCode(this->_scriptCode);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
-
+printf("2\n");
     errcode = this->_syntaxRdr.startRead();
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
-
+printf("3\n");
     errcode = finErrorCodeKits::FIN_EC_SUCCESS;
     while ( errcode != finErrorCodeKits::FIN_EC_REACH_BOTTOM ) {
         errcode = this->_syntaxRdr.readNextToken();
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
     }
-
+printf("4\n");
     this->_isCompiled = true;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finExecMachine::releaseCompile()
 {
-    if ( !this->_isCompiled )
+    if ( !this->isCompiled() )
         return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
 
+    this->_isCompiled = false;
     this->_syntaxRdr.stopRead();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
@@ -194,7 +195,7 @@ printf("A\n");
     if ( this->_baseEnv == NULL || this->_baseFigContainer == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 printf("B\n");
-    if ( !this->_isCompiled )
+    if ( !this->isCompiled() )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 printf("C\n");
     finSyntaxTree *syntree = this->_syntaxRdr.getSyntaxTree();
@@ -211,6 +212,8 @@ printf("E\n");
 printf("F\n");
     if ( retvar != NULL )
         delete retvar;
+
+    delete syntree;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
