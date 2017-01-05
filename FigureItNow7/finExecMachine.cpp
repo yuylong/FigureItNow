@@ -165,11 +165,6 @@ finErrorCode finExecMachine::compile()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finExecMachine::releaseCompile()
-{
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
 finErrorCode finExecMachine::execute()
 {
     if ( this->_baseEnv == NULL || this->_baseFigContainer == NULL )

@@ -73,8 +73,6 @@ void MainWindow::on_pushButton_3_clicked()
     finErrorCode errcode;
 
     this->machine.setScriptCode(ui->plainTextEdit->toPlainText());
-    if ( this->machine.isCompiled() )
-        this->machine.releaseCompile();
 
     errcode = this->machine.compile();
     if ( finErrorCodeKits::isErrorResult(errcode) )

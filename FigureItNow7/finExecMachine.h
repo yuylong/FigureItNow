@@ -72,8 +72,6 @@ public:
 
     bool isCompiled() const;
     finErrorCode compile();
-    finErrorCode releaseCompile();
-
     finErrorCode execute();
     void disposeExecutionError();
 
