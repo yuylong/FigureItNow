@@ -24,10 +24,12 @@
 
 #include "finErrorCode.h"
 #include "finExecFlowControl.h"
+#include "finExecCompiler.h"
 #include "finFigureContainer.h"
 #include "finLexNode.h"
 #include "finSyntaxReader.h"
 #include "finSyntaxError.h"
+#include "finSyntaxTree.h"
 
 class finExecVariable;
 class finExecFunction;
@@ -42,8 +44,8 @@ private:
     finExecEnvironment *_baseEnv;
     finFigureContainer *_baseFigContainer;
 
-    QString _scriptCode;
-    finSyntaxReader _syntaxRdr;
+    finExecCompiler _compiler;
+    finSyntaxTree *_synTree;
     QList<finSyntaxError> _errList;
 
 public:

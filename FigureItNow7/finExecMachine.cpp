@@ -23,7 +23,7 @@ finExecMachine::finExecMachine()
     this->_name = QString();
     this->_baseEnv = NULL;
     this->_baseFigContainer = NULL;
-    this->_scriptCode = QString();
+    this->_synTree = NULL;
 }
 
 finExecMachine::finExecMachine(const QString &name)
@@ -31,7 +31,7 @@ finExecMachine::finExecMachine(const QString &name)
     this->_name = name;
     this->_baseEnv = NULL;
     this->_baseFigContainer = NULL;
-    this->_scriptCode = QString();
+    this->_synTree = NULL;
 }
 
 finExecMachine::~finExecMachine()
@@ -39,8 +39,6 @@ finExecMachine::~finExecMachine()
     if ( this->_baseEnv != NULL )
         delete this->_baseEnv;
 
-    this->_syntaxRdr.stopRead();
-    this->_syntaxRdr.disposeAllRead();
     this->disposeExecutionError();
 }
 
@@ -61,17 +59,20 @@ finFigureContainer *finExecMachine::getFigureContainer()
 
 QString finExecMachine::getScriptCode() const
 {
-    return this->_scriptCode;
+    return this->_compiler.getScriptCode();
 }
 
 QString finExecMachine::getCompiledScriptCode() const
 {
-    return this->_syntaxRdr.getScriptCode();
+    if ( this->_synTree == NULL )
+        return QString();
+
+    return this->_synTree->getScriptCode();
 }
 
 finSyntaxTree *finExecMachine::getSyntaxTree()
 {
-    return this->_syntaxRdr.getSyntaxTree();
+    return this->_synTree;
 }
 
 int finExecMachine::getExecuteErrorCount() const
@@ -140,74 +141,54 @@ finErrorCode finExecMachine::setFigureContainer(finFigureContainer *figcontainer
 
 finErrorCode finExecMachine::setScriptCode(const QString &script)
 {
-    this->_scriptCode = script;
+    this->_compiler.setScriptCode(script);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 bool finExecMachine::isCompiled() const
 {
-    return this->_syntaxRdr.isReading();
+    return (this->_synTree != NULL);
 }
 
 finErrorCode finExecMachine::compile()
 {
-    finErrorCode errcode;
+    if ( this->_synTree != NULL )
+        delete this->_synTree;
 
-    if ( this->isCompiled() )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+    this->_synTree = this->_compiler.compile();
 
-    errcode = this->_syntaxRdr.setScriptCode(this->_scriptCode);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
-        return errcode;
-
-    errcode = this->_syntaxRdr.startRead();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
-        return errcode;
-
-    errcode = finErrorCodeKits::FIN_EC_SUCCESS;
-    while ( errcode != finErrorCodeKits::FIN_EC_REACH_BOTTOM ) {
-        errcode = this->_syntaxRdr.readNextToken();
-        if ( finErrorCodeKits::isErrorResult(errcode) )
-            return errcode;
-    }
+    if ( this->_synTree == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+    if ( this->_synTree->getErrorCount() > 0 )
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finExecMachine::releaseCompile()
 {
-    if ( !this->isCompiled() )
-        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
-
-    this->_syntaxRdr.stopRead();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finExecMachine::execute()
 {
-    finErrorCode errcode;
-
     if ( this->_baseEnv == NULL || this->_baseFigContainer == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
-
-    if ( !this->isCompiled() )
+    if ( this->_synTree == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
-
-    finSyntaxTree *syntree = this->_syntaxRdr.getSyntaxTree();
-    if ( syntree == NULL )
-        return finErrorCodeKits::FIN_EC_READ_ERROR;
 
     finExecFlowControl flowctl;
     flowctl.setFlowNext();
 
+    this->disposeExecutionError();
+
     finExecVariable *retvar = NULL;
-    errcode = this->instantExecute(syntree->getRootNode(), this->_baseEnv, &retvar, &flowctl);
+    finErrorCode errcode = this->instantExecute(this->_synTree->getRootNode(), this->_baseEnv, &retvar, &flowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
     if ( retvar != NULL )
         delete retvar;
-    delete syntree;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

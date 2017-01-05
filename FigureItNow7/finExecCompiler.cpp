@@ -6,6 +6,13 @@ finExecCompiler::finExecCompiler()
     return;
 }
 
+finExecCompiler::~finExecCompiler()
+{
+    if ( this->_synReader.isReading() )
+        this->_synReader.stopRead();
+    this->_synReader.disposeAllRead();
+}
+
 QString finExecCompiler::getScriptCode() const
 {
     return this->_scriptCode;
@@ -14,6 +21,7 @@ QString finExecCompiler::getScriptCode() const
 finErrorCode finExecCompiler::setScriptCode(const QString &script)
 {
     this->_scriptCode = script;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finSyntaxTree *finExecCompiler::compile()
@@ -49,7 +57,7 @@ finSyntaxTree *finExecCompiler::compile()
     return rettree;
 }
 
-finSyntaxTree *buildErrorTree(const QString &errstr) const
+finSyntaxTree *finExecCompiler::buildErrorTree(const QString &errstr) const
 {
     finSyntaxTree *rettree = new finSyntaxTree();
     if ( rettree == NULL )

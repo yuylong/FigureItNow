@@ -14,6 +14,7 @@ private:
 
 public:
     finExecCompiler();
+    ~finExecCompiler();
 
     QString getScriptCode() const;
     finErrorCode setScriptCode(const QString &script);
