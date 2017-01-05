@@ -23,6 +23,18 @@ finSyntaxNode *finSyntaxTree::getRootNode()
     return &this->_rootNode;
 }
 
+QString finSyntaxTree::getScriptCode() const
+{
+    QString retstr;
+    QTextStream retstm(&retstr);
+
+    for ( int i; i < this->_scriptCodes.count(); i++ ) {
+        retstm << this->_scriptCodes.at(i) << endl;
+    }
+    retstm << flush;
+    return retstr;
+}
+
 QString finSyntaxTree::getCodeLine(int line) const
 {
     if ( line < 0 || line >= this->_scriptCodes.count() )
@@ -185,7 +197,7 @@ QString finSyntaxTree::dumpSyntaxError(const finSyntaxError &synerr, int idx) co
         retstm << idx;
     else
         retstm << "err";
-    retstm << ": " << synerr.getErrorString() << '\n';
+    retstm << ": " << synerr.getErrorString() << endl;
 
     int row = synerr.getRow();
     int col = synerr.getColumn();

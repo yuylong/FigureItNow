@@ -145,7 +145,6 @@ finErrorCode finSyntaxNode::disposeSubSyntaxNodes()
     while ( this->_subSyntaxList.count() > 0 ) {
         finSyntaxNode *subtk = this->_subSyntaxList.at(0);
         this->_subSyntaxList.removeFirst();
-        subtk->disposeAll();
         delete subtk;
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
@@ -158,10 +157,12 @@ finErrorCode finSyntaxNode::disposeAll()
     errcode1 = this->disposeCommandLexNode();
     errcode2 = this->disposeSubSyntaxNodes();
 
-    if ( errcode1 == finErrorCodeKits::FIN_EC_SUCCESS )
+    if ( finErrorCodeKits::isErrorResult(errcode1) )
+        return errcode1;
+    else if ( finErrorCodeKits::isErrorResult(errcode2) )
         return errcode2;
     else
-        return errcode1;
+        return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 bool finSyntaxNode::isStatementLevelType(finSyntaxNodeType type)

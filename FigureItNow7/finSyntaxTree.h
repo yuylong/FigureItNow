@@ -23,6 +23,7 @@ public:
 
     const finSyntaxNode *getRootNode() const;
     finSyntaxNode *getRootNode();
+    QString getScriptCode() const;
     QString getCodeLine(int line) const;
     int getErrorCount() const;
     finSyntaxError getSyntaxError(int idx) const;
