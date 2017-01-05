@@ -59,7 +59,7 @@ finErrorCode finLexReader::resetPosition()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finLexReader::getNextLextNode(finLexNode *retnode)
+finErrorCode finLexReader::getNextLexNode(finLexNode *retnode)
 {   
     finErrorCode ret;
     int typeordernum;
