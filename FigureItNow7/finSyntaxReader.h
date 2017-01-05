@@ -34,7 +34,7 @@ protected:
 
     bool _isReading;
     QList<finSyntaxNode *> _syntaxStack;
-    QList<finSyntaxError *> _errList;
+    QList<finSyntaxError> _errList;
 
 public:
     finSyntaxReader();

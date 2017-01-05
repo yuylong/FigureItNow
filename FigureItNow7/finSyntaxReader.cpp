@@ -91,6 +91,9 @@ finSyntaxTree *finSyntaxReader::getSyntaxTree()
         delete syntree;
         return NULL;
     }
+
+    syntree->setScriptCode(this->_lexReader.getString());
+    syntree->appendSyntaxErrorList(&this->_errList);
     return syntree;
 }
 
@@ -104,12 +107,7 @@ finErrorCode finSyntaxReader::disposeAllRead()
         delete syntk;
     }
 
-    while ( !this->_errList.empty() ) {
-        finSyntaxError *synerr = this->_errList.first();
-        this->_errList.removeFirst();
-        delete synerr;
-    }
-
+    this->_errList.clear();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -1024,17 +1022,15 @@ finErrorCode finSyntaxReader::meshSquareBracket()
         this->_syntaxStack.removeFirst();
         this->_syntaxStack.removeFirst();
 
-        finLexNode *meshedlex = new finLexNode();
-        if ( meshedlex == NULL )
-            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-        meshedlex->setType(finLexNode::FIN_LN_TYPE_OPERATOR);
-        meshedlex->setOperator(finLexNode::FIN_LN_OPTYPE_ACCESS);
+        finLexNode meshedlex;
+        meshedlex.setType(finLexNode::FIN_LN_TYPE_OPERATOR);
+        meshedlex.setOperator(finLexNode::FIN_LN_OPTYPE_ACCESS);
 
         finSyntaxNode *meshedtk = new finSyntaxNode();
         if ( meshedtk == NULL )
             return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
         meshedtk->setType(finSyntaxNode::FIN_SN_TYPE_EXPRESS);
-        meshedtk->setCommandLexNode(meshedlex);
+        meshedtk->setCommandLexNode(&meshedlex);
         meshedtk->appendSubSyntaxNode(prevtk);
         meshedtk->appendSubSyntaxNode(brcktk);
 

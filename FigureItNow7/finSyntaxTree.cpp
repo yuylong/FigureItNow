@@ -36,10 +36,10 @@ int finSyntaxTree::getErrorCount() const
     return this->_errList.count();
 }
 
-finSyntaxError *finSyntaxTree::getSyntaxError(int idx) const
+finSyntaxError finSyntaxTree::getSyntaxError(int idx) const
 {
     if ( idx < 0 || idx >= this->_errList.count() )
-        return NULL;
+        return finSyntaxError();
 
     return this->_errList.at(idx);
 }
@@ -62,8 +62,8 @@ finErrorCode finSyntaxTree::appendSyntaxNode(const finSyntaxNode *synnode)
     if ( synnode == NULL)
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    if ( !finSyntaxNode::isStatementLevelType(synnode->getType()) )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    //if ( !finSyntaxNode::isStatementLevelType(synnode->getType()) )
+    //    return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
     finSyntaxNode *mynode = new finSyntaxNode();
     if ( mynode == NULL )
@@ -90,8 +90,8 @@ finErrorCode finSyntaxTree::prependSyntaxNode(const finSyntaxNode *synnode)
     if ( synnode == NULL)
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    if ( !finSyntaxNode::isStatementLevelType(synnode->getType()) )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    //if ( !finSyntaxNode::isStatementLevelType(synnode->getType()) )
+    //    return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
     finSyntaxNode *mynode = new finSyntaxNode();
     if ( mynode == NULL )
@@ -154,12 +154,21 @@ finErrorCode finSyntaxTree::setScriptCode(const QString &script)
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
-finErrorCode finSyntaxTree::appendSyntaxError(finSyntaxError *synerr)
+finErrorCode finSyntaxTree::appendSyntaxError(const finSyntaxError &synerr)
 {
-    if ( synerr == NULL )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
-
     this->_errList.append(synerr);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finSyntaxTree::appendSyntaxErrorList(const QList<finSyntaxError> *list)
+{
+    this->_errList.append(*list);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finSyntaxTree::clearSyntaxErrorList()
+{
+    this->_errList.clear();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -171,27 +180,38 @@ void finSyntaxTree::disposeAll()
     this->_errList.clear();
 }
 
-QString finSyntaxTree::dumpSyntaxError(int idx) const
+QString finSyntaxTree::dumpSyntaxError(const finSyntaxError &synerr, int idx) const
 {
     QString retstr;
     QTextStream retstm(&retstr);
 
-    finSyntaxError *synerr = this->getSyntaxError(idx);
-    if ( synerr == NULL ) {
-        retstm << idx << ": No such error!" << flush;
-        return retstr;
-    }
+    if ( idx > 0 )
+        retstm << idx;
+    else
+        retstm << "err";
+    retstm << ": " << synerr.getErrorString() << '\n';
 
-    retstm << idx << ": " << synerr->getErrorString() << '\n';
-
-    int row = synerr->getRow();
-    int col = synerr->getColumn();
+    int row = synerr.getRow();
+    int col = synerr.getColumn();
     if ( row < this->_scriptCodes.count() ) {
-        retstm << "Code: " << this->_scriptCodes.at(synerr->getRow()) << endl;
+        retstm << "Code: " << this->_scriptCodes.at(synerr.getRow()) << endl;
         retstm << "      ";
         for ( int i = 0; i < col; i++ )
             retstm << " ";
         retstm << "^" << flush;
     }
     return retstr;
+}
+
+QString finSyntaxTree::dumpSyntaxError(int idx) const
+{
+    if ( idx < 0 || idx >= this->_errList.count() ) {
+        QString retstr;
+        QTextStream retstm(&retstr);
+
+        retstm << idx << ": No such error!" << flush;
+        return retstr;
+    }
+
+    return this->dumpSyntaxError(this->_errList.at(idx));
 }

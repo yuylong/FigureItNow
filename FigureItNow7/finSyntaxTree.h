@@ -15,7 +15,7 @@ class finSyntaxTree
 protected:
     finSyntaxNode _rootNode;
     QStringList _scriptCodes;
-    QList<finSyntaxError *> _errList;
+    QList<finSyntaxError> _errList;
 
 public:
     finSyntaxTree();
@@ -25,7 +25,7 @@ public:
     finSyntaxNode *getRootNode();
     QString getCodeLine(int line) const;
     int getErrorCount() const;
-    finSyntaxError *getSyntaxError(int idx) const;
+    finSyntaxError getSyntaxError(int idx) const;
 
     finErrorCode setRootNode(const finSyntaxNode *rtnode);
     finErrorCode appendSyntaxNode(const finSyntaxNode *synnode);
@@ -35,10 +35,14 @@ public:
     finErrorCode clearSyntaxNodes();
 
     finErrorCode setScriptCode(const QString &script);
-    finErrorCode appendSyntaxError(finSyntaxError *synerr);
+
+    finErrorCode appendSyntaxError(const finSyntaxError &synerr);
+    finErrorCode appendSyntaxErrorList(const QList<finSyntaxError> *list);
+    finErrorCode clearSyntaxErrorList();
 
     void disposeAll();
 
+    QString dumpSyntaxError(const finSyntaxError &synerr, int idx = -1) const;
     QString dumpSyntaxError(int idx) const;
 };
 
