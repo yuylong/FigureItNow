@@ -43,7 +43,6 @@ private:
     finFigureContainer *_baseFigContainer;
 
     QString _scriptCode;
-    bool _isCompiled;
     finSyntaxReader _syntaxRdr;
     QList<finSyntaxError> _errList;
 

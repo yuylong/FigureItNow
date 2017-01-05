@@ -691,18 +691,16 @@ finErrorCode finSyntaxReader::meshAllCommas()
         return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
 
     // Process E <- E,E,...,E
-    finLexNode *lexnode = new finLexNode();
-    if ( lexnode == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-    lexnode->setType(finLexNode::FIN_LN_TYPE_OPERATOR);
-    lexnode->setOperator(finLexNode::FIN_LN_OPTYPE_COMMA);
-    lexnode->setString(QString(","));
+    finLexNode lexnode;
+    lexnode.setType(finLexNode::FIN_LN_TYPE_OPERATOR);
+    lexnode.setOperator(finLexNode::FIN_LN_OPTYPE_COMMA);
+    lexnode.setString(QString(","));
 
     finSyntaxNode *synnode = new finSyntaxNode();
     if ( synnode == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
     synnode->setType(finSyntaxNode::FIN_SN_TYPE_EXPRESS);
-    synnode->setCommandLexNode(lexnode);
+    synnode->setCommandLexNode(&lexnode);
 
     bool hasinst = false;
     while ( this->_syntaxStack.count() > 0 ) {
@@ -948,17 +946,15 @@ finErrorCode finSyntaxReader::meshRoundBracket()
         this->_syntaxStack.removeFirst();
         this->_syntaxStack.removeFirst();
 
-        finLexNode *meshedlex = new finLexNode();
-        if ( meshedlex == NULL )
-            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-        meshedlex->setType(finLexNode::FIN_LN_TYPE_OPERATOR);
-        meshedlex->setOperator(finLexNode::FIN_LN_OPTYPE_FUNCTION);
+        finLexNode meshedlex;
+        meshedlex.setType(finLexNode::FIN_LN_TYPE_OPERATOR);
+        meshedlex.setOperator(finLexNode::FIN_LN_OPTYPE_FUNCTION);
 
         finSyntaxNode *meshedtk = new finSyntaxNode();
         if ( meshedtk == NULL )
             return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
         meshedtk->setType(finSyntaxNode::FIN_SN_TYPE_EXPRESS);
-        meshedtk->setCommandLexNode(meshedlex);
+        meshedtk->setCommandLexNode(&meshedlex);
         meshedtk->appendSubSyntaxNode(prevtk);
         meshedtk->appendSubSyntaxNode(brcktk);
 
