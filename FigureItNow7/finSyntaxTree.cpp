@@ -28,7 +28,7 @@ QString finSyntaxTree::getScriptCode() const
     QString retstr;
     QTextStream retstm(&retstr);
 
-    for ( int i; i < this->_scriptCodes.count(); i++ ) {
+    for ( int i = 0; i < this->_scriptCodes.count(); i++ ) {
         retstm << this->_scriptCodes.at(i) << endl;
     }
     retstm << flush;

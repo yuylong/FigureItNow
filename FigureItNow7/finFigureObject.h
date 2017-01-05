@@ -44,6 +44,7 @@ protected:
 
 public:
     finFigureObject();
+    virtual ~finFigureObject() { return; }
 
     finFigureObjectType getFigureType() const;
     const finFigureConfig *getFigureConfig() const;
@@ -61,6 +62,7 @@ protected:
 
 public:
     finFigureObjectDot();
+    virtual ~finFigureObjectDot() { return; }
 
     QPointF getPoint() const;
 
@@ -77,6 +79,7 @@ protected:
 
 public:
     finFigureObjectLine();
+    virtual ~finFigureObjectLine() { return; }
 
     QPointF getPoint1() const;
     QPointF getPoint2() const;
@@ -98,6 +101,7 @@ protected:
 
 public:
     finFigureObjectRect();
+    virtual ~finFigureObjectRect() { return; }
 
     QPointF getCenterPoint() const;
     QSizeF getSize() const;
