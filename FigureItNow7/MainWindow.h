@@ -7,6 +7,8 @@
 #include "finErrorCode.h"
 #include "finLexReader.h"
 #include "finSyntaxReader.h"
+#include "finExecMachine.h"
+#include "finFigureContainer.h"
 
 
 namespace Ui {
@@ -29,6 +31,8 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void on_pushButton_3_clicked();
+
 private:
     /*!
      * \brief ui
@@ -37,6 +41,9 @@ private:
 
 
     finSyntaxReader *synreader;
+
+    finExecMachine machine;
+    finFigureContainer figContainer;
 };
 
 #endif // MAINWINDOW_H

@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     this->synreader = NULL;
+    this->machine.initEnvironmentFromRoot();
+    this->machine.setFigureContainer(&this->figContainer);
     ui->setupUi(this);
 }
 
@@ -60,4 +62,21 @@ void MainWindow::on_pushButton_2_clicked()
 
 
     ui->lineEdit_2->setText(synstack->first()->getCommandLexNode()->getString());
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    finErrorCode errcode;
+
+    this->machine.setScriptCode(this->ui->lineEdit->text());
+    this->machine.releaseCompile();
+    errcode = this->machine.compile();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        printf("ERROR when compile!\n");
+
+    errcode = this->machine.execute();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        printf("ERROR when execute!\n");
+
+    this->figContainer.dump();
 }
