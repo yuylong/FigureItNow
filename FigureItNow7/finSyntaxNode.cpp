@@ -10,6 +10,10 @@ finErrorCode finSyntaxNode::copyNode(const finSyntaxNode *srcnode)
 {
     finErrorCode errcode;
     this->disposeAll();
+
+    if ( srcnode == NULL )
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+
     this->_type = srcnode->getType();
 
     errcode = this->_cmdLexNode.copyNode(srcnode->getCommandLexNode());
@@ -18,7 +22,7 @@ finErrorCode finSyntaxNode::copyNode(const finSyntaxNode *srcnode)
 
     for ( int i = 0; i < srcnode->getSubListCount(); i++ ) {
         finSyntaxNode *synnode = new finSyntaxNode();
-        if ( srcnode == NULL )
+        if ( synnode == NULL )
             return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
         errcode = synnode->copyNode(srcnode->getSubSyntaxNode(i));

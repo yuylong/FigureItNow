@@ -16,6 +16,9 @@ protected:
 
 public:
     finSyntaxError();
+    finSyntaxError(const finSyntaxError &src);
+
+    finErrorCode copySyntaxError(const finSyntaxError *src);
 
     unsigned int getRow() const;
     unsigned int getColumn() const;
@@ -25,7 +28,7 @@ public:
     finErrorCode setColumn(unsigned int col);
     finErrorCode setErrorString(const QString &errstr);
 
-    static finErrorCode appendExecutionError(finLexNode *lexnode, QList<finSyntaxError *> *errlist,
+    static finErrorCode appendExecutionError(const finLexNode *lexnode, QList<finSyntaxError> *errlist,
                                              const QString &errinfo);
 };
 

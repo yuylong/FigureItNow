@@ -7,6 +7,19 @@ finSyntaxError::finSyntaxError()
     this->_column = 0;
 }
 
+finSyntaxError::finSyntaxError(const finSyntaxError &src)
+{
+    this->copySyntaxError(&src);
+}
+
+finErrorCode finSyntaxError::copySyntaxError(const finSyntaxError *src)
+{
+    this->_row = src->getRow();
+    this->_column = src->getColumn();
+    this->_errString = src->getErrorString();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 unsigned int finSyntaxError::getRow() const
 {
     return this->_row;
@@ -40,19 +53,17 @@ finErrorCode finSyntaxError::setErrorString(const QString &errstr)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finSyntaxError::appendExecutionError(finLexNode *lexnode, QList<finSyntaxError *> *errlist,
+finErrorCode finSyntaxError::appendExecutionError(const finLexNode *lexnode, QList<finSyntaxError> *errlist,
                                                   const QString &errinfo)
 {
     if ( lexnode == NULL || errlist == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    finSyntaxError *synerr = new finSyntaxError();
-    if ( synerr == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+    finSyntaxError synerr;
+    synerr.setRow(lexnode->getRow());
+    synerr.setColumn(lexnode->getColumn());
+    synerr.setErrorString(errinfo);
 
-    synerr->setRow(lexnode->getRow());
-    synerr->setColumn(lexnode->getColumn());
-    synerr->setErrorString(errinfo);
     errlist->append(synerr);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

@@ -86,25 +86,21 @@ finSyntaxTree *finSyntaxReader::getSyntaxTree()
     if ( this->_syntaxTree != NULL )
         return this->_syntaxTree;
 
-    finSyntaxNode *roottk = new finSyntaxNode();
-    if ( roottk == NULL )
-        return NULL;
-
-    roottk->setType(finSyntaxNode::FIN_SN_TYPE_PROGRAM);
+    finSyntaxNode roottk;
+    roottk.setType(finSyntaxNode::FIN_SN_TYPE_PROGRAM);
     for ( int i = 0; i < this->_syntaxStack.count(); i++ ) {
         finSyntaxNode *subtk = this->_syntaxStack.at(i);
         if ( finSyntaxNode::isExpressLevelType(subtk->getType()) ) {
             // TODO: Set a warning
         }
-
-        roottk->prependSubSyntaxNode(subtk);
+        roottk.prependSubSyntaxNode(subtk);
     }
 
     finSyntaxTree *syntree = new finSyntaxTree();
     if ( syntree == NULL )
         return NULL;
 
-    syntree->setRootNode(roottk);
+    syntree->setRootNode(&roottk);
     syntree->setScriptCode(this->_lexReader.getString());
     for ( int i = 0; i < this->_errList.count(); i++ ) {
         finSyntaxError *synerr = this->_errList.at(i);

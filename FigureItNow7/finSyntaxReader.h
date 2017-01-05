@@ -30,12 +30,13 @@
 class finSyntaxReader
 {
 protected:
+    finLexReader _lexReader;
+
+    bool _isReading;
     QList<finSyntaxNode *> _syntaxStack;
     QList<finSyntaxError *> _errList;
-    finSyntaxTree *_syntaxTree;
-    bool _isReading;
 
-    finLexReader _lexReader;
+    finSyntaxTree *_syntaxTree;
 
 public:
     finSyntaxReader();

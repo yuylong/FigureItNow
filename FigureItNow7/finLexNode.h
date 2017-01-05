@@ -79,7 +79,9 @@ private:
 
 public:
     finLexNode();
+    finLexNode(const finLexNode &src);
 
+    finErrorCode reset();
     finErrorCode copyNode(const finLexNode *srcnode);
 
     finLexNodeType getType() const;

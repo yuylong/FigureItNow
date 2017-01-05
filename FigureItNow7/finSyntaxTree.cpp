@@ -3,14 +3,24 @@
 #include <QTextStream>
 
 finSyntaxTree::finSyntaxTree()
-    : _scriptCodes(), _errList()
+    : _rootNode(), _scriptCodes(), _errList()
 {
-    this->_rootNode = NULL;
+    this->_rootNode.setType(finSyntaxNode::FIN_SN_TYPE_PROGRAM);
 }
 
-finSyntaxNode *finSyntaxTree::getRootNode() const
+finSyntaxTree::~finSyntaxTree()
 {
-    return this->_rootNode;
+    this->disposeAll();
+}
+
+const finSyntaxNode *finSyntaxTree::getRootNode() const
+{
+    return &this->_rootNode;
+}
+
+finSyntaxNode *finSyntaxTree::getRootNode()
+{
+    return &this->_rootNode;
 }
 
 QString finSyntaxTree::getCodeLine(int line) const
@@ -34,10 +44,38 @@ finSyntaxError *finSyntaxTree::getSyntaxError(int idx) const
     return this->_errList.at(idx);
 }
 
-finErrorCode finSyntaxTree::setRootNode(finSyntaxNode *rtnode)
+finErrorCode finSyntaxTree::setRootNode(const finSyntaxNode *rtnode)
 {
-    this->_rootNode = rtnode;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    if ( rtnode == NULL)
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    if ( rtnode->getType() != finSyntaxNode::FIN_SN_TYPE_PROGRAM )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    rtnode->dump();
+
+    return this->_rootNode.copyNode(rtnode);
+}
+
+finErrorCode finSyntaxTree::appendSyntaxNode(const finSyntaxNode *synnode)
+{
+    if ( synnode == NULL)
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode finSyntaxTree::appendSyntaxNodeList(const QList<finSyntaxNode *> *list)
+{
+    if ( list == NULL)
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode finSyntaxTree::clearSyntaxNodes()
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 finErrorCode finSyntaxTree::setScriptCode(const QString &script)
@@ -53,6 +91,14 @@ finErrorCode finSyntaxTree::appendSyntaxError(finSyntaxError *synerr)
 
     this->_errList.append(synerr);
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+void finSyntaxTree::disposeAll()
+{
+    this->_rootNode.disposeAll();
+    this->_rootNode.setType(finSyntaxNode::FIN_SN_TYPE_PROGRAM);
+    this->_scriptCodes.clear();
+    this->_errList.clear();
 }
 
 QString finSyntaxTree::dumpSyntaxError(int idx) const

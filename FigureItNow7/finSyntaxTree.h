@@ -13,21 +13,29 @@
 class finSyntaxTree
 {
 protected:
-    finSyntaxNode *_rootNode;
+    finSyntaxNode _rootNode;
     QStringList _scriptCodes;
     QList<finSyntaxError *> _errList;
 
 public:
     finSyntaxTree();
+    ~finSyntaxTree();
 
-    finSyntaxNode *getRootNode() const;
+    const finSyntaxNode *getRootNode() const;
+    finSyntaxNode *getRootNode();
     QString getCodeLine(int line) const;
     int getErrorCount() const;
     finSyntaxError *getSyntaxError(int idx) const;
 
-    finErrorCode setRootNode(finSyntaxNode *rtnode);
+    finErrorCode setRootNode(const finSyntaxNode *rtnode);
+    finErrorCode appendSyntaxNode(const finSyntaxNode *synnode);
+    finErrorCode appendSyntaxNodeList(const QList<finSyntaxNode *> *list);
+    finErrorCode clearSyntaxNodes();
+
     finErrorCode setScriptCode(const QString &script);
     finErrorCode appendSyntaxError(finSyntaxError *synerr);
+
+    void disposeAll();
 
     QString dumpSyntaxError(int idx) const;
 };

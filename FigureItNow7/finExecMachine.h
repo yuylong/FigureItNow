@@ -45,7 +45,7 @@ private:
     QString _scriptCode;
     bool _isCompiled;
     finSyntaxReader _syntaxRdr;
-    QList<finSyntaxError *> _errList;
+    QList<finSyntaxError> _errList;
 
 public:
     finExecMachine();
@@ -59,7 +59,7 @@ public:
     QString getCompiledScriptCode() const;
     finSyntaxTree *getSyntaxTree();
     int getExecuteErrorCount() const;
-    const finSyntaxError *getExecuteErrorAt(int idx) const;
+    finSyntaxError getExecuteErrorAt(int idx) const;
 
     finErrorCode setName(const QString &name);
 

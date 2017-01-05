@@ -11,10 +11,26 @@ finLexNode::finLexNode() :
     this->_column = 0;
 }
 
+finLexNode::finLexNode(const finLexNode &src)
+{
+    this->copyNode(&src);
+}
+
+finErrorCode finLexNode::reset()
+{
+    this->_string = QString();
+    this->_type = FIN_LN_TYPE_DUMMY;
+    this->_stringValue = QString();
+    memset(this->_u._rawData, 0, sizeof (this->_u));
+    this->_row = 0;
+    this->_column = 0;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode finLexNode::copyNode(const finLexNode *srcnode)
 {
     if ( srcnode == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return this->reset();
 
     this->_string = srcnode->getString();
     this->_type = srcnode->getType();

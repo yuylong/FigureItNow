@@ -81,7 +81,7 @@ int finExecMachine::getExecuteErrorCount() const
     return this->_errList.count();
 }
 
-const finSyntaxError *finExecMachine::getExecuteErrorAt(int idx) const
+finSyntaxError finExecMachine::getExecuteErrorAt(int idx) const
 {
     return this->_errList.at(idx);
 }
@@ -216,11 +216,7 @@ printf("F\n");
 
 void finExecMachine::disposeExecutionError()
 {
-    while ( !this->_errList.empty() ) {
-        finSyntaxError *synerr = this->_errList.first();
-        this->_errList.removeFirst();
-        delete synerr;
-    }
+    this->_errList.clear();
 }
 
 finErrorCode
