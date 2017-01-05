@@ -66,19 +66,16 @@ finErrorCode finSyntaxReader::readNextToken()
     if ( !this->_isReading )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
-    finLexNode *lexnode = new finLexNode();
-    if ( lexnode == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-
-    finErrorCode errcode = this->_lexReader.getNextLextNode(lexnode);
+    finLexNode lexnode;
+    finErrorCode errcode = this->_lexReader.getNextLextNode(&lexnode);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
     if ( errcode == finErrorCodeKits::FIN_EC_REACH_BOTTOM )
         return errcode;
-    if ( lexnode->getType() == finLexNode::FIN_LN_TYPE_DUMMY )
+    if ( lexnode.getType() == finLexNode::FIN_LN_TYPE_DUMMY )
         return finErrorCodeKits::FIN_EC_NORMAL_WARN;
 
-    return this->processTypedNextToken(lexnode, lexnode->getType());
+    return this->processTypedNextToken(&lexnode, lexnode.getType());
 }
 
 finSyntaxTree *finSyntaxReader::getSyntaxTree()
@@ -192,8 +189,10 @@ finErrorCode finSyntaxReader::processInstanceToken(finLexNode *lexnode)
 
 finErrorCode finSyntaxReader::processVirtualToken(finLexNode *lexnode)
 {
+    if ( lexnode == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
     // Do nothing with the lex node, and release the memory merely.
-    delete lexnode;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -519,7 +518,6 @@ finErrorCode finSyntaxReader::processRightBracket(finLexNode *lexnode)
         break;
     }
 
-    delete lexnode;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -590,7 +588,6 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
             return finErrorCodeKits::FIN_EC_READ_ERROR;
 
         presynnode->setType(finSyntaxNode::FIN_SN_TYPE_LABEL);
-        delete lexnode;
         break;
 
       default:
@@ -694,19 +691,15 @@ finErrorCode finSyntaxReader::meshAllArithExpress()
 
 finSyntaxNode *finSyntaxReader::createDummyExpress()
 {
-    finLexNode *dmyexplex = new finLexNode();
-    if ( dmyexplex == NULL )
-        return NULL;
-    dmyexplex->setType(finLexNode::FIN_LN_TYPE_DUMMY);
+    finLexNode dmyexplex;
+    dmyexplex.setType(finLexNode::FIN_LN_TYPE_DUMMY);
 
     finSyntaxNode *dmyexpsyn = new finSyntaxNode();
-    if ( dmyexpsyn == NULL ) {
-        delete dmyexplex;
+    if ( dmyexpsyn == NULL )
         return NULL;
-    }
-    dmyexpsyn->setType(finSyntaxNode::FIN_SN_TYPE_EXPRESS);
-    dmyexpsyn->setCommandLexNode(dmyexplex);
 
+    dmyexpsyn->setType(finSyntaxNode::FIN_SN_TYPE_EXPRESS);
+    dmyexpsyn->setCommandLexNode(&dmyexplex);
     return dmyexpsyn;
 }
 
