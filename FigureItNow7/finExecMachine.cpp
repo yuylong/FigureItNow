@@ -640,7 +640,7 @@ finExecMachine::instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env,
                 lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_FUNCTION ) {
         return this->instExecExprFunc(synnode, env, retvar, flowctl);
     } else if ( lextype == finLexNode::FIN_LN_TYPE_OPERATOR ) {
-        return this->instExecExprFunc(synnode, env, retvar, flowctl);
+        return this->instExecExprOper(synnode, env, retvar, flowctl);
     }
 
     this->appendExecutionError(lexnode, QString("Invalid expression found."));
