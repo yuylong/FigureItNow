@@ -24,7 +24,7 @@ public:
     finErrorCode setString(const QString &instr);
     finErrorCode resetPosition();
 
-    finErrorCode getNextLextNode(finLexNode *retnode);
+    finErrorCode getNextLexNode(finLexNode *retnode);
 
 private:
 
