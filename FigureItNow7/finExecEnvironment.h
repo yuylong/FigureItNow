@@ -68,6 +68,8 @@ public:
 
     finErrorCode addVariable(finExecVariable *var);
     finErrorCode addFunction(finExecFunction *func);
+    finErrorCode removeVariable(finExecVariable *var);
+    finErrorCode removeFunction(finExecFunction *func);
 
     finFigureContainer *getFigureContainer();
     finExecEnvironment *getParentEnvironment();

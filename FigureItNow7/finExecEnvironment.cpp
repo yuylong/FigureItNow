@@ -177,6 +177,24 @@ finExecEnvironment::addFunction(finExecFunction *func)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finExecEnvironment::removeVariable(finExecVariable *var)
+{
+    for ( int i = this->_varList.count() - 1; i >= 0; i-- ) {
+        if ( this->_varList.at(i) == var )
+            this->_varList.removeAt(i);
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecEnvironment::removeFunction(finExecFunction *func)
+{
+    for ( int i = this->_funcList.count() - 1; i >= 0; i-- ) {
+        if ( this->_funcList.at(i) == func )
+            this->_funcList.removeAt(i);
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finFigureContainer *
 finExecEnvironment::getFigureContainer()
 {

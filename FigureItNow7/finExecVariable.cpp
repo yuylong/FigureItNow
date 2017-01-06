@@ -565,7 +565,7 @@ finExecVariable *finExecVariable::buildNonLeftVariable(finExecVariable *var)
     if ( realvar != NULL )
         var = realvar;
 
-    if ( !var->isLeftValue() )
+    if ( !var->isLeftValue() && !var->isInArray() )
         return var;
 
     finExecVariable *retvar = new finExecVariable();
@@ -589,7 +589,7 @@ finExecVariable *finExecVariable::buildCopyLeftVariable(finExecVariable *var)
     if ( realvar != NULL )
         var = realvar;
 
-    if ( !var->isLeftValue() ) {
+    if ( !var->isLeftValue() && !var->isInArray() ) {
         var->setLeftValue();
         var->clearWriteProtected();
         return var;
@@ -616,11 +616,8 @@ finExecVariable *finExecVariable::buildLinkLeftVariable(finExecVariable *var)
     if ( realvar != NULL )
         var = realvar;
 
-    if ( !var->isLeftValue() ) {
-        var->setLeftValue();
-        var->clearWriteProtected();
-        return var;
-    }
+    if ( !var->isLeftValue() )
+        return buildCopyLeftVariable(var);
 
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
@@ -643,10 +640,38 @@ finExecVariable *finExecVariable::buildFuncReturnVariable(finExecVariable *var, 
     if ( realvar != NULL )
         var = realvar;
 
-    if ( !var->isLeftValue() )
+    finErrorCode errcode;
+    if ( !var->isLeftValue() ) {
+        errcode = var->removeFromArray();
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            goto copy_var;
+
+        return var;
+    }
+
+    if ( !env->isVariableInEnv(var) )
         return var;
 
-    return NULL;
+    errcode = var->removeFromArray();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto copy_var;
+
+    errcode = env->removeVariable(var);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto copy_var;
+
+    var->clearLeftValue();
+    return var;
+
+copy_var:
+    finExecVariable *clonevar = new finExecVariable();
+    if ( clonevar == NULL )
+        return NULL;
+
+    clonevar->copyVariableValue(var);
+    clonevar->setWriteProtected();
+    clonevar->clearLeftValue();
+    return clonevar;
 }
 
 void finExecVariable::releaseNonLeftVariable(finExecVariable *var)
