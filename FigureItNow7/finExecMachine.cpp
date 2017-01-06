@@ -745,7 +745,7 @@ finExecMachine::instExecFuncBody(finSyntaxNode *synnode, finExecFunction *func)
     }
 
     func->setFunctionSyntaxNode(synnode);
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
