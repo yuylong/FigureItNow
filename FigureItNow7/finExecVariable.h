@@ -92,8 +92,10 @@ public:
 
     finErrorCode setName(const QString &name);
     finErrorCode setType(finExecVariableType type);
+    finErrorCode setupWriteProtected(bool blval);
     finErrorCode setWriteProtected();
     finErrorCode clearWriteProtected();
+    finErrorCode setupLeftValue(bool blval);
     finErrorCode setLeftValue();
     finErrorCode clearLeftValue();
 
@@ -107,6 +109,7 @@ public:
     finErrorCode preallocArrayLength(int len);
     finExecVariable *getVariableItemAt(int idx) const;
     finExecVariable *getVariableItemAt(int idx);
+    finErrorCode clearArrayItems();
 
     bool isNumericMatrix(int *rowcnt = NULL, int *colcnt = NULL) const;
     bool isNumericArray(int *cnt = NULL) const;
@@ -120,12 +123,16 @@ public:
     finErrorCode copyVariableValue(finExecVariable *srcvar);
     finErrorCode copyVariable(finExecVariable *srcvar);
 
+    finErrorCode disposeValue();
     finErrorCode dispose();
+    finErrorCode clearLinkedVariables();
+
     static void releaseNonLeftVariable(finExecVariable *var);
 
     static finErrorCode installSystemVariables(finExecEnvironment *rootenv);
 
 private:
+    finErrorCode copyVariableValueIn(finExecVariable *srcvar);
     finErrorCode copyArrayVariable(const finExecVariable *srcvar);
 };
 

@@ -39,6 +39,7 @@ finExecVariable::finExecVariable(const QString &name)
 
 finExecVariable::~finExecVariable()
 {
+    this->clearLinkedVariables();
     this->dispose();
 }
 
@@ -88,52 +89,43 @@ finErrorCode finExecVariable::setType(finExecVariableType type)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::setWriteProtected()
+finErrorCode finExecVariable::setupWriteProtected(bool blval)
 {
-    if ( this->_writeProtect == true )
-        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+    this->_writeProtect = blval;
 
-    this->_writeProtect = true;
     for ( int i = 0; i < this->_itemList.count(); i++ ) {
         this->_itemList.at(i)->setWriteProtected();
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::clearWriteProtected()
+finErrorCode finExecVariable::setWriteProtected()
 {
-    if ( this->_writeProtect == false )
-        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
-
-    this->_writeProtect = false;
-    for ( int i = 0; i < this->_itemList.count(); i++ ) {
-        this->_itemList.at(i)->clearWriteProtected();
-    }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return this->setupWriteProtected(true);
 }
 
-finErrorCode finExecVariable::setLeftValue()
+finErrorCode finExecVariable::clearWriteProtected()
 {
-    if ( this->_leftValue == true )
-        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+    return this->setupWriteProtected(false);
+}
 
-    this->_leftValue = true;
+finErrorCode finExecVariable::setupLeftValue(bool blval)
+{
+    this->_leftValue = blval;
     for ( int i = 0; i < this->_itemList.count(); i++ ) {
         this->_itemList.at(i)->setLeftValue();
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finExecVariable::setLeftValue()
+{
+    return this->setupLeftValue(true);
+}
+
 finErrorCode finExecVariable::clearLeftValue()
 {
-    if ( this->_leftValue == false )
-        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
-
-    this->_leftValue = false;
-    for ( int i = 0; i < this->_itemList.count(); i++ ) {
-        this->_itemList.at(i)->clearLeftValue();
-    }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return this->setupLeftValue(false);
 }
 
 double finExecVariable::getNumericValue() const
@@ -236,6 +228,25 @@ finExecVariable *finExecVariable::getVariableItemAt(int idx)
         return NULL;
 
     return this->_itemList.at(idx);
+}
+
+finErrorCode finExecVariable::clearArrayItems()
+{
+    if ( this->_type != FIN_VR_TYPE_ARRAY && this->_type != FIN_VR_TYPE_NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    if ( this->_type == FIN_VR_TYPE_NULL )
+        this->_type = FIN_VR_TYPE_ARRAY;
+
+    if ( this->_itemList.count() <= 0 )
+        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+
+    while ( !this->_itemList.empty() ) {
+        finExecVariable *itemvar = this->_itemList.first();
+        this->_itemList.removeFirst();
+        delete itemvar;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 bool finExecVariable::isNumericMatrix(int *rowcnt, int *colcnt) const
@@ -362,7 +373,7 @@ finErrorCode finExecVariable::unsetLinkTarget()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::copyVariableValue(finExecVariable *srcvar)
+finErrorCode finExecVariable::copyVariableValueIn(finExecVariable *srcvar)
 {
     if ( srcvar == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
@@ -401,30 +412,17 @@ finErrorCode finExecVariable::copyVariableValue(finExecVariable *srcvar)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::copyVariable(finExecVariable *srcvar)
-{
-    finErrorCode errcode = this->copyVariableValue(srcvar);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
-        return errcode;
-
-    this->_varName = srcvar->getName();
-    this->_leftValue = srcvar->isLeftValue();
-    this->_writeProtect = srcvar->isWriteProtected();
-
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
 finErrorCode finExecVariable::copyArrayVariable(const finExecVariable *srcvar)
 {
-    finErrorCode errcode;
-
-    // Due to the private property, I omit the sanity check.
+    finErrorCode errcode = this->clearArrayItems();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
 
     for ( int i = 0; i < srcvar->_itemList.count(); i++ ) {
         finExecVariable *subsrcvar = srcvar->_itemList.at(i);
         finExecVariable *subdstvar = new finExecVariable();
 
-        errcode = subdstvar->copyVariable(subsrcvar);
+        errcode = subdstvar->copyVariableValueIn(subsrcvar);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
 
@@ -434,23 +432,86 @@ finErrorCode finExecVariable::copyArrayVariable(const finExecVariable *srcvar)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::dispose()
+finErrorCode finExecVariable::copyVariableValue(finExecVariable *srcvar)
+{
+    finErrorCode errcode = this->copyVariableValueIn(srcvar);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    // To keep the access mode of variables in array.
+    this->setupWriteProtected(this->_writeProtect);
+    this->setupLeftValue(this->_leftValue);
+
+    return finErrorCodeKits::FIN_EC_STATE_ERROR;
+}
+
+finErrorCode finExecVariable::copyVariable(finExecVariable *srcvar)
+{
+    finErrorCode errcode = this->copyVariableValueIn(srcvar);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    this->setName(srcvar->getName());
+    this->setupWriteProtected(srcvar->isWriteProtected());
+    this->setupLeftValue(srcvar->isLeftValue());
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecVariable::disposeValue()
 {
     if ( this->_type == FIN_VR_TYPE_NULL )
         return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
 
-    this->_type = FIN_VR_TYPE_NULL;
-    this->_strVal.clear();
+    switch ( this->_type ) {
+      case finExecVariable::FIN_VR_TYPE_NUMERIC:
+        this->_numVal = 0.0;
+        break;
 
-    while ( !this->_itemList.empty() ) {
-        finExecVariable *subvar = this->_itemList.first();
-        this->_itemList.removeFirst();
-        subvar->dispose();
-        delete subvar;
+      case finExecVariable::FIN_VR_TYPE_STRING:
+        this->_strVal.clear();
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_ARRAY:
+        this->clearArrayItems();
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_LINK:
+        this->unsetLinkTarget();
+        break;
+
+      default:
+        break;
     }
+
+    this->_type = FIN_VR_TYPE_NULL;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecVariable::dispose()
+{
+    this->disposeValue();
+
+    this->setName(QString());
+    this->clearWriteProtected();
+    this->clearLeftValue();
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+finErrorCode finExecVariable::clearLinkedVariables()
+{
+    while ( !this->_linkedList.empty() ) {
+        int cnt = this->_linkedList.count();
+        finExecVariable *lvar = this->_linkedList.first();
+        lvar->unsetLinkTarget();
+
+        if ( this->_linkedList.count() >= cnt )
+            this->_linkedList.removeFirst();
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 
 void finExecVariable::releaseNonLeftVariable(finExecVariable *var)
 {
