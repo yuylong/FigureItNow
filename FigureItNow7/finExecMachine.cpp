@@ -330,6 +330,10 @@ finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironme
     errcode = this->instantExecute(synnode->getSubSyntaxNode(1), env, &initvar, flowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
+    if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode)) {
+        finExecVariable::releaseNonLeftVariable(initvar);
+        return errcode;
+    }
 
     initvar = finExecVariable::buildCopyLeftVariable(initvar);
     if ( initvar == NULL )
@@ -345,8 +349,6 @@ finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironme
         delete initvar;
         return errcode;
     }
-
-    flowctl->directPass();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -705,19 +707,9 @@ finExecMachine::instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env,
 
     finExecVariable::releaseNonLeftVariable(tmpretvar);
     delete curenv;
-
-    if ( flowctl->getType() != finExecFlowControl::FIN_FC_NEXT &&
-         flowctl->getType() != finExecFlowControl::FIN_FC_RETURN &&
-         flowctl->getType() != finExecFlowControl::FIN_FC_EXIT ) {
-        this->appendExecutionError(synnode->getCommandLexNode(),
-                                   QString("Program exits with unhandlable flow control."));
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
-    }
-
-    if ( flowctl->getType() == finExecFlowControl::FIN_FC_EXIT )
-        flowctl->directPass();
-    else
-        flowctl->setFlowNext();
     *retvar = NULL;
+
+    if ( !flowctl->checkFlowProgramGoOn(synnode->getCommandLexNode(), this, &errcode) )
+        return errcode;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
