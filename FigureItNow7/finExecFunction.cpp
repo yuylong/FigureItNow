@@ -139,7 +139,7 @@ finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, f
             delete subenv;
             return errcode;
         }
-        if ( !this->processArgFlowCtl(lexnode, machine, flowctl, &errcode) ) {
+        if ( !flowctl->checkFlowExpressGoOn(lexnode, machine, &errcode) ) {
             delete subenv;
             if ( !finErrorCodeKits::isErrorResult(errcode) )
                 *retval = NULL;
@@ -168,21 +168,6 @@ finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, f
     *retval = finExecVariable::buildFuncReturnVariable(*retval, subenv);
     delete subenv;
     return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
-bool finExecFunction::processArgFlowCtl(finLexNode *lexnode, finExecMachine *machine,
-                                        finExecFlowControl *flowctl, finErrorCode *errcode)
-{
-    if ( !flowctl->isFlowExpressOk() ) {
-        machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
-        *errcode = finErrorCodeKits::FIN_EC_READ_ERROR;
-        return false;
-    } else if ( flowctl->isFlowExit() ) {
-        flowctl->directPass();
-        *errcode = finErrorCodeKits::FIN_EC_NORMAL_WARN;
-        return false;
-    }
-    return true;
 }
 
 finErrorCode

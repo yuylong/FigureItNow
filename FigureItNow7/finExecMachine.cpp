@@ -653,7 +653,22 @@ finExecMachine::instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env,
 finErrorCode
 finExecMachine::instExecFuncName(finSyntaxNode *synnode, finExecEnvironment *env, finExecFunction *func)
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+         lexnode->getType() != finLexNode::FIN_LN_TYPE_VARIABLE ) {
+        this->appendExecutionError(lexnode, QString("Function name cannot be recognized."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    QString funcname = lexnode->getString();
+    if ( env->getFunctionHere(funcname) != NULL ) {
+        this->appendExecutionError(lexnode, QString("Function is redefined."));
+        return finErrorCodeKits::FIN_EC_CONTENTION;
+    }
+
+    func->setFunctionName(funcname);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
