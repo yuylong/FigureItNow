@@ -276,6 +276,11 @@ finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment
     printf("Declared Direct!"); synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
 
+    if ( lexnode->getType() != finLexNode::FIN_LN_TYPE_VARIABLE ) {
+        this->appendExecutionError(lexnode, QString("Variable name is not recognized."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
     finExecVariable *newvar = new finExecVariable();
     if ( newvar == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
@@ -304,6 +309,7 @@ finErrorCode
 finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Declared Assigned!");synnode->dump();
+    finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
 
     if ( synnode->getSubListCount() < 2 ) {
@@ -312,16 +318,34 @@ finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironme
     }
 
     finSyntaxNode *varname_synnode = synnode->getSubSyntaxNode(0);
-    finErrorCode errcode = this->instExecDeclareDirect(varname_synnode, env, flowctl);
+    finLexNode *varname_lexnode = varname_synnode->getCommandLexNode();
+
+    if ( varname_synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+         varname_lexnode->getType() != finLexNode::FIN_LN_TYPE_VARIABLE ) {
+        this->appendExecutionError(varname_lexnode, QString("Variable name is not recognized."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    finExecVariable *initvar = NULL;
+    errcode = this->instantExecute(synnode->getSubSyntaxNode(1), env, &initvar, flowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
-    finExecVariable *tmpretvar;
-    errcode = this->instantExecute(synnode, env, &tmpretvar, flowctl);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
-        return errcode;
+    initvar = finExecVariable::buildCopyLeftVariable(initvar);
+    if ( initvar == NULL )
+        return this->instExecDeclareDirect(varname_synnode, env, flowctl);
 
-    tmpretvar->releaseNonLeftVariable(tmpretvar);
+    initvar->setName(varname_lexnode->getString());
+    errcode = env->addVariable(initvar);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( errcode == finErrorCodeKits::FIN_EC_CONTENTION )
+            this->appendExecutionError(lexnode, QString("Variable has already existed."));
+        else
+            this->appendExecutionError(lexnode, QString("Environment reject the variable."));
+        delete initvar;
+        return errcode;
+    }
+
     flowctl->directPass();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
@@ -664,7 +688,7 @@ finExecMachine::instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env,
     finExecEnvironment *curenv;
     env->buildChildEnvironment(&curenv);
 
-    finErrorCode errcode = instExecStatIn(synnode, env, retvar, flowctl);
+    finErrorCode errcode = instExecStatIn(synnode, curenv, retvar, flowctl);
     delete curenv;
     return errcode;
 }

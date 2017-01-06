@@ -425,7 +425,7 @@ finErrorCode finExecVariable::copyVariableValueIn(finExecVariable *srcvar)
     if ( srcvar == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    if ( this->_type != FIN_VR_TYPE_NULL || this->_type != srcvar->getType() )
+    if ( this->_type != FIN_VR_TYPE_NULL && this->_type != srcvar->getType() )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     finErrorCode errcode;
@@ -561,6 +561,9 @@ finErrorCode finExecVariable::clearLinkedVariables()
 
 finExecVariable *finExecVariable::buildNonLeftVariable(finExecVariable *var)
 {
+    if ( var == NULL )
+        return NULL;
+
     finExecVariable *realvar = var->getLinkTarget();
     if ( realvar != NULL )
         var = realvar;
@@ -585,6 +588,9 @@ finExecVariable *finExecVariable::buildNonLeftVariable(finExecVariable *var)
 
 finExecVariable *finExecVariable::buildCopyLeftVariable(finExecVariable *var)
 {
+    if ( var == NULL )
+        return NULL;
+
     finExecVariable *realvar = var->getLinkTarget();
     if ( realvar != NULL )
         var = realvar;
@@ -612,6 +618,9 @@ finExecVariable *finExecVariable::buildCopyLeftVariable(finExecVariable *var)
 
 finExecVariable *finExecVariable::buildLinkLeftVariable(finExecVariable *var)
 {
+    if ( var == NULL )
+        return NULL;
+
     finExecVariable *realvar = var->getLinkTarget();
     if ( realvar != NULL )
         var = realvar;
@@ -636,6 +645,9 @@ finExecVariable *finExecVariable::buildLinkLeftVariable(finExecVariable *var)
 
 finExecVariable *finExecVariable::buildFuncReturnVariable(finExecVariable *var, finExecEnvironment *env)
 {
+    if ( var == NULL )
+        return NULL;
+
     finExecVariable *realvar = var->getLinkTarget();
     if ( realvar != NULL )
         var = realvar;
