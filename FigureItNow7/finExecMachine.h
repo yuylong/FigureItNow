@@ -118,6 +118,9 @@ private:
     finErrorCode instExecExprOper(finSyntaxNode *synnode, finExecEnvironment *env,
                                   finExecVariable **retvar, finExecFlowControl *flowctl);
 
+    finErrorCode instExecFuncName(finSyntaxNode *synnode, finExecEnvironment *env, finExecFunction *func);
+    finErrorCode instExecFuncArgs(finSyntaxNode *synnode, finExecEnvironment *env, finExecFunction *func);
+    finErrorCode instExecFuncBody(finSyntaxNode *synnode, finExecEnvironment *env, finExecFunction *func);
 };
 
 #endif // FINEXECMACHINE_H

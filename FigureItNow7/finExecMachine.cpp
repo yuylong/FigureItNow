@@ -647,6 +647,24 @@ finExecMachine::instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env,
     }
 
     this->appendExecutionError(lexnode, QString("Invalid expression found."));
+    return finErrorCodeKits::FIN_EC_READ_ERROR;
+}
+
+finErrorCode
+finExecMachine::instExecFuncName(finSyntaxNode *synnode, finExecEnvironment *env, finExecFunction *func)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode
+finExecMachine::instExecFuncArgs(finSyntaxNode *synnode, finExecEnvironment *env, finExecFunction *func)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode
+finExecMachine::instExecFuncBody(finSyntaxNode *synnode, finExecEnvironment *env, finExecFunction *func)
+{
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
@@ -655,7 +673,47 @@ finExecMachine::instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env
                                  finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     printf("Function!");synnode->dump();
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    if ( synnode->getSubListCount() < 3 ) {
+        this->appendExecutionError(lexnode, QString("Incomplete function definition."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    finSyntaxNode *fnname_syn = synnode->getSubSyntaxNode(0);
+    finSyntaxNode *fnarg_syn = synnode->getSubSyntaxNode(1);
+    finSyntaxNode *fnbody_syn = synnode->getSubSyntaxNode(2);
+
+    finExecFunction *newfunc = new finExecFunction();
+    if ( newfunc == NULL )
+        return finErrorCode::FIN_EC_OUT_OF_MEMORY;
+
+    finErrorCode errcode;
+    newfunc->setFunctionType(finExecFunction::FIN_FN_TYPE_USER);
+
+    errcode = this->instExecFuncName(fnname_syn, env, newfunc);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto err;
+
+    errcode = this->instExecFuncArgs(fnarg_syn, env, newfunc);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto err;
+
+    errcode = this->instExecFuncBody(fnbody_syn, env, newfunc);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto err;
+
+    errcode = env->addFunction(newfunc);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto err;
+
+    *retvar = NULL;
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+
+err:
+    delete newfunc;
+    return errcode;
 }
 
 finErrorCode
