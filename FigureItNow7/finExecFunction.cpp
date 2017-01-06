@@ -53,6 +53,15 @@ QString finExecFunction::getParameterName(int idx) const
         return finExecFunction::_extArgPrefix.append(QString::number(idx - this->_paramList.count()));
 }
 
+bool finExecFunction::isParameterExist(const QString &paramname) const
+{
+    for ( int i = 0; i < this->_paramList.count(); i++ ) {
+        if ( QString::compare(this->_paramList.at(i), paramname) == 0 )
+            return true;
+    }
+    return false;
+}
+
 finErrorCode finExecFunction::setFunctionType(finExecFunctionType type)
 {
     if ( this->_type == type )

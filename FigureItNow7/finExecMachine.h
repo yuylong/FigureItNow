@@ -38,7 +38,7 @@ class finExecMachine;
 
 class finExecMachine
 {
-private:
+protected:
     QString _name;
 
     finExecEnvironment *_baseEnv;
@@ -119,8 +119,9 @@ private:
                                   finExecVariable **retvar, finExecFlowControl *flowctl);
 
     finErrorCode instExecFuncName(finSyntaxNode *synnode, finExecEnvironment *env, finExecFunction *func);
-    finErrorCode instExecFuncArgs(finSyntaxNode *synnode, finExecEnvironment *env, finExecFunction *func);
-    finErrorCode instExecFuncBody(finSyntaxNode *synnode, finExecEnvironment *env, finExecFunction *func);
+    finErrorCode instExecFuncArg(finSyntaxNode *synnode, finExecFunction *func);
+    finErrorCode instExecFuncArgs(finSyntaxNode *synnode, finExecFunction *func);
+    finErrorCode instExecFuncBody(finSyntaxNode *synnode, finExecFunction *func);
 };
 
 #endif // FINEXECMACHINE_H

@@ -672,14 +672,79 @@ finExecMachine::instExecFuncName(finSyntaxNode *synnode, finExecEnvironment *env
 }
 
 finErrorCode
-finExecMachine::instExecFuncArgs(finSyntaxNode *synnode, finExecEnvironment *env, finExecFunction *func)
+finExecMachine::instExecFuncArg(finSyntaxNode *synnode, finExecFunction *func)
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+         lexnode->getType() != finLexNode::FIN_LN_TYPE_VARIABLE ) {
+        this->appendExecutionError(lexnode, QString("Function name cannot be recognized."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    QString argname = lexnode->getString();
+    if ( func->isParameterExist(argname) ) {
+        this->appendExecutionError(lexnode, QString("Function is redefined."));
+        return finErrorCodeKits::FIN_EC_CONTENTION;
+    }
+
+    func->appendParameterName(argname);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecMachine::instExecFuncBody(finSyntaxNode *synnode, finExecEnvironment *env, finExecFunction *func)
+finExecMachine::instExecFuncArgs(finSyntaxNode *synnode, finExecFunction *func)
 {
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+         lexnode->getType() != finLexNode::FIN_LN_TYPE_OPERATOR ||
+         lexnode->getOperator() != finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
+        this->appendExecutionError(lexnode, QString("Function arguments cannot be recognized."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    if ( synnode->getSubListCount() <= 0 )
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+
+    finSyntaxNode *insynnode = synnode->getSubSyntaxNode(0);
+    finLexNode *inlexnode = insynnode->getCommandLexNode();
+
+    if ( insynnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+        this->appendExecutionError(inlexnode, QString("Function arguments cannot be recognized."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    finErrorCode errcode;
+    if ( inlexnode->getType() == finLexNode::FIN_LN_TYPE_VARIABLE ) {
+        errcode = this->instExecFuncArg(insynnode, func);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+    } else if ( inlexnode->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+                inlexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_COMMA ) {
+        for ( int i = 0; i < insynnode->getSubListCount(); i++ ) {
+            errcode = this->instExecFuncArg(insynnode->getSubSyntaxNode(i), func);
+            if ( finErrorCodeKits::isErrorResult(errcode) )
+                return errcode;
+        }
+    } else {
+        this->appendExecutionError(inlexnode, QString("Function arguments cannot be recognized."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finExecMachine::instExecFuncBody(finSyntaxNode *synnode, finExecFunction *func)
+{
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_STATEMENT ) {
+        this->appendExecutionError(lexnode, QString("Function body cannot be recognized."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    func->setFunctionSyntaxNode(synnode);
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
@@ -710,11 +775,11 @@ finExecMachine::instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env
     if ( finErrorCodeKits::isErrorResult(errcode) )
         goto err;
 
-    errcode = this->instExecFuncArgs(fnarg_syn, env, newfunc);
+    errcode = this->instExecFuncArgs(fnarg_syn, newfunc);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         goto err;
 
-    errcode = this->instExecFuncBody(fnbody_syn, env, newfunc);
+    errcode = this->instExecFuncBody(fnbody_syn, newfunc);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         goto err;
 

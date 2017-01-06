@@ -65,6 +65,7 @@ public:
     QString getFunctionName() const;
     int getParameterCount() const;
     QString getParameterName(int idx) const;
+    bool isParameterExist(const QString &paramname) const;
 
     finErrorCode setFunctionType(finExecFunctionType type);
     finErrorCode setFunctionName(const QString &funcname);
