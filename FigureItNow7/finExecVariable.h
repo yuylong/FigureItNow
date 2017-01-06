@@ -58,7 +58,9 @@ public:
 
         FIN_VR_TYPE_STRING,     //!< The variable is a character-based string.
 
-        FIN_VR_TYPE_ARRAY,      //!< The variable is a one-dimensioned list of other variables.
+        FIN_VR_TYPE_ARRAY,      //!< The variable is a one-dimensioned list of another variable.
+
+        FIN_VR_TYPE_LINK,       //!< The variable is a symbol link to another variable.
 
         FIN_VR_TYPE_MAX         //!< An invalid type which only indicates the number of types. It is usually used as a
                                 //!< upper bound in allocating a memory space.
@@ -69,6 +71,9 @@ protected:
     QString _varName;
     bool _writeProtect;
     bool _leftValue;
+
+    QList<finExecVariable *> _linkedList;
+    finExecVariable *_linkTarget;
 
     double _numVal;
     QString _strVal;
@@ -85,17 +90,6 @@ public:
     bool isWriteProtected() const;
     bool isLeftValue() const;
 
-    double getNumericValue() const;
-    QString getStringValue() const;
-
-    finExecVariable *getVariableItemAt(int idx) const;
-    finExecVariable *getVariableItemAt(int idx);
-    int getArrayLength() const;
-
-    bool isNumericMatrix(int *rowcnt = NULL, int *colcnt = NULL) const;
-    bool isNumericArray(int *cnt = NULL) const;
-    bool isStringArray(int *cnt = NULL) const;
-
     finErrorCode setName(const QString &name);
     finErrorCode setType(finExecVariableType type);
     finErrorCode setWriteProtected();
@@ -103,11 +97,29 @@ public:
     finErrorCode setLeftValue();
     finErrorCode clearLeftValue();
 
+    double getNumericValue() const;
+    QString getStringValue() const;
+
     finErrorCode setNumericValue(double val);
     finErrorCode setStringValue(const QString &strval);
 
+    int getArrayLength() const;
+    finErrorCode preallocArrayLength(int len);
+    finExecVariable *getVariableItemAt(int idx) const;
+    finExecVariable *getVariableItemAt(int idx);
+
+    bool isNumericMatrix(int *rowcnt = NULL, int *colcnt = NULL) const;
+    bool isNumericArray(int *cnt = NULL) const;
+    bool isStringArray(int *cnt = NULL) const;
+
+    const finExecVariable *getLinkTarget() const;
+    finExecVariable *getLinkTarget();
+    finErrorCode setLinkTarget(finExecVariable *target);
+    finErrorCode unsetLinkTarget();
+
     finErrorCode copyVariable(const finExecVariable *srcvar);
-    finErrorCode appendList(const QList<finExecVariable *> &vallist);
+    finErrorCode copyVariableNonLeft(const finExecVariable *srcvar);
+    finErrorCode makeSymbolLink(const finExecVariable *srcvar);
 
     finErrorCode dispose();
     static void releaseNonLeftVariable(finExecVariable *var);
