@@ -117,9 +117,8 @@ public:
     finErrorCode setLinkTarget(finExecVariable *target);
     finErrorCode unsetLinkTarget();
 
-    finErrorCode copyVariable(const finExecVariable *srcvar);
-    finErrorCode copyVariableNonLeft(const finExecVariable *srcvar);
-    finErrorCode makeSymbolLink(const finExecVariable *srcvar);
+    finErrorCode copyVariableValue(finExecVariable *srcvar);
+    finErrorCode copyVariable(finExecVariable *srcvar);
 
     finErrorCode dispose();
     static void releaseNonLeftVariable(finExecVariable *var);

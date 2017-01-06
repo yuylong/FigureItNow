@@ -335,7 +335,8 @@ finErrorCode finExecVariable::setLinkTarget(finExecVariable *target)
         return errcode;
 
     this->_linkTarget = target;
-    target->_linkedList.append(this);
+    if ( target != NULL )
+        target->_linkedList.append(this);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -361,7 +362,7 @@ finErrorCode finExecVariable::unsetLinkTarget()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::copyVariable(const finExecVariable *srcvar)
+finErrorCode finExecVariable::copyVariableValue(finExecVariable *srcvar)
 {
     if ( srcvar == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
@@ -369,32 +370,48 @@ finErrorCode finExecVariable::copyVariable(const finExecVariable *srcvar)
     if ( this->_type != FIN_VR_TYPE_NULL || this->_type != srcvar->getType() )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
-    bool leftval = this->_leftValue;
-    bool wrtprotect = this->_writeProtect;
-    finErrorCode errcode = finErrorCodeKits::FIN_EC_SUCCESS;
-
-    this->dispose();
-    this->_type = srcvar->_type;
-    this->_leftValue = leftval;
-    this->_writeProtect = wrtprotect;
+    finErrorCode errcode;
+    this->_type = srcvar->getType();
 
     switch ( srcvar->_type ) {
       case FIN_VR_TYPE_NUMERIC:
-        this->_numVal = srcvar->_numVal;
+        this->_numVal = srcvar->getNumericValue();
         break;
 
       case FIN_VR_TYPE_STRING:
-        this->_strVal = srcvar->_strVal;
+        this->_strVal = srcvar->getStringValue();
         break;
 
       case FIN_VR_TYPE_ARRAY:
-        errcode = copyArrayVariable(srcvar);
+        errcode = this->copyArrayVariable(srcvar);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+        break;
+
+      case FIN_VR_TYPE_LINK:
+        errcode = this->setLinkTarget(srcvar->getLinkTarget());
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
         break;
 
       default:
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
         break;
     }
-    return errcode;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecVariable::copyVariable(finExecVariable *srcvar)
+{
+    finErrorCode errcode = this->copyVariableValue(srcvar);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    this->_varName = srcvar->getName();
+    this->_leftValue = srcvar->isLeftValue();
+    this->_writeProtect = srcvar->isWriteProtected();
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finExecVariable::copyArrayVariable(const finExecVariable *srcvar)
