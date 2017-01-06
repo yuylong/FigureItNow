@@ -57,8 +57,14 @@ public:
     QString getEnvironmentName() const;
     finErrorCode setEnvironmentName(const QString &envname);
 
+    finExecVariable *getVariableHere(const QString &varname);
+    finExecFunction *getFunctionHere(const QString &funcname);
     finExecVariable *findVariable(const QString &varname);
     finExecFunction *findFunction(const QString &funcname);
+
+    bool isVariableInEnv(finExecVariable *var);
+    bool isVariableDirectInEnv(finExecVariable *var);
+    bool isFunctionInEnv(finExecFunction *func);
 
     finErrorCode addVariable(finExecVariable *var);
     finErrorCode addFunction(finExecFunction *func);
@@ -73,10 +79,6 @@ public:
     static finErrorCode disposeRootEnvironment();
     static finExecEnvironment *getRootEnvironment();
     static finErrorCode buildRootChildEnvironment(finExecEnvironment **chdenv);
-
-private:
-    finExecVariable *getVariableHere(const QString &varname);
-    finExecFunction *getFunctionHere(const QString &funcname);
 };
 
 #endif // FINEXECENVIRONMENT_H

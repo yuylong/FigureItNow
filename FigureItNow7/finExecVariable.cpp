@@ -27,6 +27,8 @@ finExecVariable::finExecVariable()
     this->_type = FIN_VR_TYPE_NULL;
     this->_writeProtect = false;
     this->_numVal = 0.0;
+    this->_linkTarget = NULL;
+    this->_parentVar = NULL;
 }
 
 finExecVariable::finExecVariable(const QString &name)
@@ -35,10 +37,13 @@ finExecVariable::finExecVariable(const QString &name)
     this->_type = FIN_VR_TYPE_NULL;
     this->_writeProtect = false;
     this->_numVal = 0.0;
+    this->_linkTarget = NULL;
+    this->_parentVar = NULL;
 }
 
 finExecVariable::~finExecVariable()
 {
+    this->removeFromArray();
     this->clearLinkedVariables();
     this->dispose();
 }
@@ -194,6 +199,7 @@ finErrorCode finExecVariable::preallocArrayLength(int len)
 
         subvar->_writeProtect = this->_writeProtect;
         subvar->_leftValue = this->_leftValue;
+        subvar->_parentVar = this;
         this->_itemList.append(subvar);
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
@@ -230,6 +236,20 @@ finExecVariable *finExecVariable::getVariableItemAt(int idx)
     return this->_itemList.at(idx);
 }
 
+bool finExecVariable::isVariableInside(const finExecVariable *var) const
+{
+    if ( this == var )
+        return true;
+
+    for ( int i = 0; i < this->_itemList.count(); i++ ) {
+        finExecVariable *chdvar = this->_itemList.at(i);
+
+        if ( chdvar->isVariableInside(var) )
+            return true;
+    }
+    return false;
+}
+
 finErrorCode finExecVariable::clearArrayItems()
 {
     if ( this->_type != FIN_VR_TYPE_ARRAY && this->_type != FIN_VR_TYPE_NULL )
@@ -246,6 +266,33 @@ finErrorCode finExecVariable::clearArrayItems()
         this->_itemList.removeFirst();
         delete itemvar;
     }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+bool finExecVariable::isInArray() const
+{
+    return (this->_parentVar != NULL);
+}
+
+finExecVariable *finExecVariable::getParentVariable() const
+{
+    return this->_parentVar;
+}
+
+finErrorCode finExecVariable::removeFromArray()
+{
+    if ( this->_parentVar == NULL )
+        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+
+    for ( int i = 0; i < this->_parentVar->_itemList.count(); i++ ) {
+        if ( this->_parentVar->_itemList.at(i) == this ) {
+            this->_parentVar->_itemList.removeAt(i);
+            break;
+        }
+    }
+    this->_parentVar = NULL;
+
+    this->clearLeftValue();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -588,6 +635,18 @@ finExecVariable *finExecVariable::buildLinkLeftVariable(finExecVariable *var)
     retvar->setLeftValue();
     retvar->clearWriteProtected();
     return retvar;
+}
+
+finExecVariable *finExecVariable::buildFuncReturnVariable(finExecVariable *var, finExecEnvironment *env)
+{
+    finExecVariable *realvar = var->getLinkTarget();
+    if ( realvar != NULL )
+        var = realvar;
+
+    if ( !var->isLeftValue() )
+        return var;
+
+    return NULL;
 }
 
 void finExecVariable::releaseNonLeftVariable(finExecVariable *var)

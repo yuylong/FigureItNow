@@ -126,6 +126,33 @@ finExecEnvironment::findFunction(const QString &funcname)
         return NULL;
 }
 
+bool finExecEnvironment::isVariableInEnv(finExecVariable *var)
+{
+    for ( int i = 0; i < this->_varList.count(); i++ ) {
+        if ( this->_varList.at(i)->isVariableInside(var) )
+            return true;
+    }
+    return false;
+}
+
+bool finExecEnvironment::isVariableDirectInEnv(finExecVariable *var)
+{
+    for ( int i = 0; i < this->_varList.count(); i++ ) {
+        if ( this->_varList.at(i) == var )
+            return true;
+    }
+    return false;
+}
+
+bool finExecEnvironment::isFunctionInEnv(finExecFunction *func)
+{
+    for ( int i = 0; i < this->_funcList.count(); i++ ) {
+        if ( this->_funcList.at(i) == func )
+            return true;
+    }
+    return false;
+}
+
 finErrorCode
 finExecEnvironment::addVariable(finExecVariable *var)
 {

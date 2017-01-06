@@ -78,6 +78,7 @@ protected:
     double _numVal;
     QString _strVal;
     QList<finExecVariable *> _itemList;
+    finExecVariable *_parentVar;
 
 public:
     finExecVariable();
@@ -111,6 +112,11 @@ public:
     finExecVariable *getVariableItemAt(int idx);
     finErrorCode clearArrayItems();
 
+    bool isVariableInside(const finExecVariable *var) const;
+    bool isInArray() const;
+    finExecVariable *getParentVariable() const;
+    finErrorCode removeFromArray();
+
     bool isNumericMatrix(int *rowcnt = NULL, int *colcnt = NULL) const;
     bool isNumericArray(int *cnt = NULL) const;
     bool isStringArray(int *cnt = NULL) const;
@@ -128,9 +134,12 @@ public:
     finErrorCode clearLinkedVariables();
 
     static void releaseNonLeftVariable(finExecVariable *var);
+
     static finExecVariable *buildNonLeftVariable(finExecVariable *var);
     static finExecVariable *buildCopyLeftVariable(finExecVariable *var);
     static finExecVariable *buildLinkLeftVariable(finExecVariable *var);
+
+    static finExecVariable *buildFuncReturnVariable(finExecVariable *var, finExecEnvironment *env);
 
     static finErrorCode installSystemVariables(finExecEnvironment *rootenv);
 
