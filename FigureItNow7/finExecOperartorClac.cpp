@@ -28,12 +28,34 @@ static finErrorCode _addOpCall(QList<finExecVariable *> *oprands, finExecVariabl
 static finErrorCode _subOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _mulOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode _letOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 
 static struct finExecOperartorClacDatabase _glOperatorClacDb[] = {
-    { finLexNode::FIN_LN_OPTYPE_ADD, 2, _addOpCall },
-    { finLexNode::FIN_LN_OPTYPE_SUB, 2, _subOpCall },
-    { finLexNode::FIN_LN_OPTYPE_MUL, 2, _mulOpCall },
-    { finLexNode::FIN_LN_OPTYPE_DIV, 2, _divOpCall },
+    { finLexNode::FIN_LN_OPTYPE_ADD,       2, _addOpCall },
+    { finLexNode::FIN_LN_OPTYPE_SUB,       2, _subOpCall },
+    { finLexNode::FIN_LN_OPTYPE_POSITIVE,  1, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_NEGATIVE,  1, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_ACCUMLT,   1, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_ACCUMLT_2, 1, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_MUL,       2, _mulOpCall },
+    { finLexNode::FIN_LN_OPTYPE_DIV,       2, _divOpCall },
+    { finLexNode::FIN_LN_OPTYPE_MOD,       2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_POWER,     2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_LET,       2, _letOpCall },
+    { finLexNode::FIN_LN_OPTYPE_EQUAL,     2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_GRT,       2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_LES,       2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_NONEQUAL,  2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_GRT_EQ,    2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_LES_EQ,    2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_LOGIC_NOT, 1, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_LOGIC_AND, 2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_LOGIC_OR,  2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_LOGIC_XOR, 2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_BIT_NOT,   1, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_BIT_AND,   2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_BIT_OR,    2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_BIT_XOR,   2, NULL       },
 };
 static int _glOperatorCalcDbCnt = sizeof (_glOperatorClacDb) / sizeof (struct finExecOperartorClacDatabase);
 
@@ -53,7 +75,7 @@ finExecOperartorClac::execOpCalc(
             break;
         }
     }
-    if ( !found )
+    if ( !found || curitem->_opcall == NULL )
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
 
     if ( oprands->count() < curitem->_oprandCnt )
@@ -181,4 +203,9 @@ _divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     tmpretval->setWriteProtected();
     *retval = tmpretval;
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _letOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
