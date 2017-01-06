@@ -512,6 +512,83 @@ finErrorCode finExecVariable::clearLinkedVariables()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finExecVariable *finExecVariable::buildNonLeftVariable(finExecVariable *var)
+{
+    finExecVariable *realvar = var->getLinkTarget();
+    if ( realvar != NULL )
+        var = realvar;
+
+    if ( !var->isLeftValue() )
+        return var;
+
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return NULL;
+
+    finErrorCode errcode = retvar->copyVariableValueIn(var);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete retvar;
+        return NULL;
+    }
+
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+    return retvar;
+}
+
+finExecVariable *finExecVariable::buildCopyLeftVariable(finExecVariable *var)
+{
+    finExecVariable *realvar = var->getLinkTarget();
+    if ( realvar != NULL )
+        var = realvar;
+
+    if ( !var->isLeftValue() ) {
+        var->setLeftValue();
+        var->clearWriteProtected();
+        return var;
+    }
+
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return NULL;
+
+    finErrorCode errcode = retvar->copyVariableValueIn(var);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete retvar;
+        return NULL;
+    }
+
+    retvar->setLeftValue();
+    retvar->clearWriteProtected();
+    return retvar;
+}
+
+finExecVariable *finExecVariable::buildLinkLeftVariable(finExecVariable *var)
+{
+    finExecVariable *realvar = var->getLinkTarget();
+    if ( realvar != NULL )
+        var = realvar;
+
+    if ( !var->isLeftValue() ) {
+        var->setLeftValue();
+        var->clearWriteProtected();
+        return var;
+    }
+
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return NULL;
+
+    finErrorCode errcode = retvar->setLinkTarget(var);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete retvar;
+        return NULL;
+    }
+
+    retvar->setLeftValue();
+    retvar->clearWriteProtected();
+    return retvar;
+}
 
 void finExecVariable::releaseNonLeftVariable(finExecVariable *var)
 {

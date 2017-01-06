@@ -128,6 +128,9 @@ public:
     finErrorCode clearLinkedVariables();
 
     static void releaseNonLeftVariable(finExecVariable *var);
+    static finExecVariable *buildNonLeftVariable(finExecVariable *var);
+    static finExecVariable *buildCopyLeftVariable(finExecVariable *var);
+    static finExecVariable *buildLinkLeftVariable(finExecVariable *var);
 
     static finErrorCode installSystemVariables(finExecEnvironment *rootenv);
 
