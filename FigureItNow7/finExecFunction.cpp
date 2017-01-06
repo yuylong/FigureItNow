@@ -134,9 +134,15 @@ finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, f
     }
 
     if ( argnode->getSubListCount() > 0 ) {
-        errcode = this->processArgsInSubEnv(argnode->getSubSyntaxNode(0), subenv, machine);
+        errcode = this->processArgsInSubEnv(argnode->getSubSyntaxNode(0), subenv, machine, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) ) {
             delete subenv;
+            return errcode;
+        }
+        if ( !this->processArgFlowCtl(lexnode, machine, flowctl, &errcode) ) {
+            delete subenv;
+            if ( !finErrorCodeKits::isErrorResult(errcode) )
+                *retval = NULL;
             return errcode;
         }
     }
@@ -147,14 +153,41 @@ finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, f
         errcode = this->execUserFunction(subenv, machine, retval, flowctl);
     } else {
         machine->appendExecutionError(lexnode, QString("Function type unrecognized."));
-        errcode = finErrorCodeKits::FIN_EC_READ_ERROR;
+        delete subenv;
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
+
+    if ( !flowctl->checkFlowProgramGoOn(lexnode, machine, &errcode) ) {
+        finExecVariable::releaseNonLeftVariable(*retval);
+        delete subenv;
+        if ( !finErrorCodeKits::isErrorResult(errcode) )
+            *retval = NULL;
+        return errcode;
+    }
+
+    *retval = finExecVariable::buildFuncReturnVariable(*retval, subenv);
     delete subenv;
-    return errcode;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+bool finExecFunction::processArgFlowCtl(finLexNode *lexnode, finExecMachine *machine,
+                                        finExecFlowControl *flowctl, finErrorCode *errcode)
+{
+    if ( !flowctl->isFlowExpressOk() ) {
+        machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
+        *errcode = finErrorCodeKits::FIN_EC_READ_ERROR;
+        return false;
+    } else if ( flowctl->isFlowExit() ) {
+        flowctl->directPass();
+        *errcode = finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return false;
+    }
+    return true;
 }
 
 finErrorCode
-finExecFunction::processArgsInSubEnv(finSyntaxNode *argnode, finExecEnvironment *env, finExecMachine *machine)
+finExecFunction::processArgsInSubEnv(finSyntaxNode *argnode, finExecEnvironment *env,
+                                     finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( argnode == NULL )
         return finErrorCodeKits::FIN_EC_SUCCESS;
@@ -169,46 +202,39 @@ finExecFunction::processArgsInSubEnv(finSyntaxNode *argnode, finExecEnvironment 
     if ( lexnode->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
          lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_COMMA ) {
         for ( int i = 0; i < argnode->getSubListCount(); i++ ) {
-            errcode = this->appendArgToSubenv(i, argnode->getSubSyntaxNode(i), env, machine);
+            errcode = this->appendArgToSubenv(i, argnode->getSubSyntaxNode(i), env, machine, flowctl);
             if ( finErrorCodeKits::isErrorResult(errcode) )
+                return errcode;
+            if ( !flowctl->checkFlowExpressGoOn(lexnode, machine, &errcode) )
                 return errcode;
         }
     } else {
-        errcode = this->appendArgToSubenv(0, argnode, env, machine);
+        errcode = this->appendArgToSubenv(0, argnode, env, machine, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+        if ( !flowctl->checkFlowExpressGoOn(lexnode, machine, &errcode) )
             return errcode;
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecFunction::appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvironment *env, finExecMachine *machine)
+finExecFunction::appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvironment *env,
+                                   finExecMachine *machine, finExecFlowControl *flowctl)
 {
     finErrorCode errcode;
     finLexNode *lexnode = argnode->getCommandLexNode();
     finExecVariable *expvar, *argvar;
-    finExecFlowControl flowctl;
 
-    errcode = machine->instantExecute(argnode, env->getParentEnvironment(), &expvar, &flowctl);
+    errcode = machine->instantExecute(argnode, env->getParentEnvironment(), &expvar, flowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
-
-    if ( expvar->isLeftValue() ) {
-        argvar = new finExecVariable();
-        if ( argvar == NULL )
-            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-
-        errcode = argvar->copyVariable(expvar);
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
-            machine->appendExecutionError(lexnode, QString("Internal error."));
-            delete argvar;
-            return errcode;
-        }
-    } else {
-        argvar = expvar;
+    if ( !flowctl->checkFlowExpressGoOn(lexnode, machine, &errcode) ) {
+        finExecVariable::releaseNonLeftVariable(expvar);
+        return errcode;
     }
-    argvar->clearWriteProtected();
-    argvar->setLeftValue();
+
+    argvar = finExecVariable::buildLinkLeftVariable(expvar);
     argvar->setName(this->getParameterName(idx));
 
     errcode = env->addVariable(argvar);
@@ -328,8 +354,8 @@ _sysfunc_mat_add (finExecFunction *self, finExecEnvironment *env, finExecMachine
     if ( self == NULL || retval == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    mat1var = env->findVariable("mat1");
-    mat2var = env->findVariable("mat2");
+    mat1var = env->findVariable("mat1")->getLinkTarget();
+    mat2var = env->findVariable("mat2")->getLinkTarget();
 
     if ( mat1var == NULL || mat2var == NULL ) {
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
@@ -353,10 +379,10 @@ _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *ma
     if ( self == NULL || retval == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    x1 = env->findVariable("x1");
-    y1 = env->findVariable("y1");
-    x2 = env->findVariable("x2");
-    y2 = env->findVariable("y2");
+    x1 = env->findVariable("x1")->getLinkTarget();
+    y1 = env->findVariable("y1")->getLinkTarget();
+    x2 = env->findVariable("x2")->getLinkTarget();
+    y2 = env->findVariable("y2")->getLinkTarget();
 
     if ( x1 == NULL || y1 == NULL || x2 == NULL || y2 == NULL )
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
@@ -379,5 +405,7 @@ _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *ma
         delete foline;
         return errcode;
     }
+    *retval = NULL;
+    flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

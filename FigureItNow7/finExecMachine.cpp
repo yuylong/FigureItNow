@@ -574,7 +574,12 @@ finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env
         this->appendExecutionError(lexnode, QString("Execute function failed."));
         return errcode;
     }
-
+    if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
+        finExecVariable::releaseNonLeftVariable(*retvar);
+        if ( !finErrorCodeKits::isErrorResult(errcode) )
+            *retvar = NULL;
+        return errcode;
+    }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -593,6 +598,10 @@ finExecMachine::instExecExprOper(finSyntaxNode *synnode, finExecEnvironment *env
         errcode = instantExecute(synnode->getSubSyntaxNode(i), env, &oprand, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             goto out;
+        if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
+            finExecVariable::releaseNonLeftVariable(oprand);
+            goto out;
+        }
 
         oprands.append(oprand);
     }
@@ -602,6 +611,7 @@ finExecMachine::instExecExprOper(finSyntaxNode *synnode, finExecEnvironment *env
         this->appendExecutionError(lexnode, QString("Invalid expression."));
         return errcode;
     }
+    flowctl->setFlowNext();
 
 out:
     while ( !oprands.empty() ) {
@@ -609,7 +619,6 @@ out:
         oprands.removeFirst();
         finExecVariable::releaseNonLeftVariable(var);
     }
-    flowctl->setFlowNext();
     return errcode;
 }
 

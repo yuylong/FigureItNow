@@ -13,6 +13,7 @@
 
 #include "finExecFlowControl.h"
 
+#include "finExecMachine.h"
 
 finExecFlowControl::finExecFlowControl()
 {
@@ -41,6 +42,58 @@ QString finExecFlowControl::getGotoLabel() const
         return this->_label;
     else
         return QString();
+}
+
+bool finExecFlowControl::isFlowExit() const
+{
+    return this->_type == finExecFlowControl::FIN_FC_EXIT;
+}
+
+bool finExecFlowControl::isFlowExpressOk() const
+{
+    return (this->_type == finExecFlowControl::FIN_FC_NEXT ||
+            this->_type == finExecFlowControl::FIN_FC_EXIT);
+}
+bool finExecFlowControl::isFlowProgramOk() const
+{
+    return (this->_type == finExecFlowControl::FIN_FC_NEXT ||
+            this->_type == finExecFlowControl::FIN_FC_RETURN ||
+            this->_type == finExecFlowControl::FIN_FC_EXIT);
+}
+
+bool finExecFlowControl::checkFlowExpressGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode)
+{
+    if ( !this->isFlowExpressOk() ) {
+        if ( lexnode != NULL && machine != NULL )
+            machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
+        if ( errcode != NULL )
+            *errcode = finErrorCodeKits::FIN_EC_READ_ERROR;
+        return false;
+    } else if ( this->isFlowExit() ) {
+        this->directPass();
+        if ( errcode != NULL )
+            *errcode = finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return false;
+    }
+    this->setFlowNext();
+    return true;
+}
+
+bool finExecFlowControl::checkFlowProgramGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode)
+{
+    if ( !this->isFlowProgramOk() ) {
+        if ( lexnode != NULL && machine != NULL )
+            machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
+        if ( errcode != NULL )
+            *errcode = finErrorCodeKits::FIN_EC_READ_ERROR;
+        return false;
+    } else if ( this->isFlowExit() ) {
+        this->directPass();
+        if ( errcode != NULL )
+            *errcode = finErrorCodeKits::FIN_EC_NORMAL_WARN;
+    }
+    this->setFlowNext();
+    return true;
 }
 
 finErrorCode finExecFlowControl::setType(finExecFlowControlType type)

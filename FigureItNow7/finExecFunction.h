@@ -81,8 +81,12 @@ public:
     static finErrorCode installSystemFunctions (finExecEnvironment *rootenv);
 
 private:
-    finErrorCode processArgsInSubEnv(finSyntaxNode *argnode, finExecEnvironment *env, finExecMachine *machine);
-    finErrorCode appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvironment *env, finExecMachine *machine);
+    bool processArgFlowCtl(finLexNode *lexnode, finExecMachine *machine,
+                           finExecFlowControl *flowctl, finErrorCode *errcode);
+    finErrorCode processArgsInSubEnv(finSyntaxNode *argnode, finExecEnvironment *env,
+                                     finExecMachine *machine, finExecFlowControl *flowctl);
+    finErrorCode appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvironment *env,
+                                   finExecMachine *machine, finExecFlowControl *flowctl);
 
     finErrorCode execUserFunction(finExecEnvironment *env, finExecMachine *machine,
                                   finExecVariable **retval, finExecFlowControl *flowctl);

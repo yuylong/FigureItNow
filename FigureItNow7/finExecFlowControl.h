@@ -17,7 +17,9 @@
 #include <QString>
 
 #include "finErrorCode.h"
+#include "finLexNode.h"
 
+class finExecMachine;
 
 class finExecFlowControl
 {
@@ -43,6 +45,13 @@ public:
     bool isFlowNext() const;
     bool isFlowGoto() const;
     QString getGotoLabel() const;
+    bool isFlowExit() const;
+
+    bool isFlowExpressOk() const;
+    bool isFlowProgramOk() const;
+    bool checkFlowExpressGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode);
+    bool checkFlowProgramGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode);
+
 
     finErrorCode setType(finExecFlowControlType type);
     finErrorCode setLabel(const QString &label);
