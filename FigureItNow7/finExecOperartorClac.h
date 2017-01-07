@@ -32,6 +32,7 @@ class finExecOperartorClac
 public:
     finExecOperartorClac();
 
+    static bool varLogicValue(finExecVariable *var);
     static finErrorCode execOpCalc(finLexOperatorType optype,
                                    QList<finExecVariable *> *oprands, finExecVariable **retval);
 };

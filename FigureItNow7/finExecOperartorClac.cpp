@@ -18,6 +18,45 @@ finExecOperartorClac::finExecOperartorClac()
     return;
 }
 
+bool finExecOperartorClac::varLogicValue(finExecVariable *var)
+{
+    if ( var == NULL )
+        return false;
+
+    switch ( var->getType() ) {
+      case finExecVariable::FIN_VR_TYPE_NULL:
+        return false;
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_NUMERIC:
+        if ( var->getNumericValue() < 1.0e-6 && var->getNumericValue() > -1.0e-6)
+            return false;
+        else
+            return true;
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_STRING:
+        if ( QString::compare(var->getStringValue(), "yes", Qt::CaseInsensitive) == 0 ||
+             QString::compare(var->getStringValue(), "true", Qt::CaseInsensitive) == 0 )
+            return true;
+        else
+            return false;
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_ARRAY:
+        if ( var->getArrayLength() <= 0 )
+            return false;
+        else
+            return true;
+        break;
+
+      default:
+        return false;
+        break;
+    }
+    return false;
+}
+
 struct finExecOperartorClacDatabase {
     finLexOperatorType _optype;
     int _oprandCnt;
