@@ -817,7 +817,19 @@ finExecMachine::instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env,
                               finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     printf("Label!");synnode->dump();
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    if ( synnode == NULL || env == NULL || retvar == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    if ( lexnode->getType() != finLexNode::FIN_LN_TYPE_VARIABLE ) {
+        this->appendExecutionError(lexnode, QString("Cannot recognize the label name."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    flowctl->setFlowNext();
+    *retvar = NULL;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
