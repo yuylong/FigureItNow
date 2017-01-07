@@ -631,10 +631,13 @@ finErrorCode finLexReader::tryGetOperator(finLexNode *retnode)
         this->_nextReadOrder = FIN_LR_ORD_OPERATOR_FIRST;
     } else if ( curchar == QChar(';') ) {
         optype = finLexNode::FIN_LN_OPTYPE_SPLIT;
-        this->_nextReadOrder = FIN_LR_ORD_OPERATOR_FIRST;
+        this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar(',') ) {
         optype = finLexNode::FIN_LN_OPTYPE_COMMA;
-        this->_nextReadOrder = FIN_LR_ORD_OPERATOR_FIRST;
+        this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
+    } else if ( curchar == QChar(':') ) {
+        optype = finLexNode::FIN_LN_OPTYPE_COLON;
+        this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else {
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
     }
