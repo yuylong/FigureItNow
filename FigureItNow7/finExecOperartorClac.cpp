@@ -57,6 +57,23 @@ bool finExecOperartorClac::varLogicValue(finExecVariable *var)
     return false;
 }
 
+finExecVariable *finExecOperartorClac::buildStdLogicVar(bool blval)
+{
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return NULL;
+
+    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    if ( blval ) {
+        retvar->setNumericValue(1.0);
+    } else {
+        retvar->setNumericValue(0.0);
+    }
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+    return retvar;
+}
+
 struct finExecOperartorClacDatabase {
     finLexOperatorType _optype;
     int _oprandCnt;
