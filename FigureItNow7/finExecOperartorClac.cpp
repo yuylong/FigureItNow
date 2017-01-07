@@ -30,7 +30,7 @@ static finErrorCode _mulOpCall(QList<finExecVariable *> *oprands, finExecVariabl
 static finErrorCode _divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _letOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 
-static struct finExecOperartorClacDatabase _glOperatorClacDb[] = {
+static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
     { finLexNode::FIN_LN_OPTYPE_ADD,       2, _addOpCall },
     { finLexNode::FIN_LN_OPTYPE_SUB,       2, _subOpCall },
     { finLexNode::FIN_LN_OPTYPE_POSITIVE,  1, NULL       },
@@ -57,7 +57,8 @@ static struct finExecOperartorClacDatabase _glOperatorClacDb[] = {
     { finLexNode::FIN_LN_OPTYPE_BIT_OR,    2, NULL       },
     { finLexNode::FIN_LN_OPTYPE_BIT_XOR,   2, NULL       },
 };
-static int _glOperatorCalcDbCnt = sizeof (_glOperatorClacDb) / sizeof (struct finExecOperartorClacDatabase);
+static const int _glOperatorCalcDbCnt =
+        sizeof (_glOperatorCalcDb) / sizeof (struct finExecOperartorClacDatabase);
 
 finErrorCode
 finExecOperartorClac::execOpCalc(
@@ -69,7 +70,7 @@ finExecOperartorClac::execOpCalc(
     struct finExecOperartorClacDatabase *curitem = NULL;
     bool found = false;
     for ( int i = 0; i < _glOperatorCalcDbCnt; i++ ) {
-        curitem = &_glOperatorClacDb[i];
+        curitem = &_glOperatorCalcDb[i];
         if ( curitem->_optype == optype ) {
             found = true;
             break;
