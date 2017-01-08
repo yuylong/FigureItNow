@@ -9,6 +9,7 @@
  *
  * DATE      REV  AUTHOR       COMMENTS
  * 20161226    0  Yulong Yu    Create this file.
+ * 20170108    1  Yulong Yu    Add logic value manipulation.
  */
 
 #include "finExecOperartorClac.h"
@@ -85,6 +86,7 @@ static finErrorCode _subOpCall(QList<finExecVariable *> *oprands, finExecVariabl
 static finErrorCode _mulOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _letOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode _logicNotOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 
 static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
     { finLexNode::FIN_LN_OPTYPE_ADD,       2, _addOpCall },
@@ -294,5 +296,19 @@ static finErrorCode _letOpCall(QList<finExecVariable *> *oprands, finExecVariabl
     }
 
     *retval = oprand1;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _logicNotOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    finExecVariable *oprand = oprands->at(0)->getLinkTarget();
+    if ( oprand == NULL )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    bool blval = finExecOperartorClac::varLogicValue(oprand);
+    *retval = finExecOperartorClac::buildStdLogicVar(!blval);
+    if ( *retval == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
