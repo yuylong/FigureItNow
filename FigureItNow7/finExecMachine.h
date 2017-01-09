@@ -125,6 +125,12 @@ private:
 
     finErrorCode instExecBrCond(finSyntaxNode *synnode, finExecEnvironment *env,
                                 bool *retblval, finExecFlowControl *flowctl);
+
+    finErrorCode instExecJumpGoto(finSyntaxNode *synnode, finExecFlowControl *flowctl);
+    finErrorCode instExecJumpRet(finSyntaxNode *synnode, finExecEnvironment *env,
+                                 finExecVariable **retvar, finExecFlowControl *flowctl);
+    finErrorCode instExecJumpConti(finSyntaxNode *synnode, finExecFlowControl *flowctl);
+    finErrorCode instExecJumpBreak(finSyntaxNode *synnode, finExecFlowControl *flowctl);
 };
 
 #endif // FINEXECMACHINE_H

@@ -898,12 +898,85 @@ finExecMachine::instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env,
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finExecMachine::instExecJumpGoto(finSyntaxNode *synnode, finExecFlowControl *flowctl)
+{
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    if ( synnode->getSubListCount() < 1 ) {
+        this->appendExecutionError(lexnode, QString("No jumping target is found."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    finSyntaxNode *lblsynnode = synnode->getSubSyntaxNode(0);
+    finLexNode *lbllexnode = lblsynnode->getCommandLexNode();
+    if ( lblsynnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+         lbllexnode->getType() != finLexNode::FIN_LN_TYPE_VARIABLE) {
+        this->appendExecutionError(lbllexnode, QString("Jumping target cannot be recognized."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    flowctl->setGotoAndLabel(lbllexnode->getString());
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecMachine::instExecJumpRet(finSyntaxNode *synnode, finExecEnvironment *env,
+                                             finExecVariable **retvar, finExecFlowControl *flowctl)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode finExecMachine::instExecJumpConti(finSyntaxNode *synnode, finExecFlowControl *flowctl)
+{
+    if ( synnode == NULL || flowctl == NULL)
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    flowctl->setType(finExecFlowControl::FIN_FC_CONTINUE);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecMachine::instExecJumpBreak(finSyntaxNode *synnode, finExecFlowControl *flowctl)
+{
+    if ( synnode == NULL || flowctl == NULL)
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    flowctl->setType(finExecFlowControl::FIN_FC_BREAK);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode
 finExecMachine::instExecJump(finSyntaxNode *synnode, finExecEnvironment *env,
                              finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     printf("Jump!");synnode->dump();
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    QString jumpkw = lexnode->getString();
+    finErrorCode errcode;
+
+    if ( QString::compare(jumpkw, "goto") == 0 ) {
+        errcode = this->instExecJumpGoto(synnode, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+        *retvar = NULL;
+    } else if ( QString::compare(jumpkw, "return") == 0 ) {
+        errcode = this->instExecJumpRet(synnode, env, retvar, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+    } else if ( QString::compare(jumpkw, "continue") == 0 ) {
+        errcode = this->instExecJumpConti(synnode, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+        *retvar = NULL;
+    } else if ( QString::compare(jumpkw, "break") == 0 ) {
+        errcode = this->instExecJumpBreak(synnode, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+        *retvar = NULL;
+    } else {
+        this->appendExecutionError(lexnode, QString("The jump statement cannot be recognized."));
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    }
+
+    flowctl->directPass();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
