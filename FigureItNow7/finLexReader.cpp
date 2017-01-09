@@ -283,7 +283,7 @@ finErrorCode finLexReader::tryRecogKeyword(finLexNode *retnode)
         QString("if"), QString("elif"), QString("else"),
         QString("for"), QString("while"),
         QString("continue"), QString("break"),
-        QString("return"), QString("goto"),
+        QString("return"), QString("exit"), QString("goto"),
         QString("var")
     };
     int kwlistcnt = sizeof (kwlist) / sizeof (QString);

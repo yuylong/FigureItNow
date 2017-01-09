@@ -844,10 +844,11 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
 
     if ( sttlex->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
          sttlex->getOperator() == finLexNode::FIN_LN_OPTYPE_SPLIT ) {
-        // Process J <- J'; where J' <- goto(E) | return(E)
-        // Process J <- J'E; where J' <- goto | return
+        // Process J <- J'; where J' <- goto(E) | return(E) | exit(E)
+        // Process J <- J'E; where J' <- goto | return | exit
         if ( QString::compare(prevlex->getString(), QString("goto")) == 0 ||
-             QString::compare(prevlex->getString(), QString("return")) == 0 ) {
+             QString::compare(prevlex->getString(), QString("return")) == 0 ||
+             QString::compare(prevlex->getString(), QString("exit")) == 0 ) {
             int prevsubcnt = prevtk->getSubListCount();
             int sttsubcnt = stttk->getSubListCount();
             if ( prevsubcnt + sttsubcnt != 1 )
