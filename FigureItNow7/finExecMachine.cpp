@@ -918,10 +918,39 @@ finErrorCode finExecMachine::instExecJumpGoto(finSyntaxNode *synnode, finExecFlo
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finExecMachine::instExecJumpRetVoid(finExecVariable **retvar, finExecFlowControl *flowctl)
+{
+    *retvar = NULL;
+    flowctl->setType(finExecFlowControl::FIN_FC_RETURN);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecMachine::instExecJumpRetVal(finSyntaxNode *synnode, finExecEnvironment *env,
+                                                finExecVariable **retvar, finExecFlowControl *flowctl)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+
 finErrorCode finExecMachine::instExecJumpRet(finSyntaxNode *synnode, finExecEnvironment *env,
                                              finExecVariable **retvar, finExecFlowControl *flowctl)
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    if ( synnode->getSubListCount() < 1 ) {
+        return this->instExecJumpRetVoid(retvar, flowctl);
+    } else {
+        finSyntaxNode *basesn = synnode->getSubSyntaxNode(0);
+        finLexNode *baseln = basesn->getCommandLexNode();
+
+        if ( basesn->getType() == finSyntaxNode::FIN_SN_TYPE_EXPRESS &&
+             baseln->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+             baseln->getOperator() == finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
+            if ( basesn->getSubListCount() < 1 )
+                return this->instExecJumpRetVoid(retvar, flowctl);
+
+            basesn = basesn->getSubSyntaxNode(0);
+        }
+        return this->instExecJumpRetVal(basesn, env, retvar, flowctl);
+    }
 }
 
 finErrorCode finExecMachine::instExecJumpConti(finSyntaxNode *synnode, finExecFlowControl *flowctl)

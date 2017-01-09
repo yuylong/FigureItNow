@@ -127,6 +127,9 @@ private:
                                 bool *retblval, finExecFlowControl *flowctl);
 
     finErrorCode instExecJumpGoto(finSyntaxNode *synnode, finExecFlowControl *flowctl);
+    finErrorCode instExecJumpRetVoid(finExecVariable **retvar, finExecFlowControl *flowctl);
+    finErrorCode instExecJumpRetVal(finSyntaxNode *synnode, finExecEnvironment *env,
+                                    finExecVariable **retvar, finExecFlowControl *flowctl);
     finErrorCode instExecJumpRet(finSyntaxNode *synnode, finExecEnvironment *env,
                                  finExecVariable **retvar, finExecFlowControl *flowctl);
     finErrorCode instExecJumpConti(finSyntaxNode *synnode, finExecFlowControl *flowctl);
