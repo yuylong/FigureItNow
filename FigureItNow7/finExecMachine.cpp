@@ -799,8 +799,36 @@ err:
 finErrorCode finExecMachine::instExecBrCond(finSyntaxNode *synnode, finExecEnvironment *env,
                                             bool *retblval, finExecFlowControl *flowctl)
 {
+    printf("Branch Cond!");synnode->dump();
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    finExecVariable *retvar;
 
-    *retblval = false;
+    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+         lexnode->getType() != finLexNode::FIN_LN_TYPE_OPERATOR ||
+         lexnode->getType() != finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
+        this->appendExecutionError(lexnode, QString("Cannot recognize the branch condition."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    if ( synnode->getSubListCount() < 1 ) {
+        this->appendExecutionError(lexnode, QString("No branch condition is found."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    finErrorCode errcode = this->instantExecute(synnode->getSubSyntaxNode(0), env, &retvar, flowctl);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        finExecVariable::releaseNonLeftVariable(retvar);
+        return errcode;
+    }
+    if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
+        finExecVariable::releaseNonLeftVariable(retvar);
+        if ( !finErrorCodeKits::isErrorResult(errcode) )
+            *retblval = false;
+        return errcode;
+    }
+
+    *retblval = finExecOperartorClac::varLogicValue(retvar);
+    finExecVariable::releaseNonLeftVariable(retvar);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
