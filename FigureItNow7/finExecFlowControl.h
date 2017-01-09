@@ -43,6 +43,7 @@ protected:
 public:
     finExecFlowControl();
 
+    void resetFlowControl();
     finErrorCode copyFlowControl(finExecFlowControl *srcfc);
 
     finExecFlowControlType getType() const;

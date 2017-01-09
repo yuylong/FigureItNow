@@ -22,6 +22,13 @@ finExecFlowControl::finExecFlowControl()
     this->_retVar = NULL;
 }
 
+finErrorCode finExecFlowControl::resetFlowControl()
+{
+    this->_type = finExecFlowControl::FIN_FC_NEXT;
+    this->_label = QString();
+    this->releaseReturnVariable();
+}
+
 finErrorCode finExecFlowControl::copyFlowControl(finExecFlowControl *srcfc)
 {
     if ( this->_retVar != NULL )
