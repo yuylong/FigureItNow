@@ -168,6 +168,7 @@ finErrorCode finSyntaxNode::disposeAll()
 bool finSyntaxNode::isStatementLevelType(finSyntaxNodeType type)
 {
     switch ( type ) {
+      case FIN_SN_TYPE_DECLARE:
       case FIN_SN_TYPE_BRANCH:
       case FIN_SN_TYPE_JUMP:
       case FIN_SN_TYPE_LABEL:
