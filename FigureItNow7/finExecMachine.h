@@ -126,6 +126,11 @@ private:
     finErrorCode instExecBrCond(finSyntaxNode *synnode, finExecEnvironment *env,
                                 bool *retblval, finExecFlowControl *flowctl);
 
+    finErrorCode instExecLoopWhile(finSyntaxNode *synnode, finExecEnvironment *env,
+                                   finExecVariable **retvar, finExecFlowControl *flowctl);
+    finErrorCode instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env,
+                                 finExecVariable **retvar, finExecFlowControl *flowctl);
+
     finErrorCode instExecJumpGoto(finSyntaxNode *synnode, finExecFlowControl *flowctl);
     finErrorCode instExecJumpRetVoid(finExecVariable **retvar, finExecFlowControl *flowctl);
     finErrorCode instExecJumpRetVal(finSyntaxNode *synnode, finExecEnvironment *env,

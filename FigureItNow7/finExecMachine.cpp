@@ -874,11 +874,85 @@ finExecMachine::instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env,
 }
 
 finErrorCode
+finExecMachine::instExecLoopWhile(finSyntaxNode *synnode, finExecEnvironment *env,
+                                  finExecVariable **retvar, finExecFlowControl *flowctl)
+{
+    printf("Loop While!");synnode->dump();
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    if ( synnode->getSubListCount() < 2 ) {
+        this->appendExecutionError(lexnode, QString("Unrecognized while loop."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    finSyntaxNode *whilecond = synnode->getSubSyntaxNode(0);
+    finSyntaxNode *whilebody = synnode->getSubSyntaxNode(1);
+
+    *retvar = NULL;
+    while ( true ) {
+        finErrorCode errcode;
+        bool loopgoon = true;
+
+        errcode = this->instExecBrCond(whilecond, env, &loopgoon, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            finExecVariable::releaseNonLeftVariable(*retvar);
+            *retvar = NULL;
+            return errcode;
+        }
+        if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
+            if ( finErrorCodeKits::isErrorResult(errcode) ) {
+                finExecVariable::releaseNonLeftVariable(*retvar);
+                *retvar = NULL;
+            }
+            return errcode;
+        }
+
+        if ( !loopgoon )
+            break;
+
+        finExecVariable::releaseNonLeftVariable(*retvar);
+        *retvar = NULL;
+
+        errcode = this->instantExecute(whilebody, env, retvar, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+        if ( flowctl->getType() == finExecFlowControl::FIN_FC_CONTINUE ) {
+            flowctl->setFlowNext();
+            continue;
+        } else if ( flowctl->getType() == finExecFlowControl::FIN_FC_BREAK ) {
+            flowctl->setFlowNext();
+            break;
+        } else if ( flowctl->getType() != finExecFlowControl::FIN_FC_NEXT) {
+            flowctl->directPass();
+            break;
+        }
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env,
+                                finExecVariable **retvar, finExecFlowControl *flowctl)
+{
+    printf("Loop For!");synnode->dump();
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode
 finExecMachine::instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env,
                              finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     printf("Loop!");synnode->dump();
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    QString loophdstr = lexnode->getString();
+
+    if ( QString::compare(loophdstr, QString("while")) == 0 ) {
+        return this->instExecLoopWhile(synnode, env, retvar, flowctl);
+    } else if ( QString::compare(loophdstr, QString("for")) == 0 ) {
+        return this->instExecLoopFor(synnode, env, retvar, flowctl);
+    } else {
+        this->appendExecutionError(lexnode, QString("Encouter unsupported loop type."));
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    }
 }
 
 finErrorCode
