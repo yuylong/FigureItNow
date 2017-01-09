@@ -282,6 +282,7 @@ finErrorCode finLexReader::tryRecogKeyword(finLexNode *retnode)
     static QString kwlist[] = {
         QString("if"), QString("elif"), QString("else"),
         QString("for"), QString("while"),
+        QString("continue"), QString("break"),
         QString("return"), QString("goto"),
         QString("var")
     };
