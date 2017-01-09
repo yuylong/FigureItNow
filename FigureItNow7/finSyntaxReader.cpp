@@ -862,6 +862,20 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
             return finErrorCodeKits::FIN_EC_SUCCESS;
         }
 
+        // Process J <- J'; where J' <- break | continue
+        if ( QString::compare(prevlex->getString(), QString("break")) == 0 ||
+             QString::compare(prevlex->getString(), QString("continue")) == 0 ) {
+            int prevsubcnt = prevtk->getSubListCount();
+            int sttsubcnt = stttk->getSubListCount();
+            if ( prevsubcnt != 0 || sttsubcnt != 0 )
+                return finErrorCodeKits::FIN_EC_READ_ERROR;
+
+            this->_syntaxStack.removeFirst();
+            delete stttk;
+            prevtk->setType(finSyntaxNode::FIN_SN_TYPE_JUMP);
+            return finErrorCodeKits::FIN_EC_SUCCESS;
+        }
+
         // Process D <- var E;
         if ( QString::compare(prevlex->getString(), QString("var")) == 0 ) {
             int prevsubcnt = prevtk->getSubListCount();
