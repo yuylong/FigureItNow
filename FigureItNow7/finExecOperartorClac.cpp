@@ -87,6 +87,9 @@ static finErrorCode _mulOpCall(QList<finExecVariable *> *oprands, finExecVariabl
 static finErrorCode _divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _letOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _logicNotOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode _logicAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode _logicOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode _logicXorOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 
 static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
     { finLexNode::FIN_LN_OPTYPE_ADD,       2, _addOpCall },
@@ -106,10 +109,10 @@ static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
     { finLexNode::FIN_LN_OPTYPE_NONEQUAL,  2, NULL       },
     { finLexNode::FIN_LN_OPTYPE_GRT_EQ,    2, NULL       },
     { finLexNode::FIN_LN_OPTYPE_LES_EQ,    2, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_LOGIC_NOT, 1, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_LOGIC_AND, 2, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_LOGIC_OR,  2, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_LOGIC_XOR, 2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_LOGIC_NOT, 1, _logicNotOpCall },
+    { finLexNode::FIN_LN_OPTYPE_LOGIC_AND, 2, _logicAndOpCall },
+    { finLexNode::FIN_LN_OPTYPE_LOGIC_OR,  2, _logicOrOpCall  },
+    { finLexNode::FIN_LN_OPTYPE_LOGIC_XOR, 2, _logicXorOpCall },
     { finLexNode::FIN_LN_OPTYPE_BIT_NOT,   1, NULL       },
     { finLexNode::FIN_LN_OPTYPE_BIT_AND,   2, NULL       },
     { finLexNode::FIN_LN_OPTYPE_BIT_OR,    2, NULL       },
@@ -307,6 +310,54 @@ static finErrorCode _logicNotOpCall(QList<finExecVariable *> *oprands, finExecVa
 
     bool blval = finExecOperartorClac::varLogicValue(oprand);
     *retval = finExecOperartorClac::buildStdLogicVar(!blval);
+    if ( *retval == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _logicAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    finExecVariable *oprand1 = oprands->at(0)->getLinkTarget();
+    finExecVariable *oprand2 = oprands->at(1)->getLinkTarget();
+    if ( oprand1 == NULL || oprand2 == NULL )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    bool blval1 = finExecOperartorClac::varLogicValue(oprand1);
+    bool blval2 = finExecOperartorClac::varLogicValue(oprand2);
+    *retval = finExecOperartorClac::buildStdLogicVar(blval1 && blval2);
+    if ( *retval == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _logicOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    finExecVariable *oprand1 = oprands->at(0)->getLinkTarget();
+    finExecVariable *oprand2 = oprands->at(1)->getLinkTarget();
+    if ( oprand1 == NULL || oprand2 == NULL )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    bool blval1 = finExecOperartorClac::varLogicValue(oprand1);
+    bool blval2 = finExecOperartorClac::varLogicValue(oprand2);
+    *retval = finExecOperartorClac::buildStdLogicVar(blval1 || blval2);
+    if ( *retval == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _logicXorOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    finExecVariable *oprand1 = oprands->at(0)->getLinkTarget();
+    finExecVariable *oprand2 = oprands->at(1)->getLinkTarget();
+    if ( oprand1 == NULL || oprand2 == NULL )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    bool blval1 = finExecOperartorClac::varLogicValue(oprand1);
+    bool blval2 = finExecOperartorClac::varLogicValue(oprand2);
+    *retval = finExecOperartorClac::buildStdLogicVar(blval1 == blval2 ? false : true);
     if ( *retval == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
