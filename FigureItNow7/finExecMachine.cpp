@@ -940,9 +940,12 @@ finErrorCode finExecMachine::instExecJumpRet(finSyntaxNode *synnode, finExecEnvi
     } else {
         finSyntaxNode *basesn = synnode->getSubSyntaxNode(0);
         finLexNode *baseln = basesn->getCommandLexNode();
+        if ( basesn->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+            this->appendExecutionError(baseln, QString("Return value cannot be calculated."));
+            return finErrorCodeKits::FIN_EC_READ_ERROR;
+        }
 
-        if ( basesn->getType() == finSyntaxNode::FIN_SN_TYPE_EXPRESS &&
-             baseln->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+        if ( baseln->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
              baseln->getOperator() == finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
             if ( basesn->getSubListCount() < 1 )
                 return this->instExecJumpRetVoid(retvar, flowctl);
