@@ -43,6 +43,8 @@ protected:
 public:
     finExecFlowControl();
 
+    finErrorCode copyFlowControl(finExecFlowControl *srcfc);
+
     finExecFlowControlType getType() const;
     bool isFlowNext() const;
     bool isFlowGoto() const;

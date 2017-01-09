@@ -22,6 +22,17 @@ finExecFlowControl::finExecFlowControl()
     this->_retVar = NULL;
 }
 
+finErrorCode finExecFlowControl::copyFlowControl(finExecFlowControl *srcfc)
+{
+    if ( this->_retVar != NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    this->_type = srcfc->getType();
+    this->_label = srcfc->getGotoLabel();
+    this->_retVar = srcfc->getReturnVariable();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finExecFlowControlType finExecFlowControl::getType() const
 {
     return this->_type;
