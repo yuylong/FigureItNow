@@ -3,13 +3,14 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2016 Yusoft. All rights reserved.
+ * Copyright(c) 2015-2017 Yusoft. All rights reserved.
  *
  * History:
  *
  * DATE      REV  AUTHOR       COMMENTS
  * 20161226    0  Yulong Yu    Create this file.
  * 20170108    1  Yulong Yu    Add logic value manipulation.
+ * 20170209    2  Yulong Yu    Implement the operators for logic manipulations.
  */
 
 #include "finExecOperartorClac.h"
@@ -86,37 +87,38 @@ static finErrorCode _subOpCall(QList<finExecVariable *> *oprands, finExecVariabl
 static finErrorCode _mulOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _letOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode _eqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _logicNotOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _logicAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _logicOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _logicXorOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 
 static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
-    { finLexNode::FIN_LN_OPTYPE_ADD,       2, _addOpCall },
-    { finLexNode::FIN_LN_OPTYPE_SUB,       2, _subOpCall },
-    { finLexNode::FIN_LN_OPTYPE_POSITIVE,  1, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_NEGATIVE,  1, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_ACCUMLT,   1, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_ACCUMLT_2, 1, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_MUL,       2, _mulOpCall },
-    { finLexNode::FIN_LN_OPTYPE_DIV,       2, _divOpCall },
-    { finLexNode::FIN_LN_OPTYPE_MOD,       2, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_POWER,     2, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_LET,       2, _letOpCall },
-    { finLexNode::FIN_LN_OPTYPE_EQUAL,     2, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_GRT,       2, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_LES,       2, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_NONEQUAL,  2, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_GRT_EQ,    2, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_LES_EQ,    2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_ADD,       2, _addOpCall      },
+    { finLexNode::FIN_LN_OPTYPE_SUB,       2, _subOpCall      },
+    { finLexNode::FIN_LN_OPTYPE_POSITIVE,  1, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_NEGATIVE,  1, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_ACCUMLT,   1, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_ACCUMLT_2, 1, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_MUL,       2, _mulOpCall      },
+    { finLexNode::FIN_LN_OPTYPE_DIV,       2, _divOpCall      },
+    { finLexNode::FIN_LN_OPTYPE_MOD,       2, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_POWER,     2, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_LET,       2, _letOpCall      },
+    { finLexNode::FIN_LN_OPTYPE_EQUAL,     2, _eqOpCall       },
+    { finLexNode::FIN_LN_OPTYPE_GRT,       2, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_LES,       2, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_NONEQUAL,  2, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_GRT_EQ,    2, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_LES_EQ,    2, NULL            },
     { finLexNode::FIN_LN_OPTYPE_LOGIC_NOT, 1, _logicNotOpCall },
     { finLexNode::FIN_LN_OPTYPE_LOGIC_AND, 2, _logicAndOpCall },
     { finLexNode::FIN_LN_OPTYPE_LOGIC_OR,  2, _logicOrOpCall  },
     { finLexNode::FIN_LN_OPTYPE_LOGIC_XOR, 2, _logicXorOpCall },
-    { finLexNode::FIN_LN_OPTYPE_BIT_NOT,   1, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_BIT_AND,   2, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_BIT_OR,    2, NULL       },
-    { finLexNode::FIN_LN_OPTYPE_BIT_XOR,   2, NULL       },
+    { finLexNode::FIN_LN_OPTYPE_BIT_NOT,   1, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_BIT_AND,   2, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_BIT_OR,    2, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_BIT_XOR,   2, NULL            },
 };
 static const int _glOperatorCalcDbCnt =
         sizeof (_glOperatorCalcDb) / sizeof (struct finExecOperartorClacDatabase);
@@ -299,6 +301,19 @@ static finErrorCode _letOpCall(QList<finExecVariable *> *oprands, finExecVariabl
     }
 
     *retval = oprand1;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode _eqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    finExecVariable *oprand1 = oprands->at(0);
+    finExecVariable *oprand2 = oprands->at(1);
+
+    bool retblval = oprand1->isSameValue(oprand2);
+    *retval = finExecOperartorClac::buildStdLogicVar(retblval);
+    if ( *retval == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

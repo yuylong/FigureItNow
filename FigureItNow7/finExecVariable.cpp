@@ -53,11 +53,6 @@ QString finExecVariable::getName() const
     return this->_varName;
 }
 
-bool finExecVariable::isSameName(const QString &name) const
-{
-    return (QString::compare(this->_varName, name) == 0);
-}
-
 finExecVariableType finExecVariable::getType() const
 {
     return this->_type;
@@ -457,6 +452,57 @@ finErrorCode finExecVariable::copyVariableValueIn(finExecVariable *srcvar)
         break;
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+bool finExecVariable::isSameName(const QString &name) const
+{
+    return (QString::compare(this->_varName, name) == 0);
+}
+
+bool finExecVariable::isSameValue(finExecVariable *var)
+{
+    finExecVariable *var1 = this->getLinkTarget();
+    finExecVariable *var2 = var->getLinkTarget();
+
+    if ( var1 == NULL && var2 == NULL )
+        return true;
+    else if ( var1 == NULL || var2 == NULL )
+        return false;
+    else if ( var1 == var2 )
+        return true;
+
+    if ( var1->getType() != var2->getType() )
+        return false;
+
+    switch ( var1->getType() ) {
+      case finExecVariable::FIN_VR_TYPE_NULL:
+        return true;
+
+      case finExecVariable::FIN_VR_TYPE_NUMERIC:
+        return (var1->getNumericValue() == var2->getNumericValue());
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_STRING:
+        return (QString::compare(var1->getStringValue(), var2->getStringValue()) == 0);
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_ARRAY:
+        if ( var1->getArrayLength() != var2->getArrayLength() )
+            return false;
+
+        for ( int i = 0; i < var1->getArrayLength(); i++ ) {
+            finExecVariable *subvar1 = var1->getVariableItemAt(i);
+            finExecVariable *subvar2 = var2->getVariableItemAt(i);
+            if ( !subvar1->isSameValue(subvar2) )
+                return false;
+        }
+        return true;
+        break;
+
+      default:
+        return false;
+    }
+    return false;
 }
 
 finErrorCode finExecVariable::copyArrayVariable(const finExecVariable *srcvar)

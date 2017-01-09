@@ -86,7 +86,6 @@ public:
     ~finExecVariable();
 
     QString getName() const;
-    bool isSameName(const QString &name) const;
     finExecVariableType getType() const;
     bool isWriteProtected() const;
     bool isLeftValue() const;
@@ -125,6 +124,9 @@ public:
     finExecVariable *getLinkTarget();
     finErrorCode setLinkTarget(finExecVariable *target);
     finErrorCode unsetLinkTarget();
+
+    bool isSameName(const QString &name) const;
+    bool isSameValue(finExecVariable *var);
 
     finErrorCode copyVariableValue(finExecVariable *srcvar);
     finErrorCode copyVariable(finExecVariable *srcvar);
