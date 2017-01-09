@@ -88,6 +88,7 @@ static finErrorCode _mulOpCall(QList<finExecVariable *> *oprands, finExecVariabl
 static finErrorCode _divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _letOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _eqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode _neqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _logicNotOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _logicAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _logicOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
@@ -108,7 +109,7 @@ static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
     { finLexNode::FIN_LN_OPTYPE_EQUAL,     2, _eqOpCall       },
     { finLexNode::FIN_LN_OPTYPE_GRT,       2, NULL            },
     { finLexNode::FIN_LN_OPTYPE_LES,       2, NULL            },
-    { finLexNode::FIN_LN_OPTYPE_NONEQUAL,  2, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_NONEQUAL,  2, _neqOpCall      },
     { finLexNode::FIN_LN_OPTYPE_GRT_EQ,    2, NULL            },
     { finLexNode::FIN_LN_OPTYPE_LES_EQ,    2, NULL            },
     { finLexNode::FIN_LN_OPTYPE_LOGIC_NOT, 1, _logicNotOpCall },
@@ -309,8 +310,21 @@ finErrorCode _eqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retv
     finExecVariable *oprand1 = oprands->at(0);
     finExecVariable *oprand2 = oprands->at(1);
 
-    bool retblval = oprand1->isSameValue(oprand2);
-    *retval = finExecOperartorClac::buildStdLogicVar(retblval);
+    bool opssame = oprand1->isSameValue(oprand2);
+    *retval = finExecOperartorClac::buildStdLogicVar(opssame);
+    if ( *retval == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _neqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    finExecVariable *oprand1 = oprands->at(0);
+    finExecVariable *oprand2 = oprands->at(1);
+
+    bool opssame = oprand1->isSameValue(oprand2);
+    *retval = finExecOperartorClac::buildStdLogicVar(!opssame);
     if ( *retval == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
