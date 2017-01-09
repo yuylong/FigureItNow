@@ -865,7 +865,7 @@ finExecMachine::instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env,
         errcode = this->instantExecute(synnode->getSubSyntaxNode(bridx), env, &tmpvar, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
-        finExecVariable::releaseNonLeftVariable(tmpvar);
+        *retvar = tmpvar;
         flowctl->directPass();
     } else {
         flowctl->setFlowNext();
@@ -946,6 +946,7 @@ finErrorCode finExecMachine::instExecJumpRetVal(finSyntaxNode *synnode, finExecE
     }
 
     flowctl->setType(finExecFlowControl::FIN_FC_RETURN);
+    printf("A\n");
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
