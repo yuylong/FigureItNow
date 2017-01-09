@@ -122,6 +122,9 @@ private:
     finErrorCode instExecFuncArg(finSyntaxNode *synnode, finExecFunction *func);
     finErrorCode instExecFuncArgs(finSyntaxNode *synnode, finExecFunction *func);
     finErrorCode instExecFuncBody(finSyntaxNode *synnode, finExecFunction *func);
+
+    finErrorCode instExecBrCond(finSyntaxNode *synnode, finExecEnvironment *env,
+                                bool *retblval, finExecFlowControl *flowctl);
 };
 
 #endif // FINEXECMACHINE_H

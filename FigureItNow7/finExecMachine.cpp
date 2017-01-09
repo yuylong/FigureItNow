@@ -796,12 +796,50 @@ err:
     return errcode;
 }
 
+finErrorCode finExecMachine::instExecBrCond(finSyntaxNode *synnode, finExecEnvironment *env,
+                                            bool *retblval, finExecFlowControl *flowctl)
+{
+
+    *retblval = false;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode
 finExecMachine::instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env,
                                finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     printf("Branch!");synnode->dump();
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finErrorCode errcode;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    int bridx = 0;
+    *retvar = NULL;
+
+    for ( bridx = 0; bridx + 1 < synnode->getSubListCount(); bridx += 2 ) {
+        bool condok = false;
+
+        errcode = this->instExecBrCond(synnode->getSubSyntaxNode(bridx), env, &condok, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+        if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) )
+            return errcode;
+
+        if ( condok ) {
+            bridx += 1;
+            break;
+        }
+    }
+
+    if ( bridx < synnode->getSubListCount() ) {
+        finExecVariable *tmpvar;
+        errcode = this->instantExecute(synnode->getSubSyntaxNode(bridx + 1), env, &tmpvar, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+        finExecVariable::releaseNonLeftVariable(tmpvar);
+        flowctl->directPass();
+    } else {
+        flowctl->setFlowNext();
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
