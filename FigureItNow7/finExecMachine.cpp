@@ -933,6 +933,40 @@ finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env,
                                 finExecVariable **retvar, finExecFlowControl *flowctl)
 {
     printf("Loop For!");synnode->dump();
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    if ( synnode->getSubListCount() < 2 ) {
+        this->appendExecutionError(lexnode, QString("Unrecognized for loop."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    finSyntaxNode *headsn = synnode->getSubSyntaxNode(0);
+    finLexNode *headlex = headsn->getCommandLexNode();
+    if ( headsn->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS || headsn->getSubListCount() < 3 ) {
+        this->appendExecutionError(headlex, QString("Unrecognized for loop head."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+    if ( headlex->getType() != finLexNode::FIN_LN_TYPE_OPERATOR ||
+         headlex->getOperator() != finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
+        this->appendExecutionError(headlex, QString("Unrecognized for loop head."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    finSyntaxNode *inithsn = headsn->getSubSyntaxNode(0);
+    finSyntaxNode *condhsn = headsn->getSubSyntaxNode(1);
+    finSyntaxNode *stephsn = headsn->getSubSyntaxNode(2);
+    if ( inithsn->getType() != finSyntaxNode::FIN_SN_TYPE_STATEMENT ||
+         condhsn->getType() != finSyntaxNode::FIN_SN_TYPE_STATEMENT ||
+         stephsn->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+        this->appendExecutionError(headlex, QString("Unrecognized for loop head."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+    finSyntaxNode *bodysn = synnode->getSubSyntaxNode(1);
+    if ( bodysn->getType() != finSyntaxNode::FIN_SN_TYPE_STATEMENT ) {
+        this->appendExecutionError(bodysn->getCommandLexNode(), QString("Unrecognized for loop body."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
