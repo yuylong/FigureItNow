@@ -22,7 +22,7 @@ finExecFlowControl::finExecFlowControl()
     this->_retVar = NULL;
 }
 
-finErrorCode finExecFlowControl::resetFlowControl()
+void finExecFlowControl::resetFlowControl()
 {
     this->_type = finExecFlowControl::FIN_FC_NEXT;
     this->_label = QString();

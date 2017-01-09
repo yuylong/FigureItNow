@@ -202,7 +202,7 @@ finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env,
     finSyntaxNodeType syntype = synnode->getType();
     switch ( syntype ) {
       case finSyntaxNode::FIN_SN_TYPE_SINGLE:
-        return this->instExecSingle(synnode, env, retvar, flowctl);
+        return this->instExecSingle(synnode, env, flowctl);
         break;
 
       case finSyntaxNode::FIN_SN_TYPE_DECLARE:
@@ -257,16 +257,15 @@ finExecMachine::appendExecutionError(finLexNode *lexnode, const QString &errinfo
 }
 
 finErrorCode
-finExecMachine::instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env,
-                               finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Single!"); synnode->dump();
-    if ( synnode == NULL || env == NULL || retvar == NULL || flowctl == NULL )
+    if ( synnode == NULL || env == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
     finLexNode *lexnode = synnode->getCommandLexNode();
-
     this->appendExecutionError(lexnode, QString("Unrecognized symbol."));
+
     return finErrorCodeKits::FIN_EC_READ_ERROR;
 }
 

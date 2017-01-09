@@ -80,8 +80,7 @@ public:
     finErrorCode appendExecutionError(finLexNode *lexnode, const QString &errinfo);
 
 private:
-    finErrorCode instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env,
-                                finExecVariable **retvar, finExecFlowControl *flowctl);
+    finErrorCode instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
     finErrorCode instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
                                  finExecVariable **retvar, finExecFlowControl *flowctl);
     finErrorCode instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env,

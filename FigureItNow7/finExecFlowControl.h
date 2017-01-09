@@ -58,7 +58,6 @@ public:
     bool checkFlowExpressGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode);
     bool checkFlowProgramGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode);
 
-
     finErrorCode setType(finExecFlowControlType type);
     finErrorCode setLabel(const QString &label);
     finErrorCode setFlowNext();
