@@ -17,6 +17,7 @@
 #include <QString>
 
 #include "finErrorCode.h"
+#include "finExecVariable.h"
 #include "finLexNode.h"
 
 class finExecMachine;
@@ -37,6 +38,7 @@ public:
 protected:
     finExecFlowControlType _type;
     QString _label;
+    finExecVariable *_retVar;
 
 public:
     finExecFlowControl();
@@ -46,6 +48,7 @@ public:
     bool isFlowGoto() const;
     QString getGotoLabel() const;
     bool isFlowExit() const;
+    finExecVariable *getReturnVariable();
 
     bool isFlowExpressOk() const;
     bool isFlowProgramOk() const;
@@ -57,6 +60,9 @@ public:
     finErrorCode setLabel(const QString &label);
     finErrorCode setFlowNext();
     finErrorCode setGotoAndLabel(const QString &label);
+    finErrorCode setReturnVariable(finExecVariable *retvar);
+
+    void releaseReturnVariable();
 
     finErrorCode directPass();
 };

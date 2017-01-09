@@ -19,6 +19,7 @@ finExecFlowControl::finExecFlowControl()
 {
     this->_type = finExecFlowControl::FIN_FC_NEXT;
     this->_label = QString();
+    this->_retVar = NULL;
 }
 
 finExecFlowControlType finExecFlowControl::getType() const
@@ -42,6 +43,11 @@ QString finExecFlowControl::getGotoLabel() const
         return this->_label;
     else
         return QString();
+}
+
+finExecVariable *finExecFlowControl::getReturnVariable()
+{
+    return this->_retVar;
 }
 
 bool finExecFlowControl::isFlowExit() const
@@ -122,6 +128,22 @@ finErrorCode finExecFlowControl::setGotoAndLabel(const QString &label)
     this->_label = label;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+finErrorCode finExecFlowControl::setReturnVariable(finExecVariable *retvar)
+{
+    if ( this->_retVar != NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    this->_retVar = retvar;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+void finExecFlowControl::releaseReturnVariable()
+{
+    finExecVariable::releaseNonLeftVariable(this->_retVar);
+    this->_retVar = NULL;
+}
+
 
 finErrorCode finExecFlowControl::directPass()
 {
