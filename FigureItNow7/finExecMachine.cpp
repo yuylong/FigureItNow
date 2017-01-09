@@ -577,9 +577,10 @@ finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env
         return errcode;
     }
     if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
-        finExecVariable::releaseNonLeftVariable(*retvar);
-        if ( !finErrorCodeKits::isErrorResult(errcode) )
+        if ( !finErrorCodeKits::isErrorResult(errcode) ) {
+            finExecVariable::releaseNonLeftVariable(*retvar);
             *retvar = NULL;
+        }
         return errcode;
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
@@ -601,10 +602,12 @@ finExecMachine::instExecExprOper(finSyntaxNode *synnode, finExecEnvironment *env
         if ( finErrorCodeKits::isErrorResult(errcode) )
             goto out;
         if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
-            finExecVariable::releaseNonLeftVariable(oprand);
+            if ( finErrorCodeKits::isErrorResult(errcode) )
+                finExecVariable::releaseNonLeftVariable(oprand);
+            else
+                *retvar = oprand;
             goto out;
         }
-
         oprands.append(oprand);
     }
 
@@ -928,7 +931,22 @@ finErrorCode finExecMachine::instExecJumpRetVoid(finExecVariable **retvar, finEx
 finErrorCode finExecMachine::instExecJumpRetVal(finSyntaxNode *synnode, finExecEnvironment *env,
                                                 finExecVariable **retvar, finExecFlowControl *flowctl)
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finErrorCode errcode;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    errcode = this->instantExecute(synnode, env, retvar, flowctl);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+    if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            finExecVariable::releaseNonLeftVariable(*retvar);
+            *retvar = NULL;
+        }
+        return errcode;
+    }
+
+    flowctl->setType(finExecFlowControl::FIN_FC_RETURN);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 
