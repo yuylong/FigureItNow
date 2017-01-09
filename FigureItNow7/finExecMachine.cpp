@@ -805,7 +805,7 @@ finErrorCode finExecMachine::instExecBrCond(finSyntaxNode *synnode, finExecEnvir
 
     if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
          lexnode->getType() != finLexNode::FIN_LN_TYPE_OPERATOR ||
-         lexnode->getType() != finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
+         lexnode->getOperator() != finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
         this->appendExecutionError(lexnode, QString("Cannot recognize the branch condition."));
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
@@ -859,7 +859,7 @@ finExecMachine::instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env,
 
     if ( bridx < synnode->getSubListCount() ) {
         finExecVariable *tmpvar;
-        errcode = this->instantExecute(synnode->getSubSyntaxNode(bridx + 1), env, &tmpvar, flowctl);
+        errcode = this->instantExecute(synnode->getSubSyntaxNode(bridx), env, &tmpvar, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
         finExecVariable::releaseNonLeftVariable(tmpvar);
