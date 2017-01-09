@@ -132,6 +132,12 @@ private:
                                     finExecVariable **retvar, finExecFlowControl *flowctl);
     finErrorCode instExecJumpRet(finSyntaxNode *synnode, finExecEnvironment *env,
                                  finExecVariable **retvar, finExecFlowControl *flowctl);
+    finErrorCode instExecJumpExitVoid(finSyntaxNode *synnode,
+                                      finExecVariable **retvar, finExecFlowControl *flowctl);
+    finErrorCode instExecJumpExitVal(finSyntaxNode *synnode, finExecEnvironment *env,
+                                    finExecVariable **retvar, finExecFlowControl *flowctl);
+    finErrorCode instExecJumpExit(finSyntaxNode *synnode, finExecEnvironment *env,
+                                  finExecVariable **retvar, finExecFlowControl *flowctl);
     finErrorCode instExecJumpConti(finSyntaxNode *synnode, finExecFlowControl *flowctl);
     finErrorCode instExecJumpBreak(finSyntaxNode *synnode, finExecFlowControl *flowctl);
 };

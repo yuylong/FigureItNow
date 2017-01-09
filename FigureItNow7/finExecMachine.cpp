@@ -946,7 +946,6 @@ finErrorCode finExecMachine::instExecJumpRetVal(finSyntaxNode *synnode, finExecE
     }
 
     flowctl->setType(finExecFlowControl::FIN_FC_RETURN);
-    printf("A\n");
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -954,6 +953,8 @@ finErrorCode finExecMachine::instExecJumpRetVal(finSyntaxNode *synnode, finExecE
 finErrorCode finExecMachine::instExecJumpRet(finSyntaxNode *synnode, finExecEnvironment *env,
                                              finExecVariable **retvar, finExecFlowControl *flowctl)
 {
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
     if ( synnode->getSubListCount() < 1 ) {
         return this->instExecJumpRetVoid(retvar, flowctl);
     } else {
@@ -973,6 +974,72 @@ finErrorCode finExecMachine::instExecJumpRet(finSyntaxNode *synnode, finExecEnvi
         }
         return this->instExecJumpRetVal(basesn, env, retvar, flowctl);
     }
+
+    this->appendExecutionError(lexnode, QString("ERROR: Script execution reaches a wrong path."));
+    return finErrorCodeKits::FIN_EC_READ_ERROR;
+}
+
+finErrorCode finExecMachine::instExecJumpExitVoid(finSyntaxNode *synnode,
+                                                  finExecVariable **retvar, finExecFlowControl *flowctl)
+{
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    *retvar = NULL;
+
+    this->appendExecutionError(lexnode, QString("INFO: Exit requested with void value."));
+    flowctl->setType(finExecFlowControl::FIN_FC_EXIT);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecMachine::instExecJumpExitVal(finSyntaxNode *synnode, finExecEnvironment *env,
+                                                 finExecVariable **retvar, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    errcode = this->instantExecute(synnode, env, retvar, flowctl);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+    if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            finExecVariable::releaseNonLeftVariable(*retvar);
+            *retvar = NULL;
+        }
+        return errcode;
+    }
+
+    this->appendExecutionError(lexnode, QString("INFO: Exit requested with a value."));
+    flowctl->setType(finExecFlowControl::FIN_FC_EXIT);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+
+finErrorCode finExecMachine::instExecJumpExit(finSyntaxNode *synnode, finExecEnvironment *env,
+                                              finExecVariable **retvar, finExecFlowControl *flowctl)
+{
+    finLexNode *lexnode = synnode->getCommandLexNode();
+
+    if ( synnode->getSubListCount() < 1 ) {
+        return this->instExecJumpExitVoid(synnode, retvar, flowctl);
+    } else {
+        finSyntaxNode *basesn = synnode->getSubSyntaxNode(0);
+        finLexNode *baseln = basesn->getCommandLexNode();
+        if ( basesn->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+            this->appendExecutionError(baseln, QString("Exit value cannot be calculated."));
+            return finErrorCodeKits::FIN_EC_READ_ERROR;
+        }
+
+        if ( baseln->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+             baseln->getOperator() == finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
+            if ( basesn->getSubListCount() < 1 )
+                return this->instExecJumpExitVoid(basesn, retvar, flowctl);
+
+            basesn = basesn->getSubSyntaxNode(0);
+        }
+        return this->instExecJumpExitVal(basesn, env, retvar, flowctl);
+    }
+
+    this->appendExecutionError(lexnode, QString("ERROR: Script execution reaches a wrong path."));
+    return finErrorCodeKits::FIN_EC_READ_ERROR;
 }
 
 finErrorCode finExecMachine::instExecJumpConti(finSyntaxNode *synnode, finExecFlowControl *flowctl)
@@ -1009,6 +1076,10 @@ finExecMachine::instExecJump(finSyntaxNode *synnode, finExecEnvironment *env,
         *retvar = NULL;
     } else if ( QString::compare(jumpkw, "return") == 0 ) {
         errcode = this->instExecJumpRet(synnode, env, retvar, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+    } else if ( QString::compare(jumpkw, "exit") == 0 ) {
+        errcode = this->instExecJumpExit(synnode, env, retvar, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
     } else if ( QString::compare(jumpkw, "continue") == 0 ) {
