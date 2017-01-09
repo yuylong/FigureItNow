@@ -844,16 +844,33 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
 
     if ( sttlex->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
          sttlex->getOperator() == finLexNode::FIN_LN_OPTYPE_SPLIT ) {
-        // Process J <- J'; where J' <- goto(E) | return(E) | exit(E)
-        // Process J <- J'E; where J' <- goto | return | exit
-        if ( QString::compare(prevlex->getString(), QString("goto")) == 0 ||
-             QString::compare(prevlex->getString(), QString("return")) == 0 ||
-             QString::compare(prevlex->getString(), QString("exit")) == 0 ) {
+        // Process J <- J'E; where J' <- goto, and E <- var
+        if ( QString::compare(prevlex->getString(), QString("goto")) == 0 ) {
             int prevsubcnt = prevtk->getSubListCount();
             int sttsubcnt = stttk->getSubListCount();
-            if ( prevsubcnt + sttsubcnt != 1 )
+            if ( prevsubcnt != 0 || sttsubcnt != 1 )
                 return finErrorCodeKits::FIN_EC_READ_ERROR;
 
+            finSyntaxNode *sttsubtk = stttk->pickSubSyntaxNode(0);
+            finLexNode *sttsublex = sttsubtk->getCommandLexNode();
+            prevtk->appendSubSyntaxNode(sttsubtk);
+
+            if ( sttsubtk->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+                 sttsublex->getType() != finLexNode::FIN_LN_TYPE_VARIABLE )
+                return finErrorCodeKits::FIN_EC_READ_ERROR;
+
+            this->_syntaxStack.removeFirst();
+            delete stttk;
+            prevtk->setType(finSyntaxNode::FIN_SN_TYPE_JUMP);
+            return finErrorCodeKits::FIN_EC_SUCCESS;
+        }
+
+
+        // Process J <- J'; where J' <- return(E) | exit(E) | return | exit
+        // Process J <- J'E; where J' <- return | exit
+        if ( QString::compare(prevlex->getString(), QString("return")) == 0 ||
+             QString::compare(prevlex->getString(), QString("exit")) == 0 ) {
+            int sttsubcnt = stttk->getSubListCount();
             if ( sttsubcnt > 0 )
                 prevtk->appendSubSyntaxNode(stttk->pickSubSyntaxNode(0));
 
