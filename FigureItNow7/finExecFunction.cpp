@@ -161,16 +161,19 @@ finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, f
     } else if ( this->_type == finExecFunction::FIN_FN_TYPE_USER ) {
         errcode = this->execUserFunction(subenv, machine, retval, flowctl);
     } else {
-        machine->appendExecutionError(lexnode, QString("Function type unrecognized."));
+        machine->appendExecutionError(lexnode, QString("ERROR: Function type cannot be recognized."));
         delete subenv;
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
 
     if ( !flowctl->checkFlowProgramGoOn(lexnode, machine, &errcode) ) {
-        finExecVariable::releaseNonLeftVariable(*retval);
-        delete subenv;
-        if ( !finErrorCodeKits::isErrorResult(errcode) )
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            finExecVariable::releaseNonLeftVariable(*retval);
             *retval = NULL;
+        } else {
+            *retval = finExecVariable::buildFuncReturnVariable(*retval, subenv);
+        }
+        delete subenv;
         return errcode;
     }
 
@@ -223,6 +226,7 @@ finExecFunction::appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvir
     errcode = machine->instantExecute(argnode, env->getParentEnvironment(), &expvar, flowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
+
     if ( !flowctl->checkFlowExpressGoOn(lexnode, machine, &errcode) ) {
         finExecVariable::releaseNonLeftVariable(expvar);
         return errcode;

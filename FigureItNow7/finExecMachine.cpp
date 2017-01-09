@@ -577,7 +577,7 @@ finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env
         return errcode;
     }
     if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
-        if ( !finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
             finExecVariable::releaseNonLeftVariable(*retvar);
             *retvar = NULL;
         }

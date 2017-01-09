@@ -91,6 +91,7 @@ bool finExecFlowControl::checkFlowProgramGoOn(finLexNode *lexnode, finExecMachin
         this->directPass();
         if ( errcode != NULL )
             *errcode = finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return false;
     }
     this->setFlowNext();
     return true;
