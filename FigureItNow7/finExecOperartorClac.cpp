@@ -363,8 +363,8 @@ _neqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 static finErrorCode
 _gteqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
-    finExecVariable *oprand1 = oprands->at(0);
-    finExecVariable *oprand2 = oprands->at(1);
+    finExecVariable *oprand1 = oprands->at(0)->getLinkTarget();
+    finExecVariable *oprand2 = oprands->at(1)->getLinkTarget();
     bool blval;
 
     if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC &&
@@ -384,8 +384,8 @@ _gteqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 static finErrorCode
 _lseqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
-    finExecVariable *oprand1 = oprands->at(0);
-    finExecVariable *oprand2 = oprands->at(1);
+    finExecVariable *oprand1 = oprands->at(0)->getLinkTarget();
+    finExecVariable *oprand2 = oprands->at(1)->getLinkTarget();
     bool blval;
 
     if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC &&
@@ -470,7 +470,26 @@ _logicXorOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 
 static finErrorCode _accessOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finExecVariable *parent = oprands->at(0)->getLinkTarget();
+    finExecVariable *aryidx = oprands->at(1)->getLinkTarget();
+    finExecVariable *child = NULL;
+
+    if ( (parent->getType() == finExecVariable::FIN_VR_TYPE_NULL ||
+          parent->getType() == finExecVariable::FIN_VR_TYPE_ARRAY) &&
+         aryidx->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+        double dbidx = aryidx->getNumericValue();
+
+        child = parent->getVariableItemAt((int)dbidx);
+        if ( child == NULL )
+            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+    } else {
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+
+    *retval = child;
+    if ( !child->isLeftValue() )
+        child->removeFromArray();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 static finErrorCode
