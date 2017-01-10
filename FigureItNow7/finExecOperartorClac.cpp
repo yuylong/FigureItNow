@@ -382,7 +382,22 @@ _gteqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 static finErrorCode
 _lseqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    finExecVariable *oprand1 = oprands->at(0);
+    finExecVariable *oprand2 = oprands->at(1);
+    bool blval;
+
+    if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC &&
+         oprand2->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+        blval = (oprand1->getNumericValue() <= oprand2->getNumericValue());
+    } else {
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+
+    *retval = finExecOperartorClac::buildStdLogicVar(blval);
+    if ( *retval == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 static finErrorCode
