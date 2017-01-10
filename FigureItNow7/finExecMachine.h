@@ -81,8 +81,7 @@ public:
 
 private:
     finErrorCode instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
-    finErrorCode instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
-                                 finExecVariable **retvar, finExecFlowControl *flowctl);
+    finErrorCode instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
     finErrorCode instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env,
                                    finExecVariable **retvar, finExecFlowControl *flowctl);
     finErrorCode instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env,

@@ -206,7 +206,7 @@ finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env,
         break;
 
       case finSyntaxNode::FIN_SN_TYPE_DECLARE:
-        return this->instExecDeclare(synnode, env, retvar, flowctl);
+        return this->instExecDeclare(synnode, env, flowctl);
         break;
 
       case finSyntaxNode::FIN_SN_TYPE_STATEMENT:
@@ -301,6 +301,7 @@ finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment
     }
 
     flowctl->setFlowNext();
+    flowctl->setReturnVariable(newvar);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -326,10 +327,11 @@ finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironme
     }
 
     finExecVariable *initvar = NULL;
-    errcode = this->instantExecute(synnode->getSubSyntaxNode(1), env, &initvar, flowctl);
+    finExecFlowControl expflowctl;
+    errcode = this->instantExecute(synnode->getSubSyntaxNode(1), env, &initvar, &expflowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
-    if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode)) {
+    if ( !expflowctl.checkFlowExpressGoOn(lexnode, this, &errcode)) {
         finExecVariable::releaseNonLeftVariable(initvar);
         return errcode;
     }
@@ -348,6 +350,8 @@ finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironme
         delete initvar;
         return errcode;
     }
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(initvar);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -363,15 +367,23 @@ finExecMachine::instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment 
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
 
+    finExecFlowControl inflowctl;
     for ( int i = 0; i < synnode->getSubListCount(); i++ ) {
-        errcode = this->instExecDeclareExpr(synnode->getSubSyntaxNode(i), env, flowctl);
+        inflowctl.resetFlowControl();
+
+        errcode = this->instExecDeclareExpr(synnode->getSubSyntaxNode(i), env, &inflowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
 
-        if ( !flowctl->isFlowNext() )
-            break;
+        if ( !inflowctl.checkFlowExpressGoOn(lexnode, this, &errcode)) {
+            if ( finErrorCodeKits::isErrorResult(errcode) )
+                inflowctl.releaseReturnVariable();
+            else
+                flowctl->copyFlowControl(&inflowctl);
+            return errcode;
+        }
     }
-    flowctl->directPass();
+    flowctl->copyFlowControl(&inflowctl);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -401,8 +413,7 @@ finExecMachine::instExecDeclareExpr(finSyntaxNode *synnode, finExecEnvironment *
 }
 
 finErrorCode
-finExecMachine::instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
-                                finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Declare!");synnode->dump();
     finErrorCode errcode;
@@ -417,8 +428,6 @@ finExecMachine::instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
-    *retvar = NULL;
-    flowctl->directPass();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
