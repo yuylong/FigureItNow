@@ -109,6 +109,7 @@ static finErrorCode _accessOpCall(QList<finExecVariable *> *oprands, finExecVari
 static finErrorCode _commaOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _bitNotOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _bitAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode _bitOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 
 
 static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
@@ -139,7 +140,7 @@ static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
     { finLexNode::FIN_LN_OPTYPE_COMMA,       0, _commaOpCall    },
     { finLexNode::FIN_LN_OPTYPE_BIT_NOT,     1, _bitNotOpCall   },
     { finLexNode::FIN_LN_OPTYPE_BIT_AND,     2, _bitAndOpCall   },
-    { finLexNode::FIN_LN_OPTYPE_BIT_OR,      2, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_BIT_OR,      2, _bitOrOpCall    },
     { finLexNode::FIN_LN_OPTYPE_BIT_XOR,     2, NULL            },
 };
 static const int _glOperatorCalcDbCnt =
@@ -753,6 +754,45 @@ _bitAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
     quint32 resnum = (opnum1 & opnum2);
+
+    tmpretval->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    tmpretval->setNumericValue((double)resnum);
+    tmpretval->clearLeftValue();
+    tmpretval->setWriteProtected();
+
+    *retval = tmpretval;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _bitOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    finExecVariable *oprand1 = oprands->at(0)->getLinkTarget();
+    finExecVariable *oprand2 = oprands->at(1)->getLinkTarget();
+    if ( oprand1 == NULL || oprand2 == NULL )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    quint32 opnum1, opnum2;
+    if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC &&
+         oprand2->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+        double opdbnum1 = oprand1->getNumericValue();
+        double opdbnum2 = oprand2->getNumericValue();
+        if ( opdbnum1 > _max_bitable_int || opdbnum1 < _min_bitable_int ||
+             opdbnum2 > _max_bitable_int || opdbnum2 < _min_bitable_int )
+            return finErrorCodeKits::FIN_EC_OVERFLOW;
+
+        opdbnum1 = _bitable_neg_to_post(opdbnum1);
+        opdbnum2 = _bitable_neg_to_post(opdbnum2);
+        opnum1 = (quint32)opdbnum1;
+        opnum2 = (quint32)opdbnum2;
+    } else {
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+
+    finExecVariable *tmpretval = new finExecVariable();
+    if ( tmpretval == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    quint32 resnum = (opnum1 | opnum2);
 
     tmpretval->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
     tmpretval->setNumericValue((double)resnum);
