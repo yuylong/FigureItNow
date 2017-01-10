@@ -999,7 +999,7 @@ finErrorCode finExecMachine::instExecLoopForHead(finSyntaxNode *synnode,
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
 
-    if ( headsn->getSubListCount() < 2 ) {
+    if ( headsn->getSubListCount() < 3 ) {
         this->appendExecutionError(headlex, QString("Unrecognized loop head."));
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
@@ -1111,8 +1111,7 @@ finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env,
                 return errcode;
         }
     }
-
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
