@@ -56,8 +56,6 @@ public:
 
     bool isFlowExpressOk() const;
     bool isFlowProgramOk() const;
-    bool checkFlowExpressGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode);
-    bool checkFlowProgramGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode);
     finErrorCode checkFlowForExpress(bool *goon, finLexNode *lexnode, finExecMachine *machine);
     finErrorCode checkFlowForStatement(bool *goon, finLexNode *lexnode, finExecMachine *machine);
     finErrorCode checkFlowForProgram(bool *goon, finLexNode *lexnode, finExecMachine *machine);

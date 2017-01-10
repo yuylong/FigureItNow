@@ -173,42 +173,6 @@ finExecFlowControl::checkFlowForProgram(bool *goon, finLexNode *lexnode, finExec
     }
 }
 
-bool finExecFlowControl::checkFlowExpressGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode)
-{
-    if ( !this->isFlowExpressOk() ) {
-        if ( lexnode != NULL && machine != NULL )
-            machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
-        if ( errcode != NULL )
-            *errcode = finErrorCodeKits::FIN_EC_READ_ERROR;
-        return false;
-    } else if ( this->isFlowExit() ) {
-        this->directPass();
-        if ( errcode != NULL )
-            *errcode = finErrorCodeKits::FIN_EC_NORMAL_WARN;
-        return false;
-    }
-    this->setFlowNext();
-    return true;
-}
-
-bool finExecFlowControl::checkFlowProgramGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode)
-{
-    if ( !this->isFlowProgramOk() ) {
-        if ( lexnode != NULL && machine != NULL )
-            machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
-        if ( errcode != NULL )
-            *errcode = finErrorCodeKits::FIN_EC_READ_ERROR;
-        return false;
-    } else if ( this->isFlowExit() ) {
-        this->directPass();
-        if ( errcode != NULL )
-            *errcode = finErrorCodeKits::FIN_EC_NORMAL_WARN;
-        return false;
-    }
-    this->setFlowNext();
-    return true;
-}
-
 finErrorCode finExecFlowControl::setType(finExecFlowControlType type)
 {
     this->_type = type;
