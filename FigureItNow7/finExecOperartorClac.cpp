@@ -94,6 +94,7 @@ static finErrorCode _logicNotOpCall(QList<finExecVariable *> *oprands, finExecVa
 static finErrorCode _logicAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _logicOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _logicXorOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode _commaOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 
 static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
     { finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT, 0, _brcktOpCall    },
@@ -119,7 +120,7 @@ static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
     { finLexNode::FIN_LN_OPTYPE_LOGIC_OR,    2, _logicOrOpCall  },
     { finLexNode::FIN_LN_OPTYPE_LOGIC_XOR,   2, _logicXorOpCall },
     { finLexNode::FIN_LN_OPTYPE_ACCESS,      2, NULL            },
-    { finLexNode::FIN_LN_OPTYPE_COMMA,       0, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_COMMA,       0, _commaOpCall    },
     { finLexNode::FIN_LN_OPTYPE_BIT_NOT,     1, NULL            },
     { finLexNode::FIN_LN_OPTYPE_BIT_AND,     2, NULL            },
     { finLexNode::FIN_LN_OPTYPE_BIT_OR,      2, NULL            },
@@ -291,7 +292,8 @@ _divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-static finErrorCode _letOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+static finErrorCode
+_letOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand1 = oprands->at(0)->getLinkTarget();
     finExecVariable *oprand2 = oprands->at(1)->getLinkTarget();
@@ -326,7 +328,8 @@ static finErrorCode _letOpCall(QList<finExecVariable *> *oprands, finExecVariabl
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode _eqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+finErrorCode
+_eqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand1 = oprands->at(0);
     finExecVariable *oprand2 = oprands->at(1);
@@ -339,7 +342,8 @@ finErrorCode _eqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retv
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-static finErrorCode _neqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+static finErrorCode
+_neqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand1 = oprands->at(0);
     finExecVariable *oprand2 = oprands->at(1);
@@ -352,7 +356,8 @@ static finErrorCode _neqOpCall(QList<finExecVariable *> *oprands, finExecVariabl
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-static finErrorCode _logicNotOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+static finErrorCode
+_logicNotOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand = oprands->at(0)->getLinkTarget();
     if ( oprand == NULL )
@@ -366,7 +371,8 @@ static finErrorCode _logicNotOpCall(QList<finExecVariable *> *oprands, finExecVa
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-static finErrorCode _logicAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+static finErrorCode
+_logicAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand1 = oprands->at(0)->getLinkTarget();
     finExecVariable *oprand2 = oprands->at(1)->getLinkTarget();
@@ -382,7 +388,8 @@ static finErrorCode _logicAndOpCall(QList<finExecVariable *> *oprands, finExecVa
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-static finErrorCode _logicOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+static finErrorCode
+_logicOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand1 = oprands->at(0)->getLinkTarget();
     finExecVariable *oprand2 = oprands->at(1)->getLinkTarget();
@@ -398,7 +405,8 @@ static finErrorCode _logicOrOpCall(QList<finExecVariable *> *oprands, finExecVar
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-static finErrorCode _logicXorOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+static finErrorCode
+_logicXorOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand1 = oprands->at(0)->getLinkTarget();
     finExecVariable *oprand2 = oprands->at(1)->getLinkTarget();
@@ -411,5 +419,22 @@ static finErrorCode _logicXorOpCall(QList<finExecVariable *> *oprands, finExecVa
     if ( *retval == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode
+_commaOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    if ( oprands->empty() ) {
+        *retval = new finExecVariable;
+        (*retval)->setType(finExecVariable::FIN_VR_TYPE_NULL);
+        (*retval)->setWriteProtected();
+        (*retval)->clearLeftValue();
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+    }
+
+    *retval = oprands->last();
+    // Remove it from oprand to prevent dealloc.
+    oprands->removeLast();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
