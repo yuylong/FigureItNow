@@ -194,8 +194,6 @@ finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, 
     if ( synnode == NULL || env == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    finExecVariable *retvar = NULL;
-
     finSyntaxNodeType syntype = synnode->getType();
     switch ( syntype ) {
       case finSyntaxNode::FIN_SN_TYPE_SINGLE:
@@ -432,6 +430,9 @@ finExecMachine::instExecStatIn(finSyntaxNode *synnode, finExecEnvironment *env, 
     printf("Statement Inner!");synnode->dump();
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
+
+    // For a statement without anything inside, just return to execute the next.
+    flowctl->setFlowNext();
 
     for ( int i = 0; i < synnode->getSubListCount(); i++ ) {
         flowctl->resetFlowControl();
@@ -802,26 +803,36 @@ err:
     return errcode;
 }
 
+finErrorCode finExecMachine::instExecBrCondVoid(bool *retblval, finExecFlowControl *flowctl)
+{
+    *retblval = false;
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+}
+
 finErrorCode finExecMachine::instExecBrCond(finSyntaxNode *synnode, finExecEnvironment *env,
                                             bool *retblval, finExecFlowControl *flowctl)
 {
     printf("Branch Cond!");synnode->dump();
-    finLexNode *lexnode = synnode->getCommandLexNode();
-    finExecVariable *retvar;
+    if ( synnode == NULL )
+        return this->instExecBrCondVoid(retblval, flowctl);
 
-    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
-         lexnode->getType() != finLexNode::FIN_LN_TYPE_OPERATOR ||
-         lexnode->getOperator() != finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
         this->appendExecutionError(lexnode, QString("Cannot recognize the branch condition."));
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
 
-    if ( synnode->getSubListCount() < 1 ) {
-        this->appendExecutionError(lexnode, QString("No branch condition is found."));
-        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    if ( lexnode->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+         lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
+        if ( synnode->getSubListCount() < 1 )
+            return this->instExecBrCondVoid(retblval, flowctl);
+
+        synnode = synnode->getSubSyntaxNode(0);
+        lexnode = synnode->getCommandLexNode();
     }
 
-    finErrorCode errcode = this->instantExecute(synnode->getSubSyntaxNode(0), env, flowctl);
+    finErrorCode errcode = this->instantExecute(synnode, env, flowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
@@ -860,7 +871,6 @@ finExecMachine::instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env, 
 
     flowctl->resetFlowControl();
     if ( bridx < synnode->getSubListCount() ) {
-        finExecVariable *tmpvar;
         errcode = this->instantExecute(synnode->getSubSyntaxNode(bridx), env, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
@@ -871,6 +881,48 @@ finExecMachine::instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env, 
     } else {
         flowctl->setFlowNext();
     }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecMachine::instExecLoopCondVoid(bool *retblval, finExecFlowControl *flowctl)
+{
+    *retblval = true;
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+}
+
+finErrorCode finExecMachine::instExecLoopCond(finSyntaxNode *synnode, finExecEnvironment *env,
+                                              bool *retblval, finExecFlowControl *flowctl)
+{
+    printf("Loop Cond!");synnode->dump();
+    if ( synnode == NULL )
+        return this->instExecLoopCondVoid(retblval, flowctl);
+
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+        this->appendExecutionError(lexnode, QString("Cannot recognize the branch condition."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    if ( lexnode->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+         lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
+        if ( synnode->getSubListCount() < 1 )
+            return this->instExecLoopCondVoid(retblval, flowctl);
+
+        synnode = synnode->getSubSyntaxNode(0);
+        lexnode = synnode->getCommandLexNode();
+    }
+
+    finErrorCode errcode = this->instantExecute(synnode, env, flowctl);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    bool goon = true;
+    errcode = flowctl->checkFlowForExpress(&goon, lexnode, this);
+    if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+        return errcode;
+
+    *retblval = finExecOperartorClac::varLogicValue(flowctl->getReturnVariable());
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -887,11 +939,11 @@ finExecMachine::instExecLoopWhile(finSyntaxNode *synnode, finExecEnvironment *en
     finErrorCode errcode;
     finSyntaxNode *whilecond = synnode->getSubSyntaxNode(0);
     finSyntaxNode *whilebody = synnode->getSubSyntaxNode(1);
-    bool lookcondok = true, goon = true;
+    bool loopcondok = true, goon = true;
 
     while ( true ) {
         flowctl->resetFlowControl();
-        errcode = this->instExecBrCond(whilecond, env, &lookcondok, flowctl);
+        errcode = this->instExecLoopCond(whilecond, env, &loopcondok, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
 
@@ -899,7 +951,7 @@ finExecMachine::instExecLoopWhile(finSyntaxNode *synnode, finExecEnvironment *en
         if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
             return errcode;
 
-        if ( !lookcondok )
+        if ( !loopcondok )
             break;
 
         flowctl->resetFlowControl();
@@ -922,10 +974,13 @@ finExecMachine::instExecLoopWhile(finSyntaxNode *synnode, finExecEnvironment *en
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode
-finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
+finErrorCode finExecMachine::instExecLoopForHead(finSyntaxNode *synnode,
+                                                 finSyntaxNode **inithead, finSyntaxNode **condhead,
+                                                 finSyntaxNode **stephead, finSyntaxNode **loopbody)
 {
-    printf("Loop For!");synnode->dump();
+    if ( synnode == NULL || inithead == NULL || condhead == NULL || stephead == NULL || loopbody == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
     finLexNode *lexnode = synnode->getCommandLexNode();
     if ( synnode->getSubListCount() < 2 ) {
         this->appendExecutionError(lexnode, QString("Unrecognized for loop."));
@@ -935,30 +990,127 @@ finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env,
     finSyntaxNode *headsn = synnode->getSubSyntaxNode(0);
     finLexNode *headlex = headsn->getCommandLexNode();
     if ( headsn->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS || headsn->getSubListCount() < 3 ) {
-        this->appendExecutionError(headlex, QString("Unrecognized for loop head."));
+        this->appendExecutionError(headlex, QString("Unrecognized loop head."));
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
     if ( headlex->getType() != finLexNode::FIN_LN_TYPE_OPERATOR ||
          headlex->getOperator() != finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
-        this->appendExecutionError(headlex, QString("Unrecognized for loop head."));
+        this->appendExecutionError(headlex, QString("Unrecognized loop head."));
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
 
-    finSyntaxNode *inithsn = headsn->getSubSyntaxNode(0);
-    finSyntaxNode *condhsn = headsn->getSubSyntaxNode(1);
-    finSyntaxNode *stephsn = headsn->getSubSyntaxNode(2);
-    if ( inithsn->getType() != finSyntaxNode::FIN_SN_TYPE_STATEMENT ||
-         condhsn->getType() != finSyntaxNode::FIN_SN_TYPE_STATEMENT ||
-         stephsn->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
-        this->appendExecutionError(headlex, QString("Unrecognized for loop head."));
-        return finErrorCodeKits::FIN_EC_READ_ERROR;
-    }
-    finSyntaxNode *bodysn = synnode->getSubSyntaxNode(1);
-    if ( bodysn->getType() != finSyntaxNode::FIN_SN_TYPE_STATEMENT ) {
-        this->appendExecutionError(bodysn->getCommandLexNode(), QString("Unrecognized for loop body."));
+    if ( headsn->getSubListCount() < 2 ) {
+        this->appendExecutionError(headlex, QString("Unrecognized loop head."));
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
 
+    *inithead = headsn->getSubSyntaxNode(0);
+    if ( !finSyntaxNode::isStatementLevelType((*inithead)->getType()) ) {
+        this->appendExecutionError((*inithead)->getCommandLexNode(), QString("Unrecognized loop init head."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    *condhead = headsn->getSubSyntaxNode(1);
+    finLexNode *condheadlex = (*condhead)->getCommandLexNode();
+    if ( (*condhead)->getType() != finSyntaxNode::FIN_SN_TYPE_STATEMENT ||
+         condheadlex->getType() != finLexNode::FIN_LN_TYPE_OPERATOR ||
+         condheadlex->getOperator() != finLexNode::FIN_LN_OPTYPE_SPLIT ) {
+        this->appendExecutionError(condheadlex, QString("Unrecognized loop condition head."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+    if ( (*condhead)->getSubListCount() < 1 ) {
+        *condhead = NULL;
+    } else {
+        *condhead = (*condhead)->getSubSyntaxNode(0);
+        condheadlex = (*condhead)->getCommandLexNode();
+        if ( !finSyntaxNode::isExpressLevelType((*condhead)->getType()) ) {
+            this->appendExecutionError(condheadlex, QString("Unrecognized loop condition head."));
+            return finErrorCodeKits::FIN_EC_READ_ERROR;
+        }
+    }
+
+    if ( headsn->getSubListCount() >= 3 )
+        *stephead = headsn->getSubSyntaxNode(2);
+    else
+        *stephead = NULL;
+
+    *loopbody = synnode->getSubSyntaxNode(1);
+    if ( !finSyntaxNode::isStatementLevelType((*loopbody)->getType()) ) {
+        this->appendExecutionError((*loopbody)->getCommandLexNode(), QString("Unrecognized loop body."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
+{
+    printf("Loop For!");synnode->dump();
+
+    finErrorCode errcode;
+    finSyntaxNode *inithead, *condhead, *stephead, *loopbody;
+    finLexNode *lexnode = synnode->getCommandLexNode();
+    bool goon = true, loopcondok = true;
+
+    errcode = this->instExecLoopForHead(synnode, &inithead, &condhead, &stephead, &loopbody);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+    finLexNode *condheadlex = (condhead == NULL ? lexnode : condhead->getCommandLexNode());
+
+    if ( inithead == NULL || loopbody == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    errcode = this->instantExecute(inithead, env, flowctl);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    errcode = flowctl->checkFlowForStatement(&goon, inithead->getCommandLexNode(), this);
+    if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+        return errcode;
+
+    while ( true ) {
+        flowctl->resetFlowControl();
+        errcode = this->instExecLoopCond(condhead, env, &loopcondok, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+
+        errcode = flowctl->checkFlowForExpress(&goon, condheadlex, this);
+        if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+            return errcode;
+
+        if ( !loopcondok )
+            break;
+
+        flowctl->resetFlowControl();
+        errcode = this->instantExecute(loopbody, env, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+
+        if ( flowctl->getType() == finExecFlowControl::FIN_FC_CONTINUE ) {
+            flowctl->setFlowNext();
+            goto loopstep;
+        } else if ( flowctl->getType() == finExecFlowControl::FIN_FC_BREAK ) {
+            flowctl->setFlowNext();
+            break;
+        }
+
+        errcode = flowctl->checkFlowForStatement(&goon, loopbody->getCommandLexNode(), this);
+        if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+            return errcode;
+
+      loopstep:
+        if ( stephead != NULL ) {
+            flowctl->resetFlowControl();
+            errcode = this->instantExecute(stephead, env, flowctl);
+            if ( finErrorCodeKits::isErrorResult(errcode) )
+                return errcode;
+
+            errcode = flowctl->checkFlowForStatement(&goon, stephead->getCommandLexNode(), this);
+            if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+                return errcode;
+        }
+    }
 
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
@@ -1042,7 +1194,6 @@ finExecMachine::instExecJumpRetVal(finSyntaxNode *synnode, finExecEnvironment *e
     flowctl->setType(finExecFlowControl::FIN_FC_RETURN);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
-
 
 finErrorCode
 finExecMachine::instExecJumpRet(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)

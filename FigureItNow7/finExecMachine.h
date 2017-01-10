@@ -108,10 +108,17 @@ private:
     finErrorCode instExecFuncArgs(finSyntaxNode *synnode, finExecFunction *func);
     finErrorCode instExecFuncBody(finSyntaxNode *synnode, finExecFunction *func);
 
+    finErrorCode instExecBrCondVoid(bool *retblval, finExecFlowControl *flowctl);
     finErrorCode instExecBrCond(finSyntaxNode *synnode, finExecEnvironment *env,
                                 bool *retblval, finExecFlowControl *flowctl);
 
+    finErrorCode instExecLoopCondVoid(bool *retblval, finExecFlowControl *flowctl);
+    finErrorCode instExecLoopCond(finSyntaxNode *synnode, finExecEnvironment *env,
+                                  bool *retblval, finExecFlowControl *flowctl);
     finErrorCode instExecLoopWhile(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
+    finErrorCode instExecLoopForHead(finSyntaxNode *synnode,
+                                     finSyntaxNode **inithead, finSyntaxNode **condhead,
+                                     finSyntaxNode **stephead, finSyntaxNode **loopbody);
     finErrorCode instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
 
     finErrorCode instExecJumpGoto(finSyntaxNode *synnode, finExecFlowControl *flowctl);
