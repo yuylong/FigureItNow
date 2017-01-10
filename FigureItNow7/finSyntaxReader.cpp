@@ -347,6 +347,7 @@ finErrorCode finSyntaxReader::processArithOperator(finLexNode *lexnode)
             return finErrorCodeKits::FIN_EC_READ_ERROR;
         }
         bfparamcnt = 0/*getOperatorBfParamCnt(lexnode)*/;
+        afparamcnt = getOperatorAfParamCnt(lexnode);
     }
 
     while ( true ) {
