@@ -96,6 +96,7 @@ static finErrorCode _logicNotOpCall(QList<finExecVariable *> *oprands, finExecVa
 static finErrorCode _logicAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _logicOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _logicXorOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode _accessOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _commaOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 
 static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
@@ -121,7 +122,8 @@ static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
     { finLexNode::FIN_LN_OPTYPE_LOGIC_AND,   2, _logicAndOpCall },
     { finLexNode::FIN_LN_OPTYPE_LOGIC_OR,    2, _logicOrOpCall  },
     { finLexNode::FIN_LN_OPTYPE_LOGIC_XOR,   2, _logicXorOpCall },
-    { finLexNode::FIN_LN_OPTYPE_ACCESS,      2, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_ACCESS,      2, _accessOpCall   },
+    { finLexNode::FIN_LN_OPTYPE_L_SQR_BRCKT, 0, _brcktOpCall    },
     { finLexNode::FIN_LN_OPTYPE_COMMA,       0, _commaOpCall    },
     { finLexNode::FIN_LN_OPTYPE_BIT_NOT,     1, NULL            },
     { finLexNode::FIN_LN_OPTYPE_BIT_AND,     2, NULL            },
@@ -464,6 +466,11 @@ _logicXorOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _accessOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 static finErrorCode
