@@ -68,6 +68,13 @@ finExecVariable *finExecFlowControl::getReturnVariable()
     return this->_retVar;
 }
 
+finExecVariable *finExecFlowControl::pickReturnVariable()
+{
+    finExecVariable *retvar = this->_retVar;
+    this->_retVar = NULL;
+    return retvar;
+}
+
 bool finExecFlowControl::isFlowExit() const
 {
     return this->_type == finExecFlowControl::FIN_FC_EXIT;
@@ -85,18 +92,18 @@ bool finExecFlowControl::isFlowProgramOk() const
             this->_type == finExecFlowControl::FIN_FC_EXIT);
 }
 
-finErrorCode finExecFlowControl::checkFlowForExpress(bool *goon, finExecFlowControl *outflowctl,
-                                                     finLexNode *lexnode, finExecMachine *machine)
+finErrorCode
+finExecFlowControl::checkFlowForExpress(bool *goon, finLexNode *lexnode, finExecMachine *machine)
 {
     if ( this->_type == finExecFlowControl::FIN_FC_NEXT ) {
         if ( goon != NULL )
             *goon = true;
+        this->directPass();
         return finErrorCodeKits::FIN_EC_SUCCESS;
     } else if ( this->_type == finExecFlowControl::FIN_FC_EXIT ) {
         if ( goon != NULL )
             *goon = false;
-        if ( outflowctl != NULL )
-            outflowctl->copyFlowControl(this);
+        this->directPass();
         return finErrorCodeKits::FIN_EC_NORMAL_WARN;
     } else {
         if ( goon != NULL )
@@ -109,12 +116,13 @@ finErrorCode finExecFlowControl::checkFlowForExpress(bool *goon, finExecFlowCont
     }
 }
 
-finErrorCode finExecFlowControl::checkFlowForStatement(bool *goon, finExecFlowControl *outflowctl,
-                                                       finLexNode *lexnode, finExecMachine *machine)
+finErrorCode
+finExecFlowControl::checkFlowForStatement(bool *goon, finLexNode *lexnode, finExecMachine *machine)
 {
     if ( this->_type == finExecFlowControl::FIN_FC_NEXT ) {
         if ( goon != NULL )
             *goon = true;
+        this->directPass();
         return finErrorCodeKits::FIN_EC_SUCCESS;
     } else if ( this->_type == finExecFlowControl::FIN_FC_EXIT ||
                 this->_type == finExecFlowControl::FIN_FC_RETURN ||
@@ -123,8 +131,7 @@ finErrorCode finExecFlowControl::checkFlowForStatement(bool *goon, finExecFlowCo
                 this->_type == finExecFlowControl::FIN_FC_CONTINUE ) {
         if ( goon != NULL )
             *goon = false;
-        if ( outflowctl != NULL )
-            outflowctl->copyFlowControl(this);
+        this->directPass();
         return finErrorCodeKits::FIN_EC_NORMAL_WARN;
     } else {
         if ( goon != NULL )
@@ -137,26 +144,23 @@ finErrorCode finExecFlowControl::checkFlowForStatement(bool *goon, finExecFlowCo
     }
 }
 
-finErrorCode finExecFlowControl::checkFlowForProgram(bool *goon, finExecFlowControl *outflowctl,
-                                                     finLexNode *lexnode, finExecMachine *machine)
+finErrorCode
+finExecFlowControl::checkFlowForProgram(bool *goon, finLexNode *lexnode, finExecMachine *machine)
 {
     if ( this->_type == finExecFlowControl::FIN_FC_NEXT ) {
         if ( goon != NULL )
             *goon = true;
+        this->directPass();
         return finErrorCodeKits::FIN_EC_SUCCESS;
     } else if ( this->_type == finExecFlowControl::FIN_FC_RETURN ) {
         if ( goon != NULL )
             *goon = false;
-        if ( outflowctl != NULL ) {
-            outflowctl->copyFlowControl(this);
-            outflowctl->setFlowNext();
-        }
+        this->setFlowNext();
         return finErrorCodeKits::FIN_EC_SUCCESS;
     } else if ( this->_type == finExecFlowControl::FIN_FC_EXIT ) {
         if ( goon != NULL )
             *goon = false;
-        if ( outflowctl != NULL )
-            outflowctl->copyFlowControl(this);
+        this->directPass();
         return finErrorCodeKits::FIN_EC_NORMAL_WARN;
     } else {
         if ( goon != NULL )
@@ -243,6 +247,12 @@ finErrorCode finExecFlowControl::setReturnVariable(finExecVariable *retvar)
 finErrorCode finExecFlowControl::retVarSwitchEnv(finExecEnvironment *subenv)
 {
     this->_retVar = finExecVariable::buildFuncReturnVariable(this->_retVar, subenv);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecFlowControl::buildLinkedLeftVar()
+{
+    this->_retVar = finExecVariable::buildLinkLeftVariable(this->_retVar);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

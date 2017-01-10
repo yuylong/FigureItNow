@@ -52,17 +52,15 @@ public:
     QString getGotoLabel() const;
     bool isFlowExit() const;
     finExecVariable *getReturnVariable();
+    finExecVariable *pickReturnVariable();
 
     bool isFlowExpressOk() const;
     bool isFlowProgramOk() const;
     bool checkFlowExpressGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode);
     bool checkFlowProgramGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode);
-    finErrorCode checkFlowForExpress(bool *goon, finExecFlowControl *outflowctl,
-                                     finLexNode *lexnode, finExecMachine *machine);
-    finErrorCode checkFlowForStatement(bool *goon, finExecFlowControl *outflowctl,
-                                       finLexNode *lexnode, finExecMachine *machine);
-    finErrorCode checkFlowForProgram(bool *goon, finExecFlowControl *outflowctl,
-                                     finLexNode *lexnode, finExecMachine *machine);
+    finErrorCode checkFlowForExpress(bool *goon, finLexNode *lexnode, finExecMachine *machine);
+    finErrorCode checkFlowForStatement(bool *goon, finLexNode *lexnode, finExecMachine *machine);
+    finErrorCode checkFlowForProgram(bool *goon, finLexNode *lexnode, finExecMachine *machine);
 
     finErrorCode setType(finExecFlowControlType type);
     finErrorCode setLabel(const QString &label);
@@ -71,6 +69,7 @@ public:
     finErrorCode setReturnVariable(finExecVariable *retvar);
 
     finErrorCode retVarSwitchEnv(finExecEnvironment *subenv);
+    finErrorCode buildLinkedLeftVar();
     void releaseReturnVariable();
 
     finErrorCode directPass();

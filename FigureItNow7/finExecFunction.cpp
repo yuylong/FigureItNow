@@ -122,7 +122,6 @@ finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, f
                               finExecFlowControl *flowctl)
 {
     finErrorCode errcode;
-    finExecFlowControl argflowctl, bodyflowctl;
     finLexNode *lexnode = argnode->getCommandLexNode();
 
     if ( argnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
@@ -144,41 +143,45 @@ finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, f
     }
 
     if ( argnode->getSubListCount() > 0 ) {
-        errcode = this->processArgsInSubEnv(argnode->getSubSyntaxNode(0), subenv, machine, &argflowctl);
+        errcode = this->processArgsInSubEnv(argnode->getSubSyntaxNode(0), subenv, machine, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) ) {
             delete subenv;
             return errcode;
         }
 
         bool arggoon = true;
-        errcode = argflowctl.checkFlowForExpress(&arggoon, flowctl, lexnode, machine);
-        if ( finErrorCodeKits::isErrorResult(errcode) || !arggoon ) {
+        errcode = flowctl->checkFlowForExpress(&arggoon, lexnode, machine);
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            delete subenv;
+            return errcode;
+        } else if ( !arggoon ) {
+            flowctl->retVarSwitchEnv(subenv);
             delete subenv;
             return errcode;
         }
     }
-    argflowctl.releaseReturnVariable();
 
+    flowctl->resetFlowControl();
     if ( this->_type == finExecFunction::FIN_FN_TYPE_SYSTEM ) {
-        errcode = this->execSysFunction(subenv, machine, &bodyflowctl);
+        errcode = this->execSysFunction(subenv, machine, flowctl);
     } else if ( this->_type == finExecFunction::FIN_FN_TYPE_USER ) {
-        errcode = this->execUserFunction(subenv, machine, &bodyflowctl);
+        errcode = this->execUserFunction(subenv, machine, flowctl);
     } else {
         machine->appendExecutionError(lexnode, QString("ERROR: Function type cannot be recognized."));
         delete subenv;
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
-
-    bool bodygoon = true;
-    errcode = bodyflowctl.checkFlowForProgram(&bodygoon, flowctl, lexnode, machine);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         delete subenv;
         return errcode;
     }
-    if ( bodygoon )
-        flowctl->copyFlowControl(&bodyflowctl);
-    flowctl->retVarSwitchEnv(subenv);
 
+    errcode = flowctl->checkFlowForProgram(NULL, lexnode, machine);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete subenv;
+        return errcode;
+    }
+    flowctl->retVarSwitchEnv(subenv);
     delete subenv;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
@@ -197,31 +200,29 @@ finExecFunction::processArgsInSubEnv(finSyntaxNode *argnode, finExecEnvironment 
     }
 
     finErrorCode errcode;
-    finExecFlowControl subflowctl;
     bool subgoon = true;
     if ( lexnode->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
          lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_COMMA ) {
         for ( int i = 0; i < argnode->getSubListCount(); i++ ) {
-            subflowctl.resetFlowControl();
+            flowctl->resetFlowControl();
 
-            errcode = this->appendArgToSubenv(i, argnode->getSubSyntaxNode(i), env, machine, &subflowctl);
+            errcode = this->appendArgToSubenv(i, argnode->getSubSyntaxNode(i), env, machine, flowctl);
             if ( finErrorCodeKits::isErrorResult(errcode) )
                 return errcode;
 
-            errcode = subflowctl.checkFlowForExpress(&subgoon, flowctl, lexnode, machine);
+            errcode = flowctl->checkFlowForExpress(&subgoon, lexnode, machine);
             if ( finErrorCodeKits::isErrorResult(errcode) || !subgoon )
                 return errcode;
         }
     } else {
-        errcode = this->appendArgToSubenv(0, argnode, env, machine, &subflowctl);
+        errcode = this->appendArgToSubenv(0, argnode, env, machine, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
 
-        errcode = subflowctl.checkFlowForExpress(&subgoon, flowctl, lexnode, machine);
+        errcode = flowctl->checkFlowForExpress(&subgoon, lexnode, machine);
         if ( finErrorCodeKits::isErrorResult(errcode) || !subgoon )
             return errcode;
     }
-    flowctl->copyFlowControl(&subflowctl);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -236,18 +237,21 @@ finExecFunction::appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvir
     errcode = machine->instantExecute(argnode, env->getParentEnvironment(), &expvar, flowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
+    flowctl->setReturnVariable(expvar);
 
-    if ( !flowctl->checkFlowExpressGoOn(lexnode, machine, &errcode) ) {
-        finExecVariable::releaseNonLeftVariable(expvar);
+    bool ingoon = true;
+    errcode = flowctl->checkFlowForExpress(&ingoon, lexnode, machine);
+    if ( finErrorCodeKits::isErrorResult(errcode) || !ingoon)
         return errcode;
-    }
 
-    argvar = finExecVariable::buildLinkLeftVariable(expvar);
+    flowctl->buildLinkedLeftVar();
+    argvar = flowctl->getReturnVariable();
     argvar->setName(this->getParameterName(idx));
 
     errcode = env->addVariable(argvar);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         machine->appendExecutionError(lexnode, QString("Internal error."));
+        flowctl->pickReturnVariable();
         delete argvar;
         return errcode;
     }
