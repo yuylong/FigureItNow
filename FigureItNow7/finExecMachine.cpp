@@ -172,18 +172,14 @@ finErrorCode finExecMachine::execute()
     if ( this->_synTree == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
-    finExecFlowControl flowctl;
-    flowctl.setFlowNext();
-
     this->disposeExecutionError();
 
-    finExecVariable *retvar = NULL;
-    finErrorCode errcode = this->instantExecute(this->_synTree->getRootNode(), this->_baseEnv, &retvar, &flowctl);
+    finExecFlowControl flowctl;
+    finErrorCode errcode = this->instantExecute(this->_synTree->getRootNode(), this->_baseEnv, &flowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
-    if ( retvar != NULL )
-        delete retvar;
+    flowctl.releaseReturnVariable();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -193,11 +189,12 @@ void finExecMachine::disposeExecutionError()
 }
 
 finErrorCode
-finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env,
-                               finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    if ( synnode == NULL || env == NULL || retvar == NULL || flowctl == NULL )
+    if ( synnode == NULL || env == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    finExecVariable *retvar = NULL;
 
     finSyntaxNodeType syntype = synnode->getType();
     switch ( syntype ) {
@@ -210,35 +207,35 @@ finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env,
         break;
 
       case finSyntaxNode::FIN_SN_TYPE_STATEMENT:
-        return this->instExecStatement(synnode, env, retvar, flowctl);
+        return this->instExecStatement(synnode, env, flowctl);
         break;
 
       case finSyntaxNode::FIN_SN_TYPE_EXPRESS:
-        return this->instExecExpress(synnode, env, retvar, flowctl);
+        return this->instExecExpress(synnode, env, flowctl);
         break;
 
       case finSyntaxNode::FIN_SN_TYPE_FUNCTION:
-        return this->instExecFunction(synnode, env, retvar, flowctl);
+        return this->instExecFunction(synnode, env, flowctl);
         break;
 
       case finSyntaxNode::FIN_SN_TYPE_BRANCH:
-        return this->instExecBranch(synnode, env, retvar, flowctl);
+        return this->instExecBranch(synnode, env, flowctl);
         break;
 
       case finSyntaxNode::FIN_SN_TYPE_LOOP:
-        return this->instExecLoop(synnode, env, retvar, flowctl);
+        return this->instExecLoop(synnode, env, flowctl);
         break;
 
       case finSyntaxNode::FIN_SN_TYPE_LABEL:
-        return this->instExecLabel(synnode, env, retvar, flowctl);
+        return this->instExecLabel(synnode, env, flowctl);
         break;
 
       case finSyntaxNode::FIN_SN_TYPE_JUMP:
-        return this->instExecJump(synnode, env, retvar, flowctl);
+        return this->instExecJump(synnode, env, flowctl);
         break;
 
       case finSyntaxNode::FIN_SN_TYPE_PROGRAM:
-        return this->instExecProgram(synnode, env, retvar, flowctl);
+        return this->instExecProgram(synnode, env, flowctl);
         break;
 
       default:
@@ -326,27 +323,30 @@ finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironme
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
 
-    finExecVariable *initvar = NULL;
-    finExecFlowControl expflowctl;
-    errcode = this->instantExecute(synnode->getSubSyntaxNode(1), env, &initvar, &expflowctl);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
-        return errcode;
-    if ( !expflowctl.checkFlowExpressGoOn(lexnode, this, &errcode)) {
-        finExecVariable::releaseNonLeftVariable(initvar);
-        return errcode;
+    if ( env->getVariableHere(varname_lexnode->getString()) != NULL ) {
+        this->appendExecutionError(lexnode, QString("Variable has already existed."));
+        return finErrorCodeKits::FIN_EC_CONTENTION;
     }
 
-    initvar = finExecVariable::buildCopyLeftVariable(initvar);
-    if ( initvar == NULL )
+    errcode = this->instantExecute(synnode->getSubSyntaxNode(1), env, flowctl);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    bool goon = true;
+    errcode = flowctl->checkFlowForExpress(&goon, lexnode, this);
+    if ( finErrorCodeKits::isErrorResult(errcode) || !goon)
+        return errcode;
+
+    finExecVariable *initvar = finExecVariable::buildCopyLeftVariable(flowctl->pickReturnVariable());
+    if ( initvar == NULL ) {
+        flowctl->resetFlowControl();
         return this->instExecDeclareDirect(varname_synnode, env, flowctl);
+    }
 
     initvar->setName(varname_lexnode->getString());
     errcode = env->addVariable(initvar);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        if ( errcode == finErrorCodeKits::FIN_EC_CONTENTION )
-            this->appendExecutionError(lexnode, QString("Variable has already existed."));
-        else
-            this->appendExecutionError(lexnode, QString("Environment reject the variable."));
+        this->appendExecutionError(lexnode, QString("Environment reject the variable."));
         delete initvar;
         return errcode;
     }
@@ -367,23 +367,18 @@ finExecMachine::instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment 
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
 
-    finExecFlowControl inflowctl;
     for ( int i = 0; i < synnode->getSubListCount(); i++ ) {
-        inflowctl.resetFlowControl();
+        flowctl->resetFlowControl();
 
-        errcode = this->instExecDeclareExpr(synnode->getSubSyntaxNode(i), env, &inflowctl);
+        errcode = this->instExecDeclareExpr(synnode->getSubSyntaxNode(i), env, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
 
-        if ( !inflowctl.checkFlowExpressGoOn(lexnode, this, &errcode)) {
-            if ( finErrorCodeKits::isErrorResult(errcode) )
-                inflowctl.releaseReturnVariable();
-            else
-                flowctl->copyFlowControl(&inflowctl);
+        bool goon = true;
+        errcode = flowctl->checkFlowForExpress(&goon, lexnode, this);
+        if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
             return errcode;
-        }
     }
-    flowctl->copyFlowControl(&inflowctl);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -432,21 +427,18 @@ finExecMachine::instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
 }
 
 finErrorCode
-finExecMachine::instExecStatIn(finSyntaxNode *synnode, finExecEnvironment *env,
-                               finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecStatIn(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Statement Inner!");synnode->dump();
     finErrorCode errcode;
-    finExecVariable *tmpvar = NULL;
+    finLexNode *lexnode = synnode->getCommandLexNode();
 
     for ( int i = 0; i < synnode->getSubListCount(); i++ ) {
-        finExecVariable::releaseNonLeftVariable(tmpvar);
+        flowctl->resetFlowControl();
 
-        errcode = this->instantExecute(synnode->getSubSyntaxNode(i), env, &tmpvar, flowctl);
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
-            finExecVariable::releaseNonLeftVariable(tmpvar);
+        errcode = this->instantExecute(synnode->getSubSyntaxNode(i), env, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
-        }
 
         // Handle 'goto' sub-statement, and other flow control cases.
         if ( flowctl->isFlowGoto() ) {
@@ -457,102 +449,103 @@ finExecMachine::instExecStatIn(finSyntaxNode *synnode, finExecEnvironment *env,
                 continue;
             }
         }
-        if ( !flowctl->isFlowNext() )
-            break;
-    }
 
-    *retvar = tmpvar;
-    flowctl->directPass();
+        bool sttgoon;
+        errcode = flowctl->checkFlowForStatement(&sttgoon, lexnode, this);
+        if ( finErrorCodeKits::isErrorResult(errcode) || !sttgoon )
+            return errcode;
+    }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecMachine::instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env,
-                                  finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Statement!");synnode->dump();
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
     finExecEnvironment *curenv = env;
-    finExecVariable *tmpretvar;
 
     if ( lexnode->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
          lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_L_FLW_BRCKT ) {
         env->buildChildEnvironment(&curenv);
     }
 
-    errcode = instExecStatIn(synnode, curenv, &tmpretvar, flowctl);
+    errcode = instExecStatIn(synnode, curenv, flowctl);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto err;
 
     if ( curenv != env ) {
-        *retvar = finExecVariable::buildFuncReturnVariable(tmpretvar, curenv);
+        flowctl->retVarSwitchEnv(curenv);
         delete curenv;
-    } else {
-        *retvar = tmpretvar;
     }
     flowctl->directPass();
+    return errcode;
+
+err:
+    if ( curenv != env )
+        delete curenv;
     return errcode;
 }
 
 finErrorCode
-finExecMachine::instExecExprVar(finSyntaxNode *synnode, finExecEnvironment *env,
-                                finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecExprVar(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Expr Var!");synnode->dump();
-    finExecVariable *tmpretvar;
+    finExecVariable *retvar;
     finLexNode *lexnode = synnode->getCommandLexNode();
 
-    tmpretvar = env->findVariable(lexnode->getString());
-    if ( tmpretvar == NULL ) {
+    retvar = env->findVariable(lexnode->getString());
+    if ( retvar == NULL ) {
         this->appendExecutionError(lexnode, QString("Cannot find variable."));
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
     }
 
-    *retvar = tmpretvar;
     flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecMachine::instExecExprNum(finSyntaxNode *synnode, finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecExprNum(finSyntaxNode *synnode, finExecFlowControl *flowctl)
 {
     printf("Expr Num!");synnode->dump();
-    finExecVariable *tmpretvar = new finExecVariable();
-    if ( tmpretvar == NULL )
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
     finLexNode *lexnode = synnode->getCommandLexNode();
-    tmpretvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
-    tmpretvar->setNumericValue(lexnode->getFloatValue());
-    tmpretvar->clearLeftValue();
-    tmpretvar->setWriteProtected();
+    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setNumericValue(lexnode->getFloatValue());
+    retvar->clearLeftValue();
+    retvar->setWriteProtected();
 
-    *retvar = tmpretvar;
     flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecMachine::instExecExprStr(finSyntaxNode *synnode, finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecExprStr(finSyntaxNode *synnode, finExecFlowControl *flowctl)
 {
     printf("Expr Str!");synnode->dump();
-    finExecVariable *tmpretvar = new finExecVariable();;
-    if ( tmpretvar == NULL )
+    finExecVariable *retvar = new finExecVariable();;
+    if ( retvar == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
     finLexNode *lexnode = synnode->getCommandLexNode();
-    tmpretvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
-    tmpretvar->setStringValue(lexnode->getStringValue());
-    tmpretvar->clearLeftValue();
-    tmpretvar->setWriteProtected();
+    retvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
+    retvar->setStringValue(lexnode->getStringValue());
+    retvar->clearLeftValue();
+    retvar->setWriteProtected();
 
-    *retvar = tmpretvar;
     flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env,
-                                 finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Expr Func!");synnode->dump();
     finErrorCode errcode;
@@ -584,49 +577,53 @@ finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env
         this->appendExecutionError(lexnode, QString("Execute function failed."));
         return errcode;
     }
-    *retvar = flowctl->getReturnVariable();
-    if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
-            finExecVariable::releaseNonLeftVariable(*retvar);
-            *retvar = NULL;
-        }
+
+    bool flowgoon = true;
+    errcode = flowctl->checkFlowForExpress(&flowgoon, lexnode, this);
+    if ( finErrorCodeKits::isErrorResult(errcode) || !flowgoon )
         return errcode;
-    }
+
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecMachine::instExecExprOper(finSyntaxNode *synnode, finExecEnvironment *env,
-                                 finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecExprOper(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Expr Operator!");synnode->dump();
     finErrorCode errcode = finErrorCodeKits::FIN_EC_SUCCESS;
     finLexNode *lexnode = synnode->getCommandLexNode();
     QList<finExecVariable *> oprands;
+    finExecVariable *retvar;
 
     for ( int i = 0; i < synnode->getSubListCount(); i++ ) {
         finExecVariable *oprand;
+        flowctl->resetFlowControl();
 
-        errcode = instantExecute(synnode->getSubSyntaxNode(i), env, &oprand, flowctl);
+        errcode = instantExecute(synnode->getSubSyntaxNode(i), env, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             goto out;
-        if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
-            if ( finErrorCodeKits::isErrorResult(errcode) )
-                finExecVariable::releaseNonLeftVariable(oprand);
-            else
-                *retvar = oprand;
+
+        bool oprandgoon = true;
+        errcode = flowctl->checkFlowForExpress(&oprandgoon, lexnode, this);
+        if ( finErrorCodeKits::isErrorResult(errcode) || !oprandgoon )
             goto out;
-        }
+
+        oprand = flowctl->pickReturnVariable();
+        if ( oprand == NULL )
+            continue;
         oprands.append(oprand);
     }
 
-    errcode = finExecOperartorClac::execOpCalc(lexnode->getOperator(), &oprands, retvar);
+    errcode = finExecOperartorClac::execOpCalc(lexnode->getOperator(), &oprands, &retvar);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         this->appendExecutionError(lexnode, QString("Invalid expression."));
-        return errcode;
+        goto out;
     }
-    flowctl->setFlowNext();
 
+    flowctl->resetFlowControl();
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    errcode = finErrorCodeKits::FIN_EC_SUCCESS;
 out:
     while ( !oprands.empty() ) {
         finExecVariable *var = oprands.first();
@@ -638,24 +635,23 @@ out:
 
 
 finErrorCode
-finExecMachine::instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env,
-                                finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Expression!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
     finLexNodeType lextype = lexnode->getType();
 
     if ( lextype == finLexNode::FIN_LN_TYPE_VARIABLE ) {
-        return this->instExecExprVar(synnode, env, retvar, flowctl);
+        return this->instExecExprVar(synnode, env, flowctl);
     } else if ( lextype == finLexNode::FIN_LN_TYPE_DECIMAL ) {
-        return this->instExecExprNum(synnode, retvar, flowctl);
+        return this->instExecExprNum(synnode, flowctl);
     } else if ( lextype == finLexNode::FIN_LN_TYPE_STRING ) {
-        return this->instExecExprStr(synnode, retvar, flowctl);
+        return this->instExecExprStr(synnode, flowctl);
     } else if ( lextype == finLexNode::FIN_LN_TYPE_OPERATOR &&
                 lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_FUNCTION ) {
-        return this->instExecExprFunc(synnode, env, retvar, flowctl);
+        return this->instExecExprFunc(synnode, env, flowctl);
     } else if ( lextype == finLexNode::FIN_LN_TYPE_OPERATOR ) {
-        return this->instExecExprOper(synnode, env, retvar, flowctl);
+        return this->instExecExprOper(synnode, env, flowctl);
     }
 
     this->appendExecutionError(lexnode, QString("Invalid expression found."));
@@ -761,8 +757,7 @@ finExecMachine::instExecFuncBody(finSyntaxNode *synnode, finExecFunction *func)
 }
 
 finErrorCode
-finExecMachine::instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env,
-                                 finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Function!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -799,7 +794,6 @@ finExecMachine::instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env
     if ( finErrorCodeKits::isErrorResult(errcode) )
         goto err;
 
-    *retvar = NULL;
     flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 
@@ -827,40 +821,35 @@ finErrorCode finExecMachine::instExecBrCond(finSyntaxNode *synnode, finExecEnvir
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
 
-    finErrorCode errcode = this->instantExecute(synnode->getSubSyntaxNode(0), env, &retvar, flowctl);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        finExecVariable::releaseNonLeftVariable(retvar);
+    finErrorCode errcode = this->instantExecute(synnode->getSubSyntaxNode(0), env, flowctl);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
-    }
-    if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
-        finExecVariable::releaseNonLeftVariable(retvar);
-        if ( !finErrorCodeKits::isErrorResult(errcode) )
-            *retblval = false;
-        return errcode;
-    }
 
-    *retblval = finExecOperartorClac::varLogicValue(retvar);
-    finExecVariable::releaseNonLeftVariable(retvar);
+    bool goon = true;
+    errcode = flowctl->checkFlowForExpress(&goon, lexnode, this);
+    if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+        return errcode;
+
+    *retblval = finExecOperartorClac::varLogicValue(flowctl->getReturnVariable());
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecMachine::instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env,
-                               finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Branch!");synnode->dump();
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
     int bridx = 0;
-    *retvar = NULL;
+    bool condok = false, goon = true;
 
     for ( bridx = 0; bridx + 1 < synnode->getSubListCount(); bridx += 2 ) {
-        bool condok = false;
-
         errcode = this->instExecBrCond(synnode->getSubSyntaxNode(bridx), env, &condok, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
-        if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) )
+
+        errcode = flowctl->checkFlowForExpress(&goon, lexnode, this);
+        if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
             return errcode;
 
         if ( condok ) {
@@ -869,13 +858,16 @@ finExecMachine::instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env,
         }
     }
 
+    flowctl->resetFlowControl();
     if ( bridx < synnode->getSubListCount() ) {
         finExecVariable *tmpvar;
-        errcode = this->instantExecute(synnode->getSubSyntaxNode(bridx), env, &tmpvar, flowctl);
+        errcode = this->instantExecute(synnode->getSubSyntaxNode(bridx), env, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
-        *retvar = tmpvar;
-        flowctl->directPass();
+
+        errcode = flowctl->checkFlowForStatement(&goon, lexnode, this);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
     } else {
         flowctl->setFlowNext();
     }
@@ -883,8 +875,7 @@ finExecMachine::instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env,
 }
 
 finErrorCode
-finExecMachine::instExecLoopWhile(finSyntaxNode *synnode, finExecEnvironment *env,
-                                  finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecLoopWhile(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Loop While!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -893,54 +884,46 @@ finExecMachine::instExecLoopWhile(finSyntaxNode *synnode, finExecEnvironment *en
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
 
+    finErrorCode errcode;
     finSyntaxNode *whilecond = synnode->getSubSyntaxNode(0);
     finSyntaxNode *whilebody = synnode->getSubSyntaxNode(1);
+    bool lookcondok = true, goon = true;
 
-    *retvar = NULL;
     while ( true ) {
-        finErrorCode errcode;
-        bool loopgoon = true;
-
-        errcode = this->instExecBrCond(whilecond, env, &loopgoon, flowctl);
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
-            finExecVariable::releaseNonLeftVariable(*retvar);
-            *retvar = NULL;
-            return errcode;
-        }
-        if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
-            if ( finErrorCodeKits::isErrorResult(errcode) ) {
-                finExecVariable::releaseNonLeftVariable(*retvar);
-                *retvar = NULL;
-            }
-            return errcode;
-        }
-
-        if ( !loopgoon )
-            break;
-
-        finExecVariable::releaseNonLeftVariable(*retvar);
-        *retvar = NULL;
-
-        errcode = this->instantExecute(whilebody, env, retvar, flowctl);
+        flowctl->resetFlowControl();
+        errcode = this->instExecBrCond(whilecond, env, &lookcondok, flowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
+
+        errcode = flowctl->checkFlowForExpress(&goon, lexnode, this);
+        if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+            return errcode;
+
+        if ( !lookcondok )
+            break;
+
+        flowctl->resetFlowControl();
+        errcode = this->instantExecute(whilebody, env, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+
         if ( flowctl->getType() == finExecFlowControl::FIN_FC_CONTINUE ) {
             flowctl->setFlowNext();
             continue;
         } else if ( flowctl->getType() == finExecFlowControl::FIN_FC_BREAK ) {
             flowctl->setFlowNext();
             break;
-        } else if ( flowctl->getType() != finExecFlowControl::FIN_FC_NEXT) {
-            flowctl->directPass();
-            break;
         }
+
+        errcode = flowctl->checkFlowForStatement(&goon, lexnode, this);
+        if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+            return errcode;
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env,
-                                finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Loop For!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -981,17 +964,16 @@ finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env,
 }
 
 finErrorCode
-finExecMachine::instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env,
-                             finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Loop!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
     QString loophdstr = lexnode->getString();
 
     if ( QString::compare(loophdstr, QString("while")) == 0 ) {
-        return this->instExecLoopWhile(synnode, env, retvar, flowctl);
+        return this->instExecLoopWhile(synnode, env, flowctl);
     } else if ( QString::compare(loophdstr, QString("for")) == 0 ) {
-        return this->instExecLoopFor(synnode, env, retvar, flowctl);
+        return this->instExecLoopFor(synnode, env, flowctl);
     } else {
         this->appendExecutionError(lexnode, QString("Encouter unsupported loop type."));
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
@@ -999,11 +981,10 @@ finExecMachine::instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env,
 }
 
 finErrorCode
-finExecMachine::instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env,
-                              finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Label!");synnode->dump();
-    if ( synnode == NULL || env == NULL || retvar == NULL || flowctl == NULL )
+    if ( synnode == NULL || env == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -1014,7 +995,6 @@ finExecMachine::instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env,
     }
 
     flowctl->setFlowNext();
-    *retvar = NULL;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -1038,105 +1018,96 @@ finErrorCode finExecMachine::instExecJumpGoto(finSyntaxNode *synnode, finExecFlo
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finExecMachine::instExecJumpRetVoid(finExecVariable **retvar, finExecFlowControl *flowctl)
+finErrorCode finExecMachine::instExecJumpRetVoid(finExecFlowControl *flowctl)
 {
-    *retvar = NULL;
     flowctl->setType(finExecFlowControl::FIN_FC_RETURN);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finExecMachine::instExecJumpRetVal(finSyntaxNode *synnode, finExecEnvironment *env,
-                                                finExecVariable **retvar, finExecFlowControl *flowctl)
+finErrorCode
+finExecMachine::instExecJumpRetVal(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
 
-    errcode = this->instantExecute(synnode, env, retvar, flowctl);
+    errcode = this->instantExecute(synnode, env, flowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
-    if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
-            finExecVariable::releaseNonLeftVariable(*retvar);
-            *retvar = NULL;
-        }
-        return errcode;
-    }
+
+    bool goon = true;
+    errcode = flowctl->checkFlowForExpress(&goon, lexnode, this);
+    if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+         return errcode;
 
     flowctl->setType(finExecFlowControl::FIN_FC_RETURN);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 
-finErrorCode finExecMachine::instExecJumpRet(finSyntaxNode *synnode, finExecEnvironment *env,
-                                             finExecVariable **retvar, finExecFlowControl *flowctl)
+finErrorCode
+finExecMachine::instExecJumpRet(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
 
-    if ( synnode->getSubListCount() < 1 ) {
-        return this->instExecJumpRetVoid(retvar, flowctl);
-    } else {
-        finSyntaxNode *basesn = synnode->getSubSyntaxNode(0);
-        finLexNode *baseln = basesn->getCommandLexNode();
-        if ( basesn->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
-            this->appendExecutionError(baseln, QString("Return value cannot be calculated."));
-            return finErrorCodeKits::FIN_EC_READ_ERROR;
-        }
+    if ( synnode->getSubListCount() < 1 )
+        return this->instExecJumpRetVoid(flowctl);
 
-        if ( baseln->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
-             baseln->getOperator() == finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
-            if ( basesn->getSubListCount() < 1 )
-                return this->instExecJumpRetVoid(retvar, flowctl);
-
-            basesn = basesn->getSubSyntaxNode(0);
-        }
-        return this->instExecJumpRetVal(basesn, env, retvar, flowctl);
+    finSyntaxNode *basesn = synnode->getSubSyntaxNode(0);
+    finLexNode *baseln = basesn->getCommandLexNode();
+    if ( basesn->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+        this->appendExecutionError(baseln, QString("Return value cannot be calculated."));
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
+
+    if ( baseln->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+         baseln->getOperator() == finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
+        if ( basesn->getSubListCount() < 1 )
+            return this->instExecJumpRetVoid(flowctl);
+
+        basesn = basesn->getSubSyntaxNode(0);
+    }
+    return this->instExecJumpRetVal(basesn, env, flowctl);
 
     this->appendExecutionError(lexnode, QString("ERROR: Script execution reaches a wrong path."));
     return finErrorCodeKits::FIN_EC_READ_ERROR;
 }
 
-finErrorCode finExecMachine::instExecJumpExitVoid(finSyntaxNode *synnode,
-                                                  finExecVariable **retvar, finExecFlowControl *flowctl)
+finErrorCode finExecMachine::instExecJumpExitVoid(finSyntaxNode *synnode, finExecFlowControl *flowctl)
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
-    *retvar = NULL;
 
     this->appendExecutionError(lexnode, QString("INFO: Exit requested with void value."));
     flowctl->setType(finExecFlowControl::FIN_FC_EXIT);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finExecMachine::instExecJumpExitVal(finSyntaxNode *synnode, finExecEnvironment *env,
-                                                 finExecVariable **retvar, finExecFlowControl *flowctl)
+finErrorCode
+finExecMachine::instExecJumpExitVal(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
 
-    errcode = this->instantExecute(synnode, env, retvar, flowctl);
+    errcode = this->instantExecute(synnode, env, flowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
-    if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
-            finExecVariable::releaseNonLeftVariable(*retvar);
-            *retvar = NULL;
-        }
-        return errcode;
-    }
+
+    bool goon = true;
+    errcode = flowctl->checkFlowForExpress(&goon, lexnode, this);
+    if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+         return errcode;
 
     this->appendExecutionError(lexnode, QString("INFO: Exit requested with a value."));
     flowctl->setType(finExecFlowControl::FIN_FC_EXIT);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-
-finErrorCode finExecMachine::instExecJumpExit(finSyntaxNode *synnode, finExecEnvironment *env,
-                                              finExecVariable **retvar, finExecFlowControl *flowctl)
+finErrorCode
+finExecMachine::instExecJumpExit(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
 
     if ( synnode->getSubListCount() < 1 ) {
-        return this->instExecJumpExitVoid(synnode, retvar, flowctl);
+        return this->instExecJumpExitVoid(synnode, flowctl);
     } else {
         finSyntaxNode *basesn = synnode->getSubSyntaxNode(0);
         finLexNode *baseln = basesn->getCommandLexNode();
@@ -1148,11 +1119,11 @@ finErrorCode finExecMachine::instExecJumpExit(finSyntaxNode *synnode, finExecEnv
         if ( baseln->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
              baseln->getOperator() == finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
             if ( basesn->getSubListCount() < 1 )
-                return this->instExecJumpExitVoid(basesn, retvar, flowctl);
+                return this->instExecJumpExitVoid(basesn, flowctl);
 
             basesn = basesn->getSubSyntaxNode(0);
         }
-        return this->instExecJumpExitVal(basesn, env, retvar, flowctl);
+        return this->instExecJumpExitVal(basesn, env, flowctl);
     }
 
     this->appendExecutionError(lexnode, QString("ERROR: Script execution reaches a wrong path."));
@@ -1178,66 +1149,49 @@ finErrorCode finExecMachine::instExecJumpBreak(finSyntaxNode *synnode, finExecFl
 }
 
 finErrorCode
-finExecMachine::instExecJump(finSyntaxNode *synnode, finExecEnvironment *env,
-                             finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecJump(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Jump!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
     QString jumpkw = lexnode->getString();
-    finErrorCode errcode;
 
     if ( QString::compare(jumpkw, "goto") == 0 ) {
-        errcode = this->instExecJumpGoto(synnode, flowctl);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
-            return errcode;
-        *retvar = NULL;
+        return this->instExecJumpGoto(synnode, flowctl);
     } else if ( QString::compare(jumpkw, "return") == 0 ) {
-        errcode = this->instExecJumpRet(synnode, env, retvar, flowctl);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
-            return errcode;
+        return this->instExecJumpRet(synnode, env, flowctl);
     } else if ( QString::compare(jumpkw, "exit") == 0 ) {
-        errcode = this->instExecJumpExit(synnode, env, retvar, flowctl);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
-            return errcode;
+        return this->instExecJumpExit(synnode, env, flowctl);
     } else if ( QString::compare(jumpkw, "continue") == 0 ) {
-        errcode = this->instExecJumpConti(synnode, flowctl);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
-            return errcode;
-        *retvar = NULL;
+        return this->instExecJumpConti(synnode, flowctl);
     } else if ( QString::compare(jumpkw, "break") == 0 ) {
-        errcode = this->instExecJumpBreak(synnode, flowctl);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
-            return errcode;
-        *retvar = NULL;
+        return this->instExecJumpBreak(synnode, flowctl);
     } else {
         this->appendExecutionError(lexnode, QString("The jump statement cannot be recognized."));
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
     }
-
-    flowctl->directPass();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecMachine::instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env,
-                                finExecVariable **retvar, finExecFlowControl *flowctl)
+finExecMachine::instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     printf("Program!");synnode->dump();
     finExecEnvironment *curenv;
-    finExecVariable *tmpretvar;
 
     env->buildChildEnvironment(&curenv);
-    finErrorCode errcode = instExecStatIn(synnode, curenv, &tmpretvar, flowctl);
+
+    finErrorCode errcode = instExecStatIn(synnode, curenv, flowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         delete curenv;
         return errcode;
     }
 
-    finExecVariable::releaseNonLeftVariable(tmpretvar);
-    delete curenv;
-    *retvar = NULL;
-
-    if ( !flowctl->checkFlowProgramGoOn(synnode->getCommandLexNode(), this, &errcode) )
+    errcode = flowctl->checkFlowForProgram(NULL, synnode->getCommandLexNode(), this);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete curenv;
         return errcode;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    }
+
+    flowctl->retVarSwitchEnv(curenv);
+    delete curenv;
+    return errcode;
 }

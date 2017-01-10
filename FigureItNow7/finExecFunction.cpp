@@ -232,12 +232,11 @@ finExecFunction::appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvir
 {
     finErrorCode errcode;
     finLexNode *lexnode = argnode->getCommandLexNode();
-    finExecVariable *expvar, *argvar;
+    finExecVariable *argvar;
 
-    errcode = machine->instantExecute(argnode, env->getParentEnvironment(), &expvar, flowctl);
+    errcode = machine->instantExecute(argnode, env->getParentEnvironment(), flowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
-    flowctl->setReturnVariable(expvar);
 
     bool ingoon = true;
     errcode = flowctl->checkFlowForExpress(&ingoon, lexnode, machine);
@@ -261,15 +260,7 @@ finExecFunction::appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvir
 finErrorCode
 finExecFunction::execUserFunction(finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finExecVariable *retvar;
-    finErrorCode errcode;
-
-    errcode = machine->instantExecute(this->_u._funcNode, env, &retvar, flowctl);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
-        return errcode;
-
-    flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return machine->instantExecute(this->_u._funcNode, env, flowctl);
 }
 
 finErrorCode
