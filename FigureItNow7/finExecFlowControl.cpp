@@ -85,6 +85,90 @@ bool finExecFlowControl::isFlowProgramOk() const
             this->_type == finExecFlowControl::FIN_FC_EXIT);
 }
 
+finErrorCode finExecFlowControl::checkFlowForExpress(bool *goon, finExecFlowControl *outflowctl,
+                                                     finLexNode *lexnode, finExecMachine *machine)
+{
+    if ( this->_type == finExecFlowControl::FIN_FC_NEXT ) {
+        if ( goon != NULL )
+            *goon = true;
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+    } else if ( this->_type == finExecFlowControl::FIN_FC_EXIT ) {
+        if ( goon != NULL )
+            *goon = false;
+        if ( outflowctl != NULL )
+            outflowctl->copyFlowControl(this);
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+    } else {
+        if ( goon != NULL )
+            *goon = false;
+        if ( lexnode != NULL && machine != NULL )
+            machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
+
+        this->releaseReturnVariable();
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+}
+
+finErrorCode finExecFlowControl::checkFlowForStatement(bool *goon, finExecFlowControl *outflowctl,
+                                                       finLexNode *lexnode, finExecMachine *machine)
+{
+    if ( this->_type == finExecFlowControl::FIN_FC_NEXT ) {
+        if ( goon != NULL )
+            *goon = true;
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+    } else if ( this->_type == finExecFlowControl::FIN_FC_EXIT ||
+                this->_type == finExecFlowControl::FIN_FC_RETURN ||
+                this->_type == finExecFlowControl::FIN_FC_GOTO ||
+                this->_type == finExecFlowControl::FIN_FC_BREAK ||
+                this->_type == finExecFlowControl::FIN_FC_CONTINUE ) {
+        if ( goon != NULL )
+            *goon = false;
+        if ( outflowctl != NULL )
+            outflowctl->copyFlowControl(this);
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+    } else {
+        if ( goon != NULL )
+            *goon = false;
+        if ( lexnode != NULL && machine != NULL )
+            machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
+
+        this->releaseReturnVariable();
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+}
+
+finErrorCode finExecFlowControl::checkFlowForProgram(bool *goon, finExecFlowControl *outflowctl,
+                                                     finLexNode *lexnode, finExecMachine *machine)
+{
+    if ( this->_type == finExecFlowControl::FIN_FC_NEXT ) {
+        if ( goon != NULL )
+            *goon = true;
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+    } else if ( this->_type == finExecFlowControl::FIN_FC_RETURN ) {
+        if ( goon != NULL )
+            *goon = false;
+        if ( outflowctl != NULL ) {
+            outflowctl->copyFlowControl(this);
+            outflowctl->setFlowNext();
+        }
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+    } else if ( this->_type == finExecFlowControl::FIN_FC_EXIT ) {
+        if ( goon != NULL )
+            *goon = false;
+        if ( outflowctl != NULL )
+            outflowctl->copyFlowControl(this);
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+    } else {
+        if ( goon != NULL )
+            *goon = false;
+        if ( lexnode != NULL && machine != NULL )
+            machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
+
+        this->releaseReturnVariable();
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+}
+
 bool finExecFlowControl::checkFlowExpressGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode)
 {
     if ( !this->isFlowExpressOk() ) {
@@ -153,6 +237,12 @@ finErrorCode finExecFlowControl::setReturnVariable(finExecVariable *retvar)
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     this->_retVar = retvar;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecFlowControl::retVarSwitchEnv(finExecEnvironment *subenv)
+{
+    this->_retVar = finExecVariable::buildFuncReturnVariable(this->_retVar, subenv);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

@@ -119,9 +119,10 @@ finErrorCode finExecFunction::setFunctionCall(finFunctionCall funccall)
 
 finErrorCode
 finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, finExecMachine *machine,
-                              finExecVariable **retval, finExecFlowControl *flowctl)
+                              finExecFlowControl *flowctl)
 {
     finErrorCode errcode;
+    finExecFlowControl argflowctl, bodyflowctl;
     finLexNode *lexnode = argnode->getCommandLexNode();
 
     if ( argnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
@@ -143,41 +144,41 @@ finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, f
     }
 
     if ( argnode->getSubListCount() > 0 ) {
-        errcode = this->processArgsInSubEnv(argnode->getSubSyntaxNode(0), subenv, machine, flowctl);
+        errcode = this->processArgsInSubEnv(argnode->getSubSyntaxNode(0), subenv, machine, &argflowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) ) {
             delete subenv;
             return errcode;
         }
-        if ( !flowctl->checkFlowExpressGoOn(lexnode, machine, &errcode) ) {
+
+        bool arggoon = true;
+        errcode = argflowctl.checkFlowForExpress(&arggoon, flowctl, lexnode, machine);
+        if ( finErrorCodeKits::isErrorResult(errcode) || !arggoon ) {
             delete subenv;
-            if ( !finErrorCodeKits::isErrorResult(errcode) )
-                *retval = NULL;
             return errcode;
         }
     }
+    argflowctl.releaseReturnVariable();
 
     if ( this->_type == finExecFunction::FIN_FN_TYPE_SYSTEM ) {
-        errcode = this->execSysFunction(subenv, machine, retval, flowctl);
+        errcode = this->execSysFunction(subenv, machine, &bodyflowctl);
     } else if ( this->_type == finExecFunction::FIN_FN_TYPE_USER ) {
-        errcode = this->execUserFunction(subenv, machine, retval, flowctl);
+        errcode = this->execUserFunction(subenv, machine, &bodyflowctl);
     } else {
         machine->appendExecutionError(lexnode, QString("ERROR: Function type cannot be recognized."));
         delete subenv;
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
 
-    if ( !flowctl->checkFlowProgramGoOn(lexnode, machine, &errcode) ) {
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
-            finExecVariable::releaseNonLeftVariable(*retval);
-            *retval = NULL;
-        } else {
-            *retval = finExecVariable::buildFuncReturnVariable(*retval, subenv);
-        }
+    bool bodygoon = true;
+    errcode = bodyflowctl.checkFlowForProgram(&bodygoon, flowctl, lexnode, machine);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
         delete subenv;
         return errcode;
     }
+    if ( bodygoon )
+        flowctl->copyFlowControl(&bodyflowctl);
+    flowctl->retVarSwitchEnv(subenv);
 
-    *retval = finExecVariable::buildFuncReturnVariable(*retval, subenv);
     delete subenv;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
@@ -196,22 +197,31 @@ finExecFunction::processArgsInSubEnv(finSyntaxNode *argnode, finExecEnvironment 
     }
 
     finErrorCode errcode;
+    finExecFlowControl subflowctl;
+    bool subgoon = true;
     if ( lexnode->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
          lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_COMMA ) {
         for ( int i = 0; i < argnode->getSubListCount(); i++ ) {
-            errcode = this->appendArgToSubenv(i, argnode->getSubSyntaxNode(i), env, machine, flowctl);
+            subflowctl.resetFlowControl();
+
+            errcode = this->appendArgToSubenv(i, argnode->getSubSyntaxNode(i), env, machine, &subflowctl);
             if ( finErrorCodeKits::isErrorResult(errcode) )
                 return errcode;
-            if ( !flowctl->checkFlowExpressGoOn(lexnode, machine, &errcode) )
+
+            errcode = subflowctl.checkFlowForExpress(&subgoon, flowctl, lexnode, machine);
+            if ( finErrorCodeKits::isErrorResult(errcode) || !subgoon )
                 return errcode;
         }
     } else {
-        errcode = this->appendArgToSubenv(0, argnode, env, machine, flowctl);
+        errcode = this->appendArgToSubenv(0, argnode, env, machine, &subflowctl);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
-        if ( !flowctl->checkFlowExpressGoOn(lexnode, machine, &errcode) )
+
+        errcode = subflowctl.checkFlowForExpress(&subgoon, flowctl, lexnode, machine);
+        if ( finErrorCodeKits::isErrorResult(errcode) || !subgoon )
             return errcode;
     }
+    flowctl->copyFlowControl(&subflowctl);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -245,17 +255,23 @@ finExecFunction::appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvir
 }
 
 finErrorCode
-finExecFunction::execUserFunction(finExecEnvironment *env, finExecMachine *machine,
-                                  finExecVariable **retval, finExecFlowControl *flowctl)
+finExecFunction::execUserFunction(finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    return machine->instantExecute(this->_u._funcNode, env, retval, flowctl);
+    finExecVariable *retvar;
+    finErrorCode errcode;
+
+    errcode = machine->instantExecute(this->_u._funcNode, env, &retvar, flowctl);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    flowctl->setReturnVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode
-finExecFunction::execSysFunction(finExecEnvironment *env, finExecMachine *machine,
-                                 finExecVariable **retval, finExecFlowControl *flowctl)
+finExecFunction::execSysFunction(finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    return this->_u._funcCall(this, env, machine, retval, flowctl);
+    return this->_u._funcCall(this, env, machine, flowctl);
 }
 
 QString finExecFunction::getExtArgPrefix()
@@ -263,13 +279,10 @@ QString finExecFunction::getExtArgPrefix()
     return finExecFunction::_extArgPrefix;
 }
 
-static finErrorCode
-_sysfunc_mat_add(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine,
-                 finExecVariable **retval, finExecFlowControl *flowctl);
-static finErrorCode
-_sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine,
-              finExecVariable **retval, finExecFlowControl *flowctl);
-
+static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *env,
+                                     finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_line(finExecFunction *self, finExecEnvironment *env,
+                                  finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct {
     QString _funcName;
@@ -344,12 +357,11 @@ item_bad:
 }
 
 static finErrorCode
-_sysfunc_mat_add (finExecFunction *self, finExecEnvironment *env, finExecMachine *machine,
-                  finExecVariable **retval, finExecFlowControl *flowctl)
+_sysfunc_mat_add (finExecFunction *self, finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl)
 {
     finExecVariable *mat1var, *mat2var;
 
-    if ( self == NULL || retval == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
     mat1var = env->findVariable("mat1")->getLinkTarget();
@@ -368,13 +380,12 @@ _sysfunc_mat_add (finExecFunction *self, finExecEnvironment *env, finExecMachine
 }
 
 static finErrorCode
-_sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine,
-              finExecVariable **retval, finExecFlowControl *flowctl)
+_sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl)
 {
     finErrorCode errcode;
     finExecVariable *x1, *y1, *x2, *y2;
 
-    if ( self == NULL || retval == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
     x1 = env->findVariable("x1")->getLinkTarget();
@@ -403,7 +414,6 @@ _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *ma
         delete foline;
         return errcode;
     }
-    *retval = NULL;
     flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

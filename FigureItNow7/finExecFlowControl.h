@@ -57,6 +57,12 @@ public:
     bool isFlowProgramOk() const;
     bool checkFlowExpressGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode);
     bool checkFlowProgramGoOn(finLexNode *lexnode, finExecMachine *machine, finErrorCode *errcode);
+    finErrorCode checkFlowForExpress(bool *goon, finExecFlowControl *outflowctl,
+                                     finLexNode *lexnode, finExecMachine *machine);
+    finErrorCode checkFlowForStatement(bool *goon, finExecFlowControl *outflowctl,
+                                       finLexNode *lexnode, finExecMachine *machine);
+    finErrorCode checkFlowForProgram(bool *goon, finExecFlowControl *outflowctl,
+                                     finLexNode *lexnode, finExecMachine *machine);
 
     finErrorCode setType(finExecFlowControlType type);
     finErrorCode setLabel(const QString &label);
@@ -64,6 +70,7 @@ public:
     finErrorCode setGotoAndLabel(const QString &label);
     finErrorCode setReturnVariable(finExecVariable *retvar);
 
+    finErrorCode retVarSwitchEnv(finExecEnvironment *subenv);
     void releaseReturnVariable();
 
     finErrorCode directPass();

@@ -34,7 +34,7 @@ class finExecEnvironment;
 class finExecMachine;
 
 typedef finErrorCode (*finFunctionCall)(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine,
-                                        finExecVariable **retval, finExecFlowControl *flowctl);
+                                        finExecFlowControl *flowctl);
 class finExecFunction
 {
 public:
@@ -75,8 +75,8 @@ public:
     finErrorCode setFunctionSyntaxNode(finSyntaxNode *funcnode);
     finErrorCode setFunctionCall(finFunctionCall funccall);
 
-    finErrorCode execFunction(finSyntaxNode *argnode, finExecEnvironment *env, finExecMachine *machine,
-                              finExecVariable **retval, finExecFlowControl *flowctl);
+    finErrorCode execFunction(finSyntaxNode *argnode, finExecEnvironment *env,
+                              finExecMachine *machine, finExecFlowControl *flowctl);
 
     static QString getExtArgPrefix();
     static finErrorCode installSystemFunctions (finExecEnvironment *rootenv);
@@ -87,10 +87,8 @@ private:
     finErrorCode appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvironment *env,
                                    finExecMachine *machine, finExecFlowControl *flowctl);
 
-    finErrorCode execUserFunction(finExecEnvironment *env, finExecMachine *machine,
-                                  finExecVariable **retval, finExecFlowControl *flowctl);
-    finErrorCode execSysFunction(finExecEnvironment *env, finExecMachine *machine,
-                                 finExecVariable **retval, finExecFlowControl *flowctl);
+    finErrorCode execUserFunction(finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl);
+    finErrorCode execSysFunction(finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl);
 
 };
 

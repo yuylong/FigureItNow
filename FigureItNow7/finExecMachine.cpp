@@ -579,11 +579,12 @@ finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
     }
 
-    errcode = func->execFunction(synnode->getSubSyntaxNode(1), env, this, retvar, flowctl);
+    errcode = func->execFunction(synnode->getSubSyntaxNode(1), env, this, flowctl);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         this->appendExecutionError(lexnode, QString("Execute function failed."));
         return errcode;
     }
+    *retvar = flowctl->getReturnVariable();
     if ( !flowctl->checkFlowExpressGoOn(lexnode, this, &errcode) ) {
         if ( finErrorCodeKits::isErrorResult(errcode) ) {
             finExecVariable::releaseNonLeftVariable(*retvar);
