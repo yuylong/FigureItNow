@@ -142,6 +142,7 @@ finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, f
         return errcode;
     }
     subenv->setEnvironmentName(this->_funcName);
+    subenv->setBelongFunction(this);
 
     if ( argnode->getSubListCount() > 0 ) {
         errcode = this->processArgsInSubEnv(argnode->getSubSyntaxNode(0), subenv, machine, flowctl);
