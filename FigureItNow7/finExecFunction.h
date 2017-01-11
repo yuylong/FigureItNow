@@ -35,6 +35,12 @@ class finExecMachine;
 
 typedef finErrorCode (*finFunctionCall)(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine,
                                         finExecFlowControl *flowctl);
+struct finExecSysFuncRegItem {
+    QString _funcName;
+    QString _paramCsvList;
+    finFunctionCall _funcCall;
+};
+
 class finExecFunction
 {
 public:
@@ -90,6 +96,12 @@ private:
     finErrorCode execUserFunction(finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl);
     finErrorCode execSysFunction(finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl);
 
+    static QList<finExecSysFuncRegItem> _sysFuncList;
+    static finErrorCode registSysFuncAll();
+
+    static finErrorCode registSysFuncFromArray(finExecSysFuncRegItem *sysfuncist);
+    static finErrorCode registSysFuncMatrix();
+    static finErrorCode registSysFuncFiguring();
 };
 
 typedef finExecFunction::finExecFunctionType finExecFunctionType;

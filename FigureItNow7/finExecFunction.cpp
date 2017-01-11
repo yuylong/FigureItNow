@@ -274,21 +274,32 @@ QString finExecFunction::getExtArgPrefix()
     return finExecFunction::_extArgPrefix;
 }
 
-static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *env,
-                                     finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_line(finExecFunction *self, finExecEnvironment *env,
-                                  finExecMachine *machine, finExecFlowControl *flowctl);
+QList<finExecSysFuncRegItem> finExecFunction::_sysFuncList =
+        QList<finExecSysFuncRegItem>();
 
-static struct {
-    QString _funcName;
-    QString _paramCsvList;
-    finFunctionCall _funcCall;
-} _finSystemFunctionList[] = {
-    { QString("mat_add"), QString("mat1,mat2"),   _sysfunc_mat_add },
-    { QString("line"),    QString("x1,y1,x2,y2"), _sysfunc_line    },
+finErrorCode
+finExecFunction::registSysFuncFromArray(finExecSysFuncRegItem *sysfuncist)
+{
+    for ( int i = 0; !sysfuncist[i]._funcName.isNull(); i++ ) {
+        finExecFunction::_sysFuncList.append(sysfuncist[i]);
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
 
-    { QString(), QString(), NULL }
-};
+finErrorCode finExecFunction::registSysFuncAll()
+{
+    finErrorCode errcode;
+
+    errcode = finExecFunction::registSysFuncMatrix();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    errcode = finExecFunction::registSysFuncFiguring();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
 
 finErrorCode
 finExecFunction::installSystemFunctions (finExecEnvironment *rootenv)
@@ -299,7 +310,12 @@ finExecFunction::installSystemFunctions (finExecEnvironment *rootenv)
     if ( rootenv == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    for ( i = 0; !_finSystemFunctionList[i]._funcName.isNull(); i++ ) {
+    errcode = finExecFunction::registSysFuncAll();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    for ( i = 0; i < finExecFunction::_sysFuncList.count(); i++ ) {
+        const finExecSysFuncRegItem &sysfunc = finExecFunction::_sysFuncList.at(i);
 
         QStringList paramlist;
         finExecFunction *curfunc = new finExecFunction();
@@ -310,11 +326,11 @@ finExecFunction::installSystemFunctions (finExecEnvironment *rootenv)
         if ( finErrorCodeKits::isErrorResult(errcode) )
             goto item_bad;
 
-        errcode = curfunc->setFunctionName(_finSystemFunctionList[i]._funcName);
+        errcode = curfunc->setFunctionName(sysfunc._funcName);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             goto item_bad;
 
-        paramlist = _finSystemFunctionList[i]._paramCsvList.split(',');
+        paramlist = sysfunc._paramCsvList.split(',');
         curfunc->clearParameterNames();
         for ( int j = 0; j < paramlist.count(); j++ ) {
             errcode = curfunc->appendParameterName(paramlist.at(j));
@@ -322,7 +338,7 @@ finExecFunction::installSystemFunctions (finExecEnvironment *rootenv)
                 goto item_bad;
         }
 
-        errcode = curfunc->setFunctionCall(_finSystemFunctionList[i]._funcCall);
+        errcode = curfunc->setFunctionCall(sysfunc._funcCall);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             goto item_bad;
 
@@ -349,66 +365,4 @@ item_bad:
         else
             return finErrorCodeKits::FIN_EC_NOT_FOUND;
     }
-}
-
-static finErrorCode
-_sysfunc_mat_add (finExecFunction *self, finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl)
-{
-    finExecVariable *mat1var, *mat2var;
-
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
-
-    mat1var = env->findVariable("mat1")->getLinkTarget();
-    mat2var = env->findVariable("mat2")->getLinkTarget();
-
-    if ( mat1var == NULL || mat2var == NULL ) {
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
-    }
-
-    if ( mat1var->getType() != finExecVariable::FIN_VR_TYPE_ARRAY ||
-         mat2var->getType() != finExecVariable::FIN_VR_TYPE_ARRAY )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
-
-    flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
-}
-
-static finErrorCode
-_sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl)
-{
-    finErrorCode errcode;
-    finExecVariable *x1, *y1, *x2, *y2;
-
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
-
-    x1 = env->findVariable("x1")->getLinkTarget();
-    y1 = env->findVariable("y1")->getLinkTarget();
-    x2 = env->findVariable("x2")->getLinkTarget();
-    y2 = env->findVariable("y2")->getLinkTarget();
-
-    if ( x1 == NULL || y1 == NULL || x2 == NULL || y2 == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
-
-    if ( x1->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         y1->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         x2->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         y2->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
-
-    finFigureObjectLine *foline = new finFigureObjectLine();
-    if ( foline == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-
-    foline->setPoint1(x1->getNumericValue(), y1->getNumericValue());
-    foline->setPoint2(x2->getNumericValue(), y2->getNumericValue());
-
-    errcode = env->getFigureContainer()->appendFigureObject(foline);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        delete foline;
-        return errcode;
-    }
-    flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
