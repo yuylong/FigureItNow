@@ -110,6 +110,19 @@ finExecEnvironment::findVariableUntil(const QString &varname, const QString &env
         return NULL;
 }
 
+finExecVariable *
+finExecEnvironment::findVariableUntil(const QString &varname, finExecFunction *blngfunc)
+{
+    finExecVariable *retvar = this->getVariableHere(varname);
+    if ( retvar != NULL )
+        return retvar;
+
+    if ( blngfunc != this->_belongFunc && this->_prevEnv != NULL )
+        return this->_prevEnv->findVariable(varname);
+    else
+        return NULL;
+}
+
 finExecFunction *
 finExecEnvironment::getFunctionHere(const QString &funcname)
 {
@@ -152,6 +165,20 @@ finExecEnvironment::findFunctionUntil(const QString &funcname, const QString &en
         return NULL;
 }
 
+finExecFunction *
+finExecEnvironment::findFunctionUntil(const QString &funcname, finExecFunction *blngfunc)
+{
+    finExecFunction *retfunc;
+
+    retfunc = this->getFunctionHere(funcname);
+    if ( retfunc != NULL )
+        return retfunc;
+
+    if ( blngfunc != this->_belongFunc && this->_prevEnv != NULL )
+        return this->_prevEnv->findFunction(funcname);
+    else
+        return NULL;
+}
 
 bool finExecEnvironment::isVariableInEnv(finExecVariable *var)
 {

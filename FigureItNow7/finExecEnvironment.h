@@ -64,6 +64,8 @@ public:
     finExecFunction *findFunction(const QString &funcname);
     finExecVariable *findVariableUntil(const QString &varname, const QString &envname);
     finExecFunction *findFunctionUntil(const QString &funcname, const QString &envname);
+    finExecVariable *findVariableUntil(const QString &varname, finExecFunction *blngfunc);
+    finExecFunction *findFunctionUntil(const QString &funcname, finExecFunction *blngfunc);
 
     bool isVariableInEnv(finExecVariable *var);
     bool isVariableDirectInEnv(finExecVariable *var);
