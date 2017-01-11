@@ -9,7 +9,7 @@ static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironm
                                           finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct finExecSysFuncRegItem _finSysFuncSystemList[] = {
-    { QString("runfunction"), QString("funcname"), _sysfunc_run_function },
+    { QString("run_function"), QString("funcname"), _sysfunc_run_function },
 
     { QString(), QString(), NULL }
 };

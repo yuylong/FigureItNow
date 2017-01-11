@@ -49,6 +49,8 @@ private:
     finErrorCode tryGetString(finLexNode *retnode);
     finErrorCode tryGetOperator(finLexNode *retnode);
 
+    bool isVariableStartChar(const QChar &ch);
+    bool isVariableChar(const QChar &ch);
 };
 
 #endif // FINLEXREADER_H

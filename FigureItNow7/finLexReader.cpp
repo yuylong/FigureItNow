@@ -248,19 +248,35 @@ finErrorCode finLexReader::tryGetNote(finLexNode *retnode)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+bool finLexReader::isVariableStartChar(const QChar &ch)
+{
+    if ( ch.isLetter() || ch == QChar('_') )
+        return true;
+    else
+        return false;
+}
+
+bool finLexReader::isVariableChar(const QChar &ch)
+{
+    if ( ch.isLetter() || ch.isDigit() || ch == QChar('_') )
+        return true;
+    else
+        return false;
+}
+
 finErrorCode finLexReader::tryGetVariable(finLexNode *retnode)
 {
     unsigned long trypos = this->_posIdx;
     unsigned long strlength = (unsigned long)this->_inputStr.length();
 
     // Check the first char in the string, it must be a letter.
-    if ( trypos >= strlength || !this->_inputStr.at(trypos).isLetter() )
+    if ( trypos >= strlength || !this->isVariableStartChar(this->_inputStr.at(trypos)) )
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
     trypos++;
 
     // Check the rest char in the variable, it must be a letter or a digital.
     while ( trypos < strlength ) {
-        if ( !this->_inputStr.at(trypos).isLetter() && !this->_inputStr.at(trypos).isDigit() )
+        if ( !this->isVariableChar(this->_inputStr.at(trypos)) )
             break;
 
         trypos++;
