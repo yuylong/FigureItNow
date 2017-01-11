@@ -284,6 +284,47 @@ finExecFunction *finExecEnvironment::getPreviousBelongFunction(int level) const
         return this->_prevEnv->getPreviousBelongFunction(level);
 }
 
+int finExecEnvironment::getBelongFuncEvnLevelIn(int curlevel) const
+{
+    if ( this->_belongFunc != NULL )
+        return curlevel;
+
+    if ( this->_prevEnv == NULL )
+        return -1;
+
+    return this->getBelongFuncEvnLevelIn(curlevel + 1);
+}
+
+int finExecEnvironment::getBelongFunctionEnvLevelIdx() const
+{
+    return this->getBelongFuncEvnLevelIn(0);
+}
+
+int finExecEnvironment::getPrevBelongFuncEnvLevelIn(int level, int curlevel) const
+{
+    if ( level == 0 && this->_belongFunc != NULL )
+        return curlevel;
+
+    if ( this->_prevEnv == NULL )
+        return -1;
+
+    if ( this->_belongFunc != NULL )
+        return this->_prevEnv->getPrevBelongFuncEnvLevelIn(level - 1, curlevel + 1);
+    else
+        return this->_prevEnv->getPrevBelongFuncEnvLevelIn(level, curlevel + 1);
+}
+
+int finExecEnvironment::getPreviousBelongFunctionEnvLevelIdx() const
+{
+    return this->getPrevBelongFuncEnvLevelIn(1, 0);
+}
+
+int finExecEnvironment::getPreviousBelongFunctionEnvLevelIdx(int level) const
+{
+    return this->getPrevBelongFuncEnvLevelIn(level, 0);
+}
+
+
 finFigureContainer *
 finExecEnvironment::getFigureContainer()
 {

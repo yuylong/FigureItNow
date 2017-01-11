@@ -80,10 +80,15 @@ public:
     finExecFunction *getBelongFunction() const;
     finExecFunction *getPreviousBelongFunction() const;
     finExecFunction *getPreviousBelongFunction(int level) const;
+    int getBelongFunctionEnvLevelIdx() const;
+    int getPreviousBelongFunctionEnvLevelIdx() const;
+    int getPreviousBelongFunctionEnvLevelIdx(int level) const;
+
+    finErrorCode setBelongFunction(finExecFunction *func);
+
     finFigureContainer *getFigureContainer();
     finExecEnvironment *getParentEnvironment();
 
-    finErrorCode setBelongFunction(finExecFunction *func);
     finErrorCode setFigureContainer(finFigureContainer *figcontainer);
     finErrorCode setParentEnvironment(finExecEnvironment *prevenv);
 
@@ -91,6 +96,10 @@ public:
     static finErrorCode disposeRootEnvironment();
     static finExecEnvironment *getRootEnvironment();
     static finErrorCode buildRootChildEnvironment(finExecEnvironment **chdenv);
+
+private:
+    int getBelongFuncEvnLevelIn(int curlevel) const;
+    int getPrevBelongFuncEnvLevelIn(int level, int curlevel) const;
 };
 
 #endif // FINEXECENVIRONMENT_H
