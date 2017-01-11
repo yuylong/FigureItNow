@@ -77,7 +77,6 @@ finExecEnvironment::getVariableHere(const QString &varname)
 {
     for ( int i = 0; i < this->_varList.count(); i++ ) {
         finExecVariable *var = this->_varList.at(i);
-
         if ( QString::compare(var->getName(), varname) == 0 )
             return var;
     }
@@ -87,9 +86,7 @@ finExecEnvironment::getVariableHere(const QString &varname)
 finExecVariable *
 finExecEnvironment::findVariable(const QString &varname)
 {
-    finExecVariable *retvar;
-
-    retvar = this->getVariableHere(varname);
+    finExecVariable *retvar = this->getVariableHere(varname);
     if ( retvar != NULL )
         return retvar;
 

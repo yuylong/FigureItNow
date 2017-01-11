@@ -753,7 +753,7 @@ _finSysvarGencall _finSysvarGencallList[] = {
 };
 
 finErrorCode
-finExecVariable::installSystemVariables (finExecEnvironment *rootenv)
+finExecVariable::installSystemVariables(finExecEnvironment *rootenv)
 {
     finErrorCode errcode;
     int success = 0, failed = 0;
@@ -768,6 +768,7 @@ finExecVariable::installSystemVariables (finExecEnvironment *rootenv)
             goto item_bad;
 
         success++;
+        continue;
 
 item_bad:
         if ( curvar != NULL )

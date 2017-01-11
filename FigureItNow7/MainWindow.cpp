@@ -1,6 +1,8 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
+#include "finExecEnvironment.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -11,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     printf ("init Env (errno=%d)\n", errcode);
     errcode = this->machine.setFigureContainer(&this->figContainer);
     printf ("init Fig Container (errno=%d)\n", errcode);
+
+
     ui->setupUi(this);
     fflush(stdout);
 }
