@@ -260,6 +260,73 @@ finExecFunction::appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvir
 }
 
 finErrorCode
+finExecFunction::execFunction(QList<finExecVariable *> *arglist, finExecEnvironment *env,
+                              finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecEnvironment *subenv;
+
+    errcode = env->buildChildEnvironment(&subenv);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+    subenv->setEnvironmentName(this->_funcName);
+    subenv->setBelongFunction(this);
+
+    if ( arglist != NULL ) {
+        errcode = processArgsInSubEnv(arglist, subenv);
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            delete subenv;
+            return errcode;
+        }
+    }
+
+    if ( this->_type == finExecFunction::FIN_FN_TYPE_SYSTEM ) {
+        errcode = this->execSysFunction(subenv, machine, flowctl);
+    } else if ( this->_type == finExecFunction::FIN_FN_TYPE_USER ) {
+        errcode = this->execUserFunction(subenv, machine, flowctl);
+    } else {
+        delete subenv;
+        return finErrorCodeKits::FIN_EC_READ_ERROR;
+    }
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete subenv;
+        return errcode;
+    }
+
+    errcode = flowctl->checkFlowForProgram(NULL, NULL, machine);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete subenv;
+        return errcode;
+    }
+    flowctl->retVarSwitchEnv(subenv);
+    delete subenv;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finExecFunction::processArgsInSubEnv(QList<finExecVariable *> *arglist, finExecEnvironment *env)
+{
+    finErrorCode errcode;
+
+    for ( int i = 0; i < arglist->count(); i++ ) {
+        finExecVariable *argvar;
+
+        argvar = finExecVariable::buildLinkLeftVariable(arglist->at(i));
+        if ( argvar == NULL )
+            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+        argvar->setName(this->getParameterName(i));
+        errcode = env->addVariable(argvar);
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            arglist->removeAt(i);
+            delete argvar;
+            return errcode;
+        }
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
 finExecFunction::execUserFunction(finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl)
 {
     return machine->instantExecute(this->_u._funcNode, env, flowctl);

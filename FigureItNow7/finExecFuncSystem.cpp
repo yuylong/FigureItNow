@@ -5,11 +5,11 @@
 #include "finExecEnvironment.h"
 #include "finExecMachine.h"
 
-//static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *env,
-//                                     finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironment *env,
+                                          finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct finExecSysFuncRegItem _finSysFuncSystemList[] = {
-//    { QString("mat_add"), QString("mat1,mat2"), _sysfunc_mat_add },
+    { QString("run_function"), QString("funcname"), _sysfunc_run_function },
 
     { QString(), QString(), NULL }
 };
@@ -17,4 +17,10 @@ static struct finExecSysFuncRegItem _finSysFuncSystemList[] = {
 finErrorCode finExecFunction::registSysFuncSystem()
 {
     return finExecFunction::registSysFuncFromArray(_finSysFuncSystemList);
+}
+
+static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironment *env,
+                                          finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }

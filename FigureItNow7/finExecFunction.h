@@ -83,6 +83,8 @@ public:
 
     finErrorCode execFunction(finSyntaxNode *argnode, finExecEnvironment *env,
                               finExecMachine *machine, finExecFlowControl *flowctl);
+    finErrorCode execFunction(QList<finExecVariable *> *arglist, finExecEnvironment *env,
+                              finExecMachine *machine, finExecFlowControl *flowctl);
 
     static QString getExtArgPrefix();
     static QString getExtArgName(int idx);
@@ -102,6 +104,7 @@ private:
                                      finExecMachine *machine, finExecFlowControl *flowctl);
     finErrorCode appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvironment *env,
                                    finExecMachine *machine, finExecFlowControl *flowctl);
+    finErrorCode processArgsInSubEnv(QList<finExecVariable *> *arglist, finExecEnvironment *env);
 
     finErrorCode execUserFunction(finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl);
     finErrorCode execSysFunction(finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl);
