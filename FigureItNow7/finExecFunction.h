@@ -100,7 +100,11 @@ private:
     static finErrorCode registSysFuncAll();
 
     static finErrorCode registSysFuncFromArray(finExecSysFuncRegItem *sysfuncist);
+    static finErrorCode registSysFuncMath();
     static finErrorCode registSysFuncMatrix();
+    static finErrorCode registSysFuncString();
+    static finErrorCode registSysFuncFile();
+    static finErrorCode registSysFuncSystem();
     static finErrorCode registSysFuncFiguring();
 };
 

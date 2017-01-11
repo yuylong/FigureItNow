@@ -36,7 +36,11 @@ SOURCES += main.cpp\
     finExecFlowControl.cpp \
     finExecCompiler.cpp \
     finExecFuncMatrix.cpp \
-    finExecFuncFiguring.cpp
+    finExecFuncFiguring.cpp \
+    finExecFuncMath.cpp \
+    finExecFuncString.cpp \
+    finExecFuncSystem.cpp \
+    finExecFuncFile.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \

@@ -290,7 +290,27 @@ finErrorCode finExecFunction::registSysFuncAll()
 {
     finErrorCode errcode;
 
+    errcode = finExecFunction::registSysFuncMath();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
     errcode = finExecFunction::registSysFuncMatrix();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    errcode = finExecFunction::registSysFuncString();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    errcode = finExecFunction::registSysFuncFile();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    errcode = finExecFunction::registSysFuncSystem();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    errcode = finExecFunction::registSysFuncFiguring();
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
