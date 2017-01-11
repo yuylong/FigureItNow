@@ -317,7 +317,7 @@ int finExecEnvironment::getBelongFuncEvnLevelIn(int curlevel) const
     if ( this->_prevEnv == NULL )
         return -1;
 
-    return this->getBelongFuncEvnLevelIn(curlevel + 1);
+    return this->_prevEnv->getBelongFuncEvnLevelIn(curlevel + 1);
 }
 
 int finExecEnvironment::getBelongFunctionEnvLevelIdx() const
@@ -373,7 +373,7 @@ finExecEnvironment::getParentEnvironment(int envlevel)
     if ( this->_prevEnv == NULL )
         return NULL;
     else
-        return this->getParentEnvironment(envlevel - 1);
+        return this->_prevEnv->getParentEnvironment(envlevel - 1);
 }
 
 finErrorCode finExecEnvironment::setBelongFunction(finExecFunction *func)
