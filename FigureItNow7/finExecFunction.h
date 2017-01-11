@@ -85,6 +85,8 @@ public:
                               finExecMachine *machine, finExecFlowControl *flowctl);
 
     static QString getExtArgPrefix();
+    int getExtendArgCount(finExecEnvironment *env);
+    finExecVariable *getExtendArgAt(int idx);
 
     static finErrorCode installSystemFunctions (finExecEnvironment *rootenv);
 

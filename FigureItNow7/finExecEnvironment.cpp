@@ -24,6 +24,7 @@ finExecEnvironment::finExecEnvironment()
     this->_envName = QString("");
     this->_varList.clear();
     this->_funcList.clear();
+    this->_belongFunc = NULL;
     this->_figContainer = NULL;
     this->_prevEnv = NULL;
 }
@@ -221,6 +222,41 @@ finErrorCode finExecEnvironment::removeFunction(finExecFunction *func)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finExecFunction *finExecEnvironment::getBelongFunctionHere() const
+{
+    return this->_belongFunc;
+}
+
+finExecFunction *finExecEnvironment::getBelongFunction() const
+{
+    if ( this->_belongFunc != NULL )
+        return this->_belongFunc;
+
+    if ( this->_prevEnv != NULL )
+        return this->_prevEnv->getBelongFunction();
+    else
+        return NULL;
+}
+
+finExecFunction *finExecEnvironment::getPreviousBelongFunction() const
+{
+    return this->getPreviousBelongFunction(1);
+}
+
+finExecFunction *finExecEnvironment::getPreviousBelongFunction(int level) const
+{
+    if ( level == 0 && this->_belongFunc != NULL )
+        return this->_belongFunc;
+
+    if ( this->_prevEnv == NULL )
+        return NULL;
+
+    if ( this->_belongFunc != NULL )
+        return this->_prevEnv->getPreviousBelongFunction(level - 1);
+    else
+        return this->_prevEnv->getPreviousBelongFunction(level);
+}
+
 finFigureContainer *
 finExecEnvironment::getFigureContainer()
 {
@@ -231,6 +267,12 @@ finExecEnvironment *
 finExecEnvironment::getParentEnvironment()
 {
     return this->_prevEnv;
+}
+
+finErrorCode finExecEnvironment::setBelongFunction(finExecFunction *func)
+{
+    this->_belongFunc = func;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode

@@ -43,6 +43,7 @@ protected:
     QList<finExecVariable *> _varList;
     QList<finExecFunction *> _funcList;
 
+    finExecFunction *_belongFunc;
     finFigureContainer *_figContainer;
     finExecEnvironment *_prevEnv;
 
@@ -73,9 +74,14 @@ public:
     finErrorCode removeVariable(finExecVariable *var);
     finErrorCode removeFunction(finExecFunction *func);
 
+    finExecFunction *getBelongFunctionHere() const;
+    finExecFunction *getBelongFunction() const;
+    finExecFunction *getPreviousBelongFunction() const;
+    finExecFunction *getPreviousBelongFunction(int level) const;
     finFigureContainer *getFigureContainer();
     finExecEnvironment *getParentEnvironment();
 
+    finErrorCode setBelongFunction(finExecFunction *func);
     finErrorCode setFigureContainer(finFigureContainer *figcontainer);
     finErrorCode setParentEnvironment(finExecEnvironment *prevenv);
 
