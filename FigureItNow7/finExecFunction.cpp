@@ -141,6 +141,7 @@ finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, f
         machine->appendExecutionError(lexnode, QString("Internal error."));
         return errcode;
     }
+    subenv->setEnvironmentName(this->_funcName);
 
     if ( argnode->getSubListCount() > 0 ) {
         errcode = this->processArgsInSubEnv(argnode->getSubSyntaxNode(0), subenv, machine, flowctl);
