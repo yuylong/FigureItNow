@@ -378,6 +378,14 @@ finExecVariable *finExecVariable::getLinkTarget()
     return target;
 }
 
+finExecVariable *finExecVariable::transLinkTarget(finExecVariable *var)
+{
+    if ( var == NULL )
+        return NULL;
+    else
+        return var->getLinkTarget();
+}
+
 finErrorCode finExecVariable::setLinkTarget(finExecVariable *target)
 {
     if ( this->_type == finExecVariable::FIN_VR_TYPE_LINK && this->_linkTarget == target )

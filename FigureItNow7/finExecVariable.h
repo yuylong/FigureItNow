@@ -122,6 +122,7 @@ public:
 
     const finExecVariable *getLinkTarget() const;
     finExecVariable *getLinkTarget();
+    static finExecVariable *transLinkTarget(finExecVariable *var);
     finErrorCode setLinkTarget(finExecVariable *target);
     finErrorCode unsetLinkTarget();
 
