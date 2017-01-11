@@ -216,12 +216,15 @@ _addOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     } else if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_STRING &&
                 oprand2->getType() == finExecVariable::FIN_VR_TYPE_STRING ) {
         tmpretval->setType(finExecVariable::FIN_VR_TYPE_STRING);
-        tmpretval->setStringValue(oprand1->getStringValue().append(oprand2->getStringValue()));
+        QString retstr = oprand1->getStringValue();
+        retstr.append(oprand2->getStringValue());
+        tmpretval->setStringValue(retstr);
     } else if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_STRING &&
                 oprand2->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC ) {
         tmpretval->setType(finExecVariable::FIN_VR_TYPE_STRING);
-        tmpretval->setStringValue(
-                    oprand1->getStringValue().append(QString::number(oprand2->getNumericValue())));
+        QString retstr = oprand1->getStringValue();
+        retstr.append(QString::number(oprand2->getNumericValue()));
+        tmpretval->setStringValue(retstr);
     } else {
         delete tmpretval;
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
