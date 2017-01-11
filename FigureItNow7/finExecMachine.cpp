@@ -565,7 +565,6 @@ finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env
         this->appendExecutionError(fnlexn, QString("Invalid function name."));
         return finErrorCodeKits::FIN_EC_READ_ERROR;
     }
-
     QString funcname = fnlexn->getString();
     finExecFunction *func = env->findFunction(funcname);
     if ( func == NULL ) {

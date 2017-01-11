@@ -402,7 +402,7 @@ int finExecFunction::getPreviousExtendArgCount(finExecEnvironment *env)
     int envlevel = env->getPreviousBelongFunctionEnvLevelIdx();
     if ( envlevel < 0 )
         return -1;
-
+printf("AA %d\n", envlevel); fflush(stdout);
     finExecEnvironment *funcenv = env->getParentEnvironment(envlevel);
     if ( funcenv == NULL )
         return -1;
@@ -525,12 +525,14 @@ finExecFunction::installSystemFunctions (finExecEnvironment *rootenv)
         if ( finErrorCodeKits::isErrorResult(errcode) )
             goto item_bad;
 
-        paramlist = sysfunc._paramCsvList.split(',');
-        curfunc->clearParameterNames();
-        for ( int j = 0; j < paramlist.count(); j++ ) {
-            errcode = curfunc->appendParameterName(paramlist.at(j));
-            if ( finErrorCodeKits::isErrorResult(errcode) )
-                goto item_bad;
+        if ( sysfunc._paramCsvList.length() > 0 ) {
+            paramlist = sysfunc._paramCsvList.split(',');
+            curfunc->clearParameterNames();
+            for ( int j = 0; j < paramlist.count(); j++ ) {
+                errcode = curfunc->appendParameterName(paramlist.at(j));
+                if ( finErrorCodeKits::isErrorResult(errcode) )
+                    goto item_bad;
+            }
         }
 
         errcode = curfunc->setFunctionCall(sysfunc._funcCall);

@@ -9,11 +9,14 @@ static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironm
                                           finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_ext_arg(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_ext_arg_count(finExecFunction *self, finExecEnvironment *env,
+                                           finExecMachine *machine, finExecFlowControl *flowctl);
 
 
 static struct finExecSysFuncRegItem _finSysFuncSystemList[] = {
-    { QString("run_function"), QString("funcname"), _sysfunc_run_function },
-    { QString("ext_arg"),      QString("idx"),      _sysfunc_ext_arg      },
+    { QString("run_function"),  QString("funcname"), _sysfunc_run_function  },
+    { QString("ext_arg"),       QString("idx"),      _sysfunc_ext_arg       },
+    { QString("ext_arg_count"), QString(""),         _sysfunc_ext_arg_count },
 
     { QString(), QString(), NULL }
 };
@@ -73,6 +76,27 @@ static finErrorCode _sysfunc_ext_arg(finExecFunction *self, finExecEnvironment *
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
     finExecVariable *retvar = finExecFunction::getPreviousExtendArgAt(env, idx);
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_ext_arg_count(finExecFunction *self, finExecEnvironment *env,
+                                           finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    int extargcnt = finExecFunction::getPreviousExtendArgCount(env);
+    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setNumericValue(extargcnt);
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
     return finErrorCodeKits::FIN_EC_SUCCESS;
