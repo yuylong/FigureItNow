@@ -92,6 +92,8 @@ static finErrorCode _mulOpCall(QList<finExecVariable *> *oprands, finExecVariabl
 static finErrorCode _divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _pstvOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _ngtvOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode _psAccumOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
+static finErrorCode _prAccumOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _modOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _powOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _letOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
@@ -120,8 +122,8 @@ static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
     { finLexNode::FIN_LN_OPTYPE_DIV,         2, _divOpCall      },
     { finLexNode::FIN_LN_OPTYPE_POSITIVE,    1, _pstvOpCall     },
     { finLexNode::FIN_LN_OPTYPE_NEGATIVE,    1, _ngtvOpCall     },
-    { finLexNode::FIN_LN_OPTYPE_ACCUMLT,     1, NULL            },
-    { finLexNode::FIN_LN_OPTYPE_ACCUMLT_2,   1, NULL            },
+    { finLexNode::FIN_LN_OPTYPE_ACCUMLT,     1, _psAccumOpCall  },
+    { finLexNode::FIN_LN_OPTYPE_ACCUMLT_2,   1, _prAccumOpCall  },
     { finLexNode::FIN_LN_OPTYPE_MOD,         2, _modOpCall      },
     { finLexNode::FIN_LN_OPTYPE_POWER,       2, _powOpCall      },
     { finLexNode::FIN_LN_OPTYPE_LET,         2, _letOpCall      },
@@ -354,6 +356,50 @@ static finErrorCode _ngtvOpCall(QList<finExecVariable *> *oprands, finExecVariab
     tmpretval->clearLeftValue();
     tmpretval->setWriteProtected();
     *retval = tmpretval;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _psAccumOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    finExecVariable *oprand = oprands->at(0)->getLinkTarget();
+
+    if ( !oprand->isLeftValue() || oprand->isWriteProtected() )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    if ( oprand->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
+        oprand->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        oprand->setNumericValue(0.0);
+    } else if ( oprand->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+
+    finExecVariable *resvar = new finExecVariable();
+    resvar->copyVariableValue(oprand);
+    resvar->clearLeftValue();
+    resvar->setLeftValue();
+
+    oprand->setNumericValue(oprand->getNumericValue() + 1.0);
+    *retval = resvar;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _prAccumOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
+{
+    finExecVariable *oprand = oprands->at(0)->getLinkTarget();
+
+    if ( !oprand->isLeftValue() || oprand->isWriteProtected() )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    if ( oprand->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
+        oprand->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        oprand->setNumericValue(1.0);
+    } else if ( oprand->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+        oprand->setNumericValue(oprand->getNumericValue() + 1.0);
+    } else {
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+
+    *retval = oprand;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

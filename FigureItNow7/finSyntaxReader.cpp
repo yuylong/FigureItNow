@@ -628,7 +628,6 @@ finErrorCode finSyntaxReader::meshArithExpress()
     if ( token0->getType() == finSyntaxNode::FIN_SN_TYPE_SINGLE ) {
         afpcnt1 = 0;
         optoken = token0;
-        oprand2 = new finSyntaxNode();
     } else if ( token0->getType() == finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
         if ( token1->getType() != finSyntaxNode::FIN_SN_TYPE_SINGLE )
             return finErrorCodeKits::FIN_EC_READ_ERROR;
@@ -664,9 +663,10 @@ finErrorCode finSyntaxReader::meshArithExpress()
 
     optoken->setType(finSyntaxNode::FIN_SN_TYPE_EXPRESS);
     //optoken->setCommandLexNode(oplex);
-    if ( bfpcnt > 0 )
+    if ( bfpcnt > 0 && oprand1 != NULL )
         optoken->appendSubSyntaxNode(oprand1);
-    optoken->appendSubSyntaxNode(oprand2);
+    if ( afpcnt1 > 0 && oprand2 != NULL )
+        optoken->appendSubSyntaxNode(oprand2);
     this->_syntaxStack.prepend(optoken);
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
