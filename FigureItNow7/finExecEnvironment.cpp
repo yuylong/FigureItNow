@@ -105,7 +105,7 @@ finExecEnvironment::findVariableUntil(const QString &varname, const QString &env
         return retvar;
 
     if ( QString::compare(this->_envName, envname) != 0 && this->_prevEnv != NULL )
-        return this->_prevEnv->findVariable(varname);
+        return this->_prevEnv->findVariableUntil(varname, envname);
     else
         return NULL;
 }
@@ -118,7 +118,23 @@ finExecEnvironment::findVariableUntil(const QString &varname, finExecFunction *b
         return retvar;
 
     if ( blngfunc != this->_belongFunc && this->_prevEnv != NULL )
-        return this->_prevEnv->findVariable(varname);
+        return this->_prevEnv->findVariableUntil(varname, blngfunc);
+    else
+        return NULL;
+}
+
+finExecVariable *
+finExecEnvironment::findVariableUntil(const QString &varname, int envlevel)
+{
+    if ( envlevel < 0 )
+        return NULL;
+
+    finExecVariable *retvar = this->getVariableHere(varname);
+    if ( retvar != NULL )
+        return retvar;
+
+    if ( envlevel > 0 && this->_prevEnv != NULL )
+        return this->_prevEnv->findVariableUntil(varname, envlevel - 1);
     else
         return NULL;
 }
@@ -138,9 +154,7 @@ finExecEnvironment::getFunctionHere(const QString &funcname)
 finExecFunction *
 finExecEnvironment::findFunction(const QString &funcname)
 {
-    finExecFunction *retfunc;
-
-    retfunc = this->getFunctionHere(funcname);
+    finExecFunction *retfunc = this->getFunctionHere(funcname);
     if ( retfunc != NULL )
         return retfunc;
 
@@ -153,14 +167,12 @@ finExecEnvironment::findFunction(const QString &funcname)
 finExecFunction *
 finExecEnvironment::findFunctionUntil(const QString &funcname, const QString &envname)
 {
-    finExecFunction *retfunc;
-
-    retfunc = this->getFunctionHere(funcname);
+    finExecFunction *retfunc = this->getFunctionHere(funcname);
     if ( retfunc != NULL )
         return retfunc;
 
     if ( QString::compare(this->_envName, envname) != 0 && this->_prevEnv != NULL )
-        return this->_prevEnv->findFunction(funcname);
+        return this->_prevEnv->findFunctionUntil(funcname, envname);
     else
         return NULL;
 }
@@ -168,14 +180,27 @@ finExecEnvironment::findFunctionUntil(const QString &funcname, const QString &en
 finExecFunction *
 finExecEnvironment::findFunctionUntil(const QString &funcname, finExecFunction *blngfunc)
 {
-    finExecFunction *retfunc;
-
-    retfunc = this->getFunctionHere(funcname);
+    finExecFunction *retfunc = this->getFunctionHere(funcname);
     if ( retfunc != NULL )
         return retfunc;
 
     if ( blngfunc != this->_belongFunc && this->_prevEnv != NULL )
-        return this->_prevEnv->findFunction(funcname);
+        return this->_prevEnv->findFunctionUntil(funcname, blngfunc);
+    else
+        return NULL;
+}
+
+finExecFunction *finExecEnvironment::findFunctionUntil(const QString &funcname, int envlevel)
+{
+    if ( envlevel < 0 )
+        return NULL;
+
+    finExecFunction *retfunc = this->getFunctionHere(funcname);
+    if ( retfunc != NULL )
+        return retfunc;
+
+    if ( envlevel > 0 && this->_prevEnv != NULL )
+        return this->_prevEnv->findFunctionUntil(funcname, envlevel - 1);
     else
         return NULL;
 }
@@ -337,10 +362,35 @@ finExecEnvironment::getParentEnvironment()
     return this->_prevEnv;
 }
 
+finExecEnvironment *
+finExecEnvironment::getParentEnvironment(int envlevel)
+{
+    if ( envlevel == 0 )
+        return this;
+
+    if ( this->_prevEnv == NULL )
+        return NULL;
+    else
+        return this->getParentEnvironment(envlevel - 1);
+}
+
 finErrorCode finExecEnvironment::setBelongFunction(finExecFunction *func)
 {
     this->_belongFunc = func;
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+int finExecEnvironment::getTotalEnvLevelCountIn(int curlevel)
+{
+    if ( this->_prevEnv == NULL )
+        return curlevel + 1;
+    else
+        return this->_prevEnv->getTotalEnvLevelCountIn(curlevel + 1);
+}
+
+int finExecEnvironment::getTotalEnvironmentLevelCount()
+{
+    return getTotalEnvLevelCountIn(0);
 }
 
 finErrorCode

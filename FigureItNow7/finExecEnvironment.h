@@ -66,6 +66,8 @@ public:
     finExecFunction *findFunctionUntil(const QString &funcname, const QString &envname);
     finExecVariable *findVariableUntil(const QString &varname, finExecFunction *blngfunc);
     finExecFunction *findFunctionUntil(const QString &funcname, finExecFunction *blngfunc);
+    finExecVariable *findVariableUntil(const QString &varname, int envlevel);
+    finExecFunction *findFunctionUntil(const QString &funcname, int evnlevel);
 
     bool isVariableInEnv(finExecVariable *var);
     bool isVariableDirectInEnv(finExecVariable *var);
@@ -88,6 +90,8 @@ public:
 
     finFigureContainer *getFigureContainer();
     finExecEnvironment *getParentEnvironment();
+    finExecEnvironment *getParentEnvironment(int envlevel);
+    int getTotalEnvironmentLevelCount();
 
     finErrorCode setFigureContainer(finFigureContainer *figcontainer);
     finErrorCode setParentEnvironment(finExecEnvironment *prevenv);
@@ -100,6 +104,7 @@ public:
 private:
     int getBelongFuncEvnLevelIn(int curlevel) const;
     int getPrevBelongFuncEnvLevelIn(int level, int curlevel) const;
+    int getTotalEnvLevelCountIn(int curlevel);
 };
 
 #endif // FINEXECENVIRONMENT_H
