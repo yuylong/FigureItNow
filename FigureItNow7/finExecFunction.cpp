@@ -50,7 +50,7 @@ QString finExecFunction::getParameterName(int idx) const
     else if ( idx < this->_paramList.count() )
         return this->_paramList.at(idx);
     else
-        return finExecFunction::_extArgPrefix.append(QString::number(idx - this->_paramList.count()));
+        return finExecFunction::getExtArgName(idx - this->_paramList.count());
 }
 
 bool finExecFunction::isParameterExist(const QString &paramname) const
@@ -274,6 +274,112 @@ finExecFunction::execSysFunction(finExecEnvironment *env, finExecMachine *machin
 QString finExecFunction::getExtArgPrefix()
 {
     return finExecFunction::_extArgPrefix;
+}
+
+QString finExecFunction::getExtArgName(int idx)
+{
+    QString extargname = finExecFunction::_extArgPrefix;
+    extargname.append(QString::number(idx));
+    return extargname;
+}
+
+int finExecFunction::getExtendArgCountHere(finExecEnvironment *env)
+{
+    finExecVariable *extargvar = NULL;
+    int idx = 0;
+
+    do {
+        extargvar = finExecFunction::getExtendArgAt(env, idx);
+        if ( extargvar == NULL )
+            break;
+        idx++;
+    } while ( true );
+    return idx;
+}
+
+finExecVariable *finExecFunction::getExtendArgHereAt(finExecEnvironment *env, int idx)
+{
+    QString extargname = finExecFunction::getExtArgName(idx);
+    finExecVariable *extargvar = env->getVariableHere(extargname);
+    return extargvar;
+}
+
+int finExecFunction::getExtendArgCount(finExecEnvironment *env)
+{
+    int envlevel = env->getBelongFunctionEnvLevelIdx();
+    if ( envlevel < 0 )
+        return -1;
+
+    finExecEnvironment *funcenv = env->getParentEnvironment(envlevel);
+    if ( funcenv == NULL )
+        return -1;
+
+    return finExecFunction::getExtendArgCountHere(funcenv);
+}
+
+finExecVariable *finExecFunction::getExtendArgAt(finExecEnvironment *env, int idx)
+{
+    int envlevel = env->getBelongFunctionEnvLevelIdx();
+    if ( envlevel < 0 )
+        return NULL;
+
+    finExecEnvironment *funcenv = env->getParentEnvironment(envlevel);
+    if ( funcenv == NULL )
+        return NULL;
+
+    return finExecFunction::getExtendArgHereAt(funcenv, idx);
+}
+
+int finExecFunction::getPreviousExtendArgCount(finExecEnvironment *env)
+{
+    int envlevel = env->getPreviousBelongFunctionEnvLevelIdx();
+    if ( envlevel < 0 )
+        return -1;
+
+    finExecEnvironment *funcenv = env->getParentEnvironment(envlevel);
+    if ( funcenv == NULL )
+        return -1;
+
+    return finExecFunction::getExtendArgCountHere(funcenv);
+}
+
+finExecVariable *finExecFunction::getPreviousExtendArgAt(finExecEnvironment *env, int idx)
+{
+    int envlevel = env->getPreviousBelongFunctionEnvLevelIdx();
+    if ( envlevel < 0 )
+        return NULL;
+
+    finExecEnvironment *funcenv = env->getParentEnvironment(envlevel);
+    if ( funcenv == NULL )
+        return NULL;
+
+    return finExecFunction::getExtendArgHereAt(funcenv, idx);
+}
+
+int finExecFunction::getPreviousExtendArgCount(finExecEnvironment *env, int level)
+{
+    int envlevel = env->getPreviousBelongFunctionEnvLevelIdx(level);
+    if ( envlevel < 0 )
+        return -1;
+
+    finExecEnvironment *funcenv = env->getParentEnvironment(envlevel);
+    if ( funcenv == NULL )
+        return -1;
+
+    return finExecFunction::getExtendArgCountHere(funcenv);
+}
+
+finExecVariable *finExecFunction::getPreviousExtendArgAt(finExecEnvironment *env, int idx, int level)
+{
+    int envlevel = env->getPreviousBelongFunctionEnvLevelIdx(level);
+    if ( envlevel < 0 )
+        return NULL;
+
+    finExecEnvironment *funcenv = env->getParentEnvironment(envlevel);
+    if ( funcenv == NULL )
+        return NULL;
+
+    return finExecFunction::getExtendArgHereAt(funcenv, idx);
 }
 
 QList<finExecSysFuncRegItem> finExecFunction::_sysFuncList =

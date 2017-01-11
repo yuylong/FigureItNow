@@ -367,6 +367,8 @@ finExecEnvironment::getParentEnvironment(int envlevel)
 {
     if ( envlevel == 0 )
         return this;
+    else if ( envlevel < 0 )
+        return NULL;
 
     if ( this->_prevEnv == NULL )
         return NULL;
