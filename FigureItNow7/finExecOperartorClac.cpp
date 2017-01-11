@@ -130,6 +130,7 @@ static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
     { finLexNode::FIN_LN_OPTYPE_DESCEND_2,   1, _psDescdOpCall  },
     { finLexNode::FIN_LN_OPTYPE_MOD,         2, _modOpCall      },
     { finLexNode::FIN_LN_OPTYPE_POWER,       2, _powOpCall      },
+    { finLexNode::FIN_LN_OPTYPE_FACTORI,     1, NULL            },
     { finLexNode::FIN_LN_OPTYPE_LET,         2, _letOpCall      },
     { finLexNode::FIN_LN_OPTYPE_EQUAL,       2, _eqOpCall       },
     { finLexNode::FIN_LN_OPTYPE_GRT,         2, _grtOpCall      },

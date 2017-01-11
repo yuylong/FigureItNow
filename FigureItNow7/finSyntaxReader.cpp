@@ -193,6 +193,8 @@ static struct _finSynLexOpTableItem {
                                                         1, 0, finLexNode::FIN_LN_OPTYPE_DESCEND_2 },
     { finLexNode::FIN_LN_OPTYPE_DESCEND_2, 0x2000, _finSynLexOpTableItem::FIN_MD_R2L,
                                                         0, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
+    { finLexNode::FIN_LN_OPTYPE_FACTORI,   0x2200, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 0, finLexNode::FIN_LN_OPTYPE_LOGIC_NOT },
     { finLexNode::FIN_LN_OPTYPE_MUL,       0x1240, _finSynLexOpTableItem::FIN_MD_L2R,
                                                         1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
     { finLexNode::FIN_LN_OPTYPE_DIV,       0x1240, _finSynLexOpTableItem::FIN_MD_L2R,

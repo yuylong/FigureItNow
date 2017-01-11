@@ -586,7 +586,9 @@ finErrorCode finLexReader::tryGetOperator(finLexNode *retnode)
             optype = finLexNode::FIN_LN_OPTYPE_NONEQUAL;
             trypos++;
         } else {
-            optype = finLexNode::FIN_LN_OPTYPE_LOGIC_NOT;
+            // Style 'num!' (Factorial) goes first, because the syntax reader can change it to LOGIC-NOT.
+            optype = finLexNode::FIN_LN_OPTYPE_FACTORI;
+            //optype = finLexNode::FIN_LN_OPTYPE_LOGIC_NOT;
         }
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar('~') ) {
