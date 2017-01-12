@@ -29,10 +29,10 @@ _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *ma
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    x1 = env->findVariable("x1")->getLinkTarget();
-    y1 = env->findVariable("y1")->getLinkTarget();
-    x2 = env->findVariable("x2")->getLinkTarget();
-    y2 = env->findVariable("y2")->getLinkTarget();
+    x1 = finExecVariable::transLinkTarget(env->findVariable("x1"));
+    y1 = finExecVariable::transLinkTarget(env->findVariable("y1"));
+    x2 = finExecVariable::transLinkTarget(env->findVariable("x2"));
+    y2 = finExecVariable::transLinkTarget(env->findVariable("y2"));
 
     if ( x1 == NULL || y1 == NULL || x2 == NULL || y2 == NULL )
         return finErrorCodeKits::FIN_EC_NOT_FOUND;

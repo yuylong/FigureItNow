@@ -489,6 +489,15 @@ err:
     return errcode;
 }
 
+finErrorCode finExecMachine::instExecExprNull(finExecFlowControl *flowctl)
+{
+    finExecVariable *retvar = NULL;
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode
 finExecMachine::instExecExprVar(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
@@ -609,8 +618,6 @@ finExecMachine::instExecExprOper(finSyntaxNode *synnode, finExecEnvironment *env
             goto out;
 
         oprand = flowctl->pickReturnVariable();
-        if ( oprand == NULL )
-            continue;
         oprands.append(oprand);
     }
 
@@ -639,9 +646,13 @@ finExecMachine::instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env,
 {
     printf("Expression!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
-    finLexNodeType lextype = lexnode->getType();
+    finLexNodeType lextype = finLexNode::FIN_LN_TYPE_DUMMY;
+    if ( lexnode != NULL )
+        lextype = lexnode->getType();
 
-    if ( lextype == finLexNode::FIN_LN_TYPE_VARIABLE ) {
+    if ( lextype == finLexNode::FIN_LN_TYPE_DUMMY ) {
+        return this->instExecExprNull(flowctl);
+    } else if ( lextype == finLexNode::FIN_LN_TYPE_VARIABLE ) {
         return this->instExecExprVar(synnode, env, flowctl);
     } else if ( lextype == finLexNode::FIN_LN_TYPE_DECIMAL ) {
         return this->instExecExprNum(synnode, flowctl);

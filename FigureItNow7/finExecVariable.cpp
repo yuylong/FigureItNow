@@ -642,8 +642,12 @@ finExecVariable *finExecVariable::buildNonLeftVariable(finExecVariable *var)
 
 finExecVariable *finExecVariable::buildCopyLeftVariable(finExecVariable *var)
 {
-    if ( var == NULL )
-        return NULL;
+    if ( var == NULL ) {
+        var = new finExecVariable();
+        if ( var == NULL )
+            return NULL;
+        var->clearLeftValue();
+    }
 
     finExecVariable *realvar = var->getLinkTarget();
     if ( realvar != NULL )
@@ -672,8 +676,12 @@ finExecVariable *finExecVariable::buildCopyLeftVariable(finExecVariable *var)
 
 finExecVariable *finExecVariable::buildLinkLeftVariable(finExecVariable *var)
 {
-    if ( var == NULL )
-        return NULL;
+    if ( var == NULL ) {
+        var = new finExecVariable();
+        if ( var == NULL )
+            return NULL;
+        var->clearLeftValue();
+    }
 
     finExecVariable *realvar = var->getLinkTarget();
     if ( realvar != NULL )

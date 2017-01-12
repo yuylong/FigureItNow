@@ -97,6 +97,7 @@ private:
 
     finErrorCode instExecStatIn(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
 
+    finErrorCode instExecExprNull(finExecFlowControl *flowctl);
     finErrorCode instExecExprVar(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
     finErrorCode instExecExprNum(finSyntaxNode *synnode, finExecFlowControl *flowctl);
     finErrorCode instExecExprStr(finSyntaxNode *synnode, finExecFlowControl *flowctl);

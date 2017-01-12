@@ -246,7 +246,9 @@ finExecFunction::appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvir
         return errcode;
 
     flowctl->buildLinkedLeftVar();
-    argvar = flowctl->getReturnVariable();
+    argvar = flowctl->pickReturnVariable();
+    if ( argvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
     argvar->setName(this->getParameterName(idx));
 
     errcode = env->addVariable(argvar);

@@ -183,10 +183,7 @@ static finErrorCode
 _brcktOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     if ( oprands->empty() ) {
-        *retval = new finExecVariable;
-        (*retval)->setType(finExecVariable::FIN_VR_TYPE_NULL);
-        (*retval)->setWriteProtected();
-        (*retval)->clearLeftValue();
+        *retval = NULL;
         return finErrorCodeKits::FIN_EC_NORMAL_WARN;
     }
 
