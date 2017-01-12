@@ -3,6 +3,7 @@
 
 #include <QPaintDevice>
 #include <QPaintEngine>
+#include <QPainter>
 
 #include "finErrorCode.h"
 #include "finGraphPanelBase.h"
@@ -12,6 +13,7 @@ class finGraphPanelQTWidget : public finGraphPanelBase
 protected:
     QPaintDevice *_widget;
     QPaintEngine *_paintEngine;
+    QPainter *_painter;
 
 public:
     finGraphPanelQTWidget();
@@ -23,7 +25,7 @@ public:
     virtual void disposeDrawRes();
 
 protected:
-    QPaintEngine *getPaintEngine();
+    QPainter *getPaintEngine();
     void releasePaintEngine();
 
 

@@ -1,6 +1,8 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
+#include <QPainter>
+
 #include "finExecEnvironment.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -13,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     printf ("init Env (errno=%d)\n", errcode);
     errcode = this->machine.setFigureContainer(&this->figContainer);
     printf ("init Fig Container (errno=%d)\n", errcode);
-
+    this->graphimg = NULL;
 
     ui->setupUi(this);
     fflush(stdout);
@@ -92,4 +94,25 @@ void MainWindow::on_pushButton_3_clicked()
         printf("Syntax Tree is NULL\n");
     this->figContainer.dump();
     fflush(stdout);
+
+    if ( this->graphimg == NULL ) {
+        this->graphimg = new QImage(640, 480, QImage::Format_RGB32);
+    }
+    this->graphPanel.setWidget(this->graphimg);
+    this->graphPanel.drawContainer(&this->figContainer);
+    this->graphimg->save("Hello.jpg");
+
+    this->repaint();
 }
+
+void MainWindow::paintEvent(QPaintEvent *e)
+{
+    QPainter p(this);
+
+    p.eraseRect(400,50,640,480);
+    if ( this->graphimg != NULL ) {
+        p.drawImage(400, 50, *this->graphimg);
+    }
+    //p.drawLine(10,10,100,100);
+}
+

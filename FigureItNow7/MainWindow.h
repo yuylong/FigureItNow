@@ -9,6 +9,7 @@
 #include "finSyntaxReader.h"
 #include "finExecMachine.h"
 #include "finFigureContainer.h"
+#include "finGraphPanelQTWidget.h"
 
 
 namespace Ui {
@@ -39,11 +40,15 @@ private:
      */
     Ui::MainWindow *ui;
 
+    void paintEvent(QPaintEvent *e);
 
     finSyntaxReader *synreader;
 
     finExecMachine machine;
     finFigureContainer figContainer;
+
+    QImage *graphimg;
+    finGraphPanelQTWidget graphPanel;
 };
 
 #endif // MAINWINDOW_H

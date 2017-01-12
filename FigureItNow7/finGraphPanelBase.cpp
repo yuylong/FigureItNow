@@ -35,7 +35,6 @@ finErrorCode finGraphPanelBase::drawContainer(finFigureContainer *figcontainer)
 
         success++;
     }
-
     this->disposeDrawRes();
 
     if ( success == 0 && failed == 0 )
