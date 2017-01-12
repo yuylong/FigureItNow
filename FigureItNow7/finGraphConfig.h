@@ -31,7 +31,6 @@ protected:
 
     QPointF _originPoint;
     double _axisUnitSize;
-
     bool _enableAxisZ;
     double _axisRadZ;
 
@@ -41,6 +40,14 @@ public:
     finGraphConfig();
 
     QSizeF getPanelSize() const;
+    QColor getBackgroundColor() const;
+
+    QPointF getOriginPoint() const;
+    double getAxisUnitSize() const;
+    bool isEnabledAxisZ() const;
+    double getAxisRadZ() const;
+
+    finGraphTrans *getTransform() const;
 
 
 };

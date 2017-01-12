@@ -32,3 +32,33 @@ QSizeF finGraphConfig::getPanelSize() const
 {
     return this->_panelSize;
 }
+
+QColor finGraphConfig::getBackgroundColor() const
+{
+    return this->_bgColor;
+}
+
+QPointF finGraphConfig::getOriginPoint() const
+{
+    return this->_originPoint;
+}
+
+double finGraphConfig::getAxisUnitSize() const
+{
+    return this->_axisUnitSize;
+}
+
+bool finGraphConfig::isEnabledAxisZ() const
+{
+    return this->_enableAxisZ;
+}
+
+double finGraphConfig::getAxisRadZ() const
+{
+    return this->_axisRadZ;
+}
+
+finGraphTrans *finGraphConfig::getTransform() const
+{
+    return this->_transform;
+}
