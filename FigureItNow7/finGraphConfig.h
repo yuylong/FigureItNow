@@ -20,17 +20,29 @@
 
 #include "finErrorCode.h"
 #include "finFigureConfig.h"
+#include "finGraphTrans.h"
 
 class finGraphConfig
 {
 protected:
+    double _unitPixelSize;
     QSizeF _panelSize;
-    QPointF _startPos, _endPos;
-
     QColor _bgColor;
+
+    QPointF _originPoint;
+    double _axisUnitSize;
+
+    bool _enableAxisZ;
+    double _axisRadZ;
+
+    finGraphTrans *_transform;
 
 public:
     finGraphConfig();
+
+    QSizeF getPanelSize() const;
+
+
 };
 
 #endif // FINGRAPHCONFIG_H

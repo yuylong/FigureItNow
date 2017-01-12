@@ -40,7 +40,8 @@ SOURCES += main.cpp\
     finExecFuncMath.cpp \
     finExecFuncString.cpp \
     finExecFuncSystem.cpp \
-    finExecFuncFile.cpp
+    finExecFuncFile.cpp \
+    finGraphTrans.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
@@ -63,6 +64,7 @@ HEADERS  += MainWindow.h \
     finExecMachine.h \
     finFigureConfig.h \
     finExecFlowControl.h \
-    finExecCompiler.h
+    finExecCompiler.h \
+    finGraphTrans.h
 
 FORMS    += MainWindow.ui

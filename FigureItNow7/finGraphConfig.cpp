@@ -13,11 +13,22 @@
 
 #include "finGraphConfig.h"
 
+#include <qmath.h>
+
 finGraphConfig::finGraphConfig()
 {
-    this->_panelSize = QSizeF(640.0, 480.0);
-    this->_startPos = QPointF(-20.0, -15.0);
-    this->_endPos = QPointF(20.0, 15.0);
+    this->_unitPixelSize = 72.0;
+    this->_panelSize = QSizeF(640.0 / this->_unitPixelSize, 480.0 / this->_unitPixelSize);
     this->_bgColor = QColor(Qt::white);
+
+    this->_originPoint = QPointF(320.0 / this->_unitPixelSize, 240.0 / this->_unitPixelSize);
+    this->_axisUnitSize = 20.0;
+
+    this->_enableAxisZ = false;
+    this->_axisRadZ = (-3/4) * M_PI;
 }
 
+QSizeF finGraphConfig::getPanelSize() const
+{
+    return this->_panelSize;
+}
