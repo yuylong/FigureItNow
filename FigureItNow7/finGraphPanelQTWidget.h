@@ -5,8 +5,13 @@
 
 class finGraphPanelQTWidget : public finGraphPanelBase
 {
+protected:
+
+
 public:
     finGraphPanelQTWidget();
+
+    virtual finErrorCode drawLine(finFigureObjectLine *line);
 };
 
 #endif // FINGRAPHPANELQTWIDGET_H

@@ -5,6 +5,8 @@
 
 #include "finErrorCode.h"
 #include "finGraphConfig.h"
+#include "finFigureObject.h"
+#include "finFigureContainer.h"
 
 class finGraphPanelBase
 {
@@ -14,7 +16,13 @@ protected:
 public:
     finGraphPanelBase();
 
-    virtual finErrorCode drawLine(const QPointF &pt1, const QPointF &pt2) = 0;
+    const finGraphConfig *getGraphConfig() const;
+    finGraphConfig *getGraphConfig();
+
+    finErrorCode drawContainer(finFigureContainer *figcontainer);
+    finErrorCode drawOneObject(finFigureObject *obj);
+
+    virtual finErrorCode drawLine(finFigureObjectLine *line) = 0;
 };
 
 #endif // FINGRAPHPANELBASE_H
