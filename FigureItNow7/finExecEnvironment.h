@@ -85,6 +85,8 @@ public:
     int getBelongFunctionEnvLevelIdx() const;
     int getPreviousBelongFunctionEnvLevelIdx() const;
     int getPreviousBelongFunctionEnvLevelIdx(int level) const;
+    int getTotalBelongFunctionLevelCount() const;
+    finErrorCode getBelongFunctionList(QStringList *funcnamelist) const;
 
     finErrorCode setBelongFunction(finExecFunction *func);
 
@@ -104,6 +106,7 @@ public:
 private:
     int getBelongFuncEvnLevelIn(int curlevel) const;
     int getPrevBelongFuncEnvLevelIn(int level, int curlevel) const;
+    int getTotalFucnLevelCountIn(int curlevel) const;
     int getTotalEnvLevelCountIn(int curlevel);
 };
 

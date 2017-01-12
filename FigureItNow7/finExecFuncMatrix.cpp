@@ -29,12 +29,10 @@ _sysfunc_mat_add (finExecFunction *self, finExecEnvironment *env, finExecMachine
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    mat1var = env->findVariable("mat1")->getLinkTarget();
-    mat2var = env->findVariable("mat2")->getLinkTarget();
-
-    if ( mat1var == NULL || mat2var == NULL ) {
+    mat1var = finExecVariable::transLinkTarget(env->findVariable("mat1"));
+    mat2var = finExecVariable::transLinkTarget(env->findVariable("mat2"));
+    if ( mat1var == NULL || mat2var == NULL )
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
-    }
 
     if ( mat1var->getType() != finExecVariable::FIN_VR_TYPE_ARRAY ||
          mat2var->getType() != finExecVariable::FIN_VR_TYPE_ARRAY )

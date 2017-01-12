@@ -34,7 +34,7 @@ static finErrorCode _sysfunc_sin(finExecFunction *self, finExecEnvironment *env,
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    rad = env->findVariable("rad")->getLinkTarget();
+    rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
     if ( rad == NULL )
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
     if ( rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
@@ -62,7 +62,7 @@ static finErrorCode _sysfunc_cos(finExecFunction *self, finExecEnvironment *env,
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    rad = env->findVariable("rad")->getLinkTarget();
+    rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
     if ( rad == NULL )
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
     if ( rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
