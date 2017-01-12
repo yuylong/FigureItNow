@@ -53,6 +53,7 @@ finExecEnvironment::buildChildEnvironment(finExecEnvironment **chdenv)
     if ( newchdenv == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
+    newchdenv->_belongFunc = NULL;
     newchdenv->_figContainer = this->_figContainer;
     newchdenv->_prevEnv = this;
 
