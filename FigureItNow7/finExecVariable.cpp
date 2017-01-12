@@ -749,12 +749,14 @@ void finExecVariable::releaseNonLeftVariable(finExecVariable *var)
         delete var;
 }
 
+static finExecVariable *_sysvar_nil();
 static finExecVariable *_sysvar_pi();
 static finExecVariable *_sysvar_e();
 
 typedef finExecVariable *(*_finSysvarGencall)();
 
 _finSysvarGencall _finSysvarGencallList[] = {
+    _sysvar_nil,
     _sysvar_pi,
     _sysvar_e,
     NULL
@@ -794,12 +796,37 @@ item_bad:
         return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+static finExecVariable *_sysvar_nil()
+{
+    finErrorCode errcode;
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return NULL;
+
+    errcode = retvar->setType(finExecVariable::FIN_VR_TYPE_NULL);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto err;
+
+    errcode = retvar->setLeftValue();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto err;
+
+    errcode = retvar->setWriteProtected();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        goto err;
+
+    return retvar;
+
+err:
+    delete retvar;
+    return NULL;
+}
+
 static inline finExecVariable *
 _sysvar_gen_num_var(const QString &name, double val)
 {
-    finExecVariable *retvar = new finExecVariable();
     finErrorCode errcode;
-
+    finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
         return NULL;
 
