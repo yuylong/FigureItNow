@@ -28,6 +28,11 @@ finGraphConfig::finGraphConfig()
     this->_axisRadZ = (-3/4) * M_PI;
 }
 
+double finGraphConfig::getUnitPixelSize() const
+{
+    return this->_unitPixelSize;
+}
+
 QSizeF finGraphConfig::getPanelSize() const
 {
     return this->_panelSize;
@@ -61,4 +66,29 @@ double finGraphConfig::getAxisRadZ() const
 finGraphTrans *finGraphConfig::getTransform() const
 {
     return this->_transform;
+}
+
+finErrorCode finGraphConfig::setUnitPixelSize(double size)
+{
+    this->_unitPixelSize = size;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::setPanelSize(const QSizeF &size)
+{
+    this->_panelSize = size;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::setPanelSize(double sizex, double sizey)
+{
+    this->_panelSize.setWidth(sizex);
+    this->_panelSize.setHeight(sizey);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::setBackgroundColor(const QColor &color)
+{
+    this->_bgColor = color;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }

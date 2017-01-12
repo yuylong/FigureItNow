@@ -20,8 +20,12 @@ public:
     finGraphConfig *getGraphConfig();
 
     finErrorCode drawContainer(finFigureContainer *figcontainer);
-    finErrorCode drawOneObject(finFigureObject *obj);
 
+    virtual finErrorCode initDrawRes();
+    finErrorCode drawOneObject(finFigureObject *obj);
+    virtual void disposeDrawRes();
+
+protected:
     virtual finErrorCode drawLine(finFigureObjectLine *line) = 0;
 };
 

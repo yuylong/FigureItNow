@@ -39,6 +39,7 @@ protected:
 public:
     finGraphConfig();
 
+    double getUnitPixelSize() const;
     QSizeF getPanelSize() const;
     QColor getBackgroundColor() const;
 
@@ -49,7 +50,10 @@ public:
 
     finGraphTrans *getTransform() const;
 
-
+    finErrorCode setUnitPixelSize(double size);
+    finErrorCode setPanelSize(const QSizeF &size);
+    finErrorCode setPanelSize(double sizex, double sizey);
+    finErrorCode setBackgroundColor(const QColor &color);
 };
 
 #endif // FINGRAPHCONFIG_H

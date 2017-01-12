@@ -2,7 +2,7 @@
 
 finGraphPanelBase::finGraphPanelBase()
 {
-
+    /* Do Nothing. */
 }
 
 const finGraphConfig *finGraphPanelBase::getGraphConfig() const
@@ -20,6 +20,10 @@ finErrorCode finGraphPanelBase::drawContainer(finFigureContainer *figcontainer)
     finErrorCode errcode;
     int failed = 0, success = 0;
 
+    errcode = this->initDrawRes();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
     for ( int i = 0; i < figcontainer->getFigureObjectCount(); i++ ) {
         finFigureObject *figobj = figcontainer->getFigureObjectAt(i);
 
@@ -31,6 +35,8 @@ finErrorCode finGraphPanelBase::drawContainer(finFigureContainer *figcontainer)
 
         success++;
     }
+
+    this->disposeDrawRes();
 
     if ( success == 0 && failed == 0 )
         return finErrorCodeKits::FIN_EC_REACH_BOTTOM;
@@ -57,4 +63,14 @@ finErrorCode finGraphPanelBase::drawOneObject(finFigureObject *obj)
         break;
     }
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode finGraphPanelBase::initDrawRes()
+{
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+void finGraphPanelBase::disposeDrawRes()
+{
+    return;
 }
