@@ -8,6 +8,8 @@
 #include "finFigureContainer.h"
 
 
+static finErrorCode _sysfunc_clear_fig(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_line(finExecFunction *self, finExecEnvironment *env,
                                   finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env,
@@ -19,6 +21,7 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
 
 
 static finExecSysFuncRegItem _finSysFuncFigureList[] = {
+    { QString("clear_fig"),        QString(""),                  _sysfunc_clear_fig        },
     { QString("line"),             QString("x1,y1,x2,y2"),       _sysfunc_line             },
     { QString("line3d"),           QString("x1,y1,z1,x2,y2,z2"), _sysfunc_line3d           },
     { QString("read_fig_config"),  QString("cfgname"),           _sysfunc_read_fig_config  },
@@ -30,6 +33,20 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
 finErrorCode finExecFunction::registSysFuncFiguring()
 {
     return finExecFunction::registSysFuncFromArray(_finSysFuncFigureList);
+}
+
+static finErrorCode _sysfunc_clear_fig(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    env->getFigureContainer()->clearFigureObjects();
+
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 static finErrorCode

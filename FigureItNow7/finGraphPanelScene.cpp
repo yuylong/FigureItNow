@@ -1,6 +1,7 @@
 #include "finGraphPanelScene.h"
 
 #include <QGraphicsView>
+#include <QGraphicsItem>
 
 
 finGraphPanelScene::finGraphPanelScene()
@@ -24,6 +25,7 @@ finErrorCode finGraphPanelScene::applyGraphConfig()
     if ( this->_scene == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
+    this->clearScene();
     this->_scene->setBackgroundBrush(this->_config.getBackgroundBrush());
     this->_scene->setSceneRect(this->_config.getWholePanelPixelRect());
 
@@ -64,6 +66,20 @@ finErrorCode finGraphPanelScene::drawObject(finFigureObject *obj)
         break;
     }
     return finErrorCodeKits::FIN_EC_UNKNOWN_ERROR;
+}
+
+void finGraphPanelScene::clearScene()
+{
+    if ( this->_scene == NULL )
+        return;
+
+    QList<QGraphicsItem *> items = this->_scene->items();
+    while ( !items.empty() ) {
+        QGraphicsItem *item = items.first();
+        items.removeFirst();
+        this->_scene->removeItem(item);
+        delete item;
+    }
 }
 
 finErrorCode finGraphPanelScene::drawObjLine(finFigureObjectLine *line)

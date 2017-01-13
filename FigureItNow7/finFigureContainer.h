@@ -31,6 +31,7 @@ protected:
 
 public:
     finFigureContainer();
+    ~finFigureContainer();
 
     const finFigureConfig *getFigureConfig() const;
     finFigureConfig *getFigureConfig();
@@ -42,6 +43,8 @@ public:
     finFigureObject *getFigureObjectAt(int idx);
 
     finErrorCode appendFigureObject(finFigureObject *figobj);
+
+    void clearFigureObjects();
 
     void dump() const;
 };

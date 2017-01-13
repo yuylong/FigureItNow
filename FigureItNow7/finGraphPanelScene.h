@@ -24,6 +24,8 @@ public:
     virtual finErrorCode drawObject(finFigureObject *obj);
 
 protected:
+    void clearScene();
+
     finErrorCode drawObjLine(finFigureObjectLine *line);
 
     finErrorCode drawObjLine3D(finFigureObjectLine3D *line3d);
