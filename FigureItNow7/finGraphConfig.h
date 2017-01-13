@@ -36,6 +36,7 @@ protected:
     double _axisUnitSize;
     bool _enableAxisZ;
     double _axisRadZ;
+    double _axisScaleZ;
 
     finGraphTrans *_transform;
 

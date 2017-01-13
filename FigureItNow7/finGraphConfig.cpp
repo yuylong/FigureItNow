@@ -26,6 +26,7 @@ finGraphConfig::finGraphConfig()
 
     this->_enableAxisZ = false;
     this->_axisRadZ = (-3/4) * M_PI;
+    this->_axisScaleZ = 0.618;
 
     this->_transform = NULL;
 }
@@ -75,10 +76,7 @@ QPointF finGraphConfig::getOriginPoint() const
 
 QPointF finGraphConfig::getOriginPixelPoint() const
 {
-    QPointF retpt;
-    retpt.setX(this->_originPoint.x() * this->_unitPixelSize);
-    retpt.setY(this->_originPoint.y() * this->_unitPixelSize);
-    return retpt;
+    return this->_originPoint * this->_unitPixelSize;
 }
 
 double finGraphConfig::getAxisUnitSize() const
@@ -133,7 +131,15 @@ finErrorCode finGraphConfig::setBackgroundColor(const QColor &color)
 
 QPointF finGraphConfig::transformPoint3D(double x, double y, double z)
 {
-    return QPointF();
+    QPointF srcpt(x, y);
+    QPointF zshift(z * this->_axisScaleZ * cos(this->_axisRadZ), z * this->_axisScaleZ * sin(this->_axisRadZ));
+
+    return this->transformPoint(srcpt + zshift);
+}
+
+QPointF finGraphConfig::transformPixelPoint3D(double x, double y, double z)
+{
+    return this->transformPoint3D(x, y, z) * this->_unitPixelSize;
 }
 
 QPointF finGraphConfig::transformPoint(const QPointF &srcpt)
@@ -143,27 +149,21 @@ QPointF finGraphConfig::transformPoint(const QPointF &srcpt)
         midpt = this->_transform->transPoint(srcpt);
     else
         midpt = srcpt;
+    midpt.setY(-midpt.y());
 
-    QPointF retpt;
-    retpt.setX(this->_originPoint.x() + midpt.x() * this->_axisUnitSize);
-    retpt.setY(this->_originPoint.y() - midpt.y() * this->_axisUnitSize);
-    return retpt;
+    return midpt * this->_axisUnitSize + this->_originPoint;
 }
 
 QPointF finGraphConfig::transfromPixelPoint(const QPointF &srcpt)
 {
-    QPointF midpt = this->transformPoint(srcpt);
-    QPointF retpt;
-    retpt.setX(midpt.x() * this->_unitPixelSize);
-    retpt.setY(midpt.y() * this->_unitPixelSize);
-    return retpt;
+    return this->transformPoint(srcpt) * this->_unitPixelSize;
 }
 
 QPointF finGraphConfig::arcTransformPoint(const QPointF &srcpt)
 {
-    QPointF midpt;
-    midpt.setX((srcpt.x() - this->_originPoint.x()) / this->_axisUnitSize);
-    midpt.setX((this->_originPoint.y() - srcpt.y()) / this->_axisUnitSize);
+    QPointF midpt = srcpt;
+    midpt = (midpt - this->_originPoint) / this->_axisUnitSize;
+    midpt.setY(-midpt.y());
 
     if ( this->_transform != NULL && this->_transform->getTransformType() != finGraphTrans::FIN_GT_TYPE_NONE )
         return this->_transform->arcTransPoint(midpt);
@@ -173,9 +173,6 @@ QPointF finGraphConfig::arcTransformPoint(const QPointF &srcpt)
 
 QPointF finGraphConfig::arcTransformPixelPoint(const QPointF &srcpt)
 {
-    QPoint midpt;
-    midpt.setX(srcpt.x() / this->_unitPixelSize);
-    midpt.setY(srcpt.y() / this->_unitPixelSize);
-    return this->arcTransformPoint(midpt);
+    return this->arcTransformPoint(srcpt / this->_unitPixelSize);
 }
 
