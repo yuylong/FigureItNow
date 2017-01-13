@@ -31,6 +31,23 @@ finGraphConfig::finGraphConfig()
     this->_transform = NULL;
 }
 
+finErrorCode finGraphConfig::copyGraphConfig(const finGraphConfig *srccfg)
+{
+    this->_unitPixelSize = srccfg->_unitPixelSize;
+    this->_panelSize = srccfg->_panelSize;
+    this->_bgColor = srccfg->_bgColor;
+
+    this->_originPoint = srccfg->_originPoint;
+    this->_axisUnitSize = srccfg->_axisUnitSize;
+
+    this->_enableAxisZ = srccfg->_enableAxisZ;
+    this->_axisRadZ = srccfg->_axisRadZ;
+    this->_axisScaleZ = srccfg->_axisScaleZ;
+
+    //this->_transform = NULL;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 double finGraphConfig::getUnitPixelSize() const
 {
     return this->_unitPixelSize;

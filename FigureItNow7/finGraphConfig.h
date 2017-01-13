@@ -44,6 +44,8 @@ protected:
 public:
     finGraphConfig();
 
+    finErrorCode copyGraphConfig(const finGraphConfig *srccfg);
+
     double getUnitPixelSize() const;
     QSizeF getPanelSize() const;
     QSizeF getPanelPixelSize() const;

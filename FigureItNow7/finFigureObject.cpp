@@ -164,7 +164,7 @@ finErrorCode finFigureObjectLine3D::setPoint2(double ptx, double pty, double ptz
 
 void finFigureObjectLine3D::dump() const
 {
-    printf(" * Fig Type: line; (%lf, %lf, %lf) -- (%lf, %lf, %lf)\n",
+    printf(" * Fig Type: line3D; (%lf, %lf, %lf) -- (%lf, %lf, %lf)\n",
            this->_pt1.getX(), this->_pt1.getY(), this->_pt1.getZ(),
            this->_pt2.getX(), this->_pt2.getY(), this->_pt2.getZ());
 }

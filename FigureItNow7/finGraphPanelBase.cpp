@@ -15,6 +15,11 @@ finGraphConfig *finGraphPanelBase::getGraphConfig()
     return &this->_config;
 }
 
+finErrorCode finGraphPanelBase::setGraphConfig(const finGraphConfig *cfg)
+{
+    return this->_config.copyGraphConfig(cfg);
+}
+
 finErrorCode finGraphPanelBase::applyGraphConfig()
 {
     return finErrorCodeKits::FIN_EC_NORMAL_WARN;

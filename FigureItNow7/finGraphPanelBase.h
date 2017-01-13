@@ -18,6 +18,7 @@ public:
 
     const finGraphConfig *getGraphConfig() const;
     finGraphConfig *getGraphConfig();
+    finErrorCode setGraphConfig(const finGraphConfig *cfg);
 
     virtual finErrorCode applyGraphConfig();
     virtual finErrorCode drawContainer(finFigureContainer *figcontainer);
