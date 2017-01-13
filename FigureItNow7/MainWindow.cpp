@@ -100,8 +100,6 @@ void MainWindow::on_pushButton_3_clicked()
     }
     this->graphPanel.setWidget(this->graphimg);
     this->graphPanel.drawContainer(&this->figContainer);
-    this->graphimg->save("Hello.jpg");
-
     this->repaint();
 }
 

@@ -27,7 +27,6 @@ SOURCES += main.cpp\
     finExecFunction.cpp \
     finExecEnvironment.cpp \
     finGraphPanelBase.cpp \
-    finGraphPanelQTWidget.cpp \
     finGraphConfig.cpp \
     finFigureContainer.cpp \
     finExecOperartorClac.cpp \
@@ -41,7 +40,9 @@ SOURCES += main.cpp\
     finExecFuncString.cpp \
     finExecFuncSystem.cpp \
     finExecFuncFile.cpp \
-    finGraphTrans.cpp
+    finGraphTrans.cpp \
+    finGraphPanelPainter.cpp \
+    finGraphPanelWidget.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
@@ -57,7 +58,6 @@ HEADERS  += MainWindow.h \
     finExecFunction.h \
     finExecEnvironment.h \
     finGraphPanelBase.h \
-    finGraphPanelQTWidget.h \
     finGraphConfig.h \
     finFigureContainer.h \
     finExecOperartorClac.h \
@@ -65,6 +65,8 @@ HEADERS  += MainWindow.h \
     finFigureConfig.h \
     finExecFlowControl.h \
     finExecCompiler.h \
-    finGraphTrans.h
+    finGraphTrans.h \
+    finGraphPanelPainter.h \
+    finGraphPanelWidget.h
 
 FORMS    += MainWindow.ui

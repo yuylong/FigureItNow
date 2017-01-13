@@ -19,14 +19,8 @@ public:
     const finGraphConfig *getGraphConfig() const;
     finGraphConfig *getGraphConfig();
 
-    finErrorCode drawContainer(finFigureContainer *figcontainer);
-
-    virtual finErrorCode initDrawRes();
-    finErrorCode drawOneObject(finFigureObject *obj);
-    virtual void disposeDrawRes();
-
-protected:
-    virtual finErrorCode drawLine(finFigureObjectLine *line) = 0;
+    virtual finErrorCode drawContainer(finFigureContainer *figcontainer);
+    virtual finErrorCode drawObject(finFigureObject *obj);
 };
 
 #endif // FINGRAPHPANELBASE_H
