@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QGraphicsScene>
 
 #include "finLexNode.h"
 #include "finErrorCode.h"
@@ -46,6 +47,7 @@ private:
 
     finSyntaxReader *synreader;
     finExecMachine machine;
+    QGraphicsScene scene;
 };
 
 #endif // MAINWINDOW_H

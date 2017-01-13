@@ -22,7 +22,7 @@ finErrorCode finGraphPanelScene::applyGraphConfig()
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     this->_scene->setBackgroundBrush(this->_config.getBackgroundBrush());
-    //this->_scene->setSceneRect();
+    this->_scene->setSceneRect(this->_config.getWholePanelPixelRect());
 }
 
 finErrorCode finGraphPanelScene::drawContainer(finFigureContainer *figcontainer)

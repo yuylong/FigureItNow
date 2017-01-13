@@ -4,6 +4,7 @@
 #include <QPainter>
 
 #include "finExecEnvironment.h"
+#include "finGraphPanelScene.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,7 +18,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->figui = new finUiFigureWidget(this);
     this->figui->setObjectName("FigureContainer");
-    this->figui->setGeometry(QRect(400, 50, 640, 480));
+    this->figui->setGeometry(QRect(820, 50, 640, 480));
+    ui->graphicsView->setScene(&this->scene);
 
     errcode = this->machine.setFigureContainer(this->figui->getFigureContainer());
     printf ("init Fig Container (errno=%d)\n", errcode);
@@ -100,10 +102,15 @@ void MainWindow::on_pushButton_3_clicked()
     this->figui->getFigureContainer()->dump();
     fflush(stdout);
 
-    this->figui->repaint();
+    finGraphPanelScene gp;
+    gp.setScene(&this->scene);
+    gp.drawContainer(this->figui->getFigureContainer());
+
+    this->repaint();
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)
 {
+    e->accept();
 }
 
