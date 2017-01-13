@@ -10,6 +10,7 @@
 #include "finExecMachine.h"
 #include "finFigureContainer.h"
 #include "finGraphPanelWidget.h"
+#include "finUiFigureWidget.h"
 
 
 namespace Ui {
@@ -39,16 +40,12 @@ private:
      * \brief ui
      */
     Ui::MainWindow *ui;
+    finUiFigureWidget *figui;
 
     void paintEvent(QPaintEvent *e);
 
     finSyntaxReader *synreader;
-
     finExecMachine machine;
-    finFigureContainer figContainer;
-
-    QImage *graphimg;
-    finGraphPanelWidget graphPanel;
 };
 
 #endif // MAINWINDOW_H
