@@ -43,12 +43,14 @@ public:
     QFont getFont() const;
 
     double getDotSize() const;
+    QColor getBorderColor() const;
 
     finErrorCode setBorderPen(const QPen &pen);
     finErrorCode setFillBrush(const QBrush &brush);
     finErrorCode setFont(const QFont &font);
 
     finErrorCode setDotSize(double size);
+    finErrorCode setBorderColor(const QColor &color);
 
     static finFigureConfig *getDefaultFigureConfig();
     static finErrorCode releaseDefaultFigureConfig();
