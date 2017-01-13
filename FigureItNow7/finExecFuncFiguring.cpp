@@ -12,14 +12,20 @@ static finErrorCode _sysfunc_line(finExecFunction *self, finExecEnvironment *env
                                   finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvironment *env,
+                                             finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvironment *env,
+                                              finExecMachine *machine, finExecFlowControl *flowctl);
+
 
 static finExecSysFuncRegItem _finSysFuncFigureList[] = {
-    { QString("line"),    QString("x1,y1,x2,y2"),       _sysfunc_line    },
-    { QString("line3d"),  QString("x1,y1,z1,x2,y2,z2"), _sysfunc_line3d  },
+    { QString("line"),             QString("x1,y1,x2,y2"),       _sysfunc_line             },
+    { QString("line3d"),           QString("x1,y1,z1,x2,y2,z2"), _sysfunc_line3d           },
+    { QString("read_fig_config"),  QString("cfgname"),           _sysfunc_read_fig_config  },
+    { QString("write_fig_config"), QString("cfgname,value"),     _sysfunc_write_fig_config },
 
     { QString(), QString(), NULL }
 };
-
 
 finErrorCode finExecFunction::registSysFuncFiguring()
 {
@@ -104,6 +110,82 @@ _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env, finExecMachine *
         delete foline3d;
         return errcode;
     }
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvironment *env,
+                                             finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *cfgnamevar, *cfgvalue;
+    finFigureConfig *figconfig;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    figconfig = env->getFigureContainer()->getFigureConfig();
+    if ( figconfig == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    cfgnamevar = finExecVariable::transLinkTarget(env->findVariable("cfgname"));
+    if ( cfgnamevar == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    if ( cfgnamevar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    cfgvalue = new finExecVariable();
+    if ( cfgvalue == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    QString cfgname = cfgnamevar->getStringValue();
+    if ( QString::compare(cfgname, "dot_size") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(figconfig->getDotSize());
+    } else {
+        delete cfgvalue;
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+
+    cfgvalue->setWriteProtected();
+    cfgvalue->clearLeftValue();
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(cfgvalue);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvironment *env,
+                                              finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *cfgnamevar, *cfgvalue;
+    finFigureConfig *figconfig;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    figconfig = env->getFigureContainer()->getFigureConfig();
+    if ( figconfig == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    cfgnamevar = finExecVariable::transLinkTarget(env->findVariable("cfgname"));
+    cfgvalue = finExecVariable::transLinkTarget(env->findVariable("value"));
+    if ( cfgnamevar == NULL || cfgvalue == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    if ( cfgnamevar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    QString cfgname = cfgnamevar->getStringValue();
+    if ( QString::compare(cfgname, "dot_size") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        figconfig->setDotSize(cfgvalue->getNumericValue());
+    } else {
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+
     flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

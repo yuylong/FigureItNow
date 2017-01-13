@@ -36,6 +36,11 @@ QFont finFigureConfig::getFont() const
     return this->_font;
 }
 
+double finFigureConfig::getDotSize() const
+{
+    return this->_borderPen.width();
+}
+
 finErrorCode finFigureConfig::setBorderPen(const QPen &pen)
 {
     this->_borderPen = pen;
@@ -51,6 +56,15 @@ finErrorCode finFigureConfig::setFillBrush(const QBrush &brush)
 finErrorCode finFigureConfig::setFont(const QFont &font)
 {
     this->_font = font;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setDotSize(double size)
+{
+    if ( size <= 0.0 )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    this->_borderPen.setWidthF(size);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

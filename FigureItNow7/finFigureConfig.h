@@ -42,9 +42,13 @@ public:
     QBrush getFillBrush() const;
     QFont getFont() const;
 
+    double getDotSize() const;
+
     finErrorCode setBorderPen(const QPen &pen);
     finErrorCode setFillBrush(const QBrush &brush);
     finErrorCode setFont(const QFont &font);
+
+    finErrorCode setDotSize(double size);
 
     static finFigureConfig *getDefaultFigureConfig();
     static finErrorCode releaseDefaultFigureConfig();
