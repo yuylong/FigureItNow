@@ -17,6 +17,8 @@
 #include <QSizeF>
 #include <QPointF>
 #include <QColor>
+#include <QRect>
+#include <QBrush>
 
 #include "finErrorCode.h"
 #include "finFigureConfig.h"
@@ -41,7 +43,12 @@ public:
 
     double getUnitPixelSize() const;
     QSizeF getPanelSize() const;
+    QSizeF getPanelPixelSize() const;
+    QRectF getWholePanelRect() const;
+    QRectF getWholePanelPixelRect() const;
+
     QColor getBackgroundColor() const;
+    QBrush getBackgroundBrush() const;
 
     QPointF getOriginPoint() const;
     double getAxisUnitSize() const;

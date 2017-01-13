@@ -38,9 +38,32 @@ QSizeF finGraphConfig::getPanelSize() const
     return this->_panelSize;
 }
 
+QSizeF finGraphConfig::getPanelPixelSize() const
+{
+    QSizeF retsize;
+    retsize.setWidth(this->_panelSize.width() * this->_unitPixelSize);
+    retsize.setHeight(this->_panelSize.height() * this->_unitPixelSize);
+    return retsize;
+}
+
+QRectF finGraphConfig::getWholePanelRect() const
+{
+    return QRectF(QPointF(0.0, 0.0), this->getPanelSize());
+}
+
+QRectF finGraphConfig::getWholePanelPixelRect() const
+{
+    return QRectF(QPointF(0.0, 0.0), this->getPanelPixelSize());
+}
+
 QColor finGraphConfig::getBackgroundColor() const
 {
     return this->_bgColor;
+}
+
+QBrush finGraphConfig::getBackgroundBrush() const
+{
+    return QBrush(this->_bgColor, Qt::SolidPattern);
 }
 
 QPointF finGraphConfig::getOriginPoint() const

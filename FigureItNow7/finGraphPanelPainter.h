@@ -21,10 +21,13 @@ public:
     QPainter *getPainter() const;
     finErrorCode setPainter(QPainter *painter);
 
+    virtual finErrorCode applyGraphConfig();
     virtual finErrorCode drawContainer(finFigureContainer *figcontainer);
     virtual finErrorCode drawObject(finFigureObject *obj);
 
 protected:
+    finErrorCode applyFigureConfig(finFigureConfig *cfg);
+
     finErrorCode drawObjLine(finFigureObjectLine *line);
 };
 

@@ -1,5 +1,9 @@
 #include "finGraphPanelPainter.h"
 
+#include <QSizeF>
+#include <QBrush>
+#include <QColor>
+
 finGraphPanelPainter::finGraphPanelPainter()
 {
     this->_painter = NULL;
@@ -41,6 +45,19 @@ finErrorCode finGraphPanelPainter::drawObject(finFigureObject *obj)
         break;
     }
     return finErrorCodeKits::FIN_EC_UNKNOWN_ERROR;
+}
+
+finErrorCode finGraphPanelPainter::applyGraphConfig()
+{
+    this->_painter->setBackground(this->_config.getBackgroundBrush());
+    this->_painter->eraseRect(this->_config.getWholePanelPixelRect());
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphPanelPainter::applyFigureConfig(finFigureConfig *cfg)
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 finErrorCode finGraphPanelPainter::drawObjLine(finFigureObjectLine *line)

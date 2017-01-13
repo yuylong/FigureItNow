@@ -15,10 +15,17 @@ finGraphConfig *finGraphPanelBase::getGraphConfig()
     return &this->_config;
 }
 
+finErrorCode finGraphPanelBase::applyGraphConfig()
+{
+    return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+}
+
 finErrorCode finGraphPanelBase::drawContainer(finFigureContainer *figcontainer)
 {
     finErrorCode errcode;
     int failed = 0, success = 0;
+
+    this->applyGraphConfig();
 
     for ( int i = 0; i < figcontainer->getFigureObjectCount(); i++ ) {
         finFigureObject *figobj = figcontainer->getFigureObjectAt(i);

@@ -21,6 +21,7 @@ public:
     QPaintDevice *getWidget() const;
     finErrorCode setWidget(QPaintDevice *widget);
 
+    virtual finErrorCode applyGraphConfig();
     virtual finErrorCode drawContainer(finFigureContainer *figcontainer);
     virtual finErrorCode drawObject(finFigureObject *obj);
 };
