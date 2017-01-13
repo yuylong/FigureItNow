@@ -26,21 +26,9 @@
 
 class finFigureConfig
 {
-public:
-    enum finFigureEndShape {
-        FIN_ES_ROUND,
-        FIN_ES_RECT_FULL,
-        FIN_ES_RECT_CUT
-    };
-
 protected:
-    QSizeF _dotSize;
-    finFigureEndShape _endShape;
-
-    QColor _borderColor;
-    QColor _fillColor;
-    quint32 _linePattern;
-
+    QPen _borderPen;
+    QBrush _fillBrush;
     QFont _font;
 
     static finFigureConfig *_defFigCfg;
@@ -48,38 +36,19 @@ protected:
 public:
     finFigureConfig();
 
-    QSizeF getDotSize() const;
-    double getDotSizeX() const;
-    double getDotSizeY() const;
-    finFigureEndShape getEndShape() const;
-
-    QColor getBorderColor() const;
-    QColor getFillColor() const;
-    quint32 getLinePattern() const;
+    finErrorCode cloneFigureConfig(finFigureConfig *outcfg) const;
 
     QPen getBorderPen() const;
     QBrush getFillBrush() const;
-
     QFont getFont() const;
 
-    finErrorCode setDotSize(const QSizeF &size);
-    finErrorCode setDotSizeX(double sizex);
-    finErrorCode setDotSizeY(double sizey);
-    finErrorCode setEndShape(finFigureEndShape endshape);
-
-    finErrorCode setBorderColor(const QColor &brcolor);
-    finErrorCode setFillColor(const QColor &filcolor);
-    finErrorCode setLinePattern(quint32 lnpat);
-
+    finErrorCode setBorderPen(const QPen &pen);
+    finErrorCode setFillBrush(const QBrush &brush);
     finErrorCode setFont(const QFont &font);
-
-    finErrorCode cloneFigureConfig(finFigureConfig *outcfg) const;
 
     static finFigureConfig *getDefaultFigureConfig();
     static finErrorCode releaseDefaultFigureConfig();
     static finErrorCode cloneFromDefaultFigureConfig(finFigureConfig *outfig);
 };
-
-typedef finFigureConfig::finFigureEndShape finFigureEndShape;
 
 #endif // FINFIGURECONFIG_H
