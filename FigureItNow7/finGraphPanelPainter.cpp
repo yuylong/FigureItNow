@@ -40,6 +40,10 @@ finErrorCode finGraphPanelPainter::drawObject(finFigureObject *obj)
         return this->drawObjLine((finFigureObjectLine *)obj);
         break;
 
+      case finFigureObject::FIN_FO_TYPE_LINE3D:
+        return this->drawObjLine3D((finFigureObjectLine3D *)obj);
+        break;
+
       default:
         return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
         break;
@@ -66,8 +70,19 @@ finErrorCode finGraphPanelPainter::drawObjLine(finFigureObjectLine *line)
 {
     this->applyFigureConfig(line->getFigureConfig());
 
-    QPointF pt1 = this->_config.transfromPixelPoint(line->getPoint1());
-    QPointF pt2 = this->_config.transfromPixelPoint(line->getPoint2());
+    QPointF pt1 = this->_config.transformPixelPoint(line->getPoint1());
+    QPointF pt2 = this->_config.transformPixelPoint(line->getPoint2());
+    this->_painter->drawLine(pt1, pt2);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphPanelPainter::drawObjLine3D(finFigureObjectLine3D *line3d)
+{
+    this->applyFigureConfig(line3d->getFigureConfig());
+
+    QPointF pt1 = this->_config.transformPixelPoint3D(line3d->getPoint1());
+    QPointF pt2 = this->_config.transformPixelPoint3D(line3d->getPoint2());
     this->_painter->drawLine(pt1, pt2);
 
     return finErrorCodeKits::FIN_EC_SUCCESS;

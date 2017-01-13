@@ -137,9 +137,19 @@ QPointF finGraphConfig::transformPoint3D(double x, double y, double z)
     return this->transformPoint(srcpt + zshift);
 }
 
+QPointF finGraphConfig::transformPoint3D(const finFigurePoint3D &pt)
+{
+    return this->transformPoint3D(pt.getX(), pt.getY(), pt.getZ());
+}
+
 QPointF finGraphConfig::transformPixelPoint3D(double x, double y, double z)
 {
     return this->transformPoint3D(x, y, z) * this->_unitPixelSize;
+}
+
+QPointF finGraphConfig::transformPixelPoint3D(const finFigurePoint3D &pt)
+{
+    return this->transformPixelPoint3D(pt.getX(), pt.getY(), pt.getZ());
 }
 
 QPointF finGraphConfig::transformPoint(const QPointF &srcpt)
@@ -154,7 +164,7 @@ QPointF finGraphConfig::transformPoint(const QPointF &srcpt)
     return midpt * this->_axisUnitSize + this->_originPoint;
 }
 
-QPointF finGraphConfig::transfromPixelPoint(const QPointF &srcpt)
+QPointF finGraphConfig::transformPixelPoint(const QPointF &srcpt)
 {
     return this->transformPoint(srcpt) * this->_unitPixelSize;
 }

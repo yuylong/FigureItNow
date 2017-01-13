@@ -23,6 +23,7 @@
 
 #include "finErrorCode.h"
 #include "finFigureConfig.h"
+#include "finFigurePoint3D.h"
 #include "finGraphTrans.h"
 
 class finGraphConfig
@@ -67,9 +68,11 @@ public:
     finErrorCode setBackgroundColor(const QColor &color);
 
     QPointF transformPoint3D(double x, double y, double z);
+    QPointF transformPoint3D(const finFigurePoint3D &pt);
     QPointF transformPixelPoint3D(double x, double y, double z);
+    QPointF transformPixelPoint3D(const finFigurePoint3D &pt);
     QPointF transformPoint(const QPointF &srcpt);
-    QPointF transfromPixelPoint(const QPointF &srcpt);
+    QPointF transformPixelPoint(const QPointF &srcpt);
     QPointF arcTransformPoint(const QPointF &srcpt);
     QPointF arcTransformPixelPoint(const QPointF &srcpt);
 };

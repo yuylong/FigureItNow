@@ -29,6 +29,8 @@ protected:
     finErrorCode applyFigureConfig(finFigureConfig *cfg);
 
     finErrorCode drawObjLine(finFigureObjectLine *line);
+
+    finErrorCode drawObjLine3D(finFigureObjectLine3D *line3d);
 };
 
 #endif // FINGRAPHPANELPAINTER_H
