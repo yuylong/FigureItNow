@@ -15,7 +15,7 @@ protected:
 public:
     finUiFigureWidget(QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
 
-    const finFigureConfig *getFigureContainer() const;
+    const finFigureContainer *getFigureContainer() const;
     finFigureContainer *getFigureContainer();
 
 protected:

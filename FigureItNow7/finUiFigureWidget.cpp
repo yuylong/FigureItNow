@@ -11,14 +11,14 @@ finUiFigureWidget::finUiFigureWidget(QWidget *parent, Qt::WindowFlags f)
     /* Do Nothing */
 }
 
-const finFigureConfig *finUiFigureWidget::getFigureContainer() const
+const finFigureContainer *finUiFigureWidget::getFigureContainer() const
 {
-    return this->_figcontainer;
+    return &this->_figcontainer;
 }
 
 finFigureContainer *finUiFigureWidget::getFigureContainer()
 {
-    return this->_figcontainer;
+    return &this->_figcontainer;
 }
 
 void finUiFigureWidget::paintEvent(QPaintEvent *e)
@@ -26,7 +26,7 @@ void finUiFigureWidget::paintEvent(QPaintEvent *e)
     finGraphPanelWidget gp;
     gp.setWidget(this);
     gp.setGraphConfig(this->_figcontainer.getGraphConfig());
-    gp.drawContainer(this->_figcontainer);
+    gp.drawContainer(&this->_figcontainer);
 
     e->accept();
 }
