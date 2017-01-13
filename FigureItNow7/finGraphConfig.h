@@ -19,6 +19,7 @@
 #include <QColor>
 #include <QRect>
 #include <QBrush>
+#include <QTransform>
 
 #include "finErrorCode.h"
 #include "finFigureConfig.h"

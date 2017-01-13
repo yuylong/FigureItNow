@@ -62,6 +62,24 @@ quint32 finFigureConfig::getLinePattern() const
     return this->_linePattern;
 }
 
+QPen finFigureConfig::getBorderPen() const
+{
+    QPen retpen;
+    retpen.setColor(this->_borderColor);
+    retpen.setStyle(Qt::SolidLine);
+    retpen.setWidthF(this->_dotSize.width());
+
+    return retpen;
+}
+
+QBrush finFigureConfig::getFillBrush() const
+{
+    QBrush retbrush;
+    retbrush.setColor(this->_fillColor);
+    retbrush.setStyle(Qt::SolidPattern);
+    return retbrush;
+}
+
 QFont finFigureConfig::getFont() const
 {
     return this->_font;

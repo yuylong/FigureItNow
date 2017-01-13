@@ -18,6 +18,8 @@
 #include <QString>
 #include <QSizeF>
 #include <QColor>
+#include <QPen>
+#include <QBrush>
 #include <QFont>
 
 #include "finErrorCode.h"
@@ -54,6 +56,9 @@ public:
     QColor getBorderColor() const;
     QColor getFillColor() const;
     quint32 getLinePattern() const;
+
+    QPen getBorderPen() const;
+    QBrush getFillBrush() const;
 
     QFont getFont() const;
 

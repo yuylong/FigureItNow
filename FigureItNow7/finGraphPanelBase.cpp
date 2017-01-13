@@ -22,6 +22,9 @@ finErrorCode finGraphPanelBase::applyGraphConfig()
 
 finErrorCode finGraphPanelBase::drawContainer(finFigureContainer *figcontainer)
 {
+    if ( figcontainer == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
     finErrorCode errcode;
     int failed = 0, success = 0;
 

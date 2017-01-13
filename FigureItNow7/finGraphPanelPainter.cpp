@@ -52,16 +52,21 @@ finErrorCode finGraphPanelPainter::applyGraphConfig()
     this->_painter->setBackground(this->_config.getBackgroundBrush());
     this->_painter->eraseRect(this->_config.getWholePanelPixelRect());
 
+
+
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finGraphPanelPainter::applyFigureConfig(finFigureConfig *cfg)
 {
+    this->_painter->setPen(cfg->getBorderPen());
+    this->_painter->setBrush(cfg->getFillBrush());
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 finErrorCode finGraphPanelPainter::drawObjLine(finFigureObjectLine *line)
 {
+    this->applyFigureConfig(line->getFigureConfig());
     this->_painter->drawLine(line->getPoint1(), line->getPoint2());
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
