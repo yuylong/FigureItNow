@@ -42,7 +42,8 @@ SOURCES += main.cpp\
     finExecFuncFile.cpp \
     finGraphTrans.cpp \
     finGraphPanelPainter.cpp \
-    finGraphPanelWidget.cpp
+    finGraphPanelWidget.cpp \
+    finFigurePoint3D.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
@@ -67,6 +68,7 @@ HEADERS  += MainWindow.h \
     finExecCompiler.h \
     finGraphTrans.h \
     finGraphPanelPainter.h \
-    finGraphPanelWidget.h
+    finGraphPanelWidget.h \
+    finFigurePoint3D.h
 
 FORMS    += MainWindow.ui

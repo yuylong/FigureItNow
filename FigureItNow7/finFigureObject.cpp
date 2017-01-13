@@ -117,6 +117,58 @@ void finFigureObjectLine::dump() const
            (double)this->_pt1.x(), (double)this->_pt1.y(), (double)this->_pt2.x(), (double)this->_pt2.y());
 }
 
+finFigureObjectLine3D::finFigureObjectLine3D()
+{
+    this->_type = finFigureObject::FIN_FO_TYPE_LINE3D;
+    this->_pt1 = finFigurePoint3D(0.0, 0.0, 0.0);
+    this->_pt2 = finFigurePoint3D(0.0, 0.0, 0.0);
+}
+
+finFigurePoint3D finFigureObjectLine3D::getPoint1() const
+{
+    return this->_pt1;
+}
+
+finFigurePoint3D finFigureObjectLine3D::getPoint2() const
+{
+    return this->_pt2;
+}
+
+finErrorCode finFigureObjectLine3D::setPoint1(const finFigurePoint3D &qpt)
+{
+    this->_pt1 = qpt;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectLine3D::setPoint1(double ptx, double pty, double ptz)
+{
+    this->_pt1.setX(ptx);
+    this->_pt1.setY(pty);
+    this->_pt1.setZ(ptz);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectLine3D::setPoint2(const finFigurePoint3D &qpt)
+{
+    this->_pt2 = qpt;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectLine3D::setPoint2(double ptx, double pty, double ptz)
+{
+    this->_pt2.setX(ptx);
+    this->_pt2.setY(pty);
+    this->_pt2.setZ(ptz);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+void finFigureObjectLine3D::dump() const
+{
+    printf(" * Fig Type: line; (%lf, %lf, %lf) -- (%lf, %lf, %lf)\n",
+           this->_pt1.getX(), this->_pt1.getY(), this->_pt1.getZ(),
+           this->_pt2.getX(), this->_pt2.getY(), this->_pt2.getZ());
+}
+
 finFigureObjectRect::finFigureObjectRect()
 {
     this->_type = finFigureObject::FIN_FO_TYPE_RECT;

@@ -21,6 +21,7 @@
 
 #include "finErrorCode.h"
 #include "finFigureConfig.h"
+#include "finFigurePoint3D.h"
 
 class finFigureObject
 {
@@ -29,6 +30,7 @@ public:
         FIN_FO_TYPE_DUMMY,
         FIN_FO_TYPE_DOT,
         FIN_FO_TYPE_LINE,
+        FIN_FO_TYPE_LINE3D,
         FIN_FO_TYPE_RECT,
         FIN_FO_TYPE_POLYLINE,
         FIN_FO_TYPE_POLYGON,
@@ -91,6 +93,27 @@ public:
 
     virtual void dump() const;
 };
+
+class finFigureObjectLine3D : public finFigureObject
+{
+protected:
+    finFigurePoint3D _pt1, _pt2;
+
+public:
+    finFigureObjectLine3D();
+    virtual ~finFigureObjectLine3D() { return; }
+
+    finFigurePoint3D getPoint1() const;
+    finFigurePoint3D getPoint2() const;
+
+    finErrorCode setPoint1(const finFigurePoint3D &qpt);
+    finErrorCode setPoint1(double ptx, double pty, double ptz);
+    finErrorCode setPoint2(const finFigurePoint3D &qpt);
+    finErrorCode setPoint2(double ptx, double pty, double ptz);
+
+    virtual void dump() const;
+};
+
 
 class finFigureObjectRect : public finFigureObject
 {

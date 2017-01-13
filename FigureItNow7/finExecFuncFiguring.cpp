@@ -4,12 +4,18 @@
 #include "finExecVariable.h"
 #include "finExecEnvironment.h"
 #include "finExecMachine.h"
+#include "finFigureObject.h"
+#include "finFigureContainer.h"
+
 
 static finErrorCode _sysfunc_line(finExecFunction *self, finExecEnvironment *env,
                                   finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env,
+                                    finExecMachine *machine, finExecFlowControl *flowctl);
 
 static finExecSysFuncRegItem _finSysFuncFigureList[] = {
-    { QString("line"),    QString("x1,y1,x2,y2"), _sysfunc_line    },
+    { QString("line"),    QString("x1,y1,x2,y2"),       _sysfunc_line    },
+    { QString("line3d"),  QString("x1,y1,z1,x2,y2,z2"), _sysfunc_line3d  },
 
     { QString(), QString(), NULL }
 };
@@ -58,3 +64,47 @@ _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *ma
     flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+static finErrorCode
+_sysfunc_line3d(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *x1, *y1, *z1, *x2, *y2, *z2;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    x1 = finExecVariable::transLinkTarget(env->findVariable("x1"));
+    y1 = finExecVariable::transLinkTarget(env->findVariable("y1"));
+    z1 = finExecVariable::transLinkTarget(env->findVariable("z1"));
+    x2 = finExecVariable::transLinkTarget(env->findVariable("x2"));
+    y2 = finExecVariable::transLinkTarget(env->findVariable("y2"));
+    z2 = finExecVariable::transLinkTarget(env->findVariable("z2"));
+
+    if ( x1 == NULL || y1 == NULL || z1 == NULL || x2 == NULL || y2 == NULL || z2 == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+
+    if ( x1->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         y1->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         z1->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         x2->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         y2->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         z2->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    finFigureObjectLine3D *foline3d = new finFigureObjectLine3D();
+    if ( foline3d == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    foline3d->setPoint1(x1->getNumericValue(), y1->getNumericValue(), z1->getNumericValue());
+    foline3d->setPoint2(x2->getNumericValue(), y2->getNumericValue(), z2->getNumericValue());
+
+    errcode = env->getFigureContainer()->appendFigureObject(foline3d);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete foline3d;
+        return errcode;
+    }
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
