@@ -22,10 +22,10 @@ finGraphConfig::finGraphConfig()
     this->_bgColor = QColor(Qt::white);
 
     this->_originPoint = QPointF(320.0 / this->_unitPixelSize, 240.0 / this->_unitPixelSize);
-    this->_axisUnitSize = 20.0 / this->_unitPixelSize;
+    this->_axisUnitSize = 40.0 / this->_unitPixelSize;
 
     this->_enableAxisZ = false;
-    this->_axisRadZ = (-3/4) * M_PI;
+    this->_axisRadZ = (-3.0/4.0) * M_PI;
     this->_axisScaleZ = 0.618;
 
     this->_transform = NULL;
