@@ -57,6 +57,8 @@ _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *ma
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     x1 = finExecVariable::transLinkTarget(env->findVariable("x1"));
     y1 = finExecVariable::transLinkTarget(env->findVariable("y1"));
@@ -96,6 +98,8 @@ _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env, finExecMachine *
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     x1 = finExecVariable::transLinkTarget(env->findVariable("x1"));
     y1 = finExecVariable::transLinkTarget(env->findVariable("y1"));
