@@ -52,8 +52,6 @@ finErrorCode finGraphPanelPainter::applyGraphConfig()
     this->_painter->setBackground(this->_config.getBackgroundBrush());
     this->_painter->eraseRect(this->_config.getWholePanelPixelRect());
 
-
-
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -67,6 +65,10 @@ finErrorCode finGraphPanelPainter::applyFigureConfig(finFigureConfig *cfg)
 finErrorCode finGraphPanelPainter::drawObjLine(finFigureObjectLine *line)
 {
     this->applyFigureConfig(line->getFigureConfig());
-    this->_painter->drawLine(line->getPoint1(), line->getPoint2());
+
+    QPointF pt1 = this->_config.transfromPixelPoint(line->getPoint1());
+    QPointF pt2 = this->_config.transfromPixelPoint(line->getPoint2());
+    this->_painter->drawLine(pt1, pt2);
+
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

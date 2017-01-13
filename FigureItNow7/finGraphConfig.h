@@ -52,7 +52,9 @@ public:
     QBrush getBackgroundBrush() const;
 
     QPointF getOriginPoint() const;
+    QPointF getOriginPixelPoint() const;
     double getAxisUnitSize() const;
+    double getAxisUnitPixelSize() const;
     bool isEnabledAxisZ() const;
     double getAxisRadZ() const;
 
@@ -62,6 +64,13 @@ public:
     finErrorCode setPanelSize(const QSizeF &size);
     finErrorCode setPanelSize(double sizex, double sizey);
     finErrorCode setBackgroundColor(const QColor &color);
+
+    QPointF transformPoint3D(double x, double y, double z);
+    QPointF transformPixelPoint3D(double x, double y, double z);
+    QPointF transformPoint(const QPointF &srcpt);
+    QPointF transfromPixelPoint(const QPointF &srcpt);
+    QPointF arcTransformPoint(const QPointF &srcpt);
+    QPointF arcTransformPixelPoint(const QPointF &srcpt);
 };
 
 #endif // FINGRAPHCONFIG_H
