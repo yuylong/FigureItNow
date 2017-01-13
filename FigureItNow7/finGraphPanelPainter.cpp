@@ -55,6 +55,7 @@ finErrorCode finGraphPanelPainter::applyGraphConfig()
 {
     this->_painter->setBackground(this->_config.getBackgroundBrush());
     this->_painter->eraseRect(this->_config.getWholePanelPixelRect());
+    this->_painter->setRenderHints(this->_config.getRenderHints());
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

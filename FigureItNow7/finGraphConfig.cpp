@@ -29,6 +29,8 @@ finGraphConfig::finGraphConfig()
     this->_axisScaleZ = 0.618;
 
     this->_transform = NULL;
+
+    this->_renderHints = (QPainter::Antialiasing | QPainter::TextAntialiasing);
 }
 
 finErrorCode finGraphConfig::copyGraphConfig(const finGraphConfig *srccfg)
@@ -45,6 +47,8 @@ finErrorCode finGraphConfig::copyGraphConfig(const finGraphConfig *srccfg)
     this->_axisScaleZ = srccfg->_axisScaleZ;
 
     //this->_transform = NULL;
+
+    this->_renderHints = srccfg->_renderHints;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -119,6 +123,11 @@ double finGraphConfig::getAxisRadZ() const
 finGraphTrans *finGraphConfig::getTransform() const
 {
     return this->_transform;
+}
+
+QPainter::RenderHints finGraphConfig::getRenderHints() const
+{
+    return this->_renderHints;
 }
 
 finErrorCode finGraphConfig::setUnitPixelSize(double size)

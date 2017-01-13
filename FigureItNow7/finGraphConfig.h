@@ -20,6 +20,7 @@
 #include <QRect>
 #include <QBrush>
 #include <QTransform>
+#include <QPainter>
 
 #include "finErrorCode.h"
 #include "finFigureConfig.h"
@@ -38,8 +39,9 @@ protected:
     bool _enableAxisZ;
     double _axisRadZ;
     double _axisScaleZ;
-
     finGraphTrans *_transform;
+
+    QPainter::RenderHints _renderHints;
 
 public:
     finGraphConfig();
@@ -61,8 +63,9 @@ public:
     double getAxisUnitPixelSize() const;
     bool isEnabledAxisZ() const;
     double getAxisRadZ() const;
-
     finGraphTrans *getTransform() const;
+
+    QPainter::RenderHints getRenderHints() const;
 
     finErrorCode setUnitPixelSize(double size);
     finErrorCode setPanelSize(const QSizeF &size);

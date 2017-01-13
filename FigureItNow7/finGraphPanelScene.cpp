@@ -1,5 +1,8 @@
 #include "finGraphPanelScene.h"
 
+#include <QGraphicsView>
+
+
 finGraphPanelScene::finGraphPanelScene()
 {
     this->_scene = NULL;
@@ -23,6 +26,13 @@ finErrorCode finGraphPanelScene::applyGraphConfig()
 
     this->_scene->setBackgroundBrush(this->_config.getBackgroundBrush());
     this->_scene->setSceneRect(this->_config.getWholePanelPixelRect());
+
+    QList<QGraphicsView *> views = this->_scene->views();
+    for ( int i = 0; i < views.count(); i++ ) {
+        QGraphicsView *view = views.at(i);
+        view->setRenderHints(this->_config.getRenderHints());
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finGraphPanelScene::drawContainer(finFigureContainer *figcontainer)
