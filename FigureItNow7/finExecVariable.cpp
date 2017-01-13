@@ -423,6 +423,22 @@ finErrorCode finExecVariable::unsetLinkTarget()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finExecVariable::readColorValue(QColor *color) const
+{
+    if ( color == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode finExecVariable::setupColorValue(const QColor &color)
+{
+    if ( this->_type != finExecVariable::FIN_VR_TYPE_NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    return finErrorCode::FIN_EC_NON_IMPLEMENT;
+}
+
 finErrorCode finExecVariable::copyVariableValueIn(finExecVariable *srcvar)
 {
     if ( srcvar == NULL )

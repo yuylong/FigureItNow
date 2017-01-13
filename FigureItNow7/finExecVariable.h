@@ -126,6 +126,9 @@ public:
     finErrorCode setLinkTarget(finExecVariable *target);
     finErrorCode unsetLinkTarget();
 
+    finErrorCode readColorValue(QColor *color) const;
+    finErrorCode setupColorValue(const QColor &color);
+
     bool isSameName(const QString &name) const;
     bool isSameValue(finExecVariable *var);
 
