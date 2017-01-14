@@ -431,7 +431,7 @@ finErrorCode finExecVariable::readColorValue(QColor *color) const
     int arylen = 0;
     if ( !this->isNumericArray(&arylen) )
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
-    if ( arylen != 3 || arylen != 4 )
+    if ( arylen != 3 && arylen != 4 )
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
     double red, green, blue;
