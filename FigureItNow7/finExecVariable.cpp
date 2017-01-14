@@ -428,7 +428,28 @@ finErrorCode finExecVariable::readColorValue(QColor *color) const
     if ( color == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    int arylen = 0;
+    if ( !this->isNumericArray(&arylen) )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    if ( arylen != 3 || arylen != 4 )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    double red, green, blue;
+    red = this->getVariableItemAt(0)->getNumericValue();
+    green = this->getVariableItemAt(1)->getNumericValue();
+    blue = this->getVariableItemAt(2)->getNumericValue();
+    red = (red < 0.0 ? 0.0 : (red > 1.0 ? 1.0 : red));
+    green = (green < 0.0 ? 0.0 : (green > 1.0 ? 1.0 : green));
+    blue = (blue < 0.0 ? 0.0 : (blue > 1.0 ? 1.0 : blue));
+
+    double alpha = 1.0;
+    if ( arylen == 4 ) {
+        alpha = this->getVariableItemAt(3)->getNumericValue();
+        alpha = (alpha < 0.0 ? 0.0 : (alpha > 1.0 ? 1.0 : alpha));
+    }
+
+    color->setRgbF(red, green, blue, alpha);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finExecVariable::setupColorValue(const QColor &color)
@@ -436,7 +457,27 @@ finErrorCode finExecVariable::setupColorValue(const QColor &color)
     if ( this->_type != finExecVariable::FIN_VR_TYPE_NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
-    return finErrorCode::FIN_EC_NON_IMPLEMENT;
+    finErrorCode errcode = this->preallocArrayLength(4);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    finExecVariable *subvar = this->getVariableItemAt(0);
+    subvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    subvar->setNumericValue(color.redF());
+
+    subvar = this->getVariableItemAt(1);
+    subvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    subvar->setNumericValue(color.greenF());
+
+    subvar = this->getVariableItemAt(2);
+    subvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    subvar->setNumericValue(color.blueF());
+
+    subvar = this->getVariableItemAt(3);
+    subvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    subvar->setNumericValue(color.alphaF());
+
+    return finErrorCode::FIN_EC_SUCCESS;
 }
 
 finErrorCode finExecVariable::copyVariableValueIn(finExecVariable *srcvar)
