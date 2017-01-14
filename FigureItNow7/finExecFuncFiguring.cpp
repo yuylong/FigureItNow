@@ -14,6 +14,8 @@ static finErrorCode _sysfunc_line(finExecFunction *self, finExecEnvironment *env
                                   finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_named_color(finExecFunction *self, finExecEnvironment *env,
+                                         finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvironment *env,
                                              finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvironment *env,
@@ -24,6 +26,7 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("clear_fig"),        QString(""),                  _sysfunc_clear_fig        },
     { QString("line"),             QString("x1,y1,x2,y2"),       _sysfunc_line             },
     { QString("line3d"),           QString("x1,y1,z1,x2,y2,z2"), _sysfunc_line3d           },
+    { QString("named_color"),      QString("colorname"),         _sysfunc_named_color      },
     { QString("read_fig_config"),  QString("cfgname"),           _sysfunc_read_fig_config  },
     { QString("write_fig_config"), QString("cfgname,value"),     _sysfunc_write_fig_config },
 
@@ -135,9 +138,45 @@ _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env, finExecMachine *
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+static finErrorCode _sysfunc_named_color(finExecFunction *self, finExecEnvironment *env,
+                                         finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    finExecVariable *colornamevar = finExecVariable::transLinkTarget(env->findVariable("colorname"));
+    if ( colornamevar == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    if ( colornamevar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    QString colorname = colornamevar->getStringValue();
+    if ( !QColor::isValidColor(colorname) )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    QColor color = QColor(colorname);
+    //if ( !color.isValid() )
+    //    return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    finExecVariable *retvar = new finExecVariable();
+    if (retvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    finErrorCode errcode = retvar->setupColorValue(color);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvironment *env,
                                              finExecMachine *machine, finExecFlowControl *flowctl)
 {
+    finErrorCode errcode;
     finExecVariable *cfgnamevar, *cfgvalue;
     finFigureConfig *figconfig;
 
@@ -165,7 +204,11 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
         cfgvalue->setNumericValue(figconfig->getDotSize());
     } else if ( QString::compare(cfgname, "border_color") == 0 ) {
-        cfgvalue->setupColorValue(figconfig->getBorderColor());
+        errcode = cfgvalue->setupColorValue(figconfig->getBorderColor());
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            delete cfgvalue;
+            return errcode;
+        }
     } else {
         delete cfgvalue;
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
