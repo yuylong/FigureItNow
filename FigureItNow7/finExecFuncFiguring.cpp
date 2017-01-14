@@ -164,6 +164,8 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
     if ( QString::compare(cfgname, "dot_size") == 0 ) {
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
         cfgvalue->setNumericValue(figconfig->getDotSize());
+    } else if ( QString::compare(cfgname, "border_color") == 0 ) {
+        cfgvalue->setupColorValue(figconfig->getBorderColor());
     } else {
         delete cfgvalue;
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
@@ -179,6 +181,7 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
 static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvironment *env,
                                               finExecMachine *machine, finExecFlowControl *flowctl)
 {
+    finErrorCode errcode;
     finExecVariable *cfgnamevar, *cfgvalue;
     finFigureConfig *figconfig;
 
@@ -203,6 +206,12 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
             return finErrorCodeKits::FIN_EC_INVALID_PARAM;
         figconfig->setDotSize(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "border_color") == 0 ) {
+        QColor color;
+        errcode = cfgvalue->readColorValue(&color);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+        figconfig->setBorderColor(color);
     } else {
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
     }
