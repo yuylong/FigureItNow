@@ -44,6 +44,7 @@ public:
 
     double getDotSize() const;
     QColor getBorderColor() const;
+    QColor getFillColor() const;
 
     finErrorCode setBorderPen(const QPen &pen);
     finErrorCode setFillBrush(const QBrush &brush);
@@ -51,6 +52,7 @@ public:
 
     finErrorCode setDotSize(double size);
     finErrorCode setBorderColor(const QColor &color);
+    finErrorCode setFillColor(const QColor &color);
 
     static finFigureConfig *getDefaultFigureConfig();
     static finErrorCode releaseDefaultFigureConfig();

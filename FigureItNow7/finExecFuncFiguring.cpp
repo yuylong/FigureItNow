@@ -209,6 +209,12 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
             delete cfgvalue;
             return errcode;
         }
+    } else if ( QString::compare(cfgname, "fill_color") == 0 ) {
+        errcode = cfgvalue->setupColorValue(figconfig->getFillColor());
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            delete cfgvalue;
+            return errcode;
+        }
     } else {
         delete cfgvalue;
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
@@ -255,6 +261,12 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
         figconfig->setBorderColor(color);
+    } else if ( QString::compare(cfgname, "fill_color") == 0 ) {
+        QColor color;
+        errcode = cfgvalue->readColorValue(&color);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+        figconfig->setFillColor(color);
     } else {
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
     }

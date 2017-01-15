@@ -46,6 +46,11 @@ QColor finFigureConfig::getBorderColor() const
     return this->_borderPen.color();
 }
 
+QColor finFigureConfig::getFillColor() const
+{
+    return this->_fillBrush.color();
+}
+
 finErrorCode finFigureConfig::setBorderPen(const QPen &pen)
 {
     this->_borderPen = pen;
@@ -76,6 +81,12 @@ finErrorCode finFigureConfig::setDotSize(double size)
 finErrorCode finFigureConfig::setBorderColor(const QColor &color)
 {
     this->_borderPen.setColor(color);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setFillColor(const QColor &color)
+{
+    this->_fillBrush.setColor(color);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
