@@ -116,14 +116,15 @@ static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env
     h = finExecVariable::transLinkTarget(env->findVariable("h"));
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
 
-    if ( cx == NULL || cy == NULL || w == NULL || h == NULL || rad == NULL )
+    if ( cx == NULL || cy == NULL || w == NULL || h == NULL )
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
 
     if ( cx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          cy->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          w->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          h->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+         (rad != NULL && rad->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
+                         rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) )
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
     finFigureObjectRect *forect = new finFigureObjectRect();
@@ -132,7 +133,10 @@ static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env
 
     forect->setCenterPoint(cx->getNumericValue(), cy->getNumericValue());
     forect->setSize(w->getNumericValue(), h->getNumericValue());
-    forect->setRadian(rad->getNumericValue());
+    if ( rad != NULL && rad->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC )
+        forect->setRadian(rad->getNumericValue());
+    else
+        forect->setRadian(0.0);
 
     errcode = env->getFigureContainer()->appendFigureObject(forect);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
