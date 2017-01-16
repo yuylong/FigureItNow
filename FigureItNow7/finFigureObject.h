@@ -18,10 +18,12 @@
 #include <QList>
 #include <QPointF>
 #include <QSizeF>
+#include <QPainterPath>
 
 #include "finErrorCode.h"
 #include "finFigureConfig.h"
 #include "finFigurePoint3D.h"
+#include "finGraphConfig.h"
 
 class finFigureObject
 {
@@ -52,6 +54,9 @@ public:
     const finFigureConfig *getFigureConfig() const;
     finFigureConfig *getFigureConfig();
 
+    virtual QPainterPath getPath();
+    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+
     virtual void dump() const;
 };
 
@@ -70,6 +75,9 @@ public:
 
     finErrorCode setPoint(const QPointF &qpt);
     finErrorCode setPoint(double ptx, double pty);
+
+    virtual QPainterPath getPath();
+    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
 
     virtual void dump() const;
 };
@@ -91,6 +99,9 @@ public:
     finErrorCode setPoint2(const QPointF &qpt);
     finErrorCode setPoint2(double ptx, double pty);
 
+    virtual QPainterPath getPath();
+    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+
     virtual void dump() const;
 };
 
@@ -111,6 +122,8 @@ public:
     finErrorCode setPoint2(const finFigurePoint3D &qpt);
     finErrorCode setPoint2(double ptx, double pty, double ptz);
 
+    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+
     virtual void dump() const;
 };
 
@@ -121,6 +134,7 @@ protected:
     QPointF _center;
     QSizeF _size;
     double _radian;
+    double _sinrad, _cosrad;
 
 public:
     finFigureObjectRect();
@@ -129,10 +143,17 @@ public:
     QPointF getCenterPoint() const;
     QSizeF getSize() const;
     double getRadian() const;
+    QPointF getUpperLeftPoint() const;
+    QPointF getUpperRightPoint() const;
+    QPointF getLowerLeftPoint() const;
+    QPointF getLowerRightPoint() const;
 
     finErrorCode setCenterPoint(const QPointF &ctrpt);
     finErrorCode setSize(const QSizeF &size);
     finErrorCode setRadian(double rad);
+
+    virtual QPainterPath getPath();
+    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
 
     virtual void dump() const;
 };

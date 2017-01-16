@@ -14,6 +14,8 @@
 
 #include "finFigureObject.h"
 
+#include <qmath.h>
+
 finFigureObject::finFigureObject()
 {
     this->_type = finFigureObject::FIN_FO_TYPE_DUMMY;
@@ -32,6 +34,19 @@ const finFigureConfig *finFigureObject::getFigureConfig() const
 finFigureConfig *finFigureObject::getFigureConfig()
 {
     return &this->_figCfg;
+}
+
+QPainterPath finFigureObject::getPath()
+{
+    return QPainterPath();
+}
+
+QPainterPath finFigureObject::getPixelPath(finGraphConfig *cfg)
+{
+    if ( cfg == NULL )
+        return QPainterPath();
+
+    return QPainterPath();
 }
 
 void finFigureObject::dump() const
@@ -61,6 +76,25 @@ finErrorCode finFigureObjectDot::setPoint(double ptx, double pty)
     this->_point.setX(ptx);
     this->_point.setY(pty);
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+QPainterPath finFigureObjectDot::getPath()
+{
+    QPainterPath path;
+    path.moveTo(this->_point);
+    path.lineTo(this->_point);
+    return path;
+}
+
+QPainterPath finFigureObjectDot::getPixelPath(finGraphConfig *cfg)
+{
+    if ( cfg == NULL )
+        return QPainterPath();
+
+    QPainterPath path;
+    path.moveTo(cfg->transformPixelPoint(this->_point));
+    path.lineTo(cfg->transformPixelPoint(this->_point));
+    return path;
 }
 
 void finFigureObjectDot::dump() const
@@ -109,6 +143,25 @@ finErrorCode finFigureObjectLine::setPoint2(double ptx, double pty)
     this->_pt2.setX(ptx);
     this->_pt2.setY(pty);
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+QPainterPath finFigureObjectLine::getPath()
+{
+    QPainterPath path;
+    path.moveTo(this->_pt1);
+    path.lineTo(this->_pt2);
+    return path;
+}
+
+QPainterPath finFigureObjectLine::getPixelPath(finGraphConfig *cfg)
+{
+    if ( cfg == NULL )
+        return QPainterPath();
+
+    QPainterPath path;
+    path.moveTo(cfg->transformPixelPoint(this->_pt1));
+    path.lineTo(cfg->transformPixelPoint(this->_pt2));
+    return path;
 }
 
 void finFigureObjectLine::dump() const
@@ -162,6 +215,17 @@ finErrorCode finFigureObjectLine3D::setPoint2(double ptx, double pty, double ptz
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+QPainterPath finFigureObjectLine3D::getPixelPath(finGraphConfig *cfg)
+{
+    if ( cfg == NULL )
+        return QPainterPath();
+
+    QPainterPath path;
+    path.moveTo(cfg->transformPixelPoint3D(this->_pt1));
+    path.lineTo(cfg->transformPixelPoint3D(this->_pt2));
+    return path;
+}
+
 void finFigureObjectLine3D::dump() const
 {
     printf(" * Fig Type: line3D; (%lf, %lf, %lf) -- (%lf, %lf, %lf)\n",
@@ -192,6 +256,38 @@ double finFigureObjectRect::getRadian() const
     return this->_radian;
 }
 
+QPointF finFigureObjectRect::getUpperLeftPoint() const
+{
+    QPointF shiftpt = QPointF(-this->_size.width() / 2.0, this->_size.height() / 2.0);
+    QPointF relpt = QPointF(shiftpt.x() * this->_cosrad + shiftpt.y() * this->_sinrad,
+                            shiftpt.x() * this->_sinrad - shiftpt.y() * this->_cosrad);
+    return this->_center + relpt;
+}
+
+QPointF finFigureObjectRect::getUpperRightPoint() const
+{
+    QPointF shiftpt = QPointF(this->_size.width() / 2.0, this->_size.height() / 2.0);
+    QPointF relpt = QPointF(shiftpt.x() * this->_cosrad + shiftpt.y() * this->_sinrad,
+                            shiftpt.x() * this->_sinrad - shiftpt.y() * this->_cosrad);
+    return this->_center + relpt;
+}
+
+QPointF finFigureObjectRect::getLowerLeftPoint() const
+{
+    QPointF shiftpt = QPointF(-this->_size.width() / 2.0, -this->_size.height() / 2.0);
+    QPointF relpt = QPointF(shiftpt.x() * this->_cosrad + shiftpt.y() * this->_sinrad,
+                            shiftpt.x() * this->_sinrad - shiftpt.y() * this->_cosrad);
+    return this->_center + relpt;
+}
+
+QPointF finFigureObjectRect::getLowerRightPoint() const
+{
+    QPointF shiftpt = QPointF(this->_size.width() / 2.0, -this->_size.height() / 2.0);
+    QPointF relpt = QPointF(shiftpt.x() * this->_cosrad + shiftpt.y() * this->_sinrad,
+                            shiftpt.x() * this->_sinrad - shiftpt.y() * this->_cosrad);
+    return this->_center + relpt;
+}
+
 finErrorCode finFigureObjectRect::setCenterPoint(const QPointF &ctrpt)
 {
     this->_center = ctrpt;
@@ -206,8 +302,42 @@ finErrorCode finFigureObjectRect::setSize(const QSizeF &size)
 
 finErrorCode finFigureObjectRect::setRadian(double rad)
 {
+    // Make the degree falling into the range (-90, 90].
+    rad = rad - floor(rad / M_PI) * M_PI;
+    if ( rad > M_PI / 2 )
+        rad = rad - M_PI;
+
     this->_radian = rad;
+    this->_sinrad = sin(rad);
+    this->_cosrad = cos(rad);
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+QPainterPath finFigureObjectRect::getPath()
+{
+    QPainterPath path;
+    QPointF startptr = this->getUpperLeftPoint();
+    path.moveTo(startptr);
+    path.lineTo(this->getUpperRightPoint());
+    path.lineTo(this->getLowerRightPoint());
+    path.lineTo(this->getLowerLeftPoint());
+    path.lineTo(startptr);
+    return path;
+}
+
+QPainterPath finFigureObjectRect::getPixelPath(finGraphConfig *cfg)
+{
+    if ( cfg == NULL )
+        return QPainterPath();
+
+    QPainterPath path;
+    QPointF startptr = cfg->transformPixelPoint(this->getUpperLeftPoint());
+    path.moveTo(startptr);
+    path.lineTo(cfg->transformPixelPoint(this->getUpperRightPoint()));
+    path.lineTo(cfg->transformPixelPoint(this->getLowerRightPoint()));
+    path.lineTo(cfg->transformPixelPoint(this->getLowerLeftPoint()));
+    path.lineTo(startptr);
+    return path;
 }
 
 void finFigureObjectRect::dump() const
