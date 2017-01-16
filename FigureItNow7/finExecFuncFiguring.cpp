@@ -16,6 +16,8 @@ static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env
                                   finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *env,
+                                     finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_named_color(finExecFunction *self, finExecEnvironment *env,
@@ -31,6 +33,7 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("line"),             QString("x1,y1,x2,y2"),            _sysfunc_line             },
     { QString("rect"),             QString("cx,cy,w,h,rad"),          _sysfunc_rect             },
     { QString("circle"),           QString("cx,cy,r"),                _sysfunc_circle           },
+    { QString("ellipse"),          QString("cx,cy,lr,sr,rad"),        _sysfunc_ellipse          },
     { QString("line3d"),           QString("x1,y1,z1,x2,y2,z2"),      _sysfunc_line3d           },
     { QString("named_color"),      QString("colorname"),              _sysfunc_named_color      },
     { QString("read_fig_config"),  QString("cfgname"),                _sysfunc_read_fig_config  },
@@ -182,6 +185,55 @@ static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *e
     errcode = env->getFigureContainer()->appendFigureObject(circle);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         delete circle;
+        return errcode;
+    }
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *env,
+                                     finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *cx, *cy, *lr, *sr, *rad;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    cx = finExecVariable::transLinkTarget(env->findVariable("cx"));
+    cy = finExecVariable::transLinkTarget(env->findVariable("cy"));
+    lr = finExecVariable::transLinkTarget(env->findVariable("lr"));
+    sr = finExecVariable::transLinkTarget(env->findVariable("sr"));
+    rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
+
+    if ( cx == NULL || cy == NULL || lr == NULL || sr == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+
+    if ( cx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         cy->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         lr->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         sr->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         (rad != NULL && rad->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
+                         rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    finFigureObjectEllipse *foellipse = new finFigureObjectEllipse();
+    if ( foellipse == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    foellipse->setCenterPoint(cx->getNumericValue(), cy->getNumericValue());
+    foellipse->setLongRadius(lr->getNumericValue());
+    foellipse->setShortRadius(sr->getNumericValue());
+    if ( rad != NULL && rad->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC )
+        foellipse->setRadian(rad->getNumericValue());
+    else
+        foellipse->setRadian(0.0);
+
+    errcode = env->getFigureContainer()->appendFigureObject(foellipse);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete foellipse;
         return errcode;
     }
     flowctl->setFlowNext();
