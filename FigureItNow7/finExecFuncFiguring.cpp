@@ -258,7 +258,7 @@ static finErrorCode _sysfunc_draw_text(finExecFunction *self, finExecEnvironment
     cx = finExecVariable::transLinkTarget(env->findVariable("cx"));
     cy = finExecVariable::transLinkTarget(env->findVariable("cy"));
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
-    scale = finExecVariable::transLinkTarget(env->findVariable("scale"));
+    scale = finExecVariable::transLinkTarget(env->findVariable("sc"));
 
     if ( text == NULL || cx == NULL || cy == NULL )
         return finErrorCodeKits::FIN_EC_NOT_FOUND;

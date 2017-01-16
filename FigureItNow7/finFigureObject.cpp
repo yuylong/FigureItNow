@@ -575,10 +575,12 @@ QPainterPath finFigureObjectText::getPath()
     }
     path.translate(bloff);
 
-    QTransform trans;
-    trans.rotateRadians(this->_rad);
+    QTransform trans, subtrans1, subtrans2;
     trans.scale(this->_scale, 1.0);
-    trans.translate(this->_basePtr.x(), this->_basePtr.y());
+    subtrans1.rotateRadians(this->_rad);
+    trans *= subtrans1;
+    subtrans2.translate(this->_basePtr.x(), this->_basePtr.y());
+    trans *= subtrans2;
 
     return trans.map(path);
 }
@@ -610,11 +612,13 @@ QPainterPath finFigureObjectText::getPixelPath(finGraphConfig *cfg)
     }
     path.translate(bloff);
 
-    QTransform trans;
-    trans.rotateRadians(-this->_rad);
+    QTransform trans, subtrans1, subtrans2;
     trans.scale(this->_scale, 1.0);
+    subtrans1.rotateRadians(-this->_rad);
+    trans *= subtrans1;
     QPointF pixbp = cfg->transformPixelPoint(this->_basePtr);
-    trans.translate(pixbp.x(), pixbp.y());
+    subtrans2.translate(pixbp.x(), pixbp.y());
+    trans *= subtrans2;
 
     return trans.map(path);
 }
