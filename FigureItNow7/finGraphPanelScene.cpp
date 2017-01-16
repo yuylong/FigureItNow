@@ -54,16 +54,10 @@ finErrorCode finGraphPanelScene::drawObject(finFigureObject *obj)
 
     switch ( obj->getFigureType() ) {
       case finFigureObject::FIN_FO_TYPE_LINE:
-        return this->drawObjLine((finFigureObjectLine *)obj);
-        break;
-
       case finFigureObject::FIN_FO_TYPE_RECT:
       case finFigureObject::FIN_FO_TYPE_ELLIPSE:
         return this->drawObjPath(obj);
         break;
-
-        //return this->drawObjEllipse((finFigureObjectEllipse *)obj);
-        //break;
 
       case finFigureObject::FIN_FO_TYPE_LINE3D:
         return this->drawObjLine3D((finFigureObjectLine3D *)obj);
@@ -96,15 +90,6 @@ finErrorCode finGraphPanelScene::drawObjPath(finFigureObject *obj)
     this->_scene->addPath(path,
                           obj->getFigureConfig()->getBorderPen(),
                           obj->getFigureConfig()->getFillBrush());
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
-finErrorCode finGraphPanelScene::drawObjLine(finFigureObjectLine *line)
-{
-    QPointF pt1 = this->_config.transformPixelPoint(line->getPoint1());
-    QPointF pt2 = this->_config.transformPixelPoint(line->getPoint2());
-
-    this->_scene->addLine(pt1.x(), pt1.y(), pt2.x(), pt2.y(), line->getFigureConfig()->getBorderPen());
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
