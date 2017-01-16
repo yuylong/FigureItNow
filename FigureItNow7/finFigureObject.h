@@ -191,4 +191,35 @@ public:
     virtual void dump() const;
 };
 
+class finFigureObjectText : public finFigureObject
+{
+protected:
+    QPointF _basePtr;
+    int _flag;
+    double _scale;
+    double _rad;
+    double _sinrad, _cosrad;
+
+    QString _text;
+
+public:
+    finFigureObjectText();
+    virtual ~finFigureObjectText() { return; }
+
+    QPointF getBasePoint() const;
+    int getFontMetricFlags() const;
+    double getScale() const;
+    double getRadian() const;
+    QString getText() const;
+
+    finErrorCode setBasePoint(const QPointF &pt);
+    finErrorCode setBasePoint(double ptx, double pty);
+    finErrorCode setFontMetricFlags(int flag);
+    finErrorCode setScale(double scale);
+    finErrorCode setRadian(double rad);
+    finErrorCode setText(const QString &text);
+
+    virtual void dump() const;
+};
+
 #endif // FINFIGUREOBJECT_H

@@ -468,3 +468,89 @@ void finFigureObjectEllipse::dump() const
            (double)this->_center.x(), (double)this->_center.y(),
            (double)this->_longR, (double)this->_shortR, this->_radian);
 }
+
+finFigureObjectText::finFigureObjectText()
+{
+    this->_type = finFigureObject::FIN_FO_TYPE_TEXT;
+    this->_basePtr = QPointF(0.0, 0.0);
+    this->_flag = Qt::AlignCenter;
+    this->_scale = 1.0;
+    this->_rad = 0.0;
+    this->_text = QString();
+}
+
+QPointF finFigureObjectText::getBasePoint() const
+{
+    return this->_basePtr;
+}
+
+int finFigureObjectText::getFontMetricFlags() const
+{
+    return this->_flag;
+}
+
+double finFigureObjectText::getScale() const
+{
+    return this->_scale;
+}
+
+double finFigureObjectText::getRadian() const
+{
+    return this->_rad;
+}
+
+QString finFigureObjectText::getText() const
+{
+    return this->_text;
+}
+
+finErrorCode finFigureObjectText::setBasePoint(const QPointF &pt)
+{
+    this->_basePtr = pt;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectText::setBasePoint(double ptx, double pty)
+{
+    this->_basePtr.setX(ptx);
+    this->_basePtr.setY(pty);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectText::setFontMetricFlags(int flag)
+{
+    this->_flag = flag;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectText::setScale(double scale)
+{
+    this->_scale = scale;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectText::setRadian(double rad)
+{
+    // Make the degree falling into the range (-180, 180].
+    rad = rad - floor(rad / (2 *M_PI)) * 2 * M_PI;
+    if ( rad > M_PI )
+        rad = rad - 2 * M_PI;
+
+    this->_rad = rad;
+    this->_sinrad = sin(rad);
+    this->_cosrad = cos(rad);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectText::setText(const QString &text)
+{
+    this->_text = text;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+void finFigureObjectText::dump() const
+{
+    printf("* Fig Type: rect; C: (%lf, %lf) F: %d S: %lf rad: %lf T: \"%s\"\n",
+           this->_basePtr.x(), this->_basePtr.y(), this->_flag, this->_scale, this->_rad,
+           this->_text.toLatin1().data());
+}
