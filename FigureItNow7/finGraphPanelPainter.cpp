@@ -40,6 +40,10 @@ finErrorCode finGraphPanelPainter::drawObject(finFigureObject *obj)
         return this->drawObjLine((finFigureObjectLine *)obj);
         break;
 
+      case finFigureObject::FIN_FO_TYPE_ELLIPSE:
+        return this->drawObjEllipse((finFigureObjectEllipse *)obj);
+        break;
+
       case finFigureObject::FIN_FO_TYPE_LINE3D:
         return this->drawObjLine3D((finFigureObjectLine3D *)obj);
         break;
@@ -74,6 +78,20 @@ finErrorCode finGraphPanelPainter::drawObjLine(finFigureObjectLine *line)
     QPointF pt1 = this->_config.transformPixelPoint(line->getPoint1());
     QPointF pt2 = this->_config.transformPixelPoint(line->getPoint2());
     this->_painter->drawLine(pt1, pt2);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphPanelPainter::drawObjEllipse(finFigureObjectEllipse *ellipse)
+{
+    this->applyFigureConfig(ellipse->getFigureConfig());
+
+    QPointF ulpt = ellipse->getCenterPoint() - QPointF(ellipse->getLongRadius(), -ellipse->getShortRadius());
+    QPointF lrpt = ellipse->getCenterPoint() + QPointF(ellipse->getLongRadius(), -ellipse->getShortRadius());
+    ulpt = this->_config.transformPixelPoint(ulpt);
+    lrpt = this->_config.transformPixelPoint(lrpt);
+    QRectF ellipserect = QRectF(ulpt, lrpt);
+    this->_painter->drawEllipse(ellipserect);
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

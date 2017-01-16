@@ -27,6 +27,7 @@ protected:
     void clearScene();
 
     finErrorCode drawObjLine(finFigureObjectLine *line);
+    finErrorCode drawObjEllipse(finFigureObjectEllipse *ellipse);
 
     finErrorCode drawObjLine3D(finFigureObjectLine3D *line3d);
 

@@ -137,4 +137,29 @@ public:
     virtual void dump() const;
 };
 
+class finFigureObjectEllipse : public finFigureObject
+{
+protected:
+    QPointF _center;
+    double _longR, _shortR;
+    double _radian;
+
+public:
+    finFigureObjectEllipse();
+    virtual ~finFigureObjectEllipse() { return; }
+
+    QPointF getCenterPoint() const;
+    double getLongRadius() const;
+    double getShortRadius() const;
+    double getRadian() const;
+
+    finErrorCode setCenterPoint(const QPointF &ctrpt);
+    finErrorCode setCenterPoint(double cx, double cy);
+    finErrorCode setLongRadius(double lr);
+    finErrorCode setShortRadius(double sr);
+    finErrorCode setRadian(double rad);
+
+    virtual void dump() const;
+};
+
 #endif // FINFIGUREOBJECT_H

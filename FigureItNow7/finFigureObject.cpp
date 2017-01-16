@@ -216,3 +216,70 @@ void finFigureObjectRect::dump() const
            (double)this->_center.x(), (double)this->_center.y(),
            (double)this->_size.width(), (double)this->_size.height(), this->_radian);
 }
+
+finFigureObjectEllipse::finFigureObjectEllipse()
+{
+    this->_type = finFigureObject::FIN_FO_TYPE_ELLIPSE;
+    this->_center = QPointF(0.0, 0.0);
+    this->_longR = 0.0;
+    this->_shortR = 0.0;
+    this->_radian = 0.0;
+}
+
+QPointF finFigureObjectEllipse::getCenterPoint() const
+{
+    return this->_center;
+}
+
+double finFigureObjectEllipse::getLongRadius() const
+{
+    return this->_longR;
+}
+
+double finFigureObjectEllipse::getShortRadius() const
+{
+    return this->_shortR;
+}
+
+double finFigureObjectEllipse::getRadian() const
+{
+    return this->_radian;
+}
+
+finErrorCode finFigureObjectEllipse::setCenterPoint(const QPointF &ctrpt)
+{
+    this->_center = ctrpt;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectEllipse::setCenterPoint(double cx, double cy)
+{
+    this->_center.setX(cx);
+    this->_center.setY(cy);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectEllipse::setLongRadius(double lr)
+{
+    this->_longR = lr;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectEllipse::setShortRadius(double sr)
+{
+    this->_shortR = sr;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectEllipse::setRadian(double rad)
+{
+    this->_radian = rad;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+void finFigureObjectEllipse::dump() const
+{
+    printf(" * Fig Type: rect; C: (%lf, %lf) R: %lf x %lf rad: %lf\n",
+           (double)this->_center.x(), (double)this->_center.y(),
+           (double)this->_longR, (double)this->_shortR, this->_radian);
+}

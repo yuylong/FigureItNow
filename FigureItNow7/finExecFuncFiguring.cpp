@@ -12,6 +12,8 @@ static finErrorCode _sysfunc_clear_fig(finExecFunction *self, finExecEnvironment
                                        finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_line(finExecFunction *self, finExecEnvironment *env,
                                   finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *env,
+                                    finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_named_color(finExecFunction *self, finExecEnvironment *env,
@@ -25,6 +27,7 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
 static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("clear_fig"),        QString(""),                  _sysfunc_clear_fig        },
     { QString("line"),             QString("x1,y1,x2,y2"),       _sysfunc_line             },
+    { QString("circle"),           QString("cx,cy,r"),           _sysfunc_circle           },
     { QString("line3d"),           QString("x1,y1,z1,x2,y2,z2"), _sysfunc_line3d           },
     { QString("named_color"),      QString("colorname"),         _sysfunc_named_color      },
     { QString("read_fig_config"),  QString("cfgname"),           _sysfunc_read_fig_config  },
@@ -87,6 +90,47 @@ _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *ma
     errcode = env->getFigureContainer()->appendFigureObject(foline);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         delete foline;
+        return errcode;
+    }
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *env,
+                                    finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *cx, *cy, *r;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    cx = finExecVariable::transLinkTarget(env->findVariable("cx"));
+    cy = finExecVariable::transLinkTarget(env->findVariable("cy"));
+    r = finExecVariable::transLinkTarget(env->findVariable("r"));
+
+    if ( cx == NULL || cy == NULL || r == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+
+    if ( cx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         cy->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         r->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    finFigureObjectEllipse *circle = new finFigureObjectEllipse();
+    if ( circle == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    circle->setCenterPoint(cx->getNumericValue(), cy->getNumericValue());
+    circle->setLongRadius(r->getNumericValue());
+    circle->setShortRadius(r->getNumericValue());
+    circle->setRadian(0.0);
+
+    errcode = env->getFigureContainer()->appendFigureObject(circle);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete circle;
         return errcode;
     }
     flowctl->setFlowNext();
@@ -274,4 +318,3 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
     flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
-
