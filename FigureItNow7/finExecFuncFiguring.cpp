@@ -18,6 +18,8 @@ static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *e
                                     finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_draw_text(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_named_color(finExecFunction *self, finExecEnvironment *env,
@@ -34,6 +36,7 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("rect"),             QString("cx,cy,w,h,rad"),          _sysfunc_rect             },
     { QString("circle"),           QString("cx,cy,r"),                _sysfunc_circle           },
     { QString("ellipse"),          QString("cx,cy,lr,sr,rad"),        _sysfunc_ellipse          },
+    { QString("draw_text"),        QString("text,cx,cy,rad,sc"),      _sysfunc_draw_text        },
     { QString("line3d"),           QString("x1,y1,z1,x2,y2,z2"),      _sysfunc_line3d           },
     { QString("named_color"),      QString("colorname"),              _sysfunc_named_color      },
     { QString("read_fig_config"),  QString("cfgname"),                _sysfunc_read_fig_config  },
@@ -234,6 +237,59 @@ static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *
     errcode = env->getFigureContainer()->appendFigureObject(foellipse);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         delete foellipse;
+        return errcode;
+    }
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_draw_text(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *text, *cx, *cy, *rad, *scale;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    text = finExecVariable::transLinkTarget(env->findVariable("text"));
+    cx = finExecVariable::transLinkTarget(env->findVariable("cx"));
+    cy = finExecVariable::transLinkTarget(env->findVariable("cy"));
+    rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
+    scale = finExecVariable::transLinkTarget(env->findVariable("scale"));
+
+    if ( text == NULL || cx == NULL || cy == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+
+    if ( text->getType() != finExecVariable::FIN_VR_TYPE_STRING ||
+         cx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         cy->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         (rad != NULL && rad->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
+                         rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) ||
+         (scale != NULL && scale->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
+                           scale->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC))
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    finFigureObjectText *fotext = new finFigureObjectText();
+    if ( fotext == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    fotext->setText(text->getStringValue());
+    fotext->setBasePoint(cx->getNumericValue(), cy->getNumericValue());
+    if ( rad != NULL && rad->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC )
+        fotext->setRadian(rad->getNumericValue());
+    else
+        fotext->setRadian(0.0);
+    if ( scale != NULL && scale->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC )
+        fotext->setScale(scale->getNumericValue());
+    else
+        fotext->setScale(1.0);
+
+    errcode = env->getFigureContainer()->appendFigureObject(fotext);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete fotext;
         return errcode;
     }
     flowctl->setFlowNext();
