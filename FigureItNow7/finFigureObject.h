@@ -166,6 +166,7 @@ protected:
     QPointF _center;
     double _longR, _shortR;
     double _radian;
+    double _sinrad, _cosrad;
 
 public:
     finFigureObjectEllipse();
@@ -181,6 +182,11 @@ public:
     finErrorCode setLongRadius(double lr);
     finErrorCode setShortRadius(double sr);
     finErrorCode setRadian(double rad);
+
+    QPointF getEllipsePointAtRad(double rad);
+
+    virtual QPainterPath getPath();
+    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
 
     virtual void dump() const;
 };

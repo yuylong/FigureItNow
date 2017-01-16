@@ -417,8 +417,49 @@ finErrorCode finFigureObjectEllipse::setShortRadius(double sr)
 
 finErrorCode finFigureObjectEllipse::setRadian(double rad)
 {
+    // Make the degree falling into the range (-90, 90].
+    rad = rad - floor(rad / M_PI) * M_PI;
+    if ( rad > M_PI / 2 )
+        rad = rad - M_PI;
+
     this->_radian = rad;
+    this->_sinrad = sin(rad);
+    this->_cosrad = cos(rad);
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+QPointF finFigureObjectEllipse::getEllipsePointAtRad(double rad)
+{
+    QPointF shiftpt = QPointF(this->_longR * cos(rad), this->_shortR * sin(rad));
+    QPointF relpt = QPointF(shiftpt.x() * this->_cosrad + shiftpt.y() * this->_sinrad,
+                            shiftpt.x() * this->_sinrad - shiftpt.y() * this->_cosrad);
+    return this->_center + relpt;
+}
+
+QPainterPath finFigureObjectEllipse::getPath()
+{
+    QPainterPath path;
+    QPointF startpt = this->getEllipsePointAtRad(0.0);
+    static const double drawstep = M_PI / 36.0;
+
+    path.moveTo(startpt);
+    for ( double rad = drawstep; rad < 2 * M_PI; rad += drawstep)
+        path.lineTo(this->getEllipsePointAtRad(rad));
+    path.lineTo(startpt);
+    return path;
+}
+
+QPainterPath finFigureObjectEllipse::getPixelPath(finGraphConfig *cfg)
+{
+    QPainterPath path;
+    QPointF startpt = cfg->transformPixelPoint(this->getEllipsePointAtRad(0.0));
+    static const double drawstep = M_PI / 36.0;
+
+    path.moveTo(startpt);
+    for ( double rad = drawstep; rad < 2 * M_PI; rad += drawstep)
+        path.lineTo(cfg->transformPixelPoint(this->getEllipsePointAtRad(rad)));
+    path.lineTo(startpt);
+    return path;
 }
 
 void finFigureObjectEllipse::dump() const

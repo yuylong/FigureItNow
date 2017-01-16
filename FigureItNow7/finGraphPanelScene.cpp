@@ -58,12 +58,12 @@ finErrorCode finGraphPanelScene::drawObject(finFigureObject *obj)
         break;
 
       case finFigureObject::FIN_FO_TYPE_RECT:
+      case finFigureObject::FIN_FO_TYPE_ELLIPSE:
         return this->drawObjPath(obj);
         break;
 
-    case finFigureObject::FIN_FO_TYPE_ELLIPSE:
-        return this->drawObjEllipse((finFigureObjectEllipse *)obj);
-        break;
+        //return this->drawObjEllipse((finFigureObjectEllipse *)obj);
+        //break;
 
       case finFigureObject::FIN_FO_TYPE_LINE3D:
         return this->drawObjLine3D((finFigureObjectLine3D *)obj);
@@ -105,20 +105,6 @@ finErrorCode finGraphPanelScene::drawObjLine(finFigureObjectLine *line)
     QPointF pt2 = this->_config.transformPixelPoint(line->getPoint2());
 
     this->_scene->addLine(pt1.x(), pt1.y(), pt2.x(), pt2.y(), line->getFigureConfig()->getBorderPen());
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
-finErrorCode finGraphPanelScene::drawObjEllipse(finFigureObjectEllipse *ellipse)
-{
-    QPointF ulpt = ellipse->getCenterPoint() - QPointF(ellipse->getLongRadius(), -ellipse->getShortRadius());
-    QPointF lrpt = ellipse->getCenterPoint() + QPointF(ellipse->getLongRadius(), -ellipse->getShortRadius());
-    ulpt = this->_config.transformPixelPoint(ulpt);
-    lrpt = this->_config.transformPixelPoint(lrpt);
-    QRectF ellipserect = QRectF(ulpt, lrpt);
-
-    this->_scene->addEllipse(ellipserect,
-                             ellipse->getFigureConfig()->getBorderColor(),
-                             ellipse->getFigureConfig()->getFillBrush());
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
