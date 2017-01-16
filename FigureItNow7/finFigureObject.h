@@ -219,6 +219,9 @@ public:
     finErrorCode setRadian(double rad);
     finErrorCode setText(const QString &text);
 
+    virtual QPainterPath getPath();
+    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+
     virtual void dump() const;
 };
 

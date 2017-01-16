@@ -548,6 +548,77 @@ finErrorCode finFigureObjectText::setText(const QString &text)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+QPainterPath finFigureObjectText::getPath()
+{
+    QPainterPath path;
+    path.addText(0.0, 0.0, this->_figCfg.getFont(), this->_text);
+
+    QRectF bndrect = path.boundingRect();
+    QPointF bloff = QPointF(0.0, 0.0);
+    if ( this->_flag & Qt::AlignLeft ) {
+        bloff.setX(-bndrect.x());
+    } else if ( this->_flag & Qt::AlignRight ) {
+        bloff.setX(-bndrect.x() - bndrect.width());
+    } else if ( this->_flag & Qt::AlignJustify ) {
+        bloff.setX(0.0);
+    } else {
+        bloff.setX(-bndrect.x() - bndrect.width() / 2.0);
+    }
+    if ( this->_flag &  Qt::AlignTop ) {
+        bloff.setY(-bndrect.y() - bndrect.height());
+    } else if ( this->_flag & Qt::AlignBottom ) {
+        bloff.setY(-bndrect.y());
+    } else if ( this->_flag & Qt::AlignBaseline ) {
+        bloff.setY(0.0);
+    } else {
+        bloff.setY(-bndrect.y() - bndrect.height() / 2.0);
+    }
+    path.translate(bloff);
+
+    QTransform trans;
+    trans.rotateRadians(this->_rad);
+    trans.scale(this->_scale, 1.0);
+    trans.translate(this->_basePtr.x(), this->_basePtr.y());
+
+    return trans.map(path);
+}
+
+QPainterPath finFigureObjectText::getPixelPath(finGraphConfig *cfg)
+{
+    QPainterPath path;
+    path.addText(0.0, 0.0, this->_figCfg.getFont(), this->_text);
+
+    QRectF bndrect = path.boundingRect();
+    QPointF bloff = QPointF(0.0, 0.0);
+    if ( this->_flag & Qt::AlignLeft ) {
+        bloff.setX(-bndrect.x());
+    } else if ( this->_flag & Qt::AlignRight ) {
+        bloff.setX(-bndrect.x() - bndrect.width());
+    } else if ( this->_flag & Qt::AlignJustify ) {
+        bloff.setX(0.0);
+    } else {
+        bloff.setX(-bndrect.x() - bndrect.width() / 2.0);
+    }
+    if ( this->_flag &  Qt::AlignTop ) {
+        bloff.setY(-bndrect.y());
+    } else if ( this->_flag & Qt::AlignBottom ) {
+        bloff.setY(-bndrect.y() - bndrect.height());
+    } else if ( this->_flag & Qt::AlignBaseline ) {
+        bloff.setY(0.0);
+    } else {
+        bloff.setY(-bndrect.y() - bndrect.height() / 2.0);
+    }
+    path.translate(bloff);
+
+    QTransform trans;
+    trans.rotateRadians(-this->_rad);
+    trans.scale(this->_scale, 1.0);
+    QPointF pixbp = cfg->transformPixelPoint(this->_basePtr);
+    trans.translate(pixbp.x(), pixbp.y());
+
+    return trans.map(path);
+}
+
 void finFigureObjectText::dump() const
 {
     printf("* Fig Type: rect; C: (%lf, %lf) F: %d S: %lf rad: %lf T: \"%s\"\n",
