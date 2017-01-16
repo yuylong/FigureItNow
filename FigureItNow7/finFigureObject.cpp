@@ -294,9 +294,23 @@ finErrorCode finFigureObjectRect::setCenterPoint(const QPointF &ctrpt)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finFigureObjectRect::setCenterPoint(double cx, double cy)
+{
+    this->_center.setX(cx);
+    this->_center.setY(cy);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode finFigureObjectRect::setSize(const QSizeF &size)
 {
     this->_size = size;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectRect::setSize(double width, double height)
+{
+    this->_size.setWidth(width);
+    this->_size.setHeight(height);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

@@ -40,6 +40,10 @@ finErrorCode finGraphPanelPainter::drawObject(finFigureObject *obj)
         return this->drawObjLine((finFigureObjectLine *)obj);
         break;
 
+      case finFigureObject::FIN_FO_TYPE_RECT:
+        return this->drawObjPath(obj);
+        break;
+
       case finFigureObject::FIN_FO_TYPE_ELLIPSE:
         return this->drawObjEllipse((finFigureObjectEllipse *)obj);
         break;
@@ -69,6 +73,15 @@ finErrorCode finGraphPanelPainter::applyFigureConfig(finFigureConfig *cfg)
     this->_painter->setPen(cfg->getBorderPen());
     this->_painter->setBrush(cfg->getFillBrush());
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode finGraphPanelPainter::drawObjPath(finFigureObject *obj)
+{
+    this->applyFigureConfig(obj->getFigureConfig());
+
+    QPainterPath path = obj->getPixelPath(&this->_config);
+    this->_painter->drawPath(path);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finGraphPanelPainter::drawObjLine(finFigureObjectLine *line)

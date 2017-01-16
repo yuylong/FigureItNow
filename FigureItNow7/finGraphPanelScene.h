@@ -25,6 +25,7 @@ public:
 
 protected:
     void clearScene();
+    finErrorCode drawObjPath(finFigureObject *obj);
 
     finErrorCode drawObjLine(finFigureObjectLine *line);
     finErrorCode drawObjEllipse(finFigureObjectEllipse *ellipse);

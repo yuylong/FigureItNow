@@ -57,7 +57,11 @@ finErrorCode finGraphPanelScene::drawObject(finFigureObject *obj)
         return this->drawObjLine((finFigureObjectLine *)obj);
         break;
 
-      case finFigureObject::FIN_FO_TYPE_ELLIPSE:
+      case finFigureObject::FIN_FO_TYPE_RECT:
+        return this->drawObjPath(obj);
+        break;
+
+    case finFigureObject::FIN_FO_TYPE_ELLIPSE:
         return this->drawObjEllipse((finFigureObjectEllipse *)obj);
         break;
 
@@ -84,6 +88,15 @@ void finGraphPanelScene::clearScene()
         this->_scene->removeItem(item);
         delete item;
     }
+}
+
+finErrorCode finGraphPanelScene::drawObjPath(finFigureObject *obj)
+{
+    QPainterPath path = obj->getPixelPath(&this->_config);
+    this->_scene->addPath(path,
+                          obj->getFigureConfig()->getBorderPen(),
+                          obj->getFigureConfig()->getFillBrush());
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finGraphPanelScene::drawObjLine(finFigureObjectLine *line)

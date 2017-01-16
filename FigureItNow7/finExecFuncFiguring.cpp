@@ -12,6 +12,8 @@ static finErrorCode _sysfunc_clear_fig(finExecFunction *self, finExecEnvironment
                                        finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_line(finExecFunction *self, finExecEnvironment *env,
                                   finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env,
+                                  finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env,
@@ -25,13 +27,14 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
 
 
 static finExecSysFuncRegItem _finSysFuncFigureList[] = {
-    { QString("clear_fig"),        QString(""),                  _sysfunc_clear_fig        },
-    { QString("line"),             QString("x1,y1,x2,y2"),       _sysfunc_line             },
-    { QString("circle"),           QString("cx,cy,r"),           _sysfunc_circle           },
-    { QString("line3d"),           QString("x1,y1,z1,x2,y2,z2"), _sysfunc_line3d           },
-    { QString("named_color"),      QString("colorname"),         _sysfunc_named_color      },
-    { QString("read_fig_config"),  QString("cfgname"),           _sysfunc_read_fig_config  },
-    { QString("write_fig_config"), QString("cfgname,value"),     _sysfunc_write_fig_config },
+    { QString("clear_fig"),        QString(""),                       _sysfunc_clear_fig        },
+    { QString("line"),             QString("x1,y1,x2,y2"),            _sysfunc_line             },
+    { QString("rect"),             QString("cx,cy,w,h,rad"),          _sysfunc_rect             },
+    { QString("circle"),           QString("cx,cy,r"),                _sysfunc_circle           },
+    { QString("line3d"),           QString("x1,y1,z1,x2,y2,z2"),      _sysfunc_line3d           },
+    { QString("named_color"),      QString("colorname"),              _sysfunc_named_color      },
+    { QString("read_fig_config"),  QString("cfgname"),                _sysfunc_read_fig_config  },
+    { QString("write_fig_config"), QString("cfgname,value"),          _sysfunc_write_fig_config },
 
     { QString(), QString(), NULL }
 };
@@ -90,6 +93,50 @@ _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *ma
     errcode = env->getFigureContainer()->appendFigureObject(foline);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         delete foline;
+        return errcode;
+    }
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env,
+                                  finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *cx, *cy, *w, *h, *rad;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    cx = finExecVariable::transLinkTarget(env->findVariable("cx"));
+    cy = finExecVariable::transLinkTarget(env->findVariable("cy"));
+    w = finExecVariable::transLinkTarget(env->findVariable("w"));
+    h = finExecVariable::transLinkTarget(env->findVariable("h"));
+    rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
+
+    if ( cx == NULL || cy == NULL || w == NULL || h == NULL || rad == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+
+    if ( cx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         cy->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         w->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         h->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    finFigureObjectRect *forect = new finFigureObjectRect();
+    if ( forect == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    forect->setCenterPoint(cx->getNumericValue(), cy->getNumericValue());
+    forect->setSize(w->getNumericValue(), h->getNumericValue());
+    forect->setRadian(rad->getNumericValue());
+
+    errcode = env->getFigureContainer()->appendFigureObject(forect);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete forect;
         return errcode;
     }
     flowctl->setFlowNext();

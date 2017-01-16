@@ -149,7 +149,9 @@ public:
     QPointF getLowerRightPoint() const;
 
     finErrorCode setCenterPoint(const QPointF &ctrpt);
+    finErrorCode setCenterPoint(double cx, double cy);
     finErrorCode setSize(const QSizeF &size);
+    finErrorCode setSize(double width, double height);
     finErrorCode setRadian(double rad);
 
     virtual QPainterPath getPath();
