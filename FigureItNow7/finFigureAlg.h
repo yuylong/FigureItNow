@@ -14,6 +14,7 @@ public:
     finFigureAlg();
 
     static finFigAlgLine2D line2DFromPoints(const QPointF &pt1, const QPointF &pt2);
+    static bool isParallelLines(const finFigAlgLine2D &line1, const finFigAlgLine2D &line2);
     static QPointF lineCrossPoint(const finFigAlgLine2D &line1, const finFigAlgLine2D &line2);
 };
 

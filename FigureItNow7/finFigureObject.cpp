@@ -853,6 +853,49 @@ void finFigureObjectText::dump() const
            this->_text.toLatin1().data());
 }
 
+finFigureObjectAxis::finFigureObjectAxis()
+{
+    this->_minX = 0.0;
+    this->_maxX = 0.0;
+    this->_minY = 0.0;
+    this->_maxY = 0.0;
+    this->_stepX = 0.0;
+    this->_stepY = 0.0;
+    this->_titleX = QString("x");
+    this->_titleY = QString("y");
+}
+
+double finFigureObjectAxis::getRangeMinX() const
+{
+    return this->_minX;
+}
+
+double finFigureObjectAxis::getRangeMaxX() const
+{
+    return this->_maxX;
+}
+
+double finFigureObjectAxis::getRangeMinY() const
+{
+    return this->_minY;
+}
+
+double finFigureObjectAxis::getRangeMaxY() const
+{
+    return this->_maxY;
+}
+
+bool finFigureObjectAxis::isAutoRangeX() const
+{
+    return (this->_minX >= this->_maxX);
+}
+
+bool finFigureObjectAxis::isAutoRangeY() const
+{
+    return (this->_minY >= this->_maxY);
+}
+
+
 finFigureObjectLine3D::finFigureObjectLine3D()
 {
     this->_type = finFigureObject::FIN_FO_TYPE_LINE3D;

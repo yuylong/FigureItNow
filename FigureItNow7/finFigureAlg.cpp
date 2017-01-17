@@ -14,6 +14,12 @@ finFigAlgLine2D finFigureAlg::line2DFromPoints(const QPointF &pt1, const QPointF
     return retline;
 }
 
+bool finFigureAlg::isParallelLines(const finFigAlgLine2D &line1, const finFigAlgLine2D &line2)
+{
+    double p = line1.a * line2.b - line2.a * line1.b;
+    return (p > -1.0e-8 && p < 1.0e-8);
+}
+
 QPointF finFigureAlg::lineCrossPoint(const finFigAlgLine2D &line1, const finFigAlgLine2D &line2)
 {
     QPointF retpt;
@@ -22,4 +28,3 @@ QPointF finFigureAlg::lineCrossPoint(const finFigAlgLine2D &line1, const finFigA
     retpt.setY((line2.a * line1.c - line1.a * line2.c) / p);
     return retpt;
 }
-

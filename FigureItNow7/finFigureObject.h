@@ -283,13 +283,20 @@ public:
 class finFigureObjectAxis : public finFigureObject
 {
 protected:
-    double _minX, _maxX, minY, _maxY;
+    double _minX, _maxX, _minY, _maxY;
     double _stepX, _stepY;
     QString _titleX, _titleY;
 
 public:
     finFigureObjectAxis();
     virtual ~finFigureObjectAxis() { return; }
+
+    double getRangeMinX() const;
+    double getRangeMaxX() const;
+    double getRangeMinY() const;
+    double getRangeMaxY() const;
+    bool isAutoRangeX() const;
+    bool isAutoRangeY() const;
 };
 
 class finFigureObjectLine3D : public finFigureObject
