@@ -306,7 +306,7 @@ QPainterPath finFigureObjectPolyline::getPixelPath(finGraphConfig *cfg)
 
 void finFigureObjectPolyline::dump() const
 {
-    printf(" * Fig Type: line; ");
+    printf(" * Fig Type: polyline; ");
     if ( this->_ptList.empty() ) {
         printf ("EMPTY\n");
         return;
@@ -460,6 +460,98 @@ void finFigureObjectRect::dump() const
     printf(" * Fig Type: rect; C: (%lf, %lf) S: %lf x %lf rad: %lf\n",
            (double)this->_center.x(), (double)this->_center.y(),
            (double)this->_size.width(), (double)this->_size.height(), this->_radian);
+}
+
+finFigureObjectPolygon::finFigureObjectPolygon()
+    : _ptList()
+{
+    this->_type = finFigureObject::FIN_FO_TYPE_POLYGON;
+}
+
+bool finFigureObjectPolygon::is3DFigure() const
+{
+    return false;
+}
+
+int finFigureObjectPolygon::getPointCount() const
+{
+    return this->_ptList.count();
+}
+
+QPointF finFigureObjectPolygon::getPointAt(int idx) const
+{
+    return this->_ptList.at(idx);
+}
+
+finErrorCode finFigureObjectPolygon::appendPoint(const QPointF &pt)
+{
+    this->_ptList.append(pt);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectPolygon::appendPoint(double ptx, double pty)
+{
+    this->_ptList.append(QPointF(ptx, pty));
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectPolygon::removePointAt(int idx)
+{
+    this->_ptList.removeAt(idx);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+bool finFigureObjectPolygon::hasFigurePath() const
+{
+    return true;
+}
+
+bool finFigureObjectPolygon::hasTextPath() const
+{
+    return false;
+}
+
+QPainterPath finFigureObjectPolygon::getPath()
+{
+    if ( this->_ptList.count() < 2 )
+        return QPainterPath();
+
+    QPainterPath path;
+    path.moveTo(this->_ptList.last());
+    for ( int i = 0; i < this->_ptList.count(); i++ ) {
+        path.lineTo(this->_ptList.at(i));
+    }
+    return path;
+}
+
+QPainterPath finFigureObjectPolygon::getPixelPath(finGraphConfig *cfg)
+{
+    if ( this->_ptList.count() < 2 )
+        return QPainterPath();
+
+    QPainterPath path;
+    QPointF startpt = cfg->transformPixelPoint(this->_ptList.at(0));
+    path.moveTo(startpt);
+    for ( int i = 1; i < this->_ptList.count(); i++ ) {
+        path.lineTo(cfg->transformPixelPoint(this->_ptList.at(i)));
+    }
+    path.lineTo(startpt);
+    return path;
+}
+
+void finFigureObjectPolygon::dump() const
+{
+    printf(" * Fig Type: polygon; ");
+    if ( this->_ptList.empty() ) {
+        printf ("EMPTY\n");
+        return;
+    }
+
+    printf("(%lf, %lf)", this->_ptList.at(0).x(), this->_ptList.at(1).y());
+    for ( int i = 1; i < this->_ptList.count(); i++ ) {
+        printf(" -- (%lf, %lf)", this->_ptList.at(i).x(), this->_ptList.at(i).y());
+    }
+    printf("\n");
 }
 
 finFigureObjectEllipse::finFigureObjectEllipse()
@@ -653,7 +745,7 @@ finErrorCode finFigureObjectText::setScale(double scale)
 finErrorCode finFigureObjectText::setRadian(double rad)
 {
     // Make the degree falling into the range (-180, 180].
-    rad = rad - floor(rad / (2 *M_PI)) * 2 * M_PI;
+    rad = rad - floor(rad / (2 * M_PI)) * 2 * M_PI;
     if ( rad > M_PI )
         rad = rad - 2 * M_PI;
 

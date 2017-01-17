@@ -32,8 +32,8 @@ public:
         FIN_FO_TYPE_DUMMY,
         FIN_FO_TYPE_DOT,
         FIN_FO_TYPE_LINE,
-        FIN_FO_TYPE_RECT,
         FIN_FO_TYPE_POLYLINE,
+        FIN_FO_TYPE_RECT,
         FIN_FO_TYPE_POLYGON,
         FIN_FO_TYPE_ELLIPSE,
         FIN_FO_TYPE_TEXT,
@@ -172,6 +172,32 @@ public:
     finErrorCode setSize(const QSizeF &size);
     finErrorCode setSize(double width, double height);
     finErrorCode setRadian(double rad);
+
+    virtual bool hasFigurePath() const;
+    virtual bool hasTextPath() const;
+    virtual QPainterPath getPath();
+    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+
+    virtual void dump() const;
+};
+
+class finFigureObjectPolygon : public finFigureObject
+{
+protected:
+    QList<QPointF> _ptList;
+
+public:
+    finFigureObjectPolygon();
+    virtual ~finFigureObjectPolygon() { return; }
+
+    virtual bool is3DFigure() const;
+
+    int getPointCount() const;
+    QPointF getPointAt(int idx) const;
+
+    finErrorCode appendPoint(const QPointF &pt);
+    finErrorCode appendPoint(double ptx, double pty);
+    finErrorCode removePointAt(int idx);
 
     virtual bool hasFigurePath() const;
     virtual bool hasTextPath() const;
