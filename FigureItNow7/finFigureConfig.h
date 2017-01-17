@@ -29,6 +29,9 @@ class finFigureConfig
 protected:
     QPen _borderPen;
     QBrush _fillBrush;
+
+    QPen _textPen;
+    QBrush _textBrush;
     QFont _font;
 
     static finFigureConfig *_defFigCfg;
@@ -40,6 +43,8 @@ public:
 
     QPen getBorderPen() const;
     QBrush getFillBrush() const;
+    QPen getTextPen() const;
+    QBrush getTextBrush() const;
     QFont getFont() const;
 
     double getDotSize() const;
@@ -48,6 +53,8 @@ public:
 
     finErrorCode setBorderPen(const QPen &pen);
     finErrorCode setFillBrush(const QBrush &brush);
+    finErrorCode setTextPen(const QPen &pen);
+    finErrorCode setTextBrush(const QBrush &brush);
     finErrorCode setFont(const QFont &font);
 
     finErrorCode setDotSize(double size);

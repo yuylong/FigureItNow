@@ -16,7 +16,8 @@
 finFigureConfig *finFigureConfig::_defFigCfg = NULL;
 
 finFigureConfig::finFigureConfig()
-    : _borderPen(), _fillBrush(Qt::transparent), _font(QString("Arial"), 12)
+    : _borderPen(Qt::black, 1), _fillBrush(Qt::transparent),
+      _textPen(Qt::transparent), _textBrush(Qt::black), _font(QString("Arial"), 12)
 {
     /* Do Nothing. */
 }
@@ -29,6 +30,16 @@ QPen finFigureConfig::getBorderPen() const
 QBrush finFigureConfig::getFillBrush() const
 {
     return this->_fillBrush;
+}
+
+QPen finFigureConfig::getTextPen() const
+{
+    return this->_textPen;
+}
+
+QBrush finFigureConfig::getTextBrush() const
+{
+    return this->_textBrush;
 }
 
 QFont finFigureConfig::getFont() const
@@ -60,6 +71,18 @@ finErrorCode finFigureConfig::setBorderPen(const QPen &pen)
 finErrorCode finFigureConfig::setFillBrush(const QBrush &brush)
 {
     this->_fillBrush = brush;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setTextPen(const QPen &pen)
+{
+    this->_textPen = pen;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setTextBrush(const QBrush &brush)
+{
+    this->_textBrush = brush;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
