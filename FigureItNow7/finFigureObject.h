@@ -319,6 +319,9 @@ public:
     finErrorCode setStepX(double step);
     finErrorCode setAutoStepY();
     finErrorCode setStepY(double step);
+
+    finErrorCode setTitleX(const QString &title);
+    finErrorCode setTitleY(const QString &title);
 };
 
 class finFigureObjectLine3D : public finFigureObject

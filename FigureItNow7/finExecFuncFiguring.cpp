@@ -39,7 +39,7 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("line"),             QString("x1,y1,x2,y2"),            _sysfunc_line             },
     { QString("polyline"),         QString("x1,y1,x2,y2"),            _sysfunc_polyline         },
     { QString("rect"),             QString("cx,cy,w,h,rad"),          _sysfunc_rect             },
-    { QString("polygon"),          QString("x1,y1,x2,y2"),            _sysfunc_polygon         },
+    { QString("polygon"),          QString("x1,y1,x2,y2"),            _sysfunc_polygon          },
     { QString("circle"),           QString("cx,cy,r"),                _sysfunc_circle           },
     { QString("ellipse"),          QString("cx,cy,lr,sr,rad"),        _sysfunc_ellipse          },
     { QString("draw_text"),        QString("text,cx,cy,rad,sc"),      _sysfunc_draw_text        },

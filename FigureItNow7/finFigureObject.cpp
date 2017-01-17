@@ -982,6 +982,18 @@ finErrorCode finFigureObjectAxis::setStepY(double step)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finFigureObjectAxis::setTitleX(const QString &title)
+{
+    this->_titleX = title;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectAxis::setTitleY(const QString &title)
+{
+    this->_titleY = title;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 double finFigureObjectAxis::_defMinX = -10.0;
 double finFigureObjectAxis::_defMaxX = 10.0;
 double finFigureObjectAxis::_defMinY = -10.0;
