@@ -17,7 +17,7 @@ finFigureConfig *finFigureConfig::_defFigCfg = NULL;
 
 finFigureConfig::finFigureConfig()
     : _borderPen(Qt::black, 1), _fillBrush(Qt::transparent),
-      _textPen(Qt::transparent), _textBrush(Qt::black), _font(QString("Arial"), 12)
+      _textPen(Qt::transparent, 0), _textBrush(Qt::black), _font(QString("Arial"), 12)
 {
     /* Do Nothing. */
 }

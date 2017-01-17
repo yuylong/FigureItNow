@@ -36,12 +36,35 @@ finFigureConfig *finFigureObject::getFigureConfig()
     return &this->_figCfg;
 }
 
+bool finFigureObject::hasFigurePath() const
+{
+    return false;
+}
+
+bool finFigureObject::hasTextPath() const
+{
+    return false;
+}
+
 QPainterPath finFigureObject::getPath()
 {
     return QPainterPath();
 }
 
 QPainterPath finFigureObject::getPixelPath(finGraphConfig *cfg)
+{
+    if ( cfg == NULL )
+        return QPainterPath();
+
+    return QPainterPath();
+}
+
+QPainterPath finFigureObject::getTextPath()
+{
+    return QPainterPath();
+}
+
+QPainterPath finFigureObject::getPixelTextPath(finGraphConfig *cfg)
 {
     if ( cfg == NULL )
         return QPainterPath();
@@ -78,6 +101,16 @@ finErrorCode finFigureObjectDot::setPoint(double ptx, double pty)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+bool finFigureObjectDot::hasFigurePath() const
+{
+    return true;
+}
+
+bool finFigureObjectDot::hasTextPath() const
+{
+    return false;
+}
+
 QPainterPath finFigureObjectDot::getPath()
 {
     QPainterPath path;
@@ -91,9 +124,10 @@ QPainterPath finFigureObjectDot::getPixelPath(finGraphConfig *cfg)
     if ( cfg == NULL )
         return QPainterPath();
 
+    QPointF pixpt = cfg->transformPixelPoint(this->_point);
     QPainterPath path;
-    path.moveTo(cfg->transformPixelPoint(this->_point));
-    path.lineTo(cfg->transformPixelPoint(this->_point));
+    path.moveTo(pixpt);
+    path.lineTo(pixpt);
     return path;
 }
 
@@ -143,6 +177,16 @@ finErrorCode finFigureObjectLine::setPoint2(double ptx, double pty)
     this->_pt2.setX(ptx);
     this->_pt2.setY(pty);
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+bool finFigureObjectLine::hasFigurePath() const
+{
+    return true;
+}
+
+bool finFigureObjectLine::hasTextPath() const
+{
+    return false;
 }
 
 QPainterPath finFigureObjectLine::getPath()
@@ -213,6 +257,16 @@ finErrorCode finFigureObjectLine3D::setPoint2(double ptx, double pty, double ptz
     this->_pt2.setY(pty);
     this->_pt2.setZ(ptz);
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+bool finFigureObjectLine3D::hasFigurePath() const
+{
+    return true;
+}
+
+bool finFigureObjectLine3D::hasTextPath() const
+{
+    return false;
 }
 
 QPainterPath finFigureObjectLine3D::getPixelPath(finGraphConfig *cfg)
@@ -327,6 +381,16 @@ finErrorCode finFigureObjectRect::setRadian(double rad)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+bool finFigureObjectRect::hasFigurePath() const
+{
+    return true;
+}
+
+bool finFigureObjectRect::hasTextPath() const
+{
+    return false;
+}
+
 QPainterPath finFigureObjectRect::getPath()
 {
     QPainterPath path;
@@ -426,6 +490,16 @@ finErrorCode finFigureObjectEllipse::setRadian(double rad)
     this->_sinrad = sin(rad);
     this->_cosrad = cos(rad);
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+bool finFigureObjectEllipse::hasFigurePath() const
+{
+    return true;
+}
+
+bool finFigureObjectEllipse::hasTextPath() const
+{
+    return false;
 }
 
 QPointF finFigureObjectEllipse::getEllipsePointAtRad(double rad)
@@ -548,7 +622,17 @@ finErrorCode finFigureObjectText::setText(const QString &text)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-QPainterPath finFigureObjectText::getPath()
+bool finFigureObjectText::hasFigurePath() const
+{
+    return false;
+}
+
+bool finFigureObjectText::hasTextPath() const
+{
+    return true;
+}
+
+QPainterPath finFigureObjectText::getTextPath()
 {
     QPainterPath path;
     path.addText(0.0, 0.0, this->_figCfg.getFont(), this->_text);
@@ -585,7 +669,7 @@ QPainterPath finFigureObjectText::getPath()
     return trans.map(path);
 }
 
-QPainterPath finFigureObjectText::getPixelPath(finGraphConfig *cfg)
+QPainterPath finFigureObjectText::getPixelTextPath(finGraphConfig *cfg)
 {
     QPainterPath path;
     path.addText(0.0, 0.0, this->_figCfg.getFont(), this->_text);
@@ -625,7 +709,7 @@ QPainterPath finFigureObjectText::getPixelPath(finGraphConfig *cfg)
 
 void finFigureObjectText::dump() const
 {
-    printf("* Fig Type: rect; C: (%lf, %lf) F: %d S: %lf rad: %lf T: \"%s\"\n",
+    printf(" * Fig Type: text; C: (%lf, %lf) F: %d S: %lf rad: %lf T: \"%s\"\n",
            this->_basePtr.x(), this->_basePtr.y(), this->_flag, this->_scale, this->_rad,
            this->_text.toLatin1().data());
 }

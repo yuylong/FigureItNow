@@ -87,10 +87,18 @@ void finGraphPanelScene::clearScene()
 
 finErrorCode finGraphPanelScene::drawObjPath(finFigureObject *obj)
 {
-    QPainterPath path = obj->getPixelPath(&this->_config);
-    this->_scene->addPath(path,
-                          obj->getFigureConfig()->getBorderPen(),
-                          obj->getFigureConfig()->getFillBrush());
+    if ( obj->hasFigurePath() ) {
+        QPainterPath path = obj->getPixelPath(&this->_config);
+        this->_scene->addPath(path,
+                              obj->getFigureConfig()->getBorderPen(),
+                              obj->getFigureConfig()->getFillBrush());
+    }
+    if ( obj->hasTextPath() ) {
+        QPainterPath path = obj->getPixelTextPath(&this->_config);
+        this->_scene->addPath(path,
+                              obj->getFigureConfig()->getTextPen(),
+                              obj->getFigureConfig()->getTextBrush());
+    }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

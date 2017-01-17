@@ -67,15 +67,29 @@ finErrorCode finGraphPanelPainter::applyFigureConfig(finFigureConfig *cfg)
 {
     this->_painter->setPen(cfg->getBorderPen());
     this->_painter->setBrush(cfg->getFillBrush());
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphPanelPainter::applyTextFigureConfig(finFigureConfig *cfg)
+{
+    this->_painter->setPen(cfg->getTextPen());
+    this->_painter->setBrush(cfg->getTextBrush());
+    this->_painter->setFont(cfg->getFont());
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finGraphPanelPainter::drawObjPath(finFigureObject *obj)
 {
-    this->applyFigureConfig(obj->getFigureConfig());
-
-    QPainterPath path = obj->getPixelPath(&this->_config);
-    this->_painter->drawPath(path);
+    if ( obj->hasFigurePath() ) {
+        this->applyFigureConfig(obj->getFigureConfig());
+        QPainterPath path = obj->getPixelPath(&this->_config);
+        this->_painter->drawPath(path);
+    }
+    if ( obj->hasTextPath() ) {
+        this->applyTextFigureConfig(obj->getFigureConfig());
+        QPainterPath path = obj->getPixelTextPath(&this->_config);
+        this->_painter->drawPath(path);
+    }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

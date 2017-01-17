@@ -27,6 +27,7 @@ public:
 
 protected:
     finErrorCode applyFigureConfig(finFigureConfig *cfg);
+    finErrorCode applyTextFigureConfig(finFigureConfig *cfg);
     finErrorCode drawObjPath(finFigureObject *obj);
 
     finErrorCode drawObjLine3D(finFigureObjectLine3D *line3d);
