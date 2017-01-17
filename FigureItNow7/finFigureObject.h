@@ -291,12 +291,28 @@ public:
     finFigureObjectAxis();
     virtual ~finFigureObjectAxis() { return; }
 
+    virtual bool is3DFigure() const;
+
     double getRangeMinX() const;
     double getRangeMaxX() const;
     double getRangeMinY() const;
     double getRangeMaxY() const;
     bool isAutoRangeX() const;
     bool isAutoRangeY() const;
+
+    double getStepX() const;
+    double getStepY() const;
+    bool isAutoStepX() const;
+    bool isAutoStepY() const;
+
+    QString getTitleX() const;
+    QString getTitleY() const;
+
+    finErrorCode setAutoRangeX();
+    finErrorCode setRangeX(double minx, double maxx);
+    finErrorCode setAutoRangeY();
+    finErrorCode setRangeY(double minx, double maxx);
+
 };
 
 class finFigureObjectLine3D : public finFigureObject

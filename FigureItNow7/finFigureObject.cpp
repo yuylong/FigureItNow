@@ -865,6 +865,11 @@ finFigureObjectAxis::finFigureObjectAxis()
     this->_titleY = QString("y");
 }
 
+bool finFigureObjectAxis::is3DFigure() const
+{
+    return false;
+}
+
 double finFigureObjectAxis::getRangeMinX() const
 {
     return this->_minX;
@@ -895,6 +900,63 @@ bool finFigureObjectAxis::isAutoRangeY() const
     return (this->_minY >= this->_maxY);
 }
 
+double finFigureObjectAxis::getStepX() const
+{
+    return this->_stepX;
+}
+
+double finFigureObjectAxis::getStepY() const
+{
+    return this->_stepY;
+}
+
+bool finFigureObjectAxis::isAutoStepX() const
+{
+    return (this->_stepX <= 0.0);
+}
+
+bool finFigureObjectAxis::isAutoStepY() const
+{
+    return (this->_stepY <= 0.0);
+}
+
+QString finFigureObjectAxis::getTitleX() const
+{
+    return this->_titleX;
+}
+
+QString finFigureObjectAxis::getTitleY() const
+{
+    return this->_titleY;
+}
+
+finErrorCode finFigureObjectAxis::setAutoRangeX()
+{
+    this->_minX = 0.0;
+    this->_maxX = 0.0;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectAxis::setRangeX(double minx, double maxx)
+{
+    this->_minX = minx;
+    this->_maxX = maxx;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectAxis::setAutoRangeY()
+{
+    this->_minY = 0.0;
+    this->_maxY = 0.0;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectAxis::setRangeY(double miny, double maxy)
+{
+    this->_minY = miny;
+    this->_maxY = maxy;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
 
 finFigureObjectLine3D::finFigureObjectLine3D()
 {
