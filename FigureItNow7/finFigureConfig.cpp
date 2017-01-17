@@ -120,6 +120,8 @@ finErrorCode finFigureConfig::cloneFigureConfig(finFigureConfig *outcfg) const
 
     outcfg->_borderPen = this->_borderPen;
     outcfg->_fillBrush = this->_fillBrush;
+    outcfg->_textPen = this->_textPen;
+    outcfg->_textBrush = this->_textBrush;
     outcfg->_font = this->_font;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

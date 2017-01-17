@@ -307,6 +307,75 @@ void finFigureObjectLine3D::dump() const
            this->_pt2.getX(), this->_pt2.getY(), this->_pt2.getZ());
 }
 
+finFigureObjectPolyline::finFigureObjectPolyline()
+    : _ptList()
+{
+    /* Do Nothing */
+}
+
+bool finFigureObjectPolyline::is3DFigure() const
+{
+    return false;
+}
+
+int finFigureObjectPolyline::getPointCount() const
+{
+    return this->_ptList.count();
+}
+
+QPointF finFigureObjectPolyline::getPointAt(int idx) const
+{
+    return this->_ptList.at(idx);
+}
+
+finErrorCode finFigureObjectPolyline::appendPoint(const QPointF &pt)
+{
+    this->_ptList.append(pt);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectPolyline::removePointAt(int idx)
+{
+    this->_ptList.removeAt(idx);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+bool finFigureObjectPolyline::hasFigurePath() const
+{
+    return true;
+}
+
+bool finFigureObjectPolyline::hasTextPath() const
+{
+    return false;
+}
+
+QPainterPath finFigureObjectPolyline::getPath()
+{
+    if ( this->_ptList.count() < 2 )
+        return QPainterPath();
+
+    QPainterPath path;
+    path.moveTo(this->_ptList.at(0));
+    for ( int i = 1; i < this->_ptList.count(); i++ ) {
+        path.lineTo(this->_ptList.at(i));
+    }
+    return path;
+}
+
+QPainterPath finFigureObjectPolyline::getPixelPath(finGraphConfig *cfg)
+{
+    if ( this->_ptList.count() < 2 )
+        return QPainterPath();
+
+    QPainterPath path;
+    path.moveTo(cfg->transformPixelPoint(this->_ptList.at(0)));
+    for ( int i = 1; i < this->_ptList.count(); i++ ) {
+        path.lineTo(cfg->transformPixelPoint(this->_ptList.at(i)));
+    }
+    return path;
+}
+
 finFigureObjectRect::finFigureObjectRect()
 {
     this->_type = finFigureObject::FIN_FO_TYPE_RECT;

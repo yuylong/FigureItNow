@@ -145,6 +145,28 @@ public:
     virtual void dump() const;
 };
 
+class finFigureObjectPolyline : public finFigureObject
+{
+protected:
+    QList<QPointF> _ptList;
+
+public:
+    finFigureObjectPolyline();
+    virtual ~finFigureObjectPolyline() { return; }
+
+    virtual bool is3DFigure() const;
+
+    int getPointCount() const;
+    QPointF getPointAt(int idx) const;
+
+    finErrorCode appendPoint(const QPointF &pt);
+    finErrorCode removePointAt(int idx);
+
+    virtual bool hasFigurePath() const;
+    virtual bool hasTextPath() const;
+    virtual QPainterPath getPath();
+    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+};
 
 class finFigureObjectRect : public finFigureObject
 {
