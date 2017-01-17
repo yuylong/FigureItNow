@@ -21,6 +21,11 @@ finFigureObject::finFigureObject()
     this->_type = finFigureObject::FIN_FO_TYPE_DUMMY;
 }
 
+bool finFigureObject::is3DFigure() const
+{
+    return false;
+}
+
 finFigureObjectType finFigureObject::getFigureType() const
 {
     return this->_type;
@@ -83,6 +88,11 @@ finFigureObjectDot::finFigureObjectDot()
     this->_point = QPointF(0.0, 0.0);
 }
 
+bool finFigureObjectDot::is3DFigure() const
+{
+    return false;
+}
+
 QPointF finFigureObjectDot::getPoint() const
 {
     return this->_point;
@@ -141,6 +151,11 @@ finFigureObjectLine::finFigureObjectLine()
     this->_type = finFigureObject::FIN_FO_TYPE_LINE;
     this->_pt1 = QPointF(0.0, 0.0);
     this->_pt2 = QPointF(0.0, 0.0);
+}
+
+bool finFigureObjectLine::is3DFigure() const
+{
+    return false;
 }
 
 QPointF finFigureObjectLine::getPoint1() const
@@ -221,6 +236,11 @@ finFigureObjectLine3D::finFigureObjectLine3D()
     this->_pt2 = finFigurePoint3D(0.0, 0.0, 0.0);
 }
 
+bool finFigureObjectLine3D::is3DFigure() const
+{
+    return true;
+}
+
 finFigurePoint3D finFigureObjectLine3D::getPoint1() const
 {
     return this->_pt1;
@@ -293,6 +313,11 @@ finFigureObjectRect::finFigureObjectRect()
     this->_center = QPointF(0.0, 0.0);
     this->_size = QSizeF(0.0, 0.0);
     this->_radian = 0.0;
+}
+
+bool finFigureObjectRect::is3DFigure() const
+{
+    return false;
 }
 
 QPointF finFigureObjectRect::getCenterPoint() const
@@ -434,6 +459,11 @@ finFigureObjectEllipse::finFigureObjectEllipse()
     this->_radian = 0.0;
 }
 
+bool finFigureObjectEllipse::is3DFigure() const
+{
+    return false;
+}
+
 QPointF finFigureObjectEllipse::getCenterPoint() const
 {
     return this->_center;
@@ -551,6 +581,11 @@ finFigureObjectText::finFigureObjectText()
     this->_scale = 1.0;
     this->_rad = 0.0;
     this->_text = QString();
+}
+
+bool finFigureObjectText::is3DFigure() const
+{
+    return false;
 }
 
 QPointF finFigureObjectText::getBasePoint() const

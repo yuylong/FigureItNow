@@ -50,6 +50,8 @@ public:
     finFigureObject();
     virtual ~finFigureObject() { return; }
 
+    virtual bool is3DFigure() const;
+
     finFigureObjectType getFigureType() const;
     const finFigureConfig *getFigureConfig() const;
     finFigureConfig *getFigureConfig();
@@ -75,6 +77,8 @@ public:
     finFigureObjectDot();
     virtual ~finFigureObjectDot() { return; }
 
+    virtual bool is3DFigure() const;
+
     QPointF getPoint() const;
 
     finErrorCode setPoint(const QPointF &qpt);
@@ -96,6 +100,8 @@ protected:
 public:
     finFigureObjectLine();
     virtual ~finFigureObjectLine() { return; }
+
+    virtual bool is3DFigure() const;
 
     QPointF getPoint1() const;
     QPointF getPoint2() const;
@@ -121,6 +127,8 @@ protected:
 public:
     finFigureObjectLine3D();
     virtual ~finFigureObjectLine3D() { return; }
+
+    virtual bool is3DFigure() const;
 
     finFigurePoint3D getPoint1() const;
     finFigurePoint3D getPoint2() const;
@@ -149,6 +157,8 @@ protected:
 public:
     finFigureObjectRect();
     virtual ~finFigureObjectRect() { return; }
+
+    virtual bool is3DFigure() const;
 
     QPointF getCenterPoint() const;
     QSizeF getSize() const;
@@ -183,6 +193,8 @@ protected:
 public:
     finFigureObjectEllipse();
     virtual ~finFigureObjectEllipse() { return; }
+
+    virtual bool is3DFigure() const;
 
     QPointF getCenterPoint() const;
     double getLongRadius() const;
@@ -219,6 +231,8 @@ protected:
 public:
     finFigureObjectText();
     virtual ~finFigureObjectText() { return; }
+
+    virtual bool is3DFigure() const;
 
     QPointF getBasePoint() const;
     int getFontMetricFlags() const;
