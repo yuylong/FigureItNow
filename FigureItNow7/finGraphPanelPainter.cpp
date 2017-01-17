@@ -36,9 +36,11 @@ finErrorCode finGraphPanelPainter::drawObject(finFigureObject *obj)
         return finErrorCodeKits::FIN_EC_NORMAL_WARN;
 
     switch ( obj->getFigureType() ) {
+      case finFigureObject::FIN_FO_TYPE_DOT:
       case finFigureObject::FIN_FO_TYPE_LINE:
       case finFigureObject::FIN_FO_TYPE_POLYLINE:
       case finFigureObject::FIN_FO_TYPE_RECT:
+      case finFigureObject::FIN_FO_TYPE_POLYGON:
       case finFigureObject::FIN_FO_TYPE_ELLIPSE:
       case finFigureObject::FIN_FO_TYPE_TEXT:
         return this->drawObjPath(obj);

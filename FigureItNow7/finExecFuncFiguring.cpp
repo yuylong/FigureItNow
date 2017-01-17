@@ -16,6 +16,8 @@ static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment 
                                       finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env,
                                   finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *env,
+                                     finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *env,
@@ -37,6 +39,7 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("line"),             QString("x1,y1,x2,y2"),            _sysfunc_line             },
     { QString("polyline"),         QString("x1,y1,x2,y2"),            _sysfunc_polyline         },
     { QString("rect"),             QString("cx,cy,w,h,rad"),          _sysfunc_rect             },
+    { QString("polygon"),          QString("x1,y1,x2,y2"),            _sysfunc_polygon         },
     { QString("circle"),           QString("cx,cy,r"),                _sysfunc_circle           },
     { QString("ellipse"),          QString("cx,cy,lr,sr,rad"),        _sysfunc_ellipse          },
     { QString("draw_text"),        QString("text,cx,cy,rad,sc"),      _sysfunc_draw_text        },
@@ -210,6 +213,66 @@ static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env
     errcode = env->getFigureContainer()->appendFigureObject(forect);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         delete forect;
+        return errcode;
+    }
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *env,
+                                     finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *ptx, *pty;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    finFigureObjectPolygon *fopolygon = new finFigureObjectPolygon();
+    if ( fopolygon == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    ptx = finExecVariable::transLinkTarget(env->findVariable("x1"));
+    pty = finExecVariable::transLinkTarget(env->findVariable("y1"));
+    if ( ptx == NULL || pty == NULL ||
+         ptx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         pty->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) {
+        delete fopolygon;
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+    fopolygon->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
+
+    ptx = finExecVariable::transLinkTarget(env->findVariable("x2"));
+    pty = finExecVariable::transLinkTarget(env->findVariable("y2"));
+    if ( ptx == NULL || pty == NULL ||
+         ptx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         pty->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) {
+        delete fopolygon;
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+    fopolygon->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
+
+    int idx = 0;
+    while ( true ) {
+        ptx = finExecFunction::getExtendArgAt(env, idx);
+        pty = finExecFunction::getExtendArgAt(env, idx + 1);
+        if ( ptx == NULL || pty == NULL )
+            break;
+        if ( ptx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+             pty->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) {
+            delete fopolygon;
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        }
+
+        fopolygon->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
+        idx += 2;
+    }
+
+    errcode = env->getFigureContainer()->appendFigureObject(fopolygon);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete fopolygon;
         return errcode;
     }
     flowctl->setFlowNext();
