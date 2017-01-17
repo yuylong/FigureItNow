@@ -287,6 +287,8 @@ protected:
     double _stepX, _stepY;
     QString _titleX, _titleY;
 
+    static double _defMinX, _defMaxX, _defMinY, _defMaxY;
+
 public:
     finFigureObjectAxis();
     virtual ~finFigureObjectAxis() { return; }
@@ -311,8 +313,12 @@ public:
     finErrorCode setAutoRangeX();
     finErrorCode setRangeX(double minx, double maxx);
     finErrorCode setAutoRangeY();
-    finErrorCode setRangeY(double minx, double maxx);
+    finErrorCode setRangeY(double miny, double maxy);
 
+    finErrorCode setAutoStepX();
+    finErrorCode setStepX(double step);
+    finErrorCode setAutoStepY();
+    finErrorCode setStepY(double step);
 };
 
 class finFigureObjectLine3D : public finFigureObject

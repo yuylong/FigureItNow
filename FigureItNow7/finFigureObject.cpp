@@ -958,6 +958,35 @@ finErrorCode finFigureObjectAxis::setRangeY(double miny, double maxy)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finFigureObjectAxis::setAutoStepX()
+{
+    this->_stepX = 0.0;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectAxis::setStepX(double step)
+{
+    this->_stepX = step;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectAxis::setAutoStepY()
+{
+    this->_stepY = 0.0;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectAxis::setStepY(double step)
+{
+    this->_stepY = step;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+double finFigureObjectAxis::_defMinX = -10.0;
+double finFigureObjectAxis::_defMaxX = 10.0;
+double finFigureObjectAxis::_defMinY = -10.0;
+double finFigureObjectAxis::_defMaxY = 10.0;
+
 finFigureObjectLine3D::finFigureObjectLine3D()
 {
     this->_type = finFigureObject::FIN_FO_TYPE_LINE3D;
