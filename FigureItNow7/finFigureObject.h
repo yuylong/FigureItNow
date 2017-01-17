@@ -280,6 +280,18 @@ public:
     virtual void dump() const;
 };
 
+class finFigureObjectAxis : public finFigureObject
+{
+protected:
+    double _minX, _maxX, minY, _maxY;
+    double _stepX, _stepY;
+    QString _titleX, _titleY;
+
+public:
+    finFigureObjectAxis();
+    virtual ~finFigureObjectAxis() { return; }
+};
+
 class finFigureObjectLine3D : public finFigureObject
 {
 protected:
