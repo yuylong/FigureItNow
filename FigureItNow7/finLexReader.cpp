@@ -220,7 +220,7 @@ finErrorCode finLexReader::tryGetNote(finLexNode *retnode)
 
             if ( curchcat == QChar::Separator_Line || curchcat == QChar::Separator_Paragraph ||
                  curch == QChar::LineFeed || curch == QChar::CarriageReturn ||
-                 curch == QChar::ParagraphSeparator || curch == QChar::LineSeparator)
+                 curch == QChar::ParagraphSeparator || curch == QChar::LineSeparator )
                 break;
             trypos++;
         }
