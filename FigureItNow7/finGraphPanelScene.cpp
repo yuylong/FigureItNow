@@ -54,6 +54,7 @@ finErrorCode finGraphPanelScene::drawObject(finFigureObject *obj)
 
     switch ( obj->getFigureType() ) {
       case finFigureObject::FIN_FO_TYPE_LINE:
+      case finFigureObject::FIN_FO_TYPE_POLYLINE:
       case finFigureObject::FIN_FO_TYPE_RECT:
       case finFigureObject::FIN_FO_TYPE_ELLIPSE:
       case finFigureObject::FIN_FO_TYPE_TEXT:

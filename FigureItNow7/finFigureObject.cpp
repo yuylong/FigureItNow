@@ -310,7 +310,7 @@ void finFigureObjectLine3D::dump() const
 finFigureObjectPolyline::finFigureObjectPolyline()
     : _ptList()
 {
-    /* Do Nothing */
+    this->_type = finFigureObject::FIN_FO_TYPE_POLYLINE;
 }
 
 bool finFigureObjectPolyline::is3DFigure() const
@@ -331,6 +331,12 @@ QPointF finFigureObjectPolyline::getPointAt(int idx) const
 finErrorCode finFigureObjectPolyline::appendPoint(const QPointF &pt)
 {
     this->_ptList.append(pt);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectPolyline::appendPoint(double ptx, double pty)
+{
+    this->_ptList.append(QPointF(ptx, pty));
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -374,6 +380,21 @@ QPainterPath finFigureObjectPolyline::getPixelPath(finGraphConfig *cfg)
         path.lineTo(cfg->transformPixelPoint(this->_ptList.at(i)));
     }
     return path;
+}
+
+void finFigureObjectPolyline::dump() const
+{
+    printf(" * Fig Type: line; ");
+    if ( this->_ptList.empty() ) {
+        printf ("EMPTY\n");
+        return;
+    }
+
+    printf("(%lf, %lf)", this->_ptList.at(0).x(), this->_ptList.at(1).y());
+    for ( int i = 1; i < this->_ptList.count(); i++ ) {
+        printf(" -- (%lf, %lf)", this->_ptList.at(i).x(), this->_ptList.at(i).y());
+    }
+    printf("\n");
 }
 
 finFigureObjectRect::finFigureObjectRect()

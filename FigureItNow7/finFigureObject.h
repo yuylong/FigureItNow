@@ -160,12 +160,15 @@ public:
     QPointF getPointAt(int idx) const;
 
     finErrorCode appendPoint(const QPointF &pt);
+    finErrorCode appendPoint(double ptx, double pty);
     finErrorCode removePointAt(int idx);
 
     virtual bool hasFigurePath() const;
     virtual bool hasTextPath() const;
     virtual QPainterPath getPath();
     virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+
+    virtual void dump() const;
 };
 
 class finFigureObjectRect : public finFigureObject

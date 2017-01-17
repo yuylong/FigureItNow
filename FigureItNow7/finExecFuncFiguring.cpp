@@ -12,6 +12,8 @@ static finErrorCode _sysfunc_clear_fig(finExecFunction *self, finExecEnvironment
                                        finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_line(finExecFunction *self, finExecEnvironment *env,
                                   finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment *env,
+                                      finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env,
                                   finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *env,
@@ -33,6 +35,7 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
 static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("clear_fig"),        QString(""),                       _sysfunc_clear_fig        },
     { QString("line"),             QString("x1,y1,x2,y2"),            _sysfunc_line             },
+    { QString("polyline"),         QString("x1,y1,x2,y2"),            _sysfunc_polyline         },
     { QString("rect"),             QString("cx,cy,w,h,rad"),          _sysfunc_rect             },
     { QString("circle"),           QString("cx,cy,r"),                _sysfunc_circle           },
     { QString("ellipse"),          QString("cx,cy,lr,sr,rad"),        _sysfunc_ellipse          },
@@ -99,6 +102,66 @@ _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *ma
     errcode = env->getFigureContainer()->appendFigureObject(foline);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         delete foline;
+        return errcode;
+    }
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment *env,
+                                      finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *ptx, *pty;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    finFigureObjectPolyline *fopolyline = new finFigureObjectPolyline();
+    if ( fopolyline == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    ptx = finExecVariable::transLinkTarget(env->findVariable("x1"));
+    pty = finExecVariable::transLinkTarget(env->findVariable("y1"));
+    if ( ptx == NULL || pty == NULL ||
+         ptx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         pty->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) {
+        delete fopolyline;
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+    fopolyline->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
+
+    ptx = finExecVariable::transLinkTarget(env->findVariable("x2"));
+    pty = finExecVariable::transLinkTarget(env->findVariable("y2"));
+    if ( ptx == NULL || pty == NULL ||
+         ptx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         pty->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) {
+        delete fopolyline;
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+    fopolyline->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
+
+    int idx = 0;
+    while ( true ) {
+        ptx = finExecFunction::getExtendArgAt(env, idx);
+        pty = finExecFunction::getExtendArgAt(env, idx + 1);
+        if ( ptx == NULL || pty == NULL )
+            break;
+        if ( ptx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+             pty->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) {
+            delete fopolyline;
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        }
+
+        fopolyline->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
+        idx += 2;
+    }
+
+    errcode = env->getFigureContainer()->appendFigureObject(fopolyline);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete fopolyline;
         return errcode;
     }
     flowctl->setFlowNext();
