@@ -77,7 +77,10 @@ void MainWindow::on_pushButton_2_clicked()
     fflush(stdout);
 
 
-    ui->lineEdit_2->setText(synstack->first()->getCommandLexNode()->getString());
+    if ( !synstack->empty() )
+        ui->lineEdit_2->setText(synstack->first()->getCommandLexNode()->getString());
+    else
+        ui->lineEdit_2->setText(QString("EMPTY"));
 }
 
 void MainWindow::on_pushButton_3_clicked()

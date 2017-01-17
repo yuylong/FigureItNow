@@ -215,9 +215,12 @@ finErrorCode finLexReader::tryGetNote(finLexNode *retnode)
     if ( this->_inputStr.at(trypos) == QChar('/') ) {
         trypos++;
         while ( trypos < strlength ) {
-            QChar::Category curchcat = this->_inputStr.at(trypos).category();
+            QChar curch = this->_inputStr.at(trypos);
+            QChar::Category curchcat = curch.category();
 
-            if ( curchcat == QChar::Separator_Line || curchcat == QChar::Separator_Paragraph )
+            if ( curchcat == QChar::Separator_Line || curchcat == QChar::Separator_Paragraph ||
+                 curch == QChar::LineFeed || curch == QChar::CarriageReturn ||
+                 curch == QChar::ParagraphSeparator || curch == QChar::LineSeparator)
                 break;
             trypos++;
         }

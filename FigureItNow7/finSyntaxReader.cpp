@@ -128,7 +128,7 @@ finErrorCode finSyntaxReader::processTypedNextToken(finLexNode *lexnode, finLexN
         return processOperatorToken(lexnode);
 
       default:
-        return processOperatorToken(lexnode);
+        return processVirtualToken(lexnode);
     }
 }
 
