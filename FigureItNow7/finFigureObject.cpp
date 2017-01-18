@@ -57,60 +57,6 @@ finErrorCode finFigureObject::getPixelFigurePath(QList<finFigurePath> *pathlist,
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
-bool finFigureObject::hasLinePath() const
-{
-    return false;
-}
-
-bool finFigureObject::hasShapePath() const
-{
-    return false;
-}
-
-bool finFigureObject::hasTextPath() const
-{
-    return false;
-}
-
-QPainterPath finFigureObject::getLinePath()
-{
-    return QPainterPath();
-}
-
-QPainterPath finFigureObject::getPixelLinePath(finGraphConfig *cfg)
-{
-    if ( cfg == NULL )
-        return QPainterPath();
-
-    return QPainterPath();
-}
-
-QPainterPath finFigureObject::getShapePath()
-{
-    return QPainterPath();
-}
-
-QPainterPath finFigureObject::getPixelShapePath(finGraphConfig *cfg)
-{
-    if ( cfg == NULL )
-        return QPainterPath();
-
-    return QPainterPath();
-}
-
-QPainterPath finFigureObject::getTextPath()
-{
-    return QPainterPath();
-}
-
-QPainterPath finFigureObject::getPixelTextPath(finGraphConfig *cfg)
-{
-    if ( cfg == NULL )
-        return QPainterPath();
-
-    return QPainterPath();
-}
-
 void finFigureObject::dump() const
 {
     printf(" * Fig Type: dummy\n");
@@ -841,17 +787,7 @@ finErrorCode finFigureObjectText::setText(const QString &text)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectText::hasShapePath() const
-{
-    return false;
-}
-
-bool finFigureObjectText::hasTextPath() const
-{
-    return true;
-}
-
-QPainterPath finFigureObjectText::getTextPath()
+QPainterPath finFigureObjectText::getTextPath() const
 {
     QPainterPath path;
     path.addText(0.0, 0.0, this->_figCfg.getFont(), this->_text);
@@ -888,7 +824,7 @@ QPainterPath finFigureObjectText::getTextPath()
     return trans.map(path);
 }
 
-QPainterPath finFigureObjectText::getPixelTextPath(finGraphConfig *cfg)
+QPainterPath finFigureObjectText::getPixelTextPath(finGraphConfig *cfg) const
 {
     QPainterPath path;
     path.addText(0.0, 0.0, this->_figCfg.getFont(), this->_text);
@@ -924,6 +860,39 @@ QPainterPath finFigureObjectText::getPixelTextPath(finGraphConfig *cfg)
     trans *= subtrans2;
 
     return trans.map(path);
+}
+
+finErrorCode finFigureObjectText::getFigurePath(QList<finFigurePath> *pathlist) const
+{
+    if ( pathlist == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    QPainterPath path = this->getTextPath();
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getTextPen());
+    figpath.setBrush(this->_figCfg.getTextBrush());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode
+finFigureObjectText::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
+{
+    if ( pathlist == NULL || cfg == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    QPainterPath path = this->getPixelTextPath(cfg);
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getTextPen());
+    figpath.setBrush(this->_figCfg.getTextBrush());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 void finFigureObjectText::dump() const
@@ -1129,25 +1098,22 @@ finErrorCode finFigureObjectLine3D::setPoint2(double ptx, double pty, double ptz
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectLine3D::hasShapePath() const
+finErrorCode
+finFigureObjectLine3D::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    return true;
-}
-
-bool finFigureObjectLine3D::hasTextPath() const
-{
-    return false;
-}
-
-QPainterPath finFigureObjectLine3D::getPixelShapePath(finGraphConfig *cfg)
-{
-    if ( cfg == NULL )
-        return QPainterPath();
+    if ( pathlist == NULL || cfg == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
     QPainterPath path;
     path.moveTo(cfg->transformPixelPoint3D(this->_pt1));
     path.lineTo(cfg->transformPixelPoint3D(this->_pt2));
-    return path;
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 void finFigureObjectLine3D::dump() const
