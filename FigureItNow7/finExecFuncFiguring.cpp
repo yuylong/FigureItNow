@@ -5,6 +5,7 @@
 #include "finExecEnvironment.h"
 #include "finExecMachine.h"
 #include "finFigureObject.h"
+#include "finFigureArrow.h"
 #include "finFigureContainer.h"
 
 
@@ -544,6 +545,14 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
             delete cfgvalue;
             return errcode;
         }
+    } else if ( QString::compare(cfgname, "start_arrow_type") == 0 ) {
+        finFigureArrowType arwtype = figconfig->getStartArrowType();
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_STRING);
+        cfgvalue->setStringValue(finFigureArrow::getTypeName(arwtype));
+    } else if ( QString::compare(cfgname, "end_arrow_type") == 0 ) {
+        finFigureArrowType arwtype = figconfig->getEndArrowType();
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_STRING);
+        cfgvalue->setStringValue(finFigureArrow::getTypeName(arwtype));
     } else {
         delete cfgvalue;
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
@@ -596,6 +605,16 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
         figconfig->setFillColor(color);
+    } else if ( QString::compare(cfgname, "start_arrow_type") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        finFigureArrowType arwtype = finFigureArrow::parseTypeString(cfgvalue->getStringValue());
+        figconfig->setStartArrowType(arwtype);
+    } else if ( QString::compare(cfgname, "end_arrow_type") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        finFigureArrowType arwtype = finFigureArrow::parseTypeString(cfgvalue->getStringValue());
+        figconfig->setEndArrowType(arwtype);
     } else {
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
     }

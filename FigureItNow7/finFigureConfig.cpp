@@ -73,6 +73,16 @@ QColor finFigureConfig::getFillColor() const
     return this->_fillBrush.color();
 }
 
+finFigureArrowType finFigureConfig::getStartArrowType() const
+{
+    return this->_startArrow.getType();
+}
+
+finFigureArrowType finFigureConfig::getEndArrowType() const
+{
+    return this->_endArrow.getType();
+}
+
 finErrorCode finFigureConfig::setBorderPen(const QPen &pen)
 {
     this->_borderPen = pen;
@@ -133,6 +143,18 @@ finErrorCode finFigureConfig::setBorderColor(const QColor &color)
 finErrorCode finFigureConfig::setFillColor(const QColor &color)
 {
     this->_fillBrush.setColor(color);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setStartArrowType(finFigureArrowType type)
+{
+    this->_startArrow.setType(type);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setEndArrowType(finFigureArrowType type)
+{
+    this->_endArrow.setType(type);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
