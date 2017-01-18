@@ -10,6 +10,11 @@ finGraphTransType finGraphTrans::getTransformType() const
     return this->_type;
 }
 
+bool finGraphTrans::isLinear() const
+{
+    return true;
+}
+
 QPointF finGraphTrans::transPoint(const QPointF &ptr)
 {
     return ptr;
@@ -25,6 +30,11 @@ finGraphTransRect::finGraphTransRect()
     this->_type = finGraphTrans::FIN_GT_TYPE_RECT;
     this->_axisZoomX = 1.0;
     this->_axisZoomY = 1.0;
+}
+
+bool finGraphTransRect::isLinear() const
+{
+    return true;
 }
 
 double finGraphTransRect::getAxisZoomX() const

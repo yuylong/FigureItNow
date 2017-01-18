@@ -55,7 +55,9 @@ public:
     QPointF getOriginPixelPoint() const;
     double getAxisUnitPixelSize() const;
     double getAxisRadZ() const;
+
     finGraphTrans *getTransform() const;
+    bool isLinearTransform() const;
 
     QPainter::RenderHints getRenderHints() const;
 

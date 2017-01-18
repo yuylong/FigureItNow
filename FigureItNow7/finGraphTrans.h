@@ -22,6 +22,8 @@ public:
 
     finGraphTransType getTransformType() const;
 
+    virtual bool isLinear() const;
+
     virtual QPointF transPoint(const QPointF &ptr);
     virtual QPointF arcTransPoint(const QPointF &ptr);
 };
@@ -35,6 +37,8 @@ protected:
 
 public:
     finGraphTransRect();
+
+    virtual bool isLinear() const;
 
     double getAxisZoomX() const;
     double getAxisZoomY() const;

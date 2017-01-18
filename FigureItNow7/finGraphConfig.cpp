@@ -88,6 +88,14 @@ finGraphTrans *finGraphConfig::getTransform() const
     return this->_transform;
 }
 
+bool finGraphConfig::isLinearTransform() const
+{
+    if ( this->_transform != NULL && this->_transform->getTransformType() != finGraphTrans::FIN_GT_TYPE_NONE )
+        return true;
+    else
+        return this->_transform->isLinear();
+}
+
 QPainter::RenderHints finGraphConfig::getRenderHints() const
 {
     return this->_renderHints;
