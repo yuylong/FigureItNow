@@ -13,9 +13,12 @@ class finFigureAlg
 public:
     finFigureAlg();
 
+    static double vectorLength(const QPointF &vec);
     static double pointsDistance(const QPointF &pt1, const QPointF &pt2);
     static QPointF movePointInside(const QPointF &basept, const QPointF &dirpt, double len);
     static QPointF movePointOutside(const QPointF &basept, const QPointF &dirpt, double len);
+
+    static QPointF getVerticalVector(const QPointF &vec, double len);
 
     static finFigAlgLine2D line2DFromPoints(const QPointF &pt1, const QPointF &pt2);
     static bool isParallelLines(const finFigAlgLine2D &line1, const finFigAlgLine2D &line2);

@@ -7,6 +7,11 @@ finFigureAlg::finFigureAlg()
     /* Do Nothing */
 }
 
+double finFigureAlg::vectorLength(const QPointF &vec)
+{
+    return sqrt(vec.x() * vec.x() + vec.y() * vec.y());
+}
+
 double finFigureAlg::pointsDistance(const QPointF &pt1, const QPointF &pt2)
 {
     QPointF divpt = pt2 - pt1;
@@ -35,6 +40,13 @@ QPointF finFigureAlg::movePointOutside(const QPointF &basept, const QPointF &dir
     QPointF linevec = basept - dirpt;
     QPointF tarvec = linevec * ratio;
     return basept + tarvec;
+}
+
+QPointF finFigureAlg::getVerticalVector(const QPointF &vec, double len)
+{
+    double x = sqrt((len * len) / (1 + (vec.x() * vec.x()) / (vec.y() * vec.y())));
+    double y = -(vec.x() / vec.y()) * x;
+    return QPointF(x, y);
 }
 
 finFigAlgLine2D finFigureAlg::line2DFromPoints(const QPointF &pt1, const QPointF &pt2)

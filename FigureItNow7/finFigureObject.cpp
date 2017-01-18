@@ -204,22 +204,22 @@ finErrorCode finFigureObjectLine::getPixelFigurePath(QList<finFigurePath> *pathl
     if ( pathlist == NULL || cfg == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    QPainterPath path;
     QPointF pt1 = cfg->transformPixelPoint(this->_pt1);
     QPointF pt2 = cfg->transformPixelPoint(this->_pt2);
-    pt1 = this->_figCfg.getStartArrow().lineShrinkPoint(pt2, pt1, &this->_figCfg);
-    pt2 = this->_figCfg.getEndArrow().lineShrinkPoint(pt1, pt2, &this->_figCfg);
+    QPointF spt1 = this->_figCfg.getStartArrow().lineShrinkPoint(pt1, pt2, &this->_figCfg);
+    QPointF spt2 = this->_figCfg.getEndArrow().lineShrinkPoint(pt2, pt1, &this->_figCfg);
 
-    if ( finFigureAlg::pointsDistance(pt1, pt2) > 0.0 ) {
-        path.moveTo(pt1);
-        path.lineTo(pt2);
+    QPainterPath path;
+    path.moveTo(spt1);
+    path.lineTo(spt2);
 
-        finFigurePath figpath;
-        figpath.setPen(this->_figCfg.getBorderPen());
-        figpath.setPath(path);
-        pathlist->append(figpath);
-    }
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setPath(path);
+    pathlist->append(figpath);
 
+    this->_figCfg.getStartArrow().getPixelPath(pathlist, pt1, pt2, &this->_figCfg);
+    this->_figCfg.getEndArrow().getPixelPath(pathlist, pt2, pt1, &this->_figCfg);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

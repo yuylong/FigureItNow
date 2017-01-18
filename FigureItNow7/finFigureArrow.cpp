@@ -33,8 +33,8 @@ finFigureArrowType finFigureArrow::parseTypeString(const QString &str)
 finFigureArrow::finFigureArrow()
 {
     this->_type = finFigureArrow::FIN_FA_TYPE_NONE;
-    this->_rad = M_PI / 6.0;
-    this->_length = 6.0;
+    this->_rad = M_PI / 4.0;
+    this->_length = 12.0;
 }
 
 finFigureArrow::finFigureArrow(const finFigureArrow &arrow)
@@ -67,7 +67,7 @@ finErrorCode finFigureArrow::setType(finFigureArrowType type)
 
 finErrorCode finFigureArrow::setRadian(double rad)
 {
-    rad = rad - floor(rad / (2 * M_PI)) * 2 * M_PI;
+    rad = rad - floor(rad / M_PI) * M_PI;
     this->_rad = rad;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
@@ -89,9 +89,39 @@ finFigureArrow &finFigureArrow::operator = (const finFigureArrow &arrow)
     return *this;
 }
 
-QPointF
-finFigureArrow::lineShrinkPoint(const QPointF &prevpt, const QPointF &arwpt, const finFigureConfig *cfg) const
+QPen finFigureArrow::getArrowPen(const finFigureConfig *cfg) const
 {
+    QPen pen = cfg->getBorderPen();
+    switch ( pen.capStyle() ) {
+      case Qt::FlatCap:
+        pen.setColor(QColor(Qt::transparent));
+        break;
+
+      case Qt::SquareCap:
+        pen.setJoinStyle(Qt::MiterJoin);
+        break;
+
+      case Qt::RoundCap:
+        pen.setJoinStyle(Qt::RoundJoin);
+        break;
+
+      default:
+        break;
+    }
+    return pen;
+}
+
+QBrush finFigureArrow::getArrowBrush(const finFigureConfig *cfg) const
+{
+    return cfg->getBorderPen().brush();
+}
+
+QPointF
+finFigureArrow::lineShrinkPoint(const QPointF &arwpt, const QPointF &prevpt, const finFigureConfig *cfg) const
+{
+    if ( cfg == NULL )
+        return arwpt;
+
     switch ( this->_type ) {
       case finFigureArrow::FIN_FA_TYPE_NONE:
         return arwpt;
@@ -103,6 +133,28 @@ finFigureArrow::lineShrinkPoint(const QPointF &prevpt, const QPointF &arwpt, con
 
       default:
         return arwpt;
+        break;
+    }
+}
+
+finErrorCode finFigureArrow::getPixelPath(QList<finFigurePath> *pathlist,
+                                          const QPointF &arwpt, const QPointF &prevpt,
+                                          const finFigureConfig *cfg) const
+{
+    if ( pathlist == NULL || cfg == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    switch ( this->_type ) {
+      case finFigureArrow::FIN_FA_TYPE_NONE:
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+        break;
+
+      case finFigureArrow::FIN_FA_TYPE_TRIANGLE:
+        return this->getPixelPathTriangle(pathlist, arwpt, prevpt, cfg);
+        break;
+
+      default:
+        return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
         break;
     }
 }
@@ -128,3 +180,28 @@ finFigureArrow::lineShrinkPtTriangle(const QPointF &prevpt, const QPointF &arwpt
     return finFigureAlg::movePointInside(arwpt, prevpt, shrinklen);
 }
 
+finErrorCode finFigureArrow::getPixelPathTriangle(QList<finFigurePath> *pathlist,
+                                                  const QPointF &arwpt, const QPointF &prevpt,
+                                                  const finFigureConfig *cfg) const
+{
+    QPointF trft = finFigureAlg::movePointInside(arwpt, prevpt, this->_length);
+    double trftlen = this->_length * tan(this->_rad / 2.0);
+    QPointF trhvec = arwpt - trft;
+    QPointF trftvec = finFigureAlg::getVerticalVector(trhvec, trftlen);
+
+    QPointF trpt1 = trft + trftvec;
+    QPointF trpt2 = trft - trftvec;
+    QPainterPath path;
+    path.moveTo(arwpt);
+    path.lineTo(trpt1);
+    path.lineTo(trpt2);
+    path.lineTo(arwpt);
+
+    finFigurePath figpath;
+    figpath.setPen(this->getArrowPen(cfg));
+    figpath.setBrush(this->getArrowBrush(cfg));
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}

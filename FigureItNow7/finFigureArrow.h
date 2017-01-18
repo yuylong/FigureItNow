@@ -2,10 +2,14 @@
 #define FINFIGUREARROW_H
 
 #include <QString>
+#include <QList>
 #include <QPointF>
+#include <QPen>
+#include <QBrush>
 #include <QPainterPath>
 
 #include "finErrorCode.h"
+#include "finFigurePath.h"
 
 class finFigureConfig;
 class finGraphConfig;
@@ -40,11 +44,18 @@ public:
 
     finFigureArrow &operator = (const finFigureArrow &arrow);
 
-    QPointF lineShrinkPoint(const QPointF &prevpt, const QPointF &arwpt, const finFigureConfig *cfg) const;
+    QPen getArrowPen(const finFigureConfig *cfg) const;
+    QBrush getArrowBrush(const finFigureConfig *cfg) const;
+
+    QPointF lineShrinkPoint(const QPointF &arwpt, const QPointF &prevpt, const finFigureConfig *cfg) const;
+    finErrorCode getPixelPath(QList<finFigurePath> *pathlist, const QPointF &arwpt, const QPointF &prevpt,
+                              const finFigureConfig *cfg) const;
 
 private:
     double lineShrinkLenTriangle(const finFigureConfig *cfg) const;
     QPointF lineShrinkPtTriangle(const QPointF &prevpt, const QPointF &arwpt, const finFigureConfig *cfg) const;
+    finErrorCode getPixelPathTriangle(QList<finFigurePath> *pathlist, const QPointF &arwpt, const QPointF &prevpt,
+                                      const finFigureConfig *cfg) const;
 
 
 };
