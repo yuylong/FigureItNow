@@ -49,14 +49,13 @@ finErrorCode finFigureObject::getFigurePath(QList<finFigurePath> *pathlist) cons
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
-finErrorCode finFigureObject::getPixelFigurePath(QList<finFigurePath> *pathlist) const
+finErrorCode finFigureObject::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    if ( pathlist == NULL )
+    if ( pathlist == NULL || cfg == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
-
 
 bool finFigureObject::hasLinePath() const
 {
@@ -145,6 +144,42 @@ finErrorCode finFigureObjectDot::setPoint(double ptx, double pty)
     this->_point.setY(pty);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+finErrorCode finFigureObjectDot::getFigurePath(QList<finFigurePath> *pathlist) const
+{
+    if ( pathlist == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    QPainterPath path;
+    path.moveTo(this->_point);
+    path.lineTo(this->_point);
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectDot::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
+{
+    if ( pathlist == NULL || cfg == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    QPointF pixpt = cfg->transformPixelPoint(this->_point);
+    QPainterPath path;
+    path.moveTo(pixpt);
+    path.lineTo(pixpt);
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 
 bool finFigureObjectDot::hasShapePath() const
 {
