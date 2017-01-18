@@ -13,6 +13,7 @@
 
 #include "finFigureConfig.h"
 
+
 finFigureConfig *finFigureConfig::_defFigCfg = NULL;
 
 finFigureConfig::finFigureConfig()
@@ -30,6 +31,16 @@ QPen finFigureConfig::getBorderPen() const
 QBrush finFigureConfig::getFillBrush() const
 {
     return this->_fillBrush;
+}
+
+finFigureArrow finFigureConfig::getStartArrow() const
+{
+    return this->_startArrow;
+}
+
+finFigureArrow finFigureConfig::getEndArrow() const
+{
+    return this->_endArrow;
 }
 
 QPen finFigureConfig::getTextPen() const
@@ -71,6 +82,18 @@ finErrorCode finFigureConfig::setBorderPen(const QPen &pen)
 finErrorCode finFigureConfig::setFillBrush(const QBrush &brush)
 {
     this->_fillBrush = brush;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setStartArrow(const finFigureArrow &arrow)
+{
+    this->_startArrow = arrow;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setEndArrow(const finFigureArrow &arrow)
+{
+    this->_endArrow = arrow;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

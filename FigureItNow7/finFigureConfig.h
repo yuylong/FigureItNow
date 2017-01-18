@@ -23,12 +23,15 @@
 #include <QFont>
 
 #include "finErrorCode.h"
+#include "finFigureArrow.h"
 
 class finFigureConfig
 {
 protected:
     QPen _borderPen;
     QBrush _fillBrush;
+    finFigureArrow _startArrow;
+    finFigureArrow _endArrow;
 
     QPen _textPen;
     QBrush _textBrush;
@@ -43,6 +46,8 @@ public:
 
     QPen getBorderPen() const;
     QBrush getFillBrush() const;
+    finFigureArrow getStartArrow() const;
+    finFigureArrow getEndArrow() const;
     QPen getTextPen() const;
     QBrush getTextBrush() const;
     QFont getFont() const;
@@ -53,6 +58,8 @@ public:
 
     finErrorCode setBorderPen(const QPen &pen);
     finErrorCode setFillBrush(const QBrush &brush);
+    finErrorCode setStartArrow(const finFigureArrow &arrow);
+    finErrorCode setEndArrow(const finFigureArrow &arrow);
     finErrorCode setTextPen(const QPen &pen);
     finErrorCode setTextBrush(const QBrush &brush);
     finErrorCode setFont(const QFont &font);

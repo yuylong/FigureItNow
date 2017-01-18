@@ -1,9 +1,13 @@
 #ifndef FINFIGUREARROW_H
 #define FINFIGUREARROW_H
 
+#include <QString>
 #include <QPainterPath>
 
 #include "finErrorCode.h"
+
+class finFigureConfig;
+class finGraphConfig;
 
 class finFigureArrow
 {
@@ -12,6 +16,9 @@ public:
         FIN_FA_TYPE_NONE,
         FIN_FA_TYPE_TRIANGLE,
     };
+
+    static QString getTypeName(finFigureArrow::Type type);
+    static finFigureArrow::Type parseTypeString(const QString &str);
 
 protected:
     finFigureArrow::Type _type;

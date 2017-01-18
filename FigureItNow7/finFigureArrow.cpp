@@ -2,6 +2,33 @@
 
 #include <qmath.h>
 
+#include "finFigureConfig.h"
+#include "finGraphConfig.h"
+
+QString finFigureArrow::getTypeName(finFigureArrowType type)
+{
+    switch ( type ) {
+      case finFigureArrow::FIN_FA_TYPE_NONE:
+        return QString("none");
+        break;
+
+      case finFigureArrow::FIN_FA_TYPE_TRIANGLE:
+        return QString("triangle");
+        break;
+    }
+    return QString();
+}
+
+finFigureArrowType finFigureArrow::parseTypeString(const QString &str)
+{
+    if ( QString::compare(str, QString("none")) == 0 )
+        return finFigureArrow::FIN_FA_TYPE_NONE;
+    else if ( QString::compare(str, QString("triangle")) == 0 )
+        return finFigureArrow::FIN_FA_TYPE_TRIANGLE;
+    else
+        return finFigureArrow::FIN_FA_TYPE_NONE;
+}
+
 finFigureArrow::finFigureArrow()
 {
     this->_type = finFigureArrow::FIN_FA_TYPE_NONE;
