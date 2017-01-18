@@ -22,13 +22,10 @@ public:
     virtual finErrorCode applyGraphConfig();
     virtual finErrorCode drawContainer(finFigureContainer *figcontainer);
     virtual finErrorCode drawObject(finFigureObject *obj);
+    virtual finErrorCode drawFigurePath(const finFigurePath &path);
 
 protected:
     void clearScene();
-    finErrorCode drawObjPath(finFigureObject *obj);
-
-    finErrorCode drawObjLine3D(finFigureObjectLine3D *line3d);
-
 };
 
 #endif // FINGRAPHPANELSCENE_H

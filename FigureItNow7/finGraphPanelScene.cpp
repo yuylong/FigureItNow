@@ -20,6 +20,20 @@ finErrorCode finGraphPanelScene::setScene(QGraphicsScene *scene)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+void finGraphPanelScene::clearScene()
+{
+    if ( this->_scene == NULL )
+        return;
+
+    QList<QGraphicsItem *> items = this->_scene->items();
+    while ( !items.empty() ) {
+        QGraphicsItem *item = items.first();
+        items.removeFirst();
+        this->_scene->removeItem(item);
+        delete item;
+    }
+}
+
 finErrorCode finGraphPanelScene::applyGraphConfig()
 {
     if ( this->_scene == NULL )
@@ -49,67 +63,14 @@ finErrorCode finGraphPanelScene::drawObject(finFigureObject *obj)
 {
     if ( this->_scene == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
-    if ( obj == NULL )
-        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
 
-    switch ( obj->getFigureType() ) {
-      case finFigureObject::FIN_FO_TYPE_DOT:
-      case finFigureObject::FIN_FO_TYPE_LINE:
-      case finFigureObject::FIN_FO_TYPE_POLYLINE:
-      case finFigureObject::FIN_FO_TYPE_RECT:
-      case finFigureObject::FIN_FO_TYPE_POLYGON:
-      case finFigureObject::FIN_FO_TYPE_ELLIPSE:
-      case finFigureObject::FIN_FO_TYPE_TEXT:
-        return this->drawObjPath(obj);
-        break;
-
-      case finFigureObject::FIN_FO_TYPE_LINE3D:
-        return this->drawObjLine3D((finFigureObjectLine3D *)obj);
-        break;
-
-      default:
-        return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
-        break;
-    }
-    return finErrorCodeKits::FIN_EC_UNKNOWN_ERROR;
+    return finGraphPanelBase::drawObject(obj);
 }
 
-void finGraphPanelScene::clearScene()
+finErrorCode finGraphPanelScene::drawFigurePath(const finFigurePath &path)
 {
     if ( this->_scene == NULL )
-        return;
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
-    QList<QGraphicsItem *> items = this->_scene->items();
-    while ( !items.empty() ) {
-        QGraphicsItem *item = items.first();
-        items.removeFirst();
-        this->_scene->removeItem(item);
-        delete item;
-    }
-}
-
-finErrorCode finGraphPanelScene::drawObjPath(finFigureObject *obj)
-{
-    if ( obj->hasShapePath() ) {
-        QPainterPath path = obj->getPixelShapePath(&this->_config);
-        this->_scene->addPath(path,
-                              obj->getFigureConfig()->getBorderPen(),
-                              obj->getFigureConfig()->getFillBrush());
-    }
-    if ( obj->hasTextPath() ) {
-        QPainterPath path = obj->getPixelTextPath(&this->_config);
-        this->_scene->addPath(path,
-                              obj->getFigureConfig()->getTextPen(),
-                              obj->getFigureConfig()->getTextBrush());
-    }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
-finErrorCode finGraphPanelScene::drawObjLine3D(finFigureObjectLine3D *line3d)
-{
-    QPointF pt1 = this->_config.transformPixelPoint3D(line3d->getPoint1());
-    QPointF pt2 = this->_config.transformPixelPoint3D(line3d->getPoint2());
-
-    this->_scene->addLine(pt1.x(), pt1.y(), pt2.x(), pt2.y(), line3d->getFigureConfig()->getBorderPen());
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    this->_scene->addPath(path.getPath(), path.getPen(), path.getBrush());
 }

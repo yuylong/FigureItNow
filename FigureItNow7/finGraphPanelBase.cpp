@@ -62,5 +62,24 @@ finErrorCode finGraphPanelBase::drawObject(finFigureObject *obj)
     if ( obj == NULL )
         return finErrorCodeKits::FIN_EC_NORMAL_WARN;
 
+    QList<finFigurePath> pathlist;
+    finErrorCode errcode = obj->getPixelFigurePath(&pathlist, &this->_config);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    for ( int i = 0; i < pathlist.count(); i++ ) {
+        const finFigurePath &path = pathlist.at(i);
+        errcode = this->drawFigurePath(path);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphPanelBase::drawFigurePath(const finFigurePath &path)
+{
+    if (path.getPath().isEmpty())
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }

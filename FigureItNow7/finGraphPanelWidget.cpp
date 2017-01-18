@@ -66,3 +66,19 @@ finErrorCode finGraphPanelWidget::drawObject(finFigureObject *obj)
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+finErrorCode finGraphPanelWidget::drawFigurePath(const finFigurePath &path)
+{
+    if ( this->_widget == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    QPainter painter(this->_widget);
+    finGraphPanelPainter fgpp;
+    fgpp.setPainter(&painter);
+
+    finErrorCode errcode = fgpp.drawFigurePath(path);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}

@@ -94,11 +94,6 @@ public:
     virtual finErrorCode getFigurePath(QList<finFigurePath> *pathlist) const;
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
 
-    virtual bool hasShapePath() const;
-    virtual bool hasTextPath() const;
-    virtual QPainterPath getShapePath();
-    virtual QPainterPath getPixelShapePath(finGraphConfig *cfg);
-
     virtual void dump() const;
 };
 
@@ -121,10 +116,8 @@ public:
     finErrorCode setPoint2(const QPointF &qpt);
     finErrorCode setPoint2(double ptx, double pty);
 
-    virtual bool hasShapePath() const;
-    virtual bool hasTextPath() const;
-    virtual QPainterPath getShapePath();
-    virtual QPainterPath getPixelShapePath(finGraphConfig *cfg);
+    virtual finErrorCode getFigurePath(QList<finFigurePath> *pathlist) const;
+    virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
 
     virtual void dump() const;
 };

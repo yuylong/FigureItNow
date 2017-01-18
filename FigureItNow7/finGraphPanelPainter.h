@@ -24,13 +24,7 @@ public:
     virtual finErrorCode applyGraphConfig();
     virtual finErrorCode drawContainer(finFigureContainer *figcontainer);
     virtual finErrorCode drawObject(finFigureObject *obj);
-
-protected:
-    finErrorCode applyFigureConfig(finFigureConfig *cfg);
-    finErrorCode applyTextFigureConfig(finFigureConfig *cfg);
-    finErrorCode drawObjPath(finFigureObject *obj);
-
-    finErrorCode drawObjLine3D(finFigureObjectLine3D *line3d);
+    virtual finErrorCode drawFigurePath(const finFigurePath &path);
 };
 
 #endif // FINGRAPHPANELPAINTER_H

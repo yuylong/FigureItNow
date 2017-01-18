@@ -180,37 +180,6 @@ finErrorCode finFigureObjectDot::getPixelFigurePath(QList<finFigurePath> *pathli
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-
-bool finFigureObjectDot::hasShapePath() const
-{
-    return true;
-}
-
-bool finFigureObjectDot::hasTextPath() const
-{
-    return false;
-}
-
-QPainterPath finFigureObjectDot::getShapePath()
-{
-    QPainterPath path;
-    path.moveTo(this->_point);
-    path.lineTo(this->_point);
-    return path;
-}
-
-QPainterPath finFigureObjectDot::getPixelShapePath(finGraphConfig *cfg)
-{
-    if ( cfg == NULL )
-        return QPainterPath();
-
-    QPointF pixpt = cfg->transformPixelPoint(this->_point);
-    QPainterPath path;
-    path.moveTo(pixpt);
-    path.lineTo(pixpt);
-    return path;
-}
-
 void finFigureObjectDot::dump() const
 {
     printf(" * Fig Type: dot; Point: (%lf, %lf)\n", (double)this->_point.x(), (double)this->_point.y());
@@ -264,33 +233,38 @@ finErrorCode finFigureObjectLine::setPoint2(double ptx, double pty)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectLine::hasShapePath() const
+finErrorCode finFigureObjectLine::getFigurePath(QList<finFigurePath> *pathlist) const
 {
-    return true;
-}
+    if ( pathlist == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-bool finFigureObjectLine::hasTextPath() const
-{
-    return false;
-}
-
-QPainterPath finFigureObjectLine::getShapePath()
-{
     QPainterPath path;
     path.moveTo(this->_pt1);
     path.lineTo(this->_pt2);
-    return path;
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-QPainterPath finFigureObjectLine::getPixelShapePath(finGraphConfig *cfg)
+finErrorCode finFigureObjectLine::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    if ( cfg == NULL )
-        return QPainterPath();
+    if ( pathlist == NULL || cfg == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
     QPainterPath path;
     path.moveTo(cfg->transformPixelPoint(this->_pt1));
     path.lineTo(cfg->transformPixelPoint(this->_pt2));
-    return path;
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 void finFigureObjectLine::dump() const

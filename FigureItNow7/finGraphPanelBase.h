@@ -6,6 +6,7 @@
 #include "finErrorCode.h"
 #include "finGraphConfig.h"
 #include "finFigureObject.h"
+#include "finFigurePath.h"
 #include "finFigureContainer.h"
 
 class finGraphPanelBase
@@ -23,6 +24,7 @@ public:
     virtual finErrorCode applyGraphConfig();
     virtual finErrorCode drawContainer(finFigureContainer *figcontainer);
     virtual finErrorCode drawObject(finFigureObject *obj);
+    virtual finErrorCode drawFigurePath(const finFigurePath &path);
 };
 
 #endif // FINGRAPHPANELBASE_H
