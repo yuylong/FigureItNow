@@ -1,8 +1,40 @@
 #include "finFigureAlg.h"
 
+#include <qmath.h>
+
 finFigureAlg::finFigureAlg()
 {
     /* Do Nothing */
+}
+
+double finFigureAlg::pointsDistance(const QPointF &pt1, const QPointF &pt2)
+{
+    QPointF divpt = pt2 - pt1;
+    return sqrt(divpt.x() * divpt.x() + divpt.y() * divpt.y());
+}
+
+QPointF finFigureAlg::movePointInside(const QPointF &basept, const QPointF &dirpt, double len)
+{
+    double linelen = finFigureAlg::pointsDistance(basept, dirpt);
+    if ( linelen == 0.0 )
+        return basept;
+
+    double ratio = len / linelen;
+    QPointF linevec = dirpt - basept;
+    QPointF tarvec = linevec * ratio;
+    return basept + tarvec;
+}
+
+QPointF finFigureAlg::movePointOutside(const QPointF &basept, const QPointF &dirpt, double len)
+{
+    double linelen = finFigureAlg::pointsDistance(basept, dirpt);
+    if ( linelen == 0.0 )
+        return basept;
+
+    double ratio = len / linelen;
+    QPointF linevec = basept - dirpt;
+    QPointF tarvec = linevec * ratio;
+    return basept + tarvec;
 }
 
 finFigAlgLine2D finFigureAlg::line2DFromPoints(const QPointF &pt1, const QPointF &pt2)

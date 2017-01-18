@@ -2,6 +2,7 @@
 #define FINFIGUREARROW_H
 
 #include <QString>
+#include <QPointF>
 #include <QPainterPath>
 
 #include "finErrorCode.h"
@@ -38,6 +39,14 @@ public:
     finErrorCode setLength(double length);
 
     finFigureArrow &operator = (const finFigureArrow &arrow);
+
+    QPointF lineShrinkPoint(const QPointF &prevpt, const QPointF &arwpt, const finFigureConfig *cfg) const;
+
+private:
+    double lineShrinkLenTriangle(const finFigureConfig *cfg) const;
+    QPointF lineShrinkPtTriangle(const QPointF &prevpt, const QPointF &arwpt, const finFigureConfig *cfg) const;
+
+
 };
 
 typedef finFigureArrow::Type finFigureArrowType;

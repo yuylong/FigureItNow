@@ -16,6 +16,9 @@
 
 #include <qmath.h>
 
+#include "finFigureAlg.h"
+
+
 finFigureObject::finFigureObject()
 {
     this->_type = finFigureObject::FIN_FO_TYPE_DUMMY;
@@ -202,13 +205,20 @@ finErrorCode finFigureObjectLine::getPixelFigurePath(QList<finFigurePath> *pathl
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
     QPainterPath path;
-    path.moveTo(cfg->transformPixelPoint(this->_pt1));
-    path.lineTo(cfg->transformPixelPoint(this->_pt2));
+    QPointF pt1 = cfg->transformPixelPoint(this->_pt1);
+    QPointF pt2 = cfg->transformPixelPoint(this->_pt2);
+    pt1 = this->_figCfg.getStartArrow().lineShrinkPoint(pt2, pt1, &this->_figCfg);
+    pt2 = this->_figCfg.getEndArrow().lineShrinkPoint(pt1, pt2, &this->_figCfg);
 
-    finFigurePath figpath;
-    figpath.setPen(this->_figCfg.getBorderPen());
-    figpath.setPath(path);
-    pathlist->append(figpath);
+    if ( finFigureAlg::pointsDistance(pt1, pt2) > 0.0 ) {
+        path.moveTo(pt1);
+        path.lineTo(pt2);
+
+        finFigurePath figpath;
+        figpath.setPen(this->_figCfg.getBorderPen());
+        figpath.setPath(path);
+        pathlist->append(figpath);
+    }
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
