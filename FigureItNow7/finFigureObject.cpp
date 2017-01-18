@@ -312,40 +312,48 @@ finErrorCode finFigureObjectPolyline::removePointAt(int idx)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectPolyline::hasShapePath() const
+finErrorCode finFigureObjectPolyline::getFigurePath(QList<finFigurePath> *pathlist) const
 {
-    return true;
-}
+    if ( pathlist == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-bool finFigureObjectPolyline::hasTextPath() const
-{
-    return false;
-}
-
-QPainterPath finFigureObjectPolyline::getShapePath()
-{
     if ( this->_ptList.count() < 2 )
-        return QPainterPath();
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
 
     QPainterPath path;
     path.moveTo(this->_ptList.at(0));
     for ( int i = 1; i < this->_ptList.count(); i++ ) {
         path.lineTo(this->_ptList.at(i));
     }
-    return path;
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-QPainterPath finFigureObjectPolyline::getPixelShapePath(finGraphConfig *cfg)
+finErrorCode finFigureObjectPolyline::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
+    if ( pathlist == NULL || cfg == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
     if ( this->_ptList.count() < 2 )
-        return QPainterPath();
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
 
     QPainterPath path;
     path.moveTo(cfg->transformPixelPoint(this->_ptList.at(0)));
     for ( int i = 1; i < this->_ptList.count(); i++ ) {
         path.lineTo(cfg->transformPixelPoint(this->_ptList.at(i)));
     }
-    return path;
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 void finFigureObjectPolyline::dump() const

@@ -140,10 +140,8 @@ public:
     finErrorCode appendPoint(double ptx, double pty);
     finErrorCode removePointAt(int idx);
 
-    virtual bool hasShapePath() const;
-    virtual bool hasTextPath() const;
-    virtual QPainterPath getShapePath();
-    virtual QPainterPath getPixelShapePath(finGraphConfig *cfg);
+    virtual finErrorCode getFigurePath(QList<finFigurePath> *pathlist) const;
+    virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
 
     virtual void dump() const;
 };
