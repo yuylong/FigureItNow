@@ -41,6 +41,23 @@ finFigureConfig *finFigureObject::getFigureConfig()
     return &this->_figCfg;
 }
 
+finErrorCode finFigureObject::getFigurePath(QList<finFigurePath> *pathlist) const
+{
+    if ( pathlist == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode finFigureObject::getPixelFigurePath(QList<finFigurePath> *pathlist) const
+{
+    if ( pathlist == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+
 bool finFigureObject::hasLinePath() const
 {
     return false;

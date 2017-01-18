@@ -23,6 +23,7 @@
 #include "finErrorCode.h"
 #include "finFigureConfig.h"
 #include "finFigurePoint3D.h"
+#include "finFigurePath.h"
 #include "finGraphConfig.h"
 
 class finFigureObject
@@ -55,6 +56,9 @@ public:
     finFigureObjectType getFigureType() const;
     const finFigureConfig *getFigureConfig() const;
     finFigureConfig *getFigureConfig();
+
+    virtual finErrorCode getFigurePath(QList<finFigurePath> *pathlist) const;
+    virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist) const;
 
     virtual bool hasLinePath() const;
     virtual bool hasShapePath() const;
