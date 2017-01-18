@@ -30,13 +30,11 @@
 class finGraphConfig
 {
 protected:
-    double _unitPixelSize;
     QSizeF _panelSize;
     QColor _bgColor;
 
     QPointF _originPoint;
     double _axisUnitSize;
-    bool _enableAxisZ;
     double _axisRadZ;
     double _axisScaleZ;
     finGraphTrans *_transform;
@@ -48,37 +46,26 @@ public:
 
     finErrorCode copyGraphConfig(const finGraphConfig *srccfg);
 
-    double getUnitPixelSize() const;
-    QSizeF getPanelSize() const;
     QSizeF getPanelPixelSize() const;
-    QRectF getWholePanelRect() const;
     QRectF getWholePanelPixelRect() const;
 
     QColor getBackgroundColor() const;
     QBrush getBackgroundBrush() const;
 
-    QPointF getOriginPoint() const;
     QPointF getOriginPixelPoint() const;
-    double getAxisUnitSize() const;
     double getAxisUnitPixelSize() const;
-    bool isEnabledAxisZ() const;
     double getAxisRadZ() const;
     finGraphTrans *getTransform() const;
 
     QPainter::RenderHints getRenderHints() const;
 
-    finErrorCode setUnitPixelSize(double size);
-    finErrorCode setPanelSize(const QSizeF &size);
-    finErrorCode setPanelSize(double sizex, double sizey);
+    finErrorCode setPanelPixelSize(const QSizeF &size);
+    finErrorCode setPanelPixelSize(double sizex, double sizey);
     finErrorCode setBackgroundColor(const QColor &color);
 
-    QPointF transformPoint3D(double x, double y, double z);
-    QPointF transformPoint3D(const finFigurePoint3D &pt);
     QPointF transformPixelPoint3D(double x, double y, double z);
     QPointF transformPixelPoint3D(const finFigurePoint3D &pt);
-    QPointF transformPoint(const QPointF &srcpt);
     QPointF transformPixelPoint(const QPointF &srcpt);
-    QPointF arcTransformPoint(const QPointF &srcpt);
     QPointF arcTransformPixelPoint(const QPointF &srcpt);
 };
 
