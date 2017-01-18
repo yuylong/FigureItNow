@@ -560,33 +560,37 @@ finErrorCode finFigureObjectPolygon::removePointAt(int idx)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectPolygon::hasShapePath() const
+finErrorCode finFigureObjectPolygon::getFigurePath(QList<finFigurePath> *pathlist) const
 {
-    return true;
-}
+    if ( pathlist == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-bool finFigureObjectPolygon::hasTextPath() const
-{
-    return false;
-}
-
-QPainterPath finFigureObjectPolygon::getShapePath()
-{
     if ( this->_ptList.count() < 2 )
-        return QPainterPath();
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
 
     QPainterPath path;
     path.moveTo(this->_ptList.last());
     for ( int i = 0; i < this->_ptList.count(); i++ ) {
         path.lineTo(this->_ptList.at(i));
     }
-    return path;
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setBrush(this->_figCfg.getFillBrush());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-QPainterPath finFigureObjectPolygon::getPixelShapePath(finGraphConfig *cfg)
+finErrorCode
+finFigureObjectPolygon::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
+    if ( pathlist == NULL || cfg == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
     if ( this->_ptList.count() < 2 )
-        return QPainterPath();
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
 
     QPainterPath path;
     QPointF startpt = cfg->transformPixelPoint(this->_ptList.at(0));
@@ -595,7 +599,14 @@ QPainterPath finFigureObjectPolygon::getPixelShapePath(finGraphConfig *cfg)
         path.lineTo(cfg->transformPixelPoint(this->_ptList.at(i)));
     }
     path.lineTo(startpt);
-    return path;
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setBrush(this->_figCfg.getFillBrush());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 void finFigureObjectPolygon::dump() const
@@ -685,17 +696,7 @@ finErrorCode finFigureObjectEllipse::setRadian(double rad)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectEllipse::hasShapePath() const
-{
-    return true;
-}
-
-bool finFigureObjectEllipse::hasTextPath() const
-{
-    return false;
-}
-
-QPointF finFigureObjectEllipse::getEllipsePointAtRad(double rad)
+QPointF finFigureObjectEllipse::getEllipsePointAtRad(double rad) const
 {
     QPointF shiftpt = QPointF(this->_longR * cos(rad), this->_shortR * sin(rad));
     QPointF relpt = QPointF(shiftpt.x() * this->_cosrad + shiftpt.y() * this->_sinrad,
@@ -703,8 +704,11 @@ QPointF finFigureObjectEllipse::getEllipsePointAtRad(double rad)
     return this->_center + relpt;
 }
 
-QPainterPath finFigureObjectEllipse::getShapePath()
+finErrorCode finFigureObjectEllipse::getFigurePath(QList<finFigurePath> *pathlist) const
 {
+    if ( pathlist == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
     QPainterPath path;
     QPointF startpt = this->getEllipsePointAtRad(0.0);
     static const double drawstep = M_PI / 36.0;
@@ -713,11 +717,21 @@ QPainterPath finFigureObjectEllipse::getShapePath()
     for ( double rad = drawstep; rad < 2 * M_PI; rad += drawstep)
         path.lineTo(this->getEllipsePointAtRad(rad));
     path.lineTo(startpt);
-    return path;
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setBrush(this->_figCfg.getFillBrush());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-QPainterPath finFigureObjectEllipse::getPixelShapePath(finGraphConfig *cfg)
+finErrorCode finFigureObjectEllipse::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
+    if ( pathlist == NULL || cfg == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
     QPainterPath path;
     QPointF startpt = cfg->transformPixelPoint(this->getEllipsePointAtRad(0.0));
     static const double drawstep = M_PI / 36.0;
@@ -726,7 +740,14 @@ QPainterPath finFigureObjectEllipse::getPixelShapePath(finGraphConfig *cfg)
     for ( double rad = drawstep; rad < 2 * M_PI; rad += drawstep)
         path.lineTo(cfg->transformPixelPoint(this->getEllipsePointAtRad(rad)));
     path.lineTo(startpt);
-    return path;
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setBrush(this->_figCfg.getFillBrush());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 void finFigureObjectEllipse::dump() const
