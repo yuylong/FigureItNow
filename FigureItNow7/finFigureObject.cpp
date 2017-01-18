@@ -470,18 +470,11 @@ finErrorCode finFigureObjectRect::setRadian(double rad)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectRect::hasShapePath() const
+finErrorCode finFigureObjectRect::getFigurePath(QList<finFigurePath> *pathlist) const
 {
-    return true;
-}
+    if ( pathlist == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-bool finFigureObjectRect::hasTextPath() const
-{
-    return false;
-}
-
-QPainterPath finFigureObjectRect::getShapePath()
-{
     QPainterPath path;
     QPointF startptr = this->getUpperLeftPoint();
     path.moveTo(startptr);
@@ -489,13 +482,20 @@ QPainterPath finFigureObjectRect::getShapePath()
     path.lineTo(this->getLowerRightPoint());
     path.lineTo(this->getLowerLeftPoint());
     path.lineTo(startptr);
-    return path;
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setBrush(this->_figCfg.getFillBrush());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-QPainterPath finFigureObjectRect::getPixelShapePath(finGraphConfig *cfg)
+finErrorCode finFigureObjectRect::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    if ( cfg == NULL )
-        return QPainterPath();
+    if ( pathlist == NULL || cfg == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
     QPainterPath path;
     QPointF startptr = cfg->transformPixelPoint(this->getUpperLeftPoint());
@@ -504,7 +504,14 @@ QPainterPath finFigureObjectRect::getPixelShapePath(finGraphConfig *cfg)
     path.lineTo(cfg->transformPixelPoint(this->getLowerRightPoint()));
     path.lineTo(cfg->transformPixelPoint(this->getLowerLeftPoint()));
     path.lineTo(startptr);
-    return path;
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setBrush(this->_figCfg.getFillBrush());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 void finFigureObjectRect::dump() const

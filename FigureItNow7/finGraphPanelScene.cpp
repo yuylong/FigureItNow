@@ -73,4 +73,5 @@ finErrorCode finGraphPanelScene::drawFigurePath(const finFigurePath &path)
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     this->_scene->addPath(path.getPath(), path.getPen(), path.getBrush());
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
