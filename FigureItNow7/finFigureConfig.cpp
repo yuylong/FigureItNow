@@ -17,7 +17,7 @@
 finFigureConfig *finFigureConfig::_defFigCfg = NULL;
 
 finFigureConfig::finFigureConfig()
-    : _borderPen(Qt::black, 1), _fillBrush(Qt::transparent),
+    : _borderPen(Qt::black, 1), _fillBrush(Qt::transparent), _startArrow(), _endArrow(),
       _textPen(Qt::transparent, 0), _textBrush(Qt::black), _font(QString("Arial"), 12)
 {
     /* Do Nothing. */
@@ -165,6 +165,8 @@ finErrorCode finFigureConfig::cloneFigureConfig(finFigureConfig *outcfg) const
 
     outcfg->_borderPen = this->_borderPen;
     outcfg->_fillBrush = this->_fillBrush;
+    outcfg->_startArrow = this->_startArrow;
+    outcfg->_endArrow = this->_endArrow;
     outcfg->_textPen = this->_textPen;
     outcfg->_textBrush = this->_textBrush;
     outcfg->_font = this->_font;
