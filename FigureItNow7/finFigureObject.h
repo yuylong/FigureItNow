@@ -56,10 +56,13 @@ public:
     const finFigureConfig *getFigureConfig() const;
     finFigureConfig *getFigureConfig();
 
-    virtual bool hasFigurePath() const;
+    virtual bool hasLinePath() const;
+    virtual bool hasShapePath() const;
     virtual bool hasTextPath() const;
-    virtual QPainterPath getPath();
-    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+    virtual QPainterPath getLinePath();
+    virtual QPainterPath getPixelLinePath(finGraphConfig *cfg);
+    virtual QPainterPath getShapePath();
+    virtual QPainterPath getPixelShapePath(finGraphConfig *cfg);
     virtual QPainterPath getTextPath();
     virtual QPainterPath getPixelTextPath(finGraphConfig *cfg);
 
@@ -84,10 +87,10 @@ public:
     finErrorCode setPoint(const QPointF &qpt);
     finErrorCode setPoint(double ptx, double pty);
 
-    virtual bool hasFigurePath() const;
+    virtual bool hasShapePath() const;
     virtual bool hasTextPath() const;
-    virtual QPainterPath getPath();
-    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+    virtual QPainterPath getShapePath();
+    virtual QPainterPath getPixelShapePath(finGraphConfig *cfg);
 
     virtual void dump() const;
 };
@@ -111,10 +114,10 @@ public:
     finErrorCode setPoint2(const QPointF &qpt);
     finErrorCode setPoint2(double ptx, double pty);
 
-    virtual bool hasFigurePath() const;
+    virtual bool hasShapePath() const;
     virtual bool hasTextPath() const;
-    virtual QPainterPath getPath();
-    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+    virtual QPainterPath getShapePath();
+    virtual QPainterPath getPixelShapePath(finGraphConfig *cfg);
 
     virtual void dump() const;
 };
@@ -137,10 +140,10 @@ public:
     finErrorCode appendPoint(double ptx, double pty);
     finErrorCode removePointAt(int idx);
 
-    virtual bool hasFigurePath() const;
+    virtual bool hasShapePath() const;
     virtual bool hasTextPath() const;
-    virtual QPainterPath getPath();
-    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+    virtual QPainterPath getShapePath();
+    virtual QPainterPath getPixelShapePath(finGraphConfig *cfg);
 
     virtual void dump() const;
 };
@@ -173,10 +176,10 @@ public:
     finErrorCode setSize(double width, double height);
     finErrorCode setRadian(double rad);
 
-    virtual bool hasFigurePath() const;
+    virtual bool hasShapePath() const;
     virtual bool hasTextPath() const;
-    virtual QPainterPath getPath();
-    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+    virtual QPainterPath getShapePath();
+    virtual QPainterPath getPixelShapePath(finGraphConfig *cfg);
 
     virtual void dump() const;
 };
@@ -199,10 +202,10 @@ public:
     finErrorCode appendPoint(double ptx, double pty);
     finErrorCode removePointAt(int idx);
 
-    virtual bool hasFigurePath() const;
+    virtual bool hasShapePath() const;
     virtual bool hasTextPath() const;
-    virtual QPainterPath getPath();
-    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+    virtual QPainterPath getShapePath();
+    virtual QPainterPath getPixelShapePath(finGraphConfig *cfg);
 
     virtual void dump() const;
 };
@@ -234,10 +237,10 @@ public:
 
     QPointF getEllipsePointAtRad(double rad);
 
-    virtual bool hasFigurePath() const;
+    virtual bool hasShapePath() const;
     virtual bool hasTextPath() const;
-    virtual QPainterPath getPath();
-    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+    virtual QPainterPath getShapePath();
+    virtual QPainterPath getPixelShapePath(finGraphConfig *cfg);
 
     virtual void dump() const;
 };
@@ -272,7 +275,7 @@ public:
     finErrorCode setRadian(double rad);
     finErrorCode setText(const QString &text);
 
-    virtual bool hasFigurePath() const;
+    virtual bool hasShapePath() const;
     virtual bool hasTextPath() const;
     virtual QPainterPath getTextPath();
     virtual QPainterPath getPixelTextPath(finGraphConfig *cfg);
@@ -343,9 +346,9 @@ public:
     finErrorCode setPoint2(const finFigurePoint3D &qpt);
     finErrorCode setPoint2(double ptx, double pty, double ptz);
 
-    virtual bool hasFigurePath() const;
+    virtual bool hasShapePath() const;
     virtual bool hasTextPath() const;
-    virtual QPainterPath getPixelPath(finGraphConfig *cfg);
+    virtual QPainterPath getPixelShapePath(finGraphConfig *cfg);
 
     virtual void dump() const;
 };

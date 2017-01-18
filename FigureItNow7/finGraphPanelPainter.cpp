@@ -83,9 +83,9 @@ finErrorCode finGraphPanelPainter::applyTextFigureConfig(finFigureConfig *cfg)
 
 finErrorCode finGraphPanelPainter::drawObjPath(finFigureObject *obj)
 {
-    if ( obj->hasFigurePath() ) {
+    if ( obj->hasShapePath() ) {
         this->applyFigureConfig(obj->getFigureConfig());
-        QPainterPath path = obj->getPixelPath(&this->_config);
+        QPainterPath path = obj->getPixelShapePath(&this->_config);
         this->_painter->drawPath(path);
     }
     if ( obj->hasTextPath() ) {

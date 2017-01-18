@@ -41,7 +41,12 @@ finFigureConfig *finFigureObject::getFigureConfig()
     return &this->_figCfg;
 }
 
-bool finFigureObject::hasFigurePath() const
+bool finFigureObject::hasLinePath() const
+{
+    return false;
+}
+
+bool finFigureObject::hasShapePath() const
 {
     return false;
 }
@@ -51,12 +56,25 @@ bool finFigureObject::hasTextPath() const
     return false;
 }
 
-QPainterPath finFigureObject::getPath()
+QPainterPath finFigureObject::getLinePath()
 {
     return QPainterPath();
 }
 
-QPainterPath finFigureObject::getPixelPath(finGraphConfig *cfg)
+QPainterPath finFigureObject::getPixelLinePath(finGraphConfig *cfg)
+{
+    if ( cfg == NULL )
+        return QPainterPath();
+
+    return QPainterPath();
+}
+
+QPainterPath finFigureObject::getShapePath()
+{
+    return QPainterPath();
+}
+
+QPainterPath finFigureObject::getPixelShapePath(finGraphConfig *cfg)
 {
     if ( cfg == NULL )
         return QPainterPath();
@@ -111,7 +129,7 @@ finErrorCode finFigureObjectDot::setPoint(double ptx, double pty)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectDot::hasFigurePath() const
+bool finFigureObjectDot::hasShapePath() const
 {
     return true;
 }
@@ -121,7 +139,7 @@ bool finFigureObjectDot::hasTextPath() const
     return false;
 }
 
-QPainterPath finFigureObjectDot::getPath()
+QPainterPath finFigureObjectDot::getShapePath()
 {
     QPainterPath path;
     path.moveTo(this->_point);
@@ -129,7 +147,7 @@ QPainterPath finFigureObjectDot::getPath()
     return path;
 }
 
-QPainterPath finFigureObjectDot::getPixelPath(finGraphConfig *cfg)
+QPainterPath finFigureObjectDot::getPixelShapePath(finGraphConfig *cfg)
 {
     if ( cfg == NULL )
         return QPainterPath();
@@ -194,7 +212,7 @@ finErrorCode finFigureObjectLine::setPoint2(double ptx, double pty)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectLine::hasFigurePath() const
+bool finFigureObjectLine::hasShapePath() const
 {
     return true;
 }
@@ -204,7 +222,7 @@ bool finFigureObjectLine::hasTextPath() const
     return false;
 }
 
-QPainterPath finFigureObjectLine::getPath()
+QPainterPath finFigureObjectLine::getShapePath()
 {
     QPainterPath path;
     path.moveTo(this->_pt1);
@@ -212,7 +230,7 @@ QPainterPath finFigureObjectLine::getPath()
     return path;
 }
 
-QPainterPath finFigureObjectLine::getPixelPath(finGraphConfig *cfg)
+QPainterPath finFigureObjectLine::getPixelShapePath(finGraphConfig *cfg)
 {
     if ( cfg == NULL )
         return QPainterPath();
@@ -268,7 +286,7 @@ finErrorCode finFigureObjectPolyline::removePointAt(int idx)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectPolyline::hasFigurePath() const
+bool finFigureObjectPolyline::hasShapePath() const
 {
     return true;
 }
@@ -278,7 +296,7 @@ bool finFigureObjectPolyline::hasTextPath() const
     return false;
 }
 
-QPainterPath finFigureObjectPolyline::getPath()
+QPainterPath finFigureObjectPolyline::getShapePath()
 {
     if ( this->_ptList.count() < 2 )
         return QPainterPath();
@@ -291,7 +309,7 @@ QPainterPath finFigureObjectPolyline::getPath()
     return path;
 }
 
-QPainterPath finFigureObjectPolyline::getPixelPath(finGraphConfig *cfg)
+QPainterPath finFigureObjectPolyline::getPixelShapePath(finGraphConfig *cfg)
 {
     if ( this->_ptList.count() < 2 )
         return QPainterPath();
@@ -418,7 +436,7 @@ finErrorCode finFigureObjectRect::setRadian(double rad)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectRect::hasFigurePath() const
+bool finFigureObjectRect::hasShapePath() const
 {
     return true;
 }
@@ -428,7 +446,7 @@ bool finFigureObjectRect::hasTextPath() const
     return false;
 }
 
-QPainterPath finFigureObjectRect::getPath()
+QPainterPath finFigureObjectRect::getShapePath()
 {
     QPainterPath path;
     QPointF startptr = this->getUpperLeftPoint();
@@ -440,7 +458,7 @@ QPainterPath finFigureObjectRect::getPath()
     return path;
 }
 
-QPainterPath finFigureObjectRect::getPixelPath(finGraphConfig *cfg)
+QPainterPath finFigureObjectRect::getPixelShapePath(finGraphConfig *cfg)
 {
     if ( cfg == NULL )
         return QPainterPath();
@@ -501,7 +519,7 @@ finErrorCode finFigureObjectPolygon::removePointAt(int idx)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectPolygon::hasFigurePath() const
+bool finFigureObjectPolygon::hasShapePath() const
 {
     return true;
 }
@@ -511,7 +529,7 @@ bool finFigureObjectPolygon::hasTextPath() const
     return false;
 }
 
-QPainterPath finFigureObjectPolygon::getPath()
+QPainterPath finFigureObjectPolygon::getShapePath()
 {
     if ( this->_ptList.count() < 2 )
         return QPainterPath();
@@ -524,7 +542,7 @@ QPainterPath finFigureObjectPolygon::getPath()
     return path;
 }
 
-QPainterPath finFigureObjectPolygon::getPixelPath(finGraphConfig *cfg)
+QPainterPath finFigureObjectPolygon::getPixelShapePath(finGraphConfig *cfg)
 {
     if ( this->_ptList.count() < 2 )
         return QPainterPath();
@@ -626,7 +644,7 @@ finErrorCode finFigureObjectEllipse::setRadian(double rad)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectEllipse::hasFigurePath() const
+bool finFigureObjectEllipse::hasShapePath() const
 {
     return true;
 }
@@ -644,7 +662,7 @@ QPointF finFigureObjectEllipse::getEllipsePointAtRad(double rad)
     return this->_center + relpt;
 }
 
-QPainterPath finFigureObjectEllipse::getPath()
+QPainterPath finFigureObjectEllipse::getShapePath()
 {
     QPainterPath path;
     QPointF startpt = this->getEllipsePointAtRad(0.0);
@@ -657,7 +675,7 @@ QPainterPath finFigureObjectEllipse::getPath()
     return path;
 }
 
-QPainterPath finFigureObjectEllipse::getPixelPath(finGraphConfig *cfg)
+QPainterPath finFigureObjectEllipse::getPixelShapePath(finGraphConfig *cfg)
 {
     QPainterPath path;
     QPointF startpt = cfg->transformPixelPoint(this->getEllipsePointAtRad(0.0));
@@ -761,7 +779,7 @@ finErrorCode finFigureObjectText::setText(const QString &text)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectText::hasFigurePath() const
+bool finFigureObjectText::hasShapePath() const
 {
     return false;
 }
@@ -1049,7 +1067,7 @@ finErrorCode finFigureObjectLine3D::setPoint2(double ptx, double pty, double ptz
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-bool finFigureObjectLine3D::hasFigurePath() const
+bool finFigureObjectLine3D::hasShapePath() const
 {
     return true;
 }
@@ -1059,7 +1077,7 @@ bool finFigureObjectLine3D::hasTextPath() const
     return false;
 }
 
-QPainterPath finFigureObjectLine3D::getPixelPath(finGraphConfig *cfg)
+QPainterPath finFigureObjectLine3D::getPixelShapePath(finGraphConfig *cfg)
 {
     if ( cfg == NULL )
         return QPainterPath();

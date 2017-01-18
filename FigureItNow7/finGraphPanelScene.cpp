@@ -90,8 +90,8 @@ void finGraphPanelScene::clearScene()
 
 finErrorCode finGraphPanelScene::drawObjPath(finFigureObject *obj)
 {
-    if ( obj->hasFigurePath() ) {
-        QPainterPath path = obj->getPixelPath(&this->_config);
+    if ( obj->hasShapePath() ) {
+        QPainterPath path = obj->getPixelShapePath(&this->_config);
         this->_scene->addPath(path,
                               obj->getFigureConfig()->getBorderPen(),
                               obj->getFigureConfig()->getFillBrush());

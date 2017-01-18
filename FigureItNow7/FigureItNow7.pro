@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     finFigurePoint3D.cpp \
     finUiFigureWidget.cpp \
     finGraphPanelScene.cpp \
-    finFigureAlg.cpp
+    finFigureAlg.cpp \
+    finFigurePath.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
@@ -75,6 +76,7 @@ HEADERS  += MainWindow.h \
     finFigurePoint3D.h \
     finUiFigureWidget.h \
     finGraphPanelScene.h \
-    finFigureAlg.h
+    finFigureAlg.h \
+    finFigurePath.h
 
 FORMS    += MainWindow.ui
