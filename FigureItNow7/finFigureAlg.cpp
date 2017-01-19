@@ -52,8 +52,8 @@ QPointF finFigureAlg::getVerticalVector(const QPointF &vec, double len)
 finFigAlgLine2D finFigureAlg::vecLineFromXVal(double xval)
 {
     finFigAlgLine2D retline;
-    retline.a = 0.0;
-    retline.b = 1.0;
+    retline.a = 1.0;
+    retline.b = 0.0;
     retline.c = -xval;
     return retline;
 }
@@ -61,8 +61,8 @@ finFigAlgLine2D finFigureAlg::vecLineFromXVal(double xval)
 finFigAlgLine2D finFigureAlg::horLineFromYVal(double yval)
 {
     finFigAlgLine2D retline;
-    retline.a = 1.0;
-    retline.b = 0.0;
+    retline.a = 0.0;
+    retline.b = 1.0;
     retline.c = -yval;
     return retline;
 }
@@ -165,7 +165,7 @@ QList<QPointF> finFigureAlg::polygonCrossPoint(const finFigAlgLine2D &line, cons
 
         bool hassame = false;
         for ( int j = 0; j < ptlist.count(); j++ ) {
-            const QPointF &prevpt = ptlist.at(i);
+            const QPointF &prevpt = ptlist.at(j);
             if ( fabs(prevpt.x() - xpt.x()) < 1.0e-8 && fabs(prevpt.y() - xpt.y()) < 1.0e-8 ) {
                 hassame = true;
                 break;

@@ -1011,6 +1011,7 @@ QPointF finFigureObjectAxis::getAxisCrossPoint(const QList<QPointF> &panelrect) 
 
     double ptx = this->getGivenAxisCrossPosition(candrect.left(), candrect.right());
     double pty = this->getGivenAxisCrossPosition(candrect.top(), candrect.bottom());
+    printf("CP:(%lf,%lf)\n", ptx,pty);fflush(stdout);
     return QPointF(ptx, pty);
 }
 
@@ -1024,6 +1025,7 @@ QRectF finFigureObjectAxis::getAxisDrawRange(const QList<QPointF> &panelrect, co
     double xrng[2];
     xrng[0] = (xrngpt.at(0).x() < xrngpt.at(1).x() ? xrngpt.at(0).x() : xrngpt.at(1).x());
     xrng[1] = (xrngpt.at(0).x() < xrngpt.at(1).x() ? xrngpt.at(1).x() : xrngpt.at(0).x());
+    printf("%lf, %lf\n", xrng[0], xrng[1]);
     for ( int i = 0; i < xrngpt.count(); i++ ) {
         if ( xrngpt.at(i).x() < xrng[0] )
             xrng[0] = xrngpt.at(i).x();
@@ -1037,7 +1039,7 @@ QRectF finFigureObjectAxis::getAxisDrawRange(const QList<QPointF> &panelrect, co
             xrng[1] = this->_maxX;
     }
 
-    finFigAlgLine2D yline = finFigureAlg::horLineFromYVal(crosspt.x());
+    finFigAlgLine2D yline = finFigureAlg::vecLineFromXVal(crosspt.x());
     QList<QPointF> yrngpt = finFigureAlg::polygonCrossPoint(yline, panelrect);
     if ( yrngpt.count() < 2 )
         return finFigureObjectAxis::getDefaultRangeRect();
@@ -1057,7 +1059,7 @@ QRectF finFigureObjectAxis::getAxisDrawRange(const QList<QPointF> &panelrect, co
         if ( yrng[1] > this->_maxY )
             yrng[1] = this->_maxY;
     }
-
+    printf("Range:x:%lf,%lf  y:%lf,%lf\n", xrng[0], xrng[1], yrng[0], yrng[1]);fflush(stdout);
     return QRectF(xrng[0], yrng[0], (xrng[1] - xrng[0]), (yrng[1] - yrng[0]));
 }
 
@@ -1068,6 +1070,8 @@ finErrorCode finFigureObjectAxis::getPixelFigurePath(QList<finFigurePath> *pathl
     QRectF drawrect = this->getAxisDrawRange(polygon, xpt);
 
     finFigureObjectLine foline;
+    this->_figCfg.cloneFigureConfig(foline.getFigureConfig());
+
     foline.setPoint1(drawrect.left(), xpt.y());
     foline.setPoint2(drawrect.right(), xpt.y());
     foline.getPixelFigurePath(pathlist, cfg);
