@@ -48,13 +48,13 @@ public:
 
     QSizeF getPanelPixelSize() const;
     QRectF getWholePanelPixelRect() const;
-
     QColor getBackgroundColor() const;
     QBrush getBackgroundBrush() const;
 
     QPointF getOriginPixelPoint() const;
     double getAxisUnitPixelSize() const;
     double getAxisRadZ() const;
+    double getAxisScaleZ() const;
 
     finGraphTrans *getTransform() const;
     bool isLinearTransform() const;
@@ -64,6 +64,14 @@ public:
     finErrorCode setPanelPixelSize(const QSizeF &size);
     finErrorCode setPanelPixelSize(double sizex, double sizey);
     finErrorCode setBackgroundColor(const QColor &color);
+
+    finErrorCode setOriginPixelPoint(const QPointF &pt);
+    finErrorCode setOriginPixelPoint(double ptx, double pty);
+    finErrorCode setAxisUnitPixelSize(double size);
+    finErrorCode setAxisRadZ(double rad);
+    finErrorCode setAxisScaleZ(double scale);
+
+    finErrorCode setRenderHints(QPainter::RenderHints hints);
 
     QPointF transformPixelPoint3D(double x, double y, double z);
     QPointF transformPixelPoint3D(const finFigurePoint3D &pt);

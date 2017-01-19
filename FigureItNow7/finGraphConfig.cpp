@@ -83,6 +83,11 @@ double finGraphConfig::getAxisRadZ() const
     return this->_axisRadZ;
 }
 
+double finGraphConfig::getAxisScaleZ() const
+{
+    return this->_axisScaleZ;
+}
+
 finGraphTrans *finGraphConfig::getTransform() const
 {
     return this->_transform;
@@ -117,6 +122,43 @@ finErrorCode finGraphConfig::setPanelPixelSize(double sizex, double sizey)
 finErrorCode finGraphConfig::setBackgroundColor(const QColor &color)
 {
     this->_bgColor = color;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::setOriginPixelPoint(const QPointF &pt)
+{
+    this->_originPoint = pt;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::setOriginPixelPoint(double ptx, double pty)
+{
+    this->_originPoint.setX(ptx);
+    this->_originPoint.setY(pty);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::setAxisUnitPixelSize(double size)
+{
+    this->_axisUnitSize = size;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::setAxisRadZ(double rad)
+{
+    this->_axisRadZ = rad;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::setAxisScaleZ(double scale)
+{
+    this->_axisScaleZ = scale;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::setRenderHints(QPainter::RenderHints hints)
+{
+    this->_renderHints = hints;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
