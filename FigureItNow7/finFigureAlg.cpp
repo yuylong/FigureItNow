@@ -178,3 +178,91 @@ QList<QPointF> finFigureAlg::polygonCrossPoint(const finFigAlgLine2D &line, cons
     }
     return ptlist;
 }
+
+QList<QPointF> finFigureAlg::xMinCutPolygon(const QList<QPointF> &polygon, double xmin)
+{
+    finFigAlgLine2D line = finFigureAlg::vecLineFromXVal(xmin);
+    int ptcnt = polygon.count();
+    QList<QPointF> newpolygon;
+
+    for ( int i = 0; i < ptcnt; i++ ) {
+        const QPointF &pt1 = polygon.at(i);
+        const QPointF &pt2 = polygon.at((i + 1) % ptcnt);
+
+        if ( pt1.x() >= xmin )
+            newpolygon.append(pt1);
+
+        if ( (pt1.x() - xmin) * (pt2.x() - xmin) < 0.0 ) {
+            finFigAlgLine2D ptline = finFigureAlg::line2DFromPoints(pt1, pt2);
+            QPointF xpt = finFigureAlg::lineCrossPoint(ptline, line);
+            newpolygon.append(xpt);
+        }
+    }
+    return newpolygon;
+}
+
+QList<QPointF> finFigureAlg::xMaxCutPolygon(const QList<QPointF> &polygon, double xmax)
+{
+    finFigAlgLine2D line = finFigureAlg::vecLineFromXVal(xmax);
+    int ptcnt = polygon.count();
+    QList<QPointF> newpolygon;
+
+    for ( int i = 0; i < ptcnt; i++ ) {
+        const QPointF &pt1 = polygon.at(i);
+        const QPointF &pt2 = polygon.at((i + 1) % ptcnt);
+
+        if ( pt1.x() <= xmax )
+            newpolygon.append(pt1);
+
+        if ( (pt1.x() - xmax) * (pt2.x() - xmax) < 0.0 ) {
+            finFigAlgLine2D ptline = finFigureAlg::line2DFromPoints(pt1, pt2);
+            QPointF xpt = finFigureAlg::lineCrossPoint(ptline, line);
+            newpolygon.append(xpt);
+        }
+    }
+    return newpolygon;
+}
+
+QList<QPointF> finFigureAlg::yMinCutPolygon(const QList<QPointF> &polygon, double ymin)
+{
+    finFigAlgLine2D line = finFigureAlg::horLineFromYVal(ymin);
+    int ptcnt = polygon.count();
+    QList<QPointF> newpolygon;
+
+    for ( int i = 0; i < ptcnt; i++ ) {
+        const QPointF &pt1 = polygon.at(i);
+        const QPointF &pt2 = polygon.at((i + 1) % ptcnt);
+
+        if ( pt1.y() >= ymin )
+            newpolygon.append(pt1);
+
+        if ( (pt1.y() - ymin) * (pt2.y() - ymin) < 0.0 ) {
+            finFigAlgLine2D ptline = finFigureAlg::line2DFromPoints(pt1, pt2);
+            QPointF xpt = finFigureAlg::lineCrossPoint(ptline, line);
+            newpolygon.append(xpt);
+        }
+    }
+    return newpolygon;
+}
+
+QList<QPointF> finFigureAlg::yMaxCutPolygon(const QList<QPointF> &polygon, double ymax)
+{
+    finFigAlgLine2D line = finFigureAlg::horLineFromYVal(ymax);
+    int ptcnt = polygon.count();
+    QList<QPointF> newpolygon;
+
+    for ( int i = 0; i < ptcnt; i++ ) {
+        const QPointF &pt1 = polygon.at(i);
+        const QPointF &pt2 = polygon.at((i + 1) % ptcnt);
+
+        if ( pt1.y() <= ymax )
+            newpolygon.append(pt1);
+
+        if ( (pt1.y() - ymax) * (pt2.y() - ymax) < 0.0 ) {
+            finFigAlgLine2D ptline = finFigureAlg::line2DFromPoints(pt1, pt2);
+            QPointF xpt = finFigureAlg::lineCrossPoint(ptline, line);
+            newpolygon.append(xpt);
+        }
+    }
+    return newpolygon;
+}

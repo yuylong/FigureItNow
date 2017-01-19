@@ -298,10 +298,16 @@ public:
 
 private:
     QPointF getAxisCrossPoint(finGraphConfig *cfg) const;
+    double getSecondMinNum(double *ary, int cnt) const;
+    double getSecondMaxNum(double *ary, int cnt) const;
+    QRect getCrossPointRange(const QList<QPointF> &panelrect) const;
+
+
     double getGivenAxisCrossPosition(double minnum, double maxnum) const;
-    double getAutoAxisCrossPointX(finGraphConfig *cfg) const;
-    double getAutoAxisCrossPointY(finGraphConfig *cfg) const;
-    double getAutoAxisCrossPoint(finGraphConfig *cfg) const;
+    QPointF getGivenAxisCrossPoint() const;
+    QPointF getAutoAxisCrossPointX(const finGraphConfig *cfg) const;
+    QPointF getAutoAxisCrossPointY(const finGraphConfig *cfg) const;
+    QPointF getAutoAxisCrossPoint(const finGraphConfig *cfg) const;
 };
 
 class finFigureObjectLine3D : public finFigureObject

@@ -33,6 +33,10 @@ public:
     static bool isPointBetween(const QPointF &chkpt, const QPointF &pvpt1, const QPointF &pvpt2);
     static bool isPointInsidePolygon(const QPointF &chkpt, const QList<QPointF> &polygon);
     static QList<QPointF> polygonCrossPoint(const finFigAlgLine2D &line, const QList<QPointF> &polygon);
+    static QList<QPointF> xMinCutPolygon(const QList<QPointF> &polygon, double xmin);
+    static QList<QPointF> xMaxCutPolygon(const QList<QPointF> &polygon, double xmax);
+    static QList<QPointF> yMinCutPolygon(const QList<QPointF> &polygon, double ymin);
+    static QList<QPointF> yMaxCutPolygon(const QList<QPointF> &polygon, double ymax);
 };
 
 #endif // FINFIGUREALG_H
