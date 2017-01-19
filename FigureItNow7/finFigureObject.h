@@ -57,9 +57,7 @@ public:
     const finFigureConfig *getFigureConfig() const;
     finFigureConfig *getFigureConfig();
 
-    virtual finErrorCode getFigurePath(QList<finFigurePath> *pathlist) const;
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
-
     virtual void dump() const;
 };
 
@@ -81,9 +79,7 @@ public:
     finErrorCode setPoint(const QPointF &qpt);
     finErrorCode setPoint(double ptx, double pty);
 
-    virtual finErrorCode getFigurePath(QList<finFigurePath> *pathlist) const;
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
-
     virtual void dump() const;
 };
 
@@ -106,9 +102,7 @@ public:
     finErrorCode setPoint2(const QPointF &qpt);
     finErrorCode setPoint2(double ptx, double pty);
 
-    virtual finErrorCode getFigurePath(QList<finFigurePath> *pathlist) const;
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
-
     virtual void dump() const;
 };
 
@@ -130,9 +124,7 @@ public:
     finErrorCode appendPoint(double ptx, double pty);
     finErrorCode removePointAt(int idx);
 
-    virtual finErrorCode getFigurePath(QList<finFigurePath> *pathlist) const;
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
-
     virtual void dump() const;
 };
 
@@ -164,9 +156,7 @@ public:
     finErrorCode setSize(double width, double height);
     finErrorCode setRadian(double rad);
 
-    virtual finErrorCode getFigurePath(QList<finFigurePath> *pathlist) const;
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
-
     virtual void dump() const;
 };
 
@@ -188,9 +178,7 @@ public:
     finErrorCode appendPoint(double ptx, double pty);
     finErrorCode removePointAt(int idx);
 
-    virtual finErrorCode getFigurePath(QList<finFigurePath> *pathlist) const;
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
-
     virtual void dump() const;
 };
 
@@ -221,9 +209,7 @@ public:
 
     QPointF getEllipsePointAtRad(double rad) const;
 
-    virtual finErrorCode getFigurePath(QList<finFigurePath> *pathlist) const;
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
-
     virtual void dump() const;
 };
 
@@ -260,9 +246,7 @@ public:
     QPainterPath getTextPath() const;
     QPainterPath getPixelTextPath(finGraphConfig *cfg) const;
 
-    virtual finErrorCode getFigurePath(QList<finFigurePath> *pathlist) const;
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
-
     virtual void dump() const;
 };
 
@@ -308,6 +292,9 @@ public:
 
     finErrorCode setTitleX(const QString &title);
     finErrorCode setTitleY(const QString &title);
+
+    virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
+    virtual void dump() const;
 };
 
 class finFigureObjectLine3D : public finFigureObject
@@ -330,7 +317,6 @@ public:
     finErrorCode setPoint2(double ptx, double pty, double ptz);
 
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
-
     virtual void dump() const;
 };
 
