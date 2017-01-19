@@ -31,6 +31,12 @@ finGraphConfig::finGraphConfig()
     this->_renderHints = (QPainter::Antialiasing | QPainter::TextAntialiasing);
 }
 
+finGraphConfig::~finGraphConfig()
+{
+    if ( this->_transform != NULL )
+        delete this->_transform;
+}
+
 finErrorCode finGraphConfig::copyGraphConfig(const finGraphConfig *srccfg)
 {
     this->_panelSize = srccfg->_panelSize;
@@ -86,6 +92,14 @@ double finGraphConfig::getAxisRadZ() const
 double finGraphConfig::getAxisScaleZ() const
 {
     return this->_axisScaleZ;
+}
+
+finGraphTransType finGraphConfig::getTransformType() const
+{
+    if ( this->_transform != NULL && this->_transform->getTransformType() != finGraphTrans::FIN_GT_TYPE_NONE )
+        return finGraphTrans::FIN_GT_TYPE_NONE;
+    else
+        return this->_transform->getTransformType();
 }
 
 finGraphTrans *finGraphConfig::getTransform() const
@@ -153,6 +167,30 @@ finErrorCode finGraphConfig::setAxisRadZ(double rad)
 finErrorCode finGraphConfig::setAxisScaleZ(double scale)
 {
     this->_axisScaleZ = scale;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::setTransformType(finGraphTransType type)
+{
+    if ( this->getTransformType() == type )
+        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+
+    finGraphTrans *newtrans = NULL;
+    switch ( type ) {
+      case finGraphTrans::FIN_GT_TYPE_RECT:
+        newtrans = new finGraphTransRect();
+        if ( newtrans == NULL )
+            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        break;
+
+      default:
+        break;
+    }
+
+    finGraphTrans *oldtrans = this->_transform;
+    this->_transform = newtrans;
+    if ( oldtrans != NULL )
+        delete oldtrans;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

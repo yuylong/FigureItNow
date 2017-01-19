@@ -43,6 +43,7 @@ protected:
 
 public:
     finGraphConfig();
+    ~finGraphConfig();
 
     finErrorCode copyGraphConfig(const finGraphConfig *srccfg);
 
@@ -56,6 +57,7 @@ public:
     double getAxisRadZ() const;
     double getAxisScaleZ() const;
 
+    finGraphTransType getTransformType() const;
     finGraphTrans *getTransform() const;
     bool isLinearTransform() const;
 
@@ -70,6 +72,8 @@ public:
     finErrorCode setAxisUnitPixelSize(double size);
     finErrorCode setAxisRadZ(double rad);
     finErrorCode setAxisScaleZ(double scale);
+
+    finErrorCode setTransformType(finGraphTransType type);
 
     finErrorCode setRenderHints(QPainter::RenderHints hints);
 
