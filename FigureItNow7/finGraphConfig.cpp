@@ -22,7 +22,6 @@ finGraphConfig::finGraphConfig()
 
     this->_originPoint = QPointF(320.0, 240.0);
     this->_axisUnitSize = 40.0;
-
     this->_axisRadZ = (-3.0/4.0) * M_PI;
     this->_axisScaleZ = 0.618;
 
@@ -44,13 +43,12 @@ finErrorCode finGraphConfig::copyGraphConfig(const finGraphConfig *srccfg)
 
     this->_originPoint = srccfg->_originPoint;
     this->_axisUnitSize = srccfg->_axisUnitSize;
-
     this->_axisRadZ = srccfg->_axisRadZ;
     this->_axisScaleZ = srccfg->_axisScaleZ;
 
-    //this->_transform = NULL;
-
+    this->cloneTransform(srccfg);
     this->_renderHints = srccfg->_renderHints;
+
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -192,6 +190,28 @@ finErrorCode finGraphConfig::setTransformType(finGraphTransType type)
     if ( oldtrans != NULL )
         delete oldtrans;
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::cloneTransform(const finGraphTrans *srctrans)
+{
+    if ( srctrans == NULL || srctrans->getTransformType() == finGraphTrans::FIN_GT_TYPE_NONE )
+        return this->setTransformType(finGraphTrans::FIN_GT_TYPE_NONE);
+
+    finErrorCode errcode = this->setTransformType(srctrans->getTransformType());
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    finGraphTrans *mytrans = this->getTransform();
+    errcode = mytrans->cloneTransform(srctrans);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::cloneTransform(const finGraphConfig *srccfg)
+{
+    return this->cloneTransform(srccfg->getTransform());
 }
 
 finErrorCode finGraphConfig::setRenderHints(QPainter::RenderHints hints)

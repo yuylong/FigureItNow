@@ -74,6 +74,8 @@ public:
     finErrorCode setAxisScaleZ(double scale);
 
     finErrorCode setTransformType(finGraphTransType type);
+    finErrorCode cloneTransform(const finGraphTrans *srctrans);
+    finErrorCode cloneTransform(const finGraphConfig *srccfg);
 
     finErrorCode setRenderHints(QPainter::RenderHints hints);
 

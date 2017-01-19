@@ -5,6 +5,14 @@ finGraphTrans::finGraphTrans()
     this->_type = finGraphTrans::FIN_GT_TYPE_NONE;
 }
 
+finErrorCode finGraphTrans::cloneTransform(const finGraphTrans *trans)
+{
+    if ( trans == NULL || trans->getTransformType() != this->_type )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finGraphTransType finGraphTrans::getTransformType() const
 {
     return this->_type;
@@ -30,6 +38,18 @@ finGraphTransRect::finGraphTransRect()
     this->_type = finGraphTrans::FIN_GT_TYPE_RECT;
     this->_axisZoomX = 1.0;
     this->_axisZoomY = 1.0;
+}
+
+finErrorCode finGraphTransRect::cloneTransform(const finGraphTrans *trans)
+{
+    finErrorCode errcode = finGraphTrans::cloneTransform(trans);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    const finGraphTransRect *srctrans = (const finGraphTransRect *)trans;
+    this->_axisZoomX = srctrans->_axisZoomX;
+    this->_axisZoomY = srctrans->_axisZoomY;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 bool finGraphTransRect::isLinear() const

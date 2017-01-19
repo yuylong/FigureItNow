@@ -20,8 +20,8 @@ protected:
 public:
     finGraphTrans();
 
+    virtual finErrorCode cloneTransform(const finGraphTrans *trans);
     finGraphTransType getTransformType() const;
-
     virtual bool isLinear() const;
 
     virtual QPointF transPoint(const QPointF &ptr);
@@ -38,6 +38,7 @@ protected:
 public:
     finGraphTransRect();
 
+    virtual finErrorCode cloneTransform(const finGraphTrans *trans);
     virtual bool isLinear() const;
 
     double getAxisZoomX() const;
