@@ -910,8 +910,48 @@ double finFigureObjectAxis::_defMaxX = 10.0;
 double finFigureObjectAxis::_defMinY = -10.0;
 double finFigureObjectAxis::_defMaxY = 10.0;
 
+QPointF finFigureObjectAxis::getAxisCrossPoint(finGraphConfig *cfg) const
+{
+    QPointF xpt;
+    if ( !this->isAutoRangeX() )
+        xpt.setX(this->getGivenAxisCrossPosition(this->_minX, this->_maxX));
+    if ( !this->isAutoRangeY() )
+        xpt.setY(this->getGivenAxisCrossPosition(this->_minY, this->_maxY));
+
+    return xpt;
+}
+
+double finFigureObjectAxis::getGivenAxisCrossPosition(double minnum, double maxnum) const
+{
+    if ( minnum < 0.0 && maxnum < 0.0 )
+        return maxnum;
+    else if ( minnum > 0.0 && maxnum > 0.0 )
+        return minnum;
+    else
+        return 0.0;
+}
+
+double finFigureObjectAxis::getAutoAxisCrossPointX(finGraphConfig *cfg) const
+{
+    finFigAlgLine2D chkline = finFigureAlg::horLineFromYVal(this->_minY);
+    QList<QPointF> xptlist;
+
+    return 0.0;
+}
+
+double finFigureObjectAxis::getAutoAxisCrossPointY(finGraphConfig *cfg) const
+{
+    return 0.0;
+}
+
+double finFigureObjectAxis::getAutoAxisCrossPoint(finGraphConfig *cfg) const
+{
+    return 0.0;
+}
+
 finErrorCode finFigureObjectAxis::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
+    QPointF xpt = this->getAxisCrossPoint(cfg);
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

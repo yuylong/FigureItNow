@@ -295,6 +295,13 @@ public:
 
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
     virtual void dump() const;
+
+private:
+    QPointF getAxisCrossPoint(finGraphConfig *cfg) const;
+    double getGivenAxisCrossPosition(double minnum, double maxnum) const;
+    double getAutoAxisCrossPointX(finGraphConfig *cfg) const;
+    double getAutoAxisCrossPointY(finGraphConfig *cfg) const;
+    double getAutoAxisCrossPoint(finGraphConfig *cfg) const;
 };
 
 class finFigureObjectLine3D : public finFigureObject

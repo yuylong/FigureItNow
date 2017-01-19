@@ -49,6 +49,24 @@ QPointF finFigureAlg::getVerticalVector(const QPointF &vec, double len)
     return QPointF(x, y);
 }
 
+finFigAlgLine2D finFigureAlg::vecLineFromXVal(double xval)
+{
+    finFigAlgLine2D retline;
+    retline.a = 0.0;
+    retline.b = 1.0;
+    retline.c = -xval;
+    return retline;
+}
+
+finFigAlgLine2D finFigureAlg::horLineFromYVal(double yval)
+{
+    finFigAlgLine2D retline;
+    retline.a = 1.0;
+    retline.b = 0.0;
+    retline.c = -yval;
+    return retline;
+}
+
 finFigAlgLine2D finFigureAlg::line2DFromPoints(const QPointF &pt1, const QPointF &pt2)
 {
     finFigAlgLine2D retline;
@@ -71,4 +89,92 @@ QPointF finFigureAlg::lineCrossPoint(const finFigAlgLine2D &line1, const finFigA
     retpt.setX((line1.b * line2.c - line2.b * line1.c) / p);
     retpt.setY((line2.a * line1.c - line1.a * line2.c) / p);
     return retpt;
+}
+
+double finFigureAlg::linePointValue(const finFigAlgLine2D &line, const QPointF &pt)
+{
+    return (line.a * pt.x() + line.b * pt.y() + line.c);
+}
+
+bool finFigureAlg::arePointsSameSide(const finFigAlgLine2D &line, const QPointF &pt1, const QPointF &pt2)
+{
+    double pt1val = finFigureAlg::linePointValue(line, pt1);
+    double pt2val = finFigureAlg::linePointValue(line, pt2);
+    if ( pt1val * pt2val >= 0.0 )
+        return true;
+    else
+        return false;
+}
+
+bool finFigureAlg::isPointBetween(const QPointF &chkpt, const QPointF &pvpt1, const QPointF &pvpt2)
+{
+    QPointF pvvec1 = pvpt2 - pvpt1;
+    QPointF chkvec1 = chkpt - pvpt1;
+    double chkdot1 = pvvec1.x() * chkvec1.x() + pvvec1.y() * chkvec1.y();
+    if ( chkdot1 < 0.0 )
+        return false;
+
+    QPointF pvvec2 = pvpt1 - pvpt2;
+    QPointF chkvec2 = chkpt - pvpt2;
+    double chkdot2 = pvvec2.x() * chkvec2.x() + pvvec2.y() * chkvec2.y();
+    if ( chkdot2 < 0.0 )
+        return false;
+
+    return true;
+}
+
+bool finFigureAlg::isPointInsidePolygon(const QPointF &chkpt, const QList<QPointF> &polygon)
+{
+    int ptcnt = polygon.count();
+    for ( int i = 0; i < ptcnt ; i++ ) {
+        QPointF linept1 = polygon.at(i);
+        QPointF linept2 = polygon.at((i + 1) % ptcnt);
+        finFigAlgLine2D line = finFigureAlg::line2DFromPoints(linept1, linept2);
+
+        int j = 2;
+        QPointF pvpt = polygon.at((i + j) % ptcnt);
+        while ( fabs(finFigureAlg::linePointValue(line, pvpt)) < 1.0e-8 ) {
+            j++;
+            if ( j == ptcnt )
+                break;
+            pvpt = polygon.at((i + j) % ptcnt);
+        }
+
+        if ( !finFigureAlg::arePointsSameSide(line, pvpt, chkpt) )
+            return false;
+    }
+    return true;
+}
+
+QList<QPointF> finFigureAlg::polygonCrossPoint(const finFigAlgLine2D &line, const QList<QPointF> &polygon)
+{
+    QList<QPointF> ptlist;
+
+    int ptcnt = polygon.count();
+    for ( int i = 0; i < ptcnt ; i++ ) {
+        QPointF linept1 = polygon.at(i);
+        QPointF linept2 = polygon.at((i + 1) % ptcnt);
+        finFigAlgLine2D pline = finFigureAlg::line2DFromPoints(linept1, linept2);
+
+        if ( finFigureAlg::isParallelLines(pline, line) )
+            continue;
+
+        QPointF xpt = finFigureAlg::lineCrossPoint(pline, line);
+        if ( !finFigureAlg::isPointBetween(xpt, linept1, linept2) )
+            continue;
+
+        bool hassame = false;
+        for ( int j = 0; j < ptlist.count(); j++ ) {
+            const QPointF &prevpt = ptlist.at(i);
+            if ( fabs(prevpt.x() - xpt.x()) < 1.0e-8 && fabs(prevpt.y() - xpt.y()) < 1.0e-8 ) {
+                hassame = true;
+                break;
+            }
+        }
+        if ( hassame )
+            continue;
+
+        ptlist.append(xpt);
+    }
+    return ptlist;
 }

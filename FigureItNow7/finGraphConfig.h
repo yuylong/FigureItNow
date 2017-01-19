@@ -49,6 +49,7 @@ public:
 
     QSizeF getPanelPixelSize() const;
     QRectF getWholePanelPixelRect() const;
+    QList<QPointF> getCornerAxisPoints() const;
     QColor getBackgroundColor() const;
     QBrush getBackgroundBrush() const;
 
@@ -81,10 +82,10 @@ public:
 
     finErrorCode setRenderHints(QPainter::RenderHints hints);
 
-    QPointF transformPixelPoint3D(double x, double y, double z);
-    QPointF transformPixelPoint3D(const finFigurePoint3D &pt);
-    QPointF transformPixelPoint(const QPointF &srcpt);
-    QPointF arcTransformPixelPoint(const QPointF &srcpt);
+    QPointF transformPixelPoint3D(double x, double y, double z) const;
+    QPointF transformPixelPoint3D(const finFigurePoint3D &pt) const;
+    QPointF transformPixelPoint(const QPointF &srcpt) const;
+    QPointF arcTransformPixelPoint(const QPointF &srcpt) const;
 };
 
 #endif // FINGRAPHCONFIG_H

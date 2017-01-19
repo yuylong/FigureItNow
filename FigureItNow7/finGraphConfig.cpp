@@ -62,6 +62,17 @@ QRectF finGraphConfig::getWholePanelPixelRect() const
     return QRectF(QPointF(0.0, 0.0), this->getPanelPixelSize());
 }
 
+QList<QPointF> finGraphConfig::getCornerAxisPoints() const
+{
+    QRectF rect = this->getWholePanelPixelRect();
+    QList<QPointF> ptlist;
+    ptlist.append(this->arcTransformPixelPoint(rect.topLeft()));
+    ptlist.append(this->arcTransformPixelPoint(rect.topRight()));
+    ptlist.append(this->arcTransformPixelPoint(rect.bottomRight()));
+    ptlist.append(this->arcTransformPixelPoint(rect.bottomLeft()));
+    return ptlist;
+}
+
 QColor finGraphConfig::getBackgroundColor() const
 {
     return this->_bgColor;
@@ -228,7 +239,7 @@ finErrorCode finGraphConfig::setRenderHints(QPainter::RenderHints hints)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-QPointF finGraphConfig::transformPixelPoint3D(double x, double y, double z)
+QPointF finGraphConfig::transformPixelPoint3D(double x, double y, double z) const
 {
     QPointF srcpt(x, y);
     QPointF zshift(z * this->_axisScaleZ * cos(this->_axisRadZ), z * this->_axisScaleZ * sin(this->_axisRadZ));
@@ -236,12 +247,12 @@ QPointF finGraphConfig::transformPixelPoint3D(double x, double y, double z)
     return this->transformPixelPoint(srcpt + zshift);
 }
 
-QPointF finGraphConfig::transformPixelPoint3D(const finFigurePoint3D &pt)
+QPointF finGraphConfig::transformPixelPoint3D(const finFigurePoint3D &pt) const
 {
     return this->transformPixelPoint3D(pt.getX(), pt.getY(), pt.getZ());
 }
 
-QPointF finGraphConfig::transformPixelPoint(const QPointF &srcpt)
+QPointF finGraphConfig::transformPixelPoint(const QPointF &srcpt) const
 {
     QPointF midpt;
     if ( this->_transform != NULL && this->_transform->getTransformType() != finGraphTrans::FIN_GT_TYPE_NONE )
@@ -253,7 +264,7 @@ QPointF finGraphConfig::transformPixelPoint(const QPointF &srcpt)
     return midpt * this->_axisUnitSize + this->_originPoint;
 }
 
-QPointF finGraphConfig::arcTransformPixelPoint(const QPointF &srcpt)
+QPointF finGraphConfig::arcTransformPixelPoint(const QPointF &srcpt) const
 {
     QPointF midpt = srcpt;
     midpt = (midpt - this->_originPoint) / this->_axisUnitSize;
