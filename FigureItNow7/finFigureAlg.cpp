@@ -44,8 +44,9 @@ QPointF finFigureAlg::movePointOutside(const QPointF &basept, const QPointF &dir
 
 QPointF finFigureAlg::getVerticalVector(const QPointF &vec, double len)
 {
-    double x = sqrt((len * len) / (1 + (vec.x() * vec.x()) / (vec.y() * vec.y())));
-    double y = -(vec.x() / vec.y()) * x;
+    double base = len / finFigureAlg::vectorLength(vec);
+    double x = vec.y() * base;
+    double y = -vec.x() * base;
     return QPointF(x, y);
 }
 
