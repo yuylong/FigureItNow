@@ -985,10 +985,10 @@ QRectF finFigureObjectAxis::getCrossPointRange(const QList<QPointF> &panelrect) 
     }
 
     if ( !this->isAutoRangeY() && ycandrange[0] <= this->_maxY && ycandrange[1] >= this->_minY ) {
-        if ( xcandrange[0] < this->_minY )
-            xcandrange[0] = this->_minX;
-        if ( xcandrange[1] > this->_maxX )
-            xcandrange[1] = this->_maxX;
+        if ( ycandrange[0] < this->_minY )
+            ycandrange[0] = this->_minY;
+        if ( ycandrange[1] > this->_maxY )
+            ycandrange[1] = this->_maxY;
     }
 
     return QRectF(xcandrange[0], ycandrange[0],
