@@ -910,11 +910,89 @@ double finFigureObjectAxis::_defMaxX = 10.0;
 double finFigureObjectAxis::_defMinY = -10.0;
 double finFigureObjectAxis::_defMaxY = 10.0;
 
-QPointF finFigureObjectAxis::getAxisCrossPoint(finGraphConfig *cfg) const
+QRectF finFigureObjectAxis::getDefaultRangeRect()
 {
-    QList<QPointF> polygon = cfg->getCornerAxisPoints();
+    return QRectF(finFigureObjectAxis::_defMinX, finFigureObjectAxis::_defMinY,
+                  (finFigureObjectAxis::_defMaxX - finFigureObjectAxis::_defMinX),
+                  (finFigureObjectAxis::_defMaxY - finFigureObjectAxis::_defMinY));
+}
 
-    return QPointF();
+double finFigureObjectAxis::getSecondMinNum(double *ary, int cnt) const
+{
+    if ( cnt <= 0 )
+        return 0.0;
+    else if ( cnt == 1)
+        return ary[0];
+
+    double min = (ary[0] < ary[1] ? ary[0] : ary[1]);
+    double min2 = (ary[0] < ary[1] ? ary[1] : ary[0]);
+
+    for ( int i = 2; i < cnt; i++ ) {
+        if ( ary[i] < min ) {
+            min2 = min;
+            min = ary[i];
+        } else if ( ary[i] < min2 ) {
+            min2 = ary[i];
+        }
+    }
+    return min2;
+}
+
+double finFigureObjectAxis::getSecondMaxNum(double *ary, int cnt) const
+{
+    if ( cnt <= 0 )
+        return 0.0;
+    else if ( cnt == 1)
+        return ary[0];
+
+    double max = (ary[0] > ary[1] ? ary[0] : ary[1]);
+    double max2 = (ary[0] > ary[1] ? ary[1] : ary[0]);
+
+    for ( int i = 2; i < cnt; i++ ) {
+        if ( ary[i] > max ) {
+            max2 = max;
+            max = ary[i];
+        } else if ( ary[i] > max2 ) {
+            max2 = ary[i];
+        }
+    }
+    return max2;
+}
+
+QRectF finFigureObjectAxis::getCrossPointRange(const QList<QPointF> &panelrect) const
+{
+    if ( panelrect.count() < 4 )
+        return finFigureObjectAxis::getDefaultRangeRect();
+
+    double xcandrange[2], ycandrange[2];
+
+    double posary[4];
+    for ( int i = 0; i < 4; i++ )
+        posary[i] = panelrect.at(i).x();
+    xcandrange[0] = this->getSecondMinNum(posary, 4);
+    xcandrange[1] = this->getSecondMaxNum(posary, 4);
+
+    for ( int i = 0; i < 4; i++ )
+        posary[i] = panelrect.at(i).y();
+    ycandrange[0] = this->getSecondMinNum(posary, 4);
+    ycandrange[1] = this->getSecondMaxNum(posary, 4);
+
+    if ( !this->isAutoRangeX() && xcandrange[0] <= this->_maxX && xcandrange[1] >= this->_minX ) {
+        if ( xcandrange[0] < this->_minX )
+            xcandrange[0] = this->_minX;
+        if ( xcandrange[1] > this->_maxX )
+            xcandrange[1] = this->_maxX;
+    }
+
+    if ( !this->isAutoRangeY() && ycandrange[0] <= this->_maxY && ycandrange[1] >= this->_minY ) {
+        if ( xcandrange[0] < this->_minY )
+            xcandrange[0] = this->_minX;
+        if ( xcandrange[1] > this->_maxX )
+            xcandrange[1] = this->_maxX;
+    }
+
+    return QRectF(xcandrange[0], ycandrange[0],
+                  (xcandrange[1] - xcandrange[0]), (ycandrange[1] - ycandrange[0]));
 }
 
 double finFigureObjectAxis::getGivenAxisCrossPosition(double minnum, double maxnum) const
@@ -927,9 +1005,76 @@ double finFigureObjectAxis::getGivenAxisCrossPosition(double minnum, double maxn
         return 0.0;
 }
 
+QPointF finFigureObjectAxis::getAxisCrossPoint(const QList<QPointF> &panelrect) const
+{
+    QRectF candrect = getCrossPointRange(panelrect);
+
+    double ptx = this->getGivenAxisCrossPosition(candrect.left(), candrect.right());
+    double pty = this->getGivenAxisCrossPosition(candrect.top(), candrect.bottom());
+    return QPointF(ptx, pty);
+}
+
+QRectF finFigureObjectAxis::getAxisDrawRange(const QList<QPointF> &panelrect, const QPointF& crosspt) const
+{
+    finFigAlgLine2D xline = finFigureAlg::horLineFromYVal(crosspt.y());
+    QList<QPointF> xrngpt = finFigureAlg::polygonCrossPoint(xline, panelrect);
+    if ( xrngpt.count() < 2 )
+        return finFigureObjectAxis::getDefaultRangeRect();
+
+    double xrng[2];
+    xrng[0] = (xrngpt.at(0).x() < xrngpt.at(1).x() ? xrngpt.at(0).x() : xrngpt.at(1).x());
+    xrng[1] = (xrngpt.at(0).x() < xrngpt.at(1).x() ? xrngpt.at(1).x() : xrngpt.at(0).x());
+    for ( int i = 0; i < xrngpt.count(); i++ ) {
+        if ( xrngpt.at(i).x() < xrng[0] )
+            xrng[0] = xrngpt.at(i).x();
+        if ( xrngpt.at(i).x() > xrng[1] )
+            xrng[1] = xrngpt.at(i).x();
+    }
+    if ( !this->isAutoRangeX() && xrng[0] <= this->_maxX && xrng[1] >= this->_minX ) {
+        if ( xrng[0] < this->_minX )
+            xrng[0] = this->_minX;
+        if ( xrng[1] > this->_maxX )
+            xrng[1] = this->_maxX;
+    }
+
+    finFigAlgLine2D yline = finFigureAlg::horLineFromYVal(crosspt.x());
+    QList<QPointF> yrngpt = finFigureAlg::polygonCrossPoint(yline, panelrect);
+    if ( yrngpt.count() < 2 )
+        return finFigureObjectAxis::getDefaultRangeRect();
+
+    double yrng[2];
+    yrng[0] = (yrngpt.at(0).y() < yrngpt.at(1).y() ? yrngpt.at(0).y() : xrngpt.at(1).y());
+    yrng[1] = (yrngpt.at(0).y() < yrngpt.at(1).y() ? yrngpt.at(1).y() : xrngpt.at(0).y());
+    for ( int i = 0; i < yrngpt.count(); i++ ) {
+        if ( yrngpt.at(i).y() < yrng[0] )
+            yrng[0] = yrngpt.at(i).y();
+        if ( yrngpt.at(i).y() > yrng[1] )
+            yrng[1] = yrngpt.at(i).y();
+    }
+    if ( !this->isAutoRangeY() && yrng[0] <= this->_maxY && yrng[1] >= this->_minY ) {
+        if ( yrng[0] < this->_minY )
+            yrng[0] = this->_minY;
+        if ( yrng[1] > this->_maxY )
+            yrng[1] = this->_maxY;
+    }
+
+    return QRectF(xrng[0], yrng[0], (xrng[1] - xrng[0]), (yrng[1] - yrng[0]));
+}
+
 finErrorCode finFigureObjectAxis::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    QPointF xpt = this->getAxisCrossPoint(cfg);
+    QList<QPointF> polygon = cfg->getCornerAxisPoints();
+    QPointF xpt = this->getAxisCrossPoint(polygon);
+    QRectF drawrect = this->getAxisDrawRange(polygon, xpt);
+
+    finFigureObjectLine foline;
+    foline.setPoint1(drawrect.left(), xpt.y());
+    foline.setPoint2(drawrect.right(), xpt.y());
+    foline.getPixelFigurePath(pathlist, cfg);
+
+    foline.setPoint1(xpt.x(), drawrect.top());
+    foline.setPoint2(xpt.x(), drawrect.bottom());
+    foline.getPixelFigurePath(pathlist, cfg);
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

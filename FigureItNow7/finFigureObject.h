@@ -297,17 +297,16 @@ public:
     virtual void dump() const;
 
 private:
-    QPointF getAxisCrossPoint(finGraphConfig *cfg) const;
+    static QRectF getDefaultRangeRect();
+
     double getSecondMinNum(double *ary, int cnt) const;
     double getSecondMaxNum(double *ary, int cnt) const;
-    QRect getCrossPointRange(const QList<QPointF> &panelrect) const;
+    QRectF getCrossPointRange(const QList<QPointF> &panelrect) const;
+    QPointF getAxisCrossPoint(const QList<QPointF> &panelrect) const;
 
+    QRectF getAxisDrawRange(const QList<QPointF> &panelrect, const QPointF &crosspt) const;
 
     double getGivenAxisCrossPosition(double minnum, double maxnum) const;
-    QPointF getGivenAxisCrossPoint() const;
-    QPointF getAutoAxisCrossPointX(const finGraphConfig *cfg) const;
-    QPointF getAutoAxisCrossPointY(const finGraphConfig *cfg) const;
-    QPointF getAutoAxisCrossPoint(const finGraphConfig *cfg) const;
 };
 
 class finFigureObjectLine3D : public finFigureObject
