@@ -57,6 +57,8 @@ public:
     double getAxisRadZ() const;
     double getAxisScaleZ() const;
 
+    bool isOriginPointOnPanel() const;
+
     finGraphTransType getTransformType() const;
     finGraphTrans *getTransform() const;
     bool isLinearTransform() const;

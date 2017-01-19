@@ -92,6 +92,11 @@ double finGraphConfig::getAxisScaleZ() const
     return this->_axisScaleZ;
 }
 
+bool finGraphConfig::isOriginPointOnPanel() const
+{
+    return this->getWholePanelPixelRect().contains(this->_originPoint);
+}
+
 finGraphTransType finGraphConfig::getTransformType() const
 {
     if ( this->_transform == NULL || this->_transform->getTransformType() == finGraphTrans::FIN_GT_TYPE_NONE )
