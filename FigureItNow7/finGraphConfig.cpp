@@ -94,7 +94,7 @@ double finGraphConfig::getAxisScaleZ() const
 
 finGraphTransType finGraphConfig::getTransformType() const
 {
-    if ( this->_transform != NULL && this->_transform->getTransformType() != finGraphTrans::FIN_GT_TYPE_NONE )
+    if ( this->_transform == NULL || this->_transform->getTransformType() == finGraphTrans::FIN_GT_TYPE_NONE )
         return finGraphTrans::FIN_GT_TYPE_NONE;
     else
         return this->_transform->getTransformType();
@@ -107,7 +107,7 @@ finGraphTrans *finGraphConfig::getTransform() const
 
 bool finGraphConfig::isLinearTransform() const
 {
-    if ( this->_transform != NULL && this->_transform->getTransformType() != finGraphTrans::FIN_GT_TYPE_NONE )
+    if ( this->_transform == NULL || this->_transform->getTransformType() == finGraphTrans::FIN_GT_TYPE_NONE )
         return true;
     else
         return this->_transform->isLinear();
@@ -202,6 +202,9 @@ finErrorCode finGraphConfig::cloneTransform(const finGraphTrans *srctrans)
         return errcode;
 
     finGraphTrans *mytrans = this->getTransform();
+    if ( mytrans == NULL )
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+
     errcode = mytrans->cloneTransform(srctrans);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;

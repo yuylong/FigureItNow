@@ -25,6 +25,8 @@ static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *
                                      finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_draw_text(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env,
+                                  finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_named_color(finExecFunction *self, finExecEnvironment *env,
@@ -36,18 +38,19 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
 
 
 static finExecSysFuncRegItem _finSysFuncFigureList[] = {
-    { QString("clear_fig"),        QString(""),                       _sysfunc_clear_fig        },
-    { QString("line"),             QString("x1,y1,x2,y2"),            _sysfunc_line             },
-    { QString("polyline"),         QString("x1,y1,x2,y2"),            _sysfunc_polyline         },
-    { QString("rect"),             QString("cx,cy,w,h,rad"),          _sysfunc_rect             },
-    { QString("polygon"),          QString("x1,y1,x2,y2"),            _sysfunc_polygon          },
-    { QString("circle"),           QString("cx,cy,r"),                _sysfunc_circle           },
-    { QString("ellipse"),          QString("cx,cy,lr,sr,rad"),        _sysfunc_ellipse          },
-    { QString("draw_text"),        QString("text,cx,cy,rad,sc"),      _sysfunc_draw_text        },
-    { QString("line3d"),           QString("x1,y1,z1,x2,y2,z2"),      _sysfunc_line3d           },
-    { QString("named_color"),      QString("colorname"),              _sysfunc_named_color      },
-    { QString("read_fig_config"),  QString("cfgname"),                _sysfunc_read_fig_config  },
-    { QString("write_fig_config"), QString("cfgname,value"),          _sysfunc_write_fig_config },
+    { QString("clear_fig"),        QString(""),                            _sysfunc_clear_fig        },
+    { QString("line"),             QString("x1,y1,x2,y2"),                 _sysfunc_line             },
+    { QString("polyline"),         QString("x1,y1,x2,y2"),                 _sysfunc_polyline         },
+    { QString("rect"),             QString("cx,cy,w,h,rad"),               _sysfunc_rect             },
+    { QString("polygon"),          QString("x1,y1,x2,y2"),                 _sysfunc_polygon          },
+    { QString("circle"),           QString("cx,cy,r"),                     _sysfunc_circle           },
+    { QString("ellipse"),          QString("cx,cy,lr,sr,rad"),             _sysfunc_ellipse          },
+    { QString("draw_text"),        QString("text,cx,cy,rad,sc"),           _sysfunc_draw_text        },
+    { QString("axis"),             QString("sx,sy,tx,ty,rx1,rx2,ry1,ry2"), _sysfunc_axis             },
+    { QString("line3d"),           QString("x1,y1,z1,x2,y2,z2"),           _sysfunc_line3d           },
+    { QString("named_color"),      QString("colorname"),                   _sysfunc_named_color      },
+    { QString("read_fig_config"),  QString("cfgname"),                     _sysfunc_read_fig_config  },
+    { QString("write_fig_config"), QString("cfgname,value"),               _sysfunc_write_fig_config },
 
     { QString(), QString(), NULL }
 };
@@ -417,6 +420,67 @@ static finErrorCode _sysfunc_draw_text(finExecFunction *self, finExecEnvironment
     errcode = env->getFigureContainer()->appendFigureObject(fotext);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         delete fotext;
+        return errcode;
+    }
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env,
+                                  finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    finFigureObjectAxis *foaxis = new finFigureObjectAxis();
+    if ( foaxis == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    finExecVariable *stepxvar = finExecVariable::transLinkTarget(env->findVariable("sx"));
+    if ( stepxvar == NULL || stepxvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        foaxis->setAutoStepX();
+    else
+        foaxis->setStepX(stepxvar->getNumericValue());
+
+    finExecVariable *stepyvar = finExecVariable::transLinkTarget(env->findVariable("sy"));
+    if ( stepyvar == NULL || stepyvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        foaxis->setAutoStepY();
+    else
+        foaxis->setStepY(stepyvar->getNumericValue());
+
+    finExecVariable *titlexvar = finExecVariable::transLinkTarget(env->findVariable("tx"));
+    if ( titlexvar == NULL || titlexvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+        foaxis->setTitleX(QString("x"));
+    else
+        foaxis->setTitleX(titlexvar->getStringValue());
+
+    finExecVariable *titleyvar = finExecVariable::transLinkTarget(env->findVariable("ty"));
+    if ( titleyvar == NULL || titleyvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+        foaxis->setTitleY(QString("y"));
+    else
+        foaxis->setTitleY(titleyvar->getStringValue());
+
+    finExecVariable *minxvar = finExecVariable::transLinkTarget(env->findVariable("rx1"));
+    finExecVariable *maxxvar = finExecVariable::transLinkTarget(env->findVariable("rx2"));
+    if ( minxvar == NULL || minxvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         maxxvar == NULL || maxxvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        foaxis->setAutoRangeX();
+    else
+        foaxis->setRangeX(minxvar->getNumericValue(), maxxvar->getNumericValue());
+
+    finExecVariable *minyvar = finExecVariable::transLinkTarget(env->findVariable("ry1"));
+    finExecVariable *maxyvar = finExecVariable::transLinkTarget(env->findVariable("ry2"));
+    if ( minyvar == NULL || minyvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         maxyvar == NULL || maxyvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        foaxis->setAutoRangeY();
+    else
+        foaxis->setRangeY(minyvar->getNumericValue(), maxyvar->getNumericValue());
+
+    finErrorCode errcode = env->getFigureContainer()->appendFigureObject(foaxis);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete foaxis;
         return errcode;
     }
     flowctl->setFlowNext();

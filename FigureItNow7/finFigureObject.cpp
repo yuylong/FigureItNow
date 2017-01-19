@@ -766,12 +766,12 @@ void finFigureObjectText::dump() const
 
 finFigureObjectAxis::finFigureObjectAxis()
 {
-    this->_minX = 0.0;
-    this->_maxX = 0.0;
-    this->_minY = 0.0;
-    this->_maxY = 0.0;
-    this->_stepX = 0.0;
-    this->_stepY = 0.0;
+    this->_minX = 1.0;
+    this->_maxX = -1.0;
+    this->_minY = 1.0;
+    this->_maxY = -1.0;
+    this->_stepX = -1.0;
+    this->_stepY = -1.0;
     this->_titleX = QString("x");
     this->_titleY = QString("y");
 }
@@ -843,8 +843,8 @@ QString finFigureObjectAxis::getTitleY() const
 
 finErrorCode finFigureObjectAxis::setAutoRangeX()
 {
-    this->_minX = 0.0;
-    this->_maxX = 0.0;
+    this->_minX = 1.0;
+    this->_maxX = -1.0;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -857,8 +857,8 @@ finErrorCode finFigureObjectAxis::setRangeX(double minx, double maxx)
 
 finErrorCode finFigureObjectAxis::setAutoRangeY()
 {
-    this->_minY = 0.0;
-    this->_maxY = 0.0;
+    this->_minY = 1.0;
+    this->_maxY = -1.0;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -871,7 +871,7 @@ finErrorCode finFigureObjectAxis::setRangeY(double miny, double maxy)
 
 finErrorCode finFigureObjectAxis::setAutoStepX()
 {
-    this->_stepX = 0.0;
+    this->_stepX = -1.0;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -883,7 +883,7 @@ finErrorCode finFigureObjectAxis::setStepX(double step)
 
 finErrorCode finFigureObjectAxis::setAutoStepY()
 {
-    this->_stepY = 0.0;
+    this->_stepY = -1.0;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -912,7 +912,8 @@ double finFigureObjectAxis::_defMaxY = 10.0;
 
 finErrorCode finFigureObjectAxis::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 void finFigureObjectAxis::dump() const
@@ -935,9 +936,9 @@ void finFigureObjectAxis::dump() const
     else
         printf("(%lf - %lf) ", this->_minY, this->_maxY);
     if ( this->isAutoStepX() )
-        printf(" step:AUTO\n");
+        printf("stp:AUTO\n");
     else
-        printf(" step:%lf\n", this->_stepY);
+        printf("stp:%lf\n", this->_stepY);
 }
 
 finFigureObjectLine3D::finFigureObjectLine3D()
