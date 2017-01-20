@@ -42,6 +42,19 @@ QPointF finFigureAlg::movePointOutside(const QPointF &basept, const QPointF &dir
     return basept + tarvec;
 }
 
+double finFigureAlg::getVectorRadian(const QPointF &vec)
+{
+    double veclen = finFigureAlg::vectorLength(vec);
+    if ( veclen <= 0.0 )
+        return 0.0;
+
+    double acosrad = acos(vec.x() / veclen);
+    if ( vec.y() >= 0.0 )
+        return acosrad;
+    else
+        return -acosrad;
+}
+
 QPointF finFigureAlg::getVerticalVector(const QPointF &vec, double len)
 {
     double base = len / finFigureAlg::vectorLength(vec);

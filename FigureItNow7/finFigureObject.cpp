@@ -1143,6 +1143,7 @@ finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, fi
     QPointF xstepvec = QPointF(xstep, 0.0);
     QPointF xtickvec = this->getTickPixelVector(crosspt + xstepvec, crosspt, cfg);
 
+
     for ( double x = crosspt.x() + xstep; x < drawrange.right(); x += xstep ) {
         QPointF tickpt = QPointF(x, crosspt.y());
         QPointF tickpixpt = cfg->transformPixelPoint(tickpt);
