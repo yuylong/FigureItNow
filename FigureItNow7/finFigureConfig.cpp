@@ -58,6 +58,11 @@ QFont finFigureConfig::getFont() const
     return this->_font;
 }
 
+QMarginsF finFigureConfig::getTextMargins() const
+{
+    return this->_textMargins;
+}
+
 double finFigureConfig::getDotSize() const
 {
     return this->_borderPen.width();
@@ -122,6 +127,12 @@ finErrorCode finFigureConfig::setTextBrush(const QBrush &brush)
 finErrorCode finFigureConfig::setFont(const QFont &font)
 {
     this->_font = font;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setTextMargins(const QMarginsF &margins)
+{
+    this->_textMargins = margins;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

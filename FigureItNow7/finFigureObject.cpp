@@ -1144,12 +1144,12 @@ double finFigureObjectAxis::getAxisPixelRadian(const QPointF &steppixvec) const
 
 finErrorCode finFigureObjectAxis::setupTickLabel(const QPointF &steppixvec, finFigureObjectText *fotext) const
 {
-    this->_figCfg.cloneFigureConfig(fotext->getFigureConfig());
+    finFigureConfig *textcfg = fotext->getFigureConfig();
+    this->_figCfg.cloneFigureConfig(textcfg);
 
-
-    QFont lblfont = fotext->getFigureConfig()->getFont();
+    QFont lblfont = textcfg->getFont();
     lblfont.setPointSizeF(lblfont.pointSizeF() / 1.5);
-    fotext->getFigureConfig()->setFont(lblfont);
+    textcfg->setFont(lblfont);
 
     double xrad = -finFigureAlg::getVectorRadian(steppixvec);
     const double cutbs = M_PI / 8.0;

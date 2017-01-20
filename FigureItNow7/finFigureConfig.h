@@ -21,6 +21,7 @@
 #include <QPen>
 #include <QBrush>
 #include <QFont>
+#include <QMarginsF>
 
 #include "finErrorCode.h"
 #include "finFigureArrow.h"
@@ -36,6 +37,7 @@ protected:
     QPen _textPen;
     QBrush _textBrush;
     QFont _font;
+    QMarginsF _textMargins;
 
     static finFigureConfig *_defFigCfg;
 
@@ -51,6 +53,7 @@ public:
     QPen getTextPen() const;
     QBrush getTextBrush() const;
     QFont getFont() const;
+    QMarginsF getTextMargins() const;
 
     double getDotSize() const;
     QColor getBorderColor() const;
@@ -65,6 +68,7 @@ public:
     finErrorCode setTextPen(const QPen &pen);
     finErrorCode setTextBrush(const QBrush &brush);
     finErrorCode setFont(const QFont &font);
+    finErrorCode setTextMargins(const QMarginsF &margins);
 
     finErrorCode setDotSize(double size);
     finErrorCode setBorderColor(const QColor &color);
