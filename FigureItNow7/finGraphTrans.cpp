@@ -100,3 +100,29 @@ QPointF finGraphTransRect::arcTransPoint(const QPointF &ptr)
     resptr.setY(ptr.y() / this->_axisZoomY);
     return resptr;
 }
+
+finGraphTransAffine::finGraphTransAffine()
+    : _matrix(), _invMatrix()
+{
+    this->_type = finGraphTrans::FIN_GT_TYPE_AFFINE;
+}
+
+QTransform finGraphTransAffine::getTransformMatrix() const
+{
+    return this->_matrix;
+}
+
+QTransform finGraphTransAffine::getInvatedTransformMatrix() const
+{
+    return this->_invMatrix;
+}
+
+virtual QPointF finGraphTransAffine::transPoint(const QPointF &ptr)
+{
+    return this->_matrix.map(ptr);
+}
+
+virtual QPointF finGraphTransAffine::arcTransPoint(const QPointF &ptr)
+{
+    return this->_invMatrix.map(ptr);
+}

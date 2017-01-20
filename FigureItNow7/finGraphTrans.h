@@ -2,6 +2,7 @@
 #define FINGRAPHTRANS_H
 
 #include <QPointF>
+#include <QTransform>
 
 #include "finErrorCode.h"
 
@@ -12,6 +13,7 @@ public:
     enum finGraphTransType {
         FIN_GT_TYPE_NONE,
         FIN_GT_TYPE_RECT,
+        FIN_GT_TYPE_AFFINE,
     };
 
 protected:
@@ -46,6 +48,22 @@ public:
 
     finErrorCode setAxisZoomX(double zoomx);
     finErrorCode setAxisZoomY(double zoomy);
+
+    virtual QPointF transPoint(const QPointF &ptr);
+    virtual QPointF arcTransPoint(const QPointF &ptr);
+};
+
+class finGraphTransAffine : public finGraphTrans
+{
+protected:
+    QTransform _matrix;
+    QTransform _invMatrix;
+
+public:
+    finGraphTransAffine();
+
+    QTransform getTransformMatrix() const;
+    QTransform getInvatedTransformMatrix() const;
 
     virtual QPointF transPoint(const QPointF &ptr);
     virtual QPointF arcTransPoint(const QPointF &ptr);
