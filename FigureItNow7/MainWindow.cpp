@@ -90,6 +90,8 @@ void MainWindow::on_pushButton_3_clicked()
 
     finFigureContainer *figcontainer = this->figui->getFigureContainer();
     finGraphConfig *graphcfg = figcontainer->getGraphConfig();
+    graphcfg->setAxisUnitPixelSize(20);
+
     graphcfg->setTransformType(finGraphTrans::FIN_GT_TYPE_AFFINE);
     finGraphTransAffine *trans = (finGraphTransAffine *)graphcfg->getTransform();
     trans->reset();

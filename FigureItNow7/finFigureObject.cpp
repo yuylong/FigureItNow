@@ -1110,21 +1110,45 @@ double finFigureObjectAxis::getTickStep(bool isx, const QPointF &crosspt, finGra
 
     QPointF xpixpt = cfg->transformPixelPoint(crosspt);
     static const double bestpixsteplen = 32.0;
-    int i = 1, stepi = 1, cnt = 0;
 
-    while ( cnt < 100 ) {
-        QPointF steppt = crosspt + i * unitvec;
-        QPointF steppixpt = cfg->transformPixelPoint(steppt);
-        double length = finFigureAlg::pointsDistance(steppixpt, xpixpt);
-        if ( length >= bestpixsteplen)
-            return (double)i;
+    int cnt = 0;
+    QPointF steppt = crosspt + unitvec;
+    QPointF steppixpt = cfg->transformPixelPoint(steppt);
+    double length = finFigureAlg::pointsDistance(steppixpt, xpixpt);
 
-        stepi = i * (bestpixsteplen - length) / (1.5 * length);
-        i += stepi;
+    if ( length < bestpixsteplen ) {
+        int i = 2, stepi = 1;
+        while ( cnt < 100 ) {
+            steppt = crosspt + i * unitvec;
+            steppixpt = cfg->transformPixelPoint(steppt);
+            length = finFigureAlg::pointsDistance(steppixpt, xpixpt);
+            if ( length >= bestpixsteplen )
+                return (double)i;
 
-        cnt++;
+            stepi = i * (bestpixsteplen - length) / (1.75 * length);
+            i += (stepi < 1 ? 1 : stepi);
+            cnt++;
+        }
+    } else if ( length > 2 * bestpixsteplen ) {
+        double step = 0.75, prevstep = 1.0;
+        while ( cnt < 100 ) {
+            steppt = crosspt + step * unitvec;
+            steppixpt = cfg->transformPixelPoint(steppt);
+            length = finFigureAlg::pointsDistance(steppixpt, xpixpt);
+            if ( length == bestpixsteplen )
+                return step;
+            else if ( length < bestpixsteplen )
+                return prevstep;
+
+            prevstep = step;
+            step *= bestpixsteplen / length;
+
+            cnt++;
+        }
+    } else {
+        return 1.0;
     }
-    return i;
+    return 1.0;
 }
 
 QPointF finFigureObjectAxis::getStepPixelVector(const QPointF &steppt, const QPointF &crosspt,
@@ -1219,7 +1243,7 @@ finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, fi
         path.lineTo(tickpixpt + xtickvec);
 
         fotext.setBasePoint(tickpt);
-        fotext.setText(QString::number(x, 'g', 2));
+        fotext.setText(QString::number(x, 'g', 6));
         textpath.addPath(fotext.getPixelTextPath(cfg));
     }
 
@@ -1231,7 +1255,7 @@ finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, fi
         path.lineTo(tickpixpt + xtickvec);
 
         fotext.setBasePoint(tickpt);
-        fotext.setText(QString::number(x, 'g', 2));
+        fotext.setText(QString::number(x, 'g', 6));
         textpath.addPath(fotext.getPixelTextPath(cfg));
     }
 
@@ -1249,7 +1273,7 @@ finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, fi
         path.lineTo(tickpixpt + ytickvec);
 
         fotext.setBasePoint(tickpt);
-        fotext.setText(QString::number(y, 'g', 2));
+        fotext.setText(QString::number(y, 'g', 6));
         textpath.addPath(fotext.getPixelTextPath(cfg));
     }
 
@@ -1261,7 +1285,7 @@ finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, fi
         path.lineTo(tickpixpt + ytickvec);
 
         fotext.setBasePoint(tickpt);
-        fotext.setText(QString::number(y, 'g', 2));
+        fotext.setText(QString::number(y, 'g', 6));
         textpath.addPath(fotext.getPixelTextPath(cfg));
     }
 
