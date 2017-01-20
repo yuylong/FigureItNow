@@ -2,13 +2,11 @@
 
 #include <QPaintEvent>
 
-#include "finGraphPanelWidget.h"
-
 
 finUiFigureWidget::finUiFigureWidget(QWidget *parent, Qt::WindowFlags f)
-    : QWidget(parent, f)
+    : QWidget(parent, f), _figcontainer(), _graphpanel()
 {
-    /* Do Nothing */
+    this->_graphpanel.setWidget(this);
 }
 
 const finFigureContainer *finUiFigureWidget::getFigureContainer() const
@@ -21,12 +19,25 @@ finFigureContainer *finUiFigureWidget::getFigureContainer()
     return &this->_figcontainer;
 }
 
+const finGraphPanelWidget *finUiFigureWidget::getGraphPanel() const
+{
+    return &this->_graphpanel;
+}
+
+finGraphPanelWidget *finUiFigureWidget::getGraphPanel()
+{
+    return &this->_graphpanel;
+}
+
+finErrorCode finUiFigureWidget::applyFigure()
+{
+    this->_graphpanel.setFigureContainer(&this->_figcontainer);
+    this->repaint();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 void finUiFigureWidget::paintEvent(QPaintEvent *e)
 {
-    finGraphPanelWidget gp;
-    gp.setWidget(this);
-    gp.setGraphConfig(this->_figcontainer.getGraphConfig());
-    gp.drawContainer(&this->_figcontainer);
-
+    this->_graphpanel.draw();
     e->accept();
 }

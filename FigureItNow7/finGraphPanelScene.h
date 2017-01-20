@@ -19,13 +19,13 @@ public:
     QGraphicsScene *getScene() const;
     finErrorCode setScene(QGraphicsScene *scene);
 
-    virtual finErrorCode applyGraphConfig();
-    virtual finErrorCode drawContainer(finFigureContainer *figcontainer);
-    virtual finErrorCode drawObject(finFigureObject *obj);
-    virtual finErrorCode drawFigurePath(const finFigurePath &path);
+    virtual finErrorCode draw();
 
 protected:
-    void clearScene();
+    virtual finErrorCode applyGraphConfig() const;
+    virtual finErrorCode drawFigurePath(const finFigurePath &path) const;
+
+    void clearScene() const;
 };
 
 #endif // FINGRAPHPANELSCENE_H

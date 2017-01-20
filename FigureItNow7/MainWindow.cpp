@@ -77,7 +77,6 @@ void MainWindow::on_pushButton_2_clicked()
     printf("\n");
     fflush(stdout);
 
-
     if ( !synstack->empty() )
         ui->lineEdit_2->setText(synstack->first()->getCommandLexNode()->getString());
     else
@@ -87,6 +86,12 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::on_pushButton_3_clicked()
 {
     finErrorCode errcode;
+
+    finFigureContainer *figcontainer = this->figui->getFigureContainer();
+    finGraphConfig *graphcfg = figcontainer->getGraphConfig();
+    graphcfg->setTransformType(finGraphTrans::FIN_GT_TYPE_AFFINE);
+    finGraphTransAffine *trans = (finGraphTransAffine *)graphcfg->getTransform();
+    trans->appendRotate(M_PI/6);
 
     this->machine.setScriptCode(ui->plainTextEdit->toPlainText());
 
@@ -103,19 +108,14 @@ void MainWindow::on_pushButton_3_clicked()
     else
         printf("Syntax Tree is NULL\n");
 
-    this->figui->getFigureContainer()->dump();
+    figcontainer->dump();
+    this->figui->applyFigure();
     fflush(stdout);
 
     finGraphPanelScene gp;
-    finGraphConfig *graphcfg = gp.getGraphConfig();
-    graphcfg->setTransformType(finGraphTrans::FIN_GT_TYPE_AFFINE);
-    finGraphTransAffine *trans = (finGraphTransAffine *)graphcfg->getTransform();
-    trans->appendRotate(M_PI/6);
-
+    gp.setFigureContainer(figcontainer);
     gp.setScene(&this->scene);
-    gp.drawContainer(this->figui->getFigureContainer());
-
-    this->repaint();
+    gp.draw();
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)

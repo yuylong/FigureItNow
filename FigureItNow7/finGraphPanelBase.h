@@ -2,6 +2,7 @@
 #define FINGRAPHPANELBASE_H
 
 #include <QPointF>
+#include <QList>
 
 #include "finErrorCode.h"
 #include "finGraphConfig.h"
@@ -13,6 +14,7 @@ class finGraphPanelBase
 {
 protected:
     finGraphConfig _config;
+    QList<finFigurePath> _pathList;
 
 public:
     finGraphPanelBase();
@@ -21,10 +23,19 @@ public:
     finGraphConfig *getGraphConfig();
     finErrorCode setGraphConfig(const finGraphConfig *cfg);
 
-    virtual finErrorCode applyGraphConfig();
-    virtual finErrorCode drawContainer(finFigureContainer *figcontainer);
-    virtual finErrorCode drawObject(finFigureObject *obj);
-    virtual finErrorCode drawFigurePath(const finFigurePath &path);
+    int getFigurePathCount() const;
+    finFigurePath getFigurePathAt(int idx) const;
+    finErrorCode clearFigurePathList();
+
+    finErrorCode setFigureContainer(finFigureContainer *figcontainer);
+    finErrorCode appendFigureObject(finFigureObject *obj);
+    finErrorCode appendFigurePath(const finFigurePath &path);
+
+    virtual finErrorCode draw();
+
+protected:
+    virtual finErrorCode applyGraphConfig() const;
+    virtual finErrorCode drawFigurePath(const finFigurePath &path) const;
 };
 
 #endif // FINGRAPHPANELBASE_H

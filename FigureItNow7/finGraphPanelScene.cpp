@@ -20,7 +20,15 @@ finErrorCode finGraphPanelScene::setScene(QGraphicsScene *scene)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-void finGraphPanelScene::clearScene()
+finErrorCode finGraphPanelScene::draw()
+{
+    if ( this->_scene == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    return finGraphPanelBase::draw();
+}
+
+void finGraphPanelScene::clearScene() const
 {
     if ( this->_scene == NULL )
         return;
@@ -34,7 +42,7 @@ void finGraphPanelScene::clearScene()
     }
 }
 
-finErrorCode finGraphPanelScene::applyGraphConfig()
+finErrorCode finGraphPanelScene::applyGraphConfig() const
 {
     if ( this->_scene == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
@@ -51,23 +59,7 @@ finErrorCode finGraphPanelScene::applyGraphConfig()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finGraphPanelScene::drawContainer(finFigureContainer *figcontainer)
-{
-    if ( this->_scene == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
-
-    return finGraphPanelBase::drawContainer(figcontainer);
-}
-
-finErrorCode finGraphPanelScene::drawObject(finFigureObject *obj)
-{
-    if ( this->_scene == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
-
-    return finGraphPanelBase::drawObject(obj);
-}
-
-finErrorCode finGraphPanelScene::drawFigurePath(const finFigurePath &path)
+finErrorCode finGraphPanelScene::drawFigurePath(const finFigurePath &path) const
 {
     if ( this->_scene == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;

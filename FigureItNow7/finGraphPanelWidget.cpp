@@ -8,6 +8,14 @@ finGraphPanelWidget::finGraphPanelWidget()
     this->_widget = NULL;
 }
 
+finErrorCode finGraphPanelWidget::setPainter(QPainter *painter)
+{
+    if ( painter == NULL )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+}
+
 QPaintDevice *finGraphPanelWidget::getWidget() const
 {
     return this->_widget;
@@ -19,66 +27,31 @@ finErrorCode finGraphPanelWidget::setWidget(QPaintDevice *widget)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finGraphPanelWidget::applyGraphConfig()
+finErrorCode finGraphPanelWidget::draw()
 {
     if ( this->_widget == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     QPainter painter(this->_widget);
-    finGraphPanelPainter fgpp;
-    fgpp.setPainter(&painter);
+    this->_painter = &painter;
+    finErrorCode errcode = finGraphPanelPainter::draw();
+    this->_painter = NULL;
 
-    finErrorCode errcode = fgpp.applyGraphConfig();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
-        return errcode;
-
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return errcode;
 }
 
-finErrorCode finGraphPanelWidget::drawContainer(finFigureContainer *figcontainer)
+finErrorCode finGraphPanelWidget::applyGraphConfig() const
 {
     if ( this->_widget == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
-    QPainter painter(this->_widget);
-    finGraphPanelPainter fgpp;
-    fgpp.setPainter(&painter);
-
-    finErrorCode errcode = fgpp.drawContainer(figcontainer);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
-        return errcode;
-
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finGraphPanelPainter::applyGraphConfig();
 }
 
-finErrorCode finGraphPanelWidget::drawObject(finFigureObject *obj)
+finErrorCode finGraphPanelWidget::drawFigurePath(const finFigurePath &path) const
 {
     if ( this->_widget == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
-    QPainter painter(this->_widget);
-    finGraphPanelPainter fgpp;
-    fgpp.setPainter(&painter);
-
-    finErrorCode errcode = fgpp.drawObject(obj);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
-        return errcode;
-
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
-finErrorCode finGraphPanelWidget::drawFigurePath(const finFigurePath &path)
-{
-    if ( this->_widget == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
-
-    QPainter painter(this->_widget);
-    finGraphPanelPainter fgpp;
-    fgpp.setPainter(&painter);
-
-    finErrorCode errcode = fgpp.drawFigurePath(path);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
-        return errcode;
-
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finGraphPanelPainter::drawFigurePath(path);
 }

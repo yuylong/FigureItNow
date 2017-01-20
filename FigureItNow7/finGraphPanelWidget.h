@@ -2,6 +2,7 @@
 #define FINGRAPHPANELWIDGET_H
 
 #include "finGraphPanelBase.h"
+#include "finGraphPanelPainter.h"
 
 #include <QPaintDevice>
 
@@ -10,7 +11,7 @@
 #include "finFigureContainer.h"
 
 
-class finGraphPanelWidget : public finGraphPanelBase
+class finGraphPanelWidget : public finGraphPanelPainter
 {
 protected:
     QPaintDevice *_widget;
@@ -18,13 +19,16 @@ protected:
 public:
     finGraphPanelWidget();
 
+    virtual finErrorCode setPainter(QPainter *painter);
+
     QPaintDevice *getWidget() const;
     finErrorCode setWidget(QPaintDevice *widget);
 
-    virtual finErrorCode applyGraphConfig();
-    virtual finErrorCode drawContainer(finFigureContainer *figcontainer);
-    virtual finErrorCode drawObject(finFigureObject *obj);
-    virtual finErrorCode drawFigurePath(const finFigurePath &path);
+    virtual finErrorCode draw();
+
+protected:
+    virtual finErrorCode applyGraphConfig() const;
+    virtual finErrorCode drawFigurePath(const finFigurePath &path) const;
 };
 
 #endif // FINGRAPHPANELWIDGET_H

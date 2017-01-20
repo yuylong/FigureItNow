@@ -20,7 +20,15 @@ finErrorCode finGraphPanelPainter::setPainter(QPainter *painter)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finGraphPanelPainter::applyGraphConfig()
+finErrorCode finGraphPanelPainter::draw()
+{
+    if ( this->_painter == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    return finGraphPanelBase::draw();
+}
+
+finErrorCode finGraphPanelPainter::applyGraphConfig() const
 {
     this->_painter->setBackground(this->_config.getBackgroundBrush());
     this->_painter->eraseRect(this->_config.getWholePanelPixelRect());
@@ -29,23 +37,7 @@ finErrorCode finGraphPanelPainter::applyGraphConfig()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finGraphPanelPainter::drawContainer(finFigureContainer *figcontainer)
-{
-    if ( this->_painter == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
-
-    return finGraphPanelBase::drawContainer(figcontainer);
-}
-
-finErrorCode finGraphPanelPainter::drawObject(finFigureObject *obj)
-{
-    if ( this->_painter == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
-
-    return finGraphPanelBase::drawObject(obj);
-}
-
-finErrorCode finGraphPanelPainter::drawFigurePath(const finFigurePath &path)
+finErrorCode finGraphPanelPainter::drawFigurePath(const finFigurePath &path) const
 {
     this->_painter->setPen(path.getPen());
     this->_painter->setBrush(path.getBrush());
