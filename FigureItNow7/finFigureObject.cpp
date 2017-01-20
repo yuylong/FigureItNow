@@ -15,6 +15,7 @@
 #include "finFigureObject.h"
 
 #include <qmath.h>
+#include <QMarginsF>
 
 #include "finFigureAlg.h"
 
@@ -670,7 +671,7 @@ QPainterPath finFigureObjectText::getTextPath() const
     QPainterPath path;
     path.addText(0.0, 0.0, this->_figCfg.getFont(), this->_text);
 
-    QRectF bndrect = path.boundingRect();
+    QRectF bndrect = path.boundingRect().marginsAdded(this->_figCfg.getTextMargins());
     QPointF bloff = QPointF(0.0, 0.0);
     if ( this->_flag & Qt::AlignLeft ) {
         bloff.setX(-bndrect.x());
@@ -707,7 +708,7 @@ QPainterPath finFigureObjectText::getPixelTextPath(finGraphConfig *cfg) const
     QPainterPath path;
     path.addText(0.0, 0.0, this->_figCfg.getFont(), this->_text);
 
-    QRectF bndrect = path.boundingRect();
+    QRectF bndrect = path.boundingRect().marginsAdded(this->_figCfg.getTextMargins());
     QPointF bloff = QPointF(0.0, 0.0);
     if ( this->_flag & Qt::AlignLeft ) {
         bloff.setX(-bndrect.x());
@@ -1148,8 +1149,13 @@ finErrorCode finFigureObjectAxis::setupTickLabel(const QPointF &steppixvec, finF
     this->_figCfg.cloneFigureConfig(textcfg);
 
     QFont lblfont = textcfg->getFont();
-    lblfont.setPointSizeF(lblfont.pointSizeF() / 1.5);
+    double basefontsize = lblfont.pointSizeF();
+    lblfont.setPointSizeF(basefontsize / 1.5);
     textcfg->setFont(lblfont);
+
+    double marginval = basefontsize / 3.0;
+    QMarginsF margins = QMargins(marginval * 1.5, marginval, marginval * 1.5, marginval);
+    textcfg->setTextMargins(margins);
 
     double xrad = -finFigureAlg::getVectorRadian(steppixvec);
     const double cutbs = M_PI / 8.0;
