@@ -1063,22 +1063,146 @@ QRectF finFigureObjectAxis::getAxisDrawRange(const QList<QPointF> &panelrect, co
     return QRectF(xrng[0], yrng[0], (xrng[1] - xrng[0]), (yrng[1] - yrng[0]));
 }
 
+finErrorCode finFigureObjectAxis::getLinesPath(QList<finFigurePath> *pathlist, finGraphConfig *cfg,
+                                               const QPointF &crosspt, const QRectF &drawrange) const
+{
+    finErrorCode errcode;
+    finFigureObjectLine foline;
+    this->_figCfg.cloneFigureConfig(foline.getFigureConfig());
+
+    foline.setPoint1(drawrange.left(), crosspt.y());
+    foline.setPoint2(drawrange.right(), crosspt.y());
+    errcode = foline.getPixelFigurePath(pathlist, cfg);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    foline.setPoint1(crosspt.x(), drawrange.top());
+    foline.setPoint2(crosspt.x(), drawrange.bottom());
+    errcode = foline.getPixelFigurePath(pathlist, cfg);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+double finFigureObjectAxis::getTickStep(bool isx, const QPointF &crosspt, finGraphConfig *cfg) const
+{
+    QPointF unitvec;
+    if ( isx ) {
+        if ( !this->isAutoStepX() )
+            return this->getStepX();
+        else
+            unitvec = QPointF(1.0, 0.0);
+    } else {
+        if ( !this->isAutoRangeY() )
+            return this->getStepY();
+        else
+            unitvec = QPointF(0.0, 1.0);
+    }
+
+    QPointF xpixpt = cfg->transformPixelPoint(crosspt);
+    static const double bestpixsteplen = 32.0;
+    int i = 1, stepi = 1, cnt = 0;
+
+    while ( cnt < 100 ) {
+        QPointF steppt = crosspt + i * unitvec;
+        QPointF steppixpt = cfg->transformPixelPoint(steppt);
+        double length = finFigureAlg::pointsDistance(steppixpt, xpixpt);
+        if ( length >= bestpixsteplen)
+            return (double)i;
+
+        stepi = i * (bestpixsteplen - length) / (1.5 * length);
+        i += stepi;
+
+        cnt++;
+    }
+    return i;
+}
+
+QPointF finFigureObjectAxis::getTickPixelVector(const QPointF &steppt, const QPointF &crosspt,
+                                                finGraphConfig *cfg) const
+{
+    QPointF steppixpt = cfg->transformPixelPoint(steppt);
+    QPointF xpixpt = cfg->transformPixelPoint(crosspt);
+    QPointF steppixvec = steppixpt - xpixpt;
+
+    if ( steppixvec.x() <= 0 )
+        steppixvec.setX(-steppixvec.x());
+
+    double ticksize = 3.0 + this->_figCfg.getDotSize() / 2.0;
+    return finFigureAlg::getVerticalVector(steppixvec, ticksize);
+}
+
+finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, finGraphConfig *cfg,
+                                              const QPointF &crosspt, const QRectF &drawrange) const
+{
+    QPainterPath path;
+
+    double xstep = this->getTickStep(true, crosspt, cfg);
+    QPointF xstepvec = QPointF(xstep, 0.0);
+    QPointF xtickvec = this->getTickPixelVector(crosspt + xstepvec, crosspt, cfg);
+
+    for ( double x = crosspt.x() + xstep; x < drawrange.right(); x += xstep ) {
+        QPointF tickpt = QPointF(x, crosspt.y());
+        QPointF tickpixpt = cfg->transformPixelPoint(tickpt);
+
+        path.moveTo(tickpixpt);
+        path.lineTo(tickpixpt + xtickvec);
+    }
+
+    for ( double x = crosspt.x() - xstep; x > drawrange.left(); x -= xstep ) {
+        QPointF tickpt = QPointF(x, crosspt.y());
+        QPointF tickpixpt = cfg->transformPixelPoint(tickpt);
+
+        path.moveTo(tickpixpt);
+        path.lineTo(tickpixpt + xtickvec);
+    }
+
+    double ystep = this->getTickStep(false, crosspt, cfg);
+    QPointF ystepvec = QPointF(0.0, ystep);
+    QPointF ytickvec = this->getTickPixelVector(crosspt + ystepvec, crosspt, cfg);
+
+    for ( double y = crosspt.y() + ystep; y < drawrange.bottom(); y += ystep ) {
+        QPointF tickpt = QPointF(crosspt.x(), y);
+        QPointF tickpixpt = cfg->transformPixelPoint(tickpt);
+
+        path.moveTo(tickpixpt);
+        path.lineTo(tickpixpt + ytickvec);
+    }
+
+    for ( double y = crosspt.y() - ystep; y > drawrange.top(); y -= ystep ) {
+        QPointF tickpt = QPointF(crosspt.x(), y);
+        QPointF tickpixpt = cfg->transformPixelPoint(tickpt);
+
+        path.moveTo(tickpixpt);
+        path.lineTo(tickpixpt + ytickvec);
+    }
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode finFigureObjectAxis::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
+    finErrorCode errcode;
+    if ( pathlist == NULL || cfg == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
     QList<QPointF> polygon = cfg->getCornerAxisPoints();
     QPointF xpt = this->getAxisCrossPoint(polygon);
     QRectF drawrect = this->getAxisDrawRange(polygon, xpt);
 
-    finFigureObjectLine foline;
-    this->_figCfg.cloneFigureConfig(foline.getFigureConfig());
+    errcode = this->getLinesPath(pathlist, cfg, xpt, drawrect);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
 
-    foline.setPoint1(drawrect.left(), xpt.y());
-    foline.setPoint2(drawrect.right(), xpt.y());
-    foline.getPixelFigurePath(pathlist, cfg);
-
-    foline.setPoint1(xpt.x(), drawrect.top());
-    foline.setPoint2(xpt.x(), drawrect.bottom());
-    foline.getPixelFigurePath(pathlist, cfg);
+    errcode = this->getTickPath(pathlist, cfg, xpt, drawrect);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

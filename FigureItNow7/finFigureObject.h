@@ -302,11 +302,18 @@ private:
     double getSecondMinNum(double *ary, int cnt) const;
     double getSecondMaxNum(double *ary, int cnt) const;
     QRectF getCrossPointRange(const QList<QPointF> &panelrect) const;
+    double getGivenAxisCrossPosition(double minnum, double maxnum) const;
     QPointF getAxisCrossPoint(const QList<QPointF> &panelrect) const;
-
     QRectF getAxisDrawRange(const QList<QPointF> &panelrect, const QPointF &crosspt) const;
 
-    double getGivenAxisCrossPosition(double minnum, double maxnum) const;
+    double getTickStep(bool isx, const QPointF &crosspt, finGraphConfig *cfg) const;
+    QPointF getTickPixelVector(const QPointF &steppt, const QPointF &crosspt, finGraphConfig *cfg) const;
+
+    finErrorCode getLinesPath(QList<finFigurePath> *pathlist, finGraphConfig *cfg,
+                              const QPointF &crosspt, const QRectF &drawrange) const;
+    finErrorCode getTickPath(QList<finFigurePath> *pathlist, finGraphConfig *cfg,
+                             const QPointF &crosspt, const QRectF &drawrange) const;
+
 };
 
 class finFigureObjectLine3D : public finFigureObject
