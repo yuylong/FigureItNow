@@ -1286,7 +1286,61 @@ QPainterPath finFigureObjectAxis::getAxisTitlePath(const QPointF &axisstartpt, c
     QPointF axpixpt1 = cfg->transformPixelPoint(axisstartpt);
     QPointF axpixpt2 = cfg->transformPixelPoint(axisendpt);
 
-    return QPainterPath();
+    QPointF axpixvec = axpixpt2 - axpixpt1;
+    double axpixrad = -finFigureAlg::getVectorRadian(axpixvec);
+    QPointF txtpixpt = finFigureAlg::movePointInside(axpixpt2, axpixpt1,
+                                                     this->_figCfg.getEndArrow().getLength());
+
+    finFigureObjectText fotext;
+    finFigureConfig *textcfg = fotext.getFigureConfig();
+    this->_figCfg.cloneFigureConfig(textcfg);
+
+    QFont lblfont = textcfg->getFont();
+    lblfont.setBold(true);
+    lblfont.setItalic(true);
+    textcfg->setFont(lblfont);
+
+    double marginval = lblfont.pointSizeF() / 3.0;
+    QMarginsF margins = QMargins(marginval * 1.5, marginval, marginval * 1.5, marginval);
+    textcfg->setTextMargins(margins);
+
+    fotext.setText(title);
+    QRectF textrect = fotext.getBoundingRect();
+
+    const double cutbs = M_PI / 8.0;
+    if ( axpixrad > -cutbs && axpixrad < cutbs ) {
+        fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignBottom);
+        fotext.setRadian(axpixrad);
+    } else if ( (axpixrad >= cutbs && axpixrad <= 3.0 * cutbs) ||
+                (axpixrad >= -5.0 * cutbs && axpixrad <= -7.0 * cutbs) ) {
+        fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignTop);
+        fotext.setRadian(0.0);
+    } else if ( axpixrad > 3.0 * cutbs && axpixrad < 4.0 * cutbs ) {
+        fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignVCenter);
+        fotext.setRadian(axpixrad - M_PI / 2.0);
+    } else if ( axpixrad >= 4.0 * cutbs && axpixrad < 5.0 * cutbs ) {
+        fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignVCenter);
+        fotext.setRadian(axpixrad - M_PI / 2.0);
+    } else if ( (axpixrad >= 5.0 * cutbs && axpixrad <= 7.0 * cutbs) ||
+                (axpixrad >= -3.0 * cutbs && axpixrad <= -cutbs) ) {
+        fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignTop);
+        fotext.setRadian(0.0);
+    } else if ( axpixrad > 7.0 * cutbs ) {
+        fotext.setFontMetricFlags(Qt::AlignHCenter | Qt::AlignTop);
+        fotext.setRadian(axpixrad - M_PI);
+    } else if ( axpixrad >= -4.0 * cutbs && axpixrad < -3.0 * cutbs ) {
+        fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignVCenter);
+        fotext.setRadian(axpixrad + M_PI / 2.0);
+    } else if ( axpixrad > -5.0 * cutbs && axpixrad < -4.0 * cutbs ) {
+        fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignVCenter);
+        fotext.setRadian(axpixrad + M_PI / 2.0);
+    } else /*if ( axpixrad < -7.0 * cutbs )*/ {
+        fotext.setFontMetricFlags(Qt::AlignHCenter | Qt::AlignTop);
+        fotext.setRadian(axpixrad + M_PI);
+    }
+
+    fotext.setBasePoint(cfg->arcTransformPixelPoint(txtpixpt));
+    return fotext.getPixelTextPath(cfg);
 }
 
 finErrorCode finFigureObjectAxis::getTitlePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg,

@@ -92,7 +92,8 @@ void MainWindow::on_pushButton_3_clicked()
     finGraphConfig *graphcfg = figcontainer->getGraphConfig();
     graphcfg->setTransformType(finGraphTrans::FIN_GT_TYPE_AFFINE);
     finGraphTransAffine *trans = (finGraphTransAffine *)graphcfg->getTransform();
-    trans->appendRotate(M_PI/6);
+    trans->reset();
+    trans->appendRotate(M_PI/10);
 
     this->machine.setScriptCode(ui->plainTextEdit->toPlainText());
 
