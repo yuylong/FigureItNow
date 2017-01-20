@@ -243,6 +243,7 @@ public:
     finErrorCode setRadian(double rad);
     finErrorCode setText(const QString &text);
 
+    QRectF getBoundingRect() const;
     QPainterPath getTextPath() const;
     QPainterPath getPixelTextPath(finGraphConfig *cfg) const;
 

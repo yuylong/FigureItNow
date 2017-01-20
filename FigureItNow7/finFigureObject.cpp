@@ -16,6 +16,7 @@
 
 #include <qmath.h>
 #include <QMarginsF>
+#include <QFontMetricsF>
 
 #include "finFigureAlg.h"
 
@@ -664,6 +665,12 @@ finErrorCode finFigureObjectText::setText(const QString &text)
 {
     this->_text = text;
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+QRectF finFigureObjectText::getBoundingRect() const
+{
+    QFontMetricsF metric(this->_figCfg.getFont());
+    return metric.boundingRect(this->_text).marginsAdded(this->_figCfg.getTextMargins());
 }
 
 QPainterPath finFigureObjectText::getTextPath() const
