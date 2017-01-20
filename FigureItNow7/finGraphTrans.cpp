@@ -107,22 +107,122 @@ finGraphTransAffine::finGraphTransAffine()
     this->_type = finGraphTrans::FIN_GT_TYPE_AFFINE;
 }
 
+finErrorCode finGraphTransAffine::cloneTransform(const finGraphTrans *trans)
+{
+    finErrorCode errcode = finGraphTrans::cloneTransform(trans);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    const finGraphTransAffine *srctrans = (const finGraphTransAffine *)trans;
+    this->_actList.clear();
+    this->_actList = srctrans->_actList;
+    this->_matrix = srctrans->_matrix;
+    this->_invMatrix = srctrans->_invMatrix;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+bool finGraphTransAffine::isLinear() const
+{
+    return true;
+}
+
 QTransform finGraphTransAffine::getTransformMatrix() const
 {
     return this->_matrix;
 }
 
-QTransform finGraphTransAffine::getInvatedTransformMatrix() const
+QTransform finGraphTransAffine::getInvertedTransformMatrix() const
 {
     return this->_invMatrix;
 }
 
-virtual QPointF finGraphTransAffine::transPoint(const QPointF &ptr)
+int finGraphTransAffine::getActionCount() const
+{
+    return this->_actList.count();
+}
+
+finGraphTransAffine::Action finGraphTransAffine::getActionAt(int idx) const
+{
+    static const finGraphTransAffine::Action defact = { finGraphTransAffine::FIN_GTA_TYPE_ROTATE, 0.0, 0.0 };
+
+    if ( idx < 0 || idx >= this->_actList.count() )
+        return defact;
+    else
+        return this->_actList.at(idx);
+}
+
+finErrorCode finGraphTransAffine::reset()
+{
+    this->_actList.clear();
+    this->_matrix.reset();
+    this->_invMatrix.reset();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphTransAffine::calcInvertedMatrix()
+{
+    if ( !this->_matrix.isInvertible() ) {
+        this->_invMatrix.reset();
+        return finErrorCodeKits::FIN_EC_PRECISE_LOSS;
+    }
+
+    this->_invMatrix = this->_matrix.inverted();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphTransAffine::appendRotate(double rad)
+{
+    QTransform subtrans;
+    subtrans.rotate(rad);
+    this->_matrix *= subtrans;
+    this->calcInvertedMatrix();
+
+    finGraphTransAffine::Action act;
+    act._type = finGraphTransAffine::FIN_GTA_TYPE_ROTATE;
+    act._arg1 = act._arg2 = rad;
+    this->_actList.append(act);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphTransAffine::appendScale(double sx, double sy)
+{
+    QTransform subtrans;
+    subtrans.scale(sx, sy);
+    this->_matrix *= subtrans;
+    this->calcInvertedMatrix();
+
+    finGraphTransAffine::Action act;
+    act._type = finGraphTransAffine::FIN_GTA_TYPE_SCALE;
+    act._arg1 = sx;
+    act._arg2 = sy;
+    this->_actList.append(act);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphTransAffine::appendTranslate(double tx, double ty)
+{
+    QTransform subtrans;
+    subtrans.translate(tx, ty);
+    this->_matrix *= subtrans;
+    this->calcInvertedMatrix();
+
+    finGraphTransAffine::Action act;
+    act._type = finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE;
+    act._arg1 = tx;
+    act._arg2 = ty;
+    this->_actList.append(act);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+QPointF finGraphTransAffine::transPoint(const QPointF &ptr)
 {
     return this->_matrix.map(ptr);
 }
 
-virtual QPointF finGraphTransAffine::arcTransPoint(const QPointF &ptr)
+QPointF finGraphTransAffine::arcTransPoint(const QPointF &ptr)
 {
     return this->_invMatrix.map(ptr);
 }

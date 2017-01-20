@@ -55,18 +55,44 @@ public:
 
 class finGraphTransAffine : public finGraphTrans
 {
+public:
+    enum ActionType {
+        FIN_GTA_TYPE_ROTATE,
+        FIN_GTA_TYPE_SCALE,
+        FIN_GTA_TYPE_TRANSLATE
+    };
+    struct Action {
+        ActionType _type;
+        double _arg1, _arg2;
+    };
+
 protected:
     QTransform _matrix;
     QTransform _invMatrix;
+    QList<Action> _actList;
 
 public:
     finGraphTransAffine();
 
+    virtual finErrorCode cloneTransform(const finGraphTrans *trans);
+    virtual bool isLinear() const;
+
     QTransform getTransformMatrix() const;
-    QTransform getInvatedTransformMatrix() const;
+    QTransform getInvertedTransformMatrix() const;
+
+    int getActionCount() const;
+    Action getActionAt(int idx) const;
+
+    finErrorCode reset();
+    finErrorCode appendRotate(double rad);
+    finErrorCode appendScale(double sx, double sy);
+    finErrorCode appendTranslate(double tx, double ty);
 
     virtual QPointF transPoint(const QPointF &ptr);
     virtual QPointF arcTransPoint(const QPointF &ptr);
+
+ private:
+    finErrorCode calcInvertedMatrix();
 };
 
 #endif // FINGRAPHTRANS_H
