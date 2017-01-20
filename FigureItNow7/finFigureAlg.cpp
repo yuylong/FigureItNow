@@ -280,3 +280,22 @@ QList<QPointF> finFigureAlg::yMaxCutPolygon(const QList<QPointF> &polygon, doubl
     }
     return newpolygon;
 }
+
+bool finFigureAlg::isPointInsideRect(const QPointF &pt, const QRectF &baserect)
+{
+    return baserect.contains(pt);
+}
+
+bool finFigureAlg::isRectInsideRect(const QRectF &rect, const QRectF &baserect)
+{
+    return baserect.contains(rect);
+}
+
+bool finFigureAlg::isPolygonInsideRect(const QList<QPointF> &polygon, const QRectF &baserect)
+{
+    for ( int i = 0; i < polygon.count(); i++ ) {
+        if ( !finFigureAlg::isPointInsideRect(polygon.at(i), baserect) )
+            return false;
+    }
+    return true;
+}

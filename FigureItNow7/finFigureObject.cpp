@@ -1283,6 +1283,9 @@ finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, fi
 QPainterPath finFigureObjectAxis::getAxisTitlePath(const QPointF &axisstartpt, const QPointF &axisendpt,
                                                    const QString &title, finGraphConfig *cfg) const
 {
+    QPointF axpixpt1 = cfg->transformPixelPoint(axisstartpt);
+    QPointF axpixpt2 = cfg->transformPixelPoint(axisendpt);
+
     return QPainterPath();
 }
 

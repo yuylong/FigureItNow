@@ -2,6 +2,7 @@
 #define FINFIGUREALG_H
 
 #include <QPointF>
+#include <QRectF>
 #include <QList>
 
 struct finFigAlgLine2D {
@@ -38,6 +39,10 @@ public:
     static QList<QPointF> xMaxCutPolygon(const QList<QPointF> &polygon, double xmax);
     static QList<QPointF> yMinCutPolygon(const QList<QPointF> &polygon, double ymin);
     static QList<QPointF> yMaxCutPolygon(const QList<QPointF> &polygon, double ymax);
+
+    static bool isPointInsideRect(const QPointF &pt, const QRectF &baserect);
+    static bool isRectInsideRect(const QRectF &rect, const QRectF &baserect);
+    static bool isPolygonInsideRect(const QList<QPointF> &polygon, const QRectF &baserect);
 };
 
 #endif // FINFIGUREALG_H
