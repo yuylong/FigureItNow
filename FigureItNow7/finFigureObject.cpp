@@ -1119,13 +1119,16 @@ double finFigureObjectAxis::getTickStep(bool isx, const QPointF &crosspt, finGra
     return i;
 }
 
-QPointF finFigureObjectAxis::getTickPixelVector(const QPointF &steppt, const QPointF &crosspt,
+QPointF finFigureObjectAxis::getStepPixelVector(const QPointF &steppt, const QPointF &crosspt,
                                                 finGraphConfig *cfg) const
 {
     QPointF steppixpt = cfg->transformPixelPoint(steppt);
     QPointF xpixpt = cfg->transformPixelPoint(crosspt);
-    QPointF steppixvec = steppixpt - xpixpt;
+    return steppixpt - xpixpt;
+}
 
+QPointF finFigureObjectAxis::getTickPixelVector(const QPointF &steppixvec) const
+{
     double ticksize = 3.0 + this->_figCfg.getDotSize() / 2.0;
     QPointF tickvec = finFigureAlg::getVerticalVector(steppixvec, ticksize);
     if ( steppixvec.x() > 0 )
@@ -1134,15 +1137,67 @@ QPointF finFigureObjectAxis::getTickPixelVector(const QPointF &steppt, const QPo
         return -tickvec;
 }
 
+double finFigureObjectAxis::getAxisPixelRadian(const QPointF &steppixvec) const
+{
+    return finFigureAlg::getVectorRadian(steppixvec);
+}
+
+finErrorCode finFigureObjectAxis::setupTickLabel(const QPointF &steppixvec, finFigureObjectText *fotext) const
+{
+    this->_figCfg.cloneFigureConfig(fotext->getFigureConfig());
+
+
+    QFont lblfont = fotext->getFigureConfig()->getFont();
+    lblfont.setPointSizeF(lblfont.pointSizeF() / 1.5);
+    fotext->getFigureConfig()->setFont(lblfont);
+
+    double xrad = -finFigureAlg::getVectorRadian(steppixvec);
+    const double cutbs = M_PI / 8.0;
+
+    if ( xrad > -cutbs && xrad < cutbs ) {
+        fotext->setFontMetricFlags(Qt::AlignHCenter | Qt::AlignTop);
+        fotext->setRadian(xrad);
+    } else if ( (xrad >= cutbs && xrad <= 3.0 * cutbs) || (xrad >= -5.0 * cutbs && xrad <= -7.0 * cutbs) ) {
+        fotext->setFontMetricFlags(Qt::AlignLeft | Qt::AlignTop);
+        fotext->setRadian(0.0);
+    } else if ( xrad > 3.0 * cutbs && xrad < 4.0 * cutbs ) {
+        fotext->setFontMetricFlags(Qt::AlignLeft | Qt::AlignVCenter);
+        fotext->setRadian(xrad - M_PI / 2.0);
+    } else if ( xrad >= 4.0 * cutbs && xrad < 5.0 * cutbs ) {
+        fotext->setFontMetricFlags(Qt::AlignRight | Qt::AlignVCenter);
+        fotext->setRadian(xrad - M_PI / 2.0);
+    } else if ( (xrad >= 5.0 * cutbs && xrad <= 7.0 * cutbs) || (xrad >= -3.0 * cutbs && xrad <= -cutbs) ) {
+        fotext->setFontMetricFlags(Qt::AlignRight | Qt::AlignTop);
+        fotext->setRadian(0.0);
+    } else if ( xrad > 7.0 * cutbs ) {
+        fotext->setFontMetricFlags(Qt::AlignHCenter | Qt::AlignTop);
+        fotext->setRadian(xrad - M_PI);
+    } else if ( xrad >= -4.0 * cutbs && xrad < -3.0 * cutbs ) {
+        fotext->setFontMetricFlags(Qt::AlignRight | Qt::AlignVCenter);
+        fotext->setRadian(xrad + M_PI / 2.0);
+    } else if ( xrad > -5.0 * cutbs && xrad < -4.0 * cutbs ) {
+        fotext->setFontMetricFlags(Qt::AlignLeft | Qt::AlignVCenter);
+        fotext->setRadian(xrad + M_PI / 2.0);
+    } else /*if ( xrad < -7.0 * cutbs )*/ {
+        fotext->setFontMetricFlags(Qt::AlignHCenter | Qt::AlignTop);
+        fotext->setRadian(xrad + M_PI);
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+
 finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, finGraphConfig *cfg,
                                               const QPointF &crosspt, const QRectF &drawrange) const
 {
     QPainterPath path;
+    QPainterPath textpath;
+    finFigureObjectText fotext;
 
     double xstep = this->getTickStep(true, crosspt, cfg);
     QPointF xstepvec = QPointF(xstep, 0.0);
-    QPointF xtickvec = this->getTickPixelVector(crosspt + xstepvec, crosspt, cfg);
-
+    QPointF xsteppixvec = this->getStepPixelVector(crosspt + xstepvec, crosspt, cfg);
+    QPointF xtickvec = this->getTickPixelVector(xsteppixvec);
+    this->setupTickLabel(xsteppixvec, &fotext);
 
     for ( double x = crosspt.x() + xstep; x < drawrange.right(); x += xstep ) {
         QPointF tickpt = QPointF(x, crosspt.y());
@@ -1150,6 +1205,10 @@ finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, fi
 
         path.moveTo(tickpixpt);
         path.lineTo(tickpixpt + xtickvec);
+
+        fotext.setBasePoint(tickpt);
+        fotext.setText(QString::number(x, 'g', 2));
+        textpath.addPath(fotext.getPixelTextPath(cfg));
     }
 
     for ( double x = crosspt.x() - xstep; x > drawrange.left(); x -= xstep ) {
@@ -1158,11 +1217,17 @@ finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, fi
 
         path.moveTo(tickpixpt);
         path.lineTo(tickpixpt + xtickvec);
+
+        fotext.setBasePoint(tickpt);
+        fotext.setText(QString::number(x, 'g', 2));
+        textpath.addPath(fotext.getPixelTextPath(cfg));
     }
 
     double ystep = this->getTickStep(false, crosspt, cfg);
     QPointF ystepvec = QPointF(0.0, ystep);
-    QPointF ytickvec = this->getTickPixelVector(crosspt + ystepvec, crosspt, cfg);
+    QPointF ysteppixvec = this->getStepPixelVector(crosspt + ystepvec, crosspt, cfg);
+    QPointF ytickvec = this->getTickPixelVector(ysteppixvec);
+    this->setupTickLabel(ysteppixvec, &fotext);
 
     for ( double y = crosspt.y() + ystep; y < drawrange.bottom(); y += ystep ) {
         QPointF tickpt = QPointF(crosspt.x(), y);
@@ -1170,6 +1235,10 @@ finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, fi
 
         path.moveTo(tickpixpt);
         path.lineTo(tickpixpt + ytickvec);
+
+        fotext.setBasePoint(tickpt);
+        fotext.setText(QString::number(y, 'g', 2));
+        textpath.addPath(fotext.getPixelTextPath(cfg));
     }
 
     for ( double y = crosspt.y() - ystep; y > drawrange.top(); y -= ystep ) {
@@ -1178,12 +1247,22 @@ finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, fi
 
         path.moveTo(tickpixpt);
         path.lineTo(tickpixpt + ytickvec);
+
+        fotext.setBasePoint(tickpt);
+        fotext.setText(QString::number(y, 'g', 2));
+        textpath.addPath(fotext.getPixelTextPath(cfg));
     }
 
     finFigurePath figpath;
     figpath.setPen(this->_figCfg.getBorderPen());
     figpath.setPath(path);
     pathlist->append(figpath);
+
+    finFigurePath textfigpath;
+    textfigpath.setPen(this->_figCfg.getTextPen());
+    textfigpath.setBrush(this->_figCfg.getTextBrush());
+    textfigpath.setPath(textpath);
+    pathlist->append(textfigpath);
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

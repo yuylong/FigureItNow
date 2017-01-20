@@ -307,7 +307,10 @@ private:
     QRectF getAxisDrawRange(const QList<QPointF> &panelrect, const QPointF &crosspt) const;
 
     double getTickStep(bool isx, const QPointF &crosspt, finGraphConfig *cfg) const;
-    QPointF getTickPixelVector(const QPointF &steppt, const QPointF &crosspt, finGraphConfig *cfg) const;
+    QPointF getStepPixelVector(const QPointF &steppt, const QPointF &crosspt, finGraphConfig *cfg) const;
+    QPointF getTickPixelVector(const QPointF &steppixvec) const;
+    double getAxisPixelRadian(const QPointF &steppixvec) const;
+    finErrorCode setupTickLabel(const QPointF &steppixvec, finFigureObjectText *fotext) const;
 
     finErrorCode getLinesPath(QList<finFigurePath> *pathlist, finGraphConfig *cfg,
                               const QPointF &crosspt, const QRectF &drawrange) const;
