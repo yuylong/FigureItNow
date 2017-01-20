@@ -1170,7 +1170,7 @@ finErrorCode finFigureObjectAxis::setupTickLabel(const QPointF &steppixvec, finF
     if ( xrad > -cutbs && xrad < cutbs ) {
         fotext->setFontMetricFlags(Qt::AlignHCenter | Qt::AlignTop);
         fotext->setRadian(xrad);
-    } else if ( (xrad >= cutbs && xrad <= 3.0 * cutbs) || (xrad >= -5.0 * cutbs && xrad <= -7.0 * cutbs) ) {
+    } else if ( (xrad >= cutbs && xrad <= 3.0 * cutbs) || (xrad >= -7.0 * cutbs && xrad <= -5.0 * cutbs) ) {
         fotext->setFontMetricFlags(Qt::AlignLeft | Qt::AlignTop);
         fotext->setRadian(0.0);
     } else if ( xrad > 3.0 * cutbs && xrad < 4.0 * cutbs ) {
@@ -1197,7 +1197,6 @@ finErrorCode finFigureObjectAxis::setupTickLabel(const QPointF &steppixvec, finF
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
-
 
 finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, finGraphConfig *cfg,
                                               const QPointF &crosspt, const QRectF &drawrange) const
@@ -1311,31 +1310,35 @@ QPainterPath finFigureObjectAxis::getAxisTitlePath(const QPointF &axisstartpt, c
     if ( axpixrad > -cutbs && axpixrad < cutbs ) {
         fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignBottom);
         fotext.setRadian(axpixrad);
-    } else if ( (axpixrad >= cutbs && axpixrad <= 3.0 * cutbs) ||
-                (axpixrad >= -5.0 * cutbs && axpixrad <= -7.0 * cutbs) ) {
-        fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignTop);
+    } else if ( axpixrad >= cutbs && axpixrad <= 3.0 * cutbs ) {
+        fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignBottom);
         fotext.setRadian(0.0);
     } else if ( axpixrad > 3.0 * cutbs && axpixrad < 4.0 * cutbs ) {
-        fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignVCenter);
+        fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignTop);
         fotext.setRadian(axpixrad - M_PI / 2.0);
     } else if ( axpixrad >= 4.0 * cutbs && axpixrad < 5.0 * cutbs ) {
-        fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignVCenter);
+        fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignTop);
         fotext.setRadian(axpixrad - M_PI / 2.0);
-    } else if ( (axpixrad >= 5.0 * cutbs && axpixrad <= 7.0 * cutbs) ||
-                (axpixrad >= -3.0 * cutbs && axpixrad <= -cutbs) ) {
-        fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignTop);
+    } else if ( axpixrad >= 5.0 * cutbs && axpixrad <= 7.0 * cutbs ) {
+        fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignBottom);
         fotext.setRadian(0.0);
     } else if ( axpixrad > 7.0 * cutbs ) {
-        fotext.setFontMetricFlags(Qt::AlignHCenter | Qt::AlignTop);
+        fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignBottom);
         fotext.setRadian(axpixrad - M_PI);
+    } else if ( axpixrad >= -3.0 * cutbs && axpixrad <= -cutbs ) {
+        fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignBottom);
+        fotext.setRadian(0.0);
     } else if ( axpixrad >= -4.0 * cutbs && axpixrad < -3.0 * cutbs ) {
-        fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignVCenter);
+        fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignBottom);
         fotext.setRadian(axpixrad + M_PI / 2.0);
     } else if ( axpixrad > -5.0 * cutbs && axpixrad < -4.0 * cutbs ) {
-        fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignVCenter);
+        fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignBottom);
         fotext.setRadian(axpixrad + M_PI / 2.0);
+    } else if ( axpixrad >= -7.0 * cutbs && axpixrad <= -5.0 * cutbs ) {
+        fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignBottom);
+        fotext.setRadian(0.0);
     } else /*if ( axpixrad < -7.0 * cutbs )*/ {
-        fotext.setFontMetricFlags(Qt::AlignHCenter | Qt::AlignTop);
+        fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignBottom);
         fotext.setRadian(axpixrad + M_PI);
     }
 
@@ -1350,8 +1353,8 @@ finErrorCode finFigureObjectAxis::getTitlePath(QList<finFigurePath> *pathlist, f
     QPointF axisxpt2 = QPointF(drawrange.right(), crosspt.y());
     QPainterPath xpath = this->getAxisTitlePath(axisxpt1, axisxpt2, this->_titleX, cfg);
 
-    QPointF axisypt1 = QPointF(crosspt.x(), drawrange.bottom());
-    QPointF axisypt2 = QPointF(crosspt.x(), drawrange.top());
+    QPointF axisypt1 = QPointF(crosspt.x(), drawrange.top());
+    QPointF axisypt2 = QPointF(crosspt.x(), drawrange.bottom());
     QPainterPath ypath = this->getAxisTitlePath(axisypt1, axisypt2, this->_titleY, cfg);
 
     QPainterPath path;
