@@ -51,11 +51,17 @@ finFigureArrowType finFigureArrow::getType() const
 
 double finFigureArrow::getRadian() const
 {
+    if ( this->_type == finFigureArrow::FIN_FA_TYPE_NONE )
+        return 0.0;
+
     return this->_rad;
 }
 
 double finFigureArrow::getLength() const
 {
+    if ( this->_type == finFigureArrow::FIN_FA_TYPE_NONE )
+        return 0.0;
+
     return this->_length;
 }
 
