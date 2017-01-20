@@ -1142,7 +1142,6 @@ double finFigureObjectAxis::getTickStep(bool isx, const QPointF &crosspt, finGra
 
             prevstep = step;
             step *= bestpixsteplen / length;
-
             cnt++;
         }
     } else {
