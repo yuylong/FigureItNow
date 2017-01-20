@@ -1126,11 +1126,12 @@ QPointF finFigureObjectAxis::getTickPixelVector(const QPointF &steppt, const QPo
     QPointF xpixpt = cfg->transformPixelPoint(crosspt);
     QPointF steppixvec = steppixpt - xpixpt;
 
-    if ( steppixvec.x() <= 0 )
-        steppixvec.setX(-steppixvec.x());
-
     double ticksize = 3.0 + this->_figCfg.getDotSize() / 2.0;
-    return finFigureAlg::getVerticalVector(steppixvec, ticksize);
+    QPointF tickvec = finFigureAlg::getVerticalVector(steppixvec, ticksize);
+    if ( steppixvec.x() > 0 )
+        return tickvec;
+    else
+        return -tickvec;
 }
 
 finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, finGraphConfig *cfg,
