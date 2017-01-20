@@ -1280,6 +1280,35 @@ finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, fi
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+QPainterPath finFigureObjectAxis::getAxisTitlePath(const QPointF &axisstartpt, const QPointF &axisendpt,
+                                                   const QString &title, finGraphConfig *cfg) const
+{
+    return QPainterPath();
+}
+
+finErrorCode finFigureObjectAxis::getTitlePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg,
+                                               const QPointF &crosspt, const QRectF &drawrange) const
+{
+    QPointF axisxpt1 = QPointF(drawrange.left(), crosspt.y());
+    QPointF axisxpt2 = QPointF(drawrange.right(), crosspt.y());
+    QPainterPath xpath = this->getAxisTitlePath(axisxpt1, axisxpt2, this->_titleX, cfg);
+
+    QPointF axisypt1 = QPointF(crosspt.x(), drawrange.bottom());
+    QPointF axisypt2 = QPointF(crosspt.x(), drawrange.top());
+    QPainterPath ypath = this->getAxisTitlePath(axisypt1, axisypt2, this->_titleY, cfg);
+
+    QPainterPath path;
+    path.addPath(xpath);
+    path.addPath(ypath);
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getTextPen());
+    figpath.setBrush(this->_figCfg.getTextBrush());
+    figpath.setPath(path);
+    pathlist->append(figpath);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode finFigureObjectAxis::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     finErrorCode errcode;
@@ -1295,6 +1324,10 @@ finErrorCode finFigureObjectAxis::getPixelFigurePath(QList<finFigurePath> *pathl
         return errcode;
 
     errcode = this->getTickPath(pathlist, cfg, xpt, drawrect);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    errcode = this->getTitlePath(pathlist, cfg, xpt, drawrect);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 

@@ -313,11 +313,15 @@ private:
     double getAxisPixelRadian(const QPointF &steppixvec) const;
     finErrorCode setupTickLabel(const QPointF &steppixvec, finFigureObjectText *fotext) const;
 
+    QPainterPath getAxisTitlePath(const QPointF &axisstartpt, const QPointF &axisendpt,
+                                  const QString &title, finGraphConfig *cfg) const;
+
     finErrorCode getLinesPath(QList<finFigurePath> *pathlist, finGraphConfig *cfg,
                               const QPointF &crosspt, const QRectF &drawrange) const;
     finErrorCode getTickPath(QList<finFigurePath> *pathlist, finGraphConfig *cfg,
                              const QPointF &crosspt, const QRectF &drawrange) const;
-
+    finErrorCode getTitlePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg,
+                              const QPointF &crosspt, const QRectF &drawrange) const;
 };
 
 class finFigureObjectLine3D : public finFigureObject
