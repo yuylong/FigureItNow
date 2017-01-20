@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
+#include <qmath.h>
 #include <QPainter>
 
 #include "finExecEnvironment.h"
@@ -106,6 +107,11 @@ void MainWindow::on_pushButton_3_clicked()
     fflush(stdout);
 
     finGraphPanelScene gp;
+    finGraphConfig *graphcfg = gp.getGraphConfig();
+    graphcfg->setTransformType(finGraphTrans::FIN_GT_TYPE_AFFINE);
+    finGraphTransAffine *trans = (finGraphTransAffine *)graphcfg->getTransform();
+    trans->appendRotate(M_PI/6);
+
     gp.setScene(&this->scene);
     gp.drawContainer(this->figui->getFigureContainer());
 

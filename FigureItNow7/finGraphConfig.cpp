@@ -197,6 +197,12 @@ finErrorCode finGraphConfig::setTransformType(finGraphTransType type)
             return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
         break;
 
+      case finGraphTrans::FIN_GT_TYPE_AFFINE:
+        newtrans = new finGraphTransAffine();
+        if ( newtrans == NULL )
+            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        break;
+
       default:
         break;
     }

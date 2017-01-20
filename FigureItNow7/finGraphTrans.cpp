@@ -173,7 +173,7 @@ finErrorCode finGraphTransAffine::calcInvertedMatrix()
 finErrorCode finGraphTransAffine::appendRotate(double rad)
 {
     QTransform subtrans;
-    subtrans.rotate(rad);
+    subtrans.rotateRadians(rad);
     this->_matrix *= subtrans;
     this->calcInvertedMatrix();
 
