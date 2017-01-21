@@ -549,8 +549,8 @@ static finErrorCode _sysfunc_named_color(finExecFunction *self, finExecEnvironme
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
     QColor color = QColor(colorname);
-    //if ( !color.isValid() )
-    //    return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    if ( !color.isValid() )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
     finExecVariable *retvar = new finExecVariable();
     if (retvar == NULL )
@@ -617,6 +617,18 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
         finFigureArrowType arwtype = figconfig->getEndArrowType();
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_STRING);
         cfgvalue->setStringValue(finFigureArrow::getTypeName(arwtype));
+    } else if ( QString::compare(cfgname, "font_name") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_STRING);
+        cfgvalue->setStringValue(figconfig->getFontName());
+    } else if ( QString::compare(cfgname, "font_size") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(figconfig->getFontPointSize());
+    } else if ( QString::compare(cfgname, "font_color") == 0 ) {
+        errcode = cfgvalue->setupColorValue(figconfig->getFontColor());
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            delete cfgvalue;
+            return errcode;
+        }
     } else {
         delete cfgvalue;
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
@@ -679,6 +691,20 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
             return finErrorCodeKits::FIN_EC_INVALID_PARAM;
         finFigureArrowType arwtype = finFigureArrow::parseTypeString(cfgvalue->getStringValue());
         figconfig->setEndArrowType(arwtype);
+    } else if ( QString::compare(cfgname, "font_name") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        figconfig->setFontName(cfgvalue->getStringValue());
+    } else if ( QString::compare(cfgname, "font_size") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        figconfig->setFontPointSize(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "font_color") == 0 ) {
+        QColor color;
+        errcode = cfgvalue->readColorValue(&color);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+        figconfig->setFontColor(color);
     } else {
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
     }
