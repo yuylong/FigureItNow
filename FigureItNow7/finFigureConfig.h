@@ -61,6 +61,10 @@ public:
     finFigureArrowType getStartArrowType() const;
     finFigureArrowType getEndArrowType() const;
 
+    QString getFontName() const;
+    double getFontPointSize() const;
+    QColor getFontColor() const;
+
     finErrorCode setBorderPen(const QPen &pen);
     finErrorCode setFillBrush(const QBrush &brush);
     finErrorCode setStartArrow(const finFigureArrow &arrow);
@@ -75,6 +79,10 @@ public:
     finErrorCode setFillColor(const QColor &color);
     finErrorCode setStartArrowType(finFigureArrowType type);
     finErrorCode setEndArrowType(finFigureArrowType type);
+
+    finErrorCode setFontName(const QString &ftname);
+    finErrorCode setFontPointSize(double size);
+    finErrorCode setFontColor(const QColor &color);
 
     static finFigureConfig *getDefaultFigureConfig();
     static finErrorCode releaseDefaultFigureConfig();

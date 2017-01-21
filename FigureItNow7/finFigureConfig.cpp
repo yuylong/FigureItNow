@@ -88,6 +88,21 @@ finFigureArrowType finFigureConfig::getEndArrowType() const
     return this->_endArrow.getType();
 }
 
+QString finFigureConfig::getFontName() const
+{
+    return this->_font.family();
+}
+
+double finFigureConfig::getFontPointSize() const
+{
+    return this->_font.pointSizeF();
+}
+
+QColor finFigureConfig::getFontColor() const
+{
+    return this->_textBrush.color();
+}
+
 finErrorCode finFigureConfig::setBorderPen(const QPen &pen)
 {
     this->_borderPen = pen;
@@ -160,6 +175,24 @@ finErrorCode finFigureConfig::setFillColor(const QColor &color)
 finErrorCode finFigureConfig::setStartArrowType(finFigureArrowType type)
 {
     this->_startArrow.setType(type);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setFontName(const QString &ftname)
+{
+    this->_font.setFamily(ftname);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setFontPointSize(double size)
+{
+    this->_font.setPointSizeF(size);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setFontColor(const QColor &color)
+{
+    this->_textBrush.setColor(color);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
