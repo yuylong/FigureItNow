@@ -42,6 +42,7 @@ finErrorCode finGraphPanelPainter::drawFigurePath(const finFigurePath &path) con
     this->_painter->setPen(path.getPen());
     this->_painter->setBrush(path.getBrush());
     this->_painter->drawPath(path.getPath());
+
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

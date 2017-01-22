@@ -1,13 +1,15 @@
 #include "finFigurePath.h"
 
 finFigurePath::finFigurePath()
-    : _pen(Qt::black, 1), _brush(Qt::transparent), _path(), _img()
+    : _pen(Qt::black, 1), _brush(Qt::transparent), _path(),
+      _imgPos(0.0, 0.0), _img()
 {
     /* Do Nothing */
 }
 
 finFigurePath::finFigurePath(const finFigurePath &figpath)
-    : _pen(figpath._pen), _brush(figpath._brush), _path(figpath._path), _img(figpath._img)
+    : _pen(figpath._pen), _brush(figpath._brush), _path(figpath._path),
+      _imgPos(figpath._imgPos), _img(figpath._img)
 {
     /* Do Nothing */
 }
@@ -25,6 +27,11 @@ QBrush finFigurePath::getBrush() const
 QPainterPath finFigurePath::getPath() const
 {
     return this->_path;
+}
+
+QPointF finFigurePath::getImagePosition() const
+{
+    return this->_imgPos;
 }
 
 QImage finFigurePath::getImage() const
@@ -50,6 +57,12 @@ finErrorCode finFigurePath::setPath(const QPainterPath &path)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finFigurePath::setImagePosition(const QPointF &imgpos)
+{
+    this->_imgPos = imgpos;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode finFigurePath::setImage(const QImage &image)
 {
     this->_img = image;
@@ -61,6 +74,7 @@ finFigurePath &finFigurePath::operator = (const finFigurePath &figpath)
     this->_pen = figpath._pen;
     this->_brush = figpath._brush;
     this->_path = figpath._path;
+    this->_imgPos = figpath._imgPos;
     this->_img = figpath._img;
     return *this;
 }
