@@ -46,14 +46,14 @@ public:
 
     finErrorCode cloneFigureConfig(finFigureConfig *outcfg) const;
 
-    QPen getBorderPen() const;
-    QBrush getFillBrush() const;
-    finFigureArrow getStartArrow() const;
-    finFigureArrow getEndArrow() const;
-    QPen getTextPen() const;
-    QBrush getTextBrush() const;
-    QFont getFont() const;
-    QMarginsF getTextMargins() const;
+    const QPen &getBorderPen() const;
+    const QBrush &getFillBrush() const;
+    const finFigureArrow &getStartArrow() const;
+    const finFigureArrow &getEndArrow() const;
+    const QPen &getTextPen() const;
+    const QBrush &getTextBrush() const;
+    const QFont &getFont() const;
+    const QMarginsF &getTextMargins() const;
 
     double getDotSize() const;
     QColor getBorderColor() const;
@@ -63,6 +63,8 @@ public:
 
     QString getFontName() const;
     double getFontPointSize() const;
+    bool getFontBold() const;
+    bool getFontItalic() const;
     QColor getFontColor() const;
 
     finErrorCode setBorderPen(const QPen &pen);
@@ -82,6 +84,8 @@ public:
 
     finErrorCode setFontName(const QString &ftname);
     finErrorCode setFontPointSize(double size);
+    finErrorCode setFontBold(bool bold);
+    finErrorCode setFontItalic(bool bold);
     finErrorCode setFontColor(const QColor &color);
 
     static finFigureConfig *getDefaultFigureConfig();

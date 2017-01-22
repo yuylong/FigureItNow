@@ -23,42 +23,42 @@ finFigureConfig::finFigureConfig()
     /* Do Nothing. */
 }
 
-QPen finFigureConfig::getBorderPen() const
+const QPen &finFigureConfig::getBorderPen() const
 {
     return this->_borderPen;
 }
 
-QBrush finFigureConfig::getFillBrush() const
+const QBrush &finFigureConfig::getFillBrush() const
 {
     return this->_fillBrush;
 }
 
-finFigureArrow finFigureConfig::getStartArrow() const
+const finFigureArrow &finFigureConfig::getStartArrow() const
 {
     return this->_startArrow;
 }
 
-finFigureArrow finFigureConfig::getEndArrow() const
+const finFigureArrow &finFigureConfig::getEndArrow() const
 {
     return this->_endArrow;
 }
 
-QPen finFigureConfig::getTextPen() const
+const QPen &finFigureConfig::getTextPen() const
 {
     return this->_textPen;
 }
 
-QBrush finFigureConfig::getTextBrush() const
+const QBrush &finFigureConfig::getTextBrush() const
 {
     return this->_textBrush;
 }
 
-QFont finFigureConfig::getFont() const
+const QFont &finFigureConfig::getFont() const
 {
     return this->_font;
 }
 
-QMarginsF finFigureConfig::getTextMargins() const
+const QMarginsF &finFigureConfig::getTextMargins() const
 {
     return this->_textMargins;
 }
@@ -96,6 +96,16 @@ QString finFigureConfig::getFontName() const
 double finFigureConfig::getFontPointSize() const
 {
     return this->_font.pointSizeF();
+}
+
+bool finFigureConfig::getFontBold() const
+{
+    return this->_font.bold();
+}
+
+bool finFigureConfig::getFontItalic() const
+{
+    return this->_font.italic();
 }
 
 QColor finFigureConfig::getFontColor() const
@@ -187,6 +197,18 @@ finErrorCode finFigureConfig::setFontName(const QString &ftname)
 finErrorCode finFigureConfig::setFontPointSize(double size)
 {
     this->_font.setPointSizeF(size);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setFontBold(bool bold)
+{
+    this->_font.setBold(bold);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setFontItalic(bool italic)
+{
+    this->_font.setItalic(italic);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
