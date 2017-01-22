@@ -257,7 +257,7 @@ class finFigureObjectImage : public finFigureObject
 protected:
     QPointF _basePtr;
     int _flag;
-    double _scale;
+    double _scaleX, _scaleY;
     double _rad;
     double _sinrad, _cosrad;
 
@@ -270,15 +270,17 @@ public:
     virtual bool is3DFigure() const;
 
     QPointF getBasePoint() const;
-    int getFontMetricFlags() const;
-    double getScale() const;
+    int getAlignFlags() const;
+    double getScaleX() const;
+    double getScaleY() const;
     double getRadian() const;
     QImage getImage() const;
 
     finErrorCode setBasePoint(const QPointF &pt);
     finErrorCode setBasePoint(double ptx, double pty);
-    finErrorCode setFontMetricFlags(int flag);
-    finErrorCode setScale(double scale);
+    finErrorCode setAlignFlags(int flag);
+    finErrorCode setScaleX(double scale);
+    finErrorCode setScaleY(double scale);
     finErrorCode setRadian(double rad);
     finErrorCode setImage(const QImage &image);
 

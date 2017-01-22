@@ -777,7 +777,8 @@ finFigureObjectImage::finFigureObjectImage()
     this->_type = finFigureObject::FIN_FO_TYPE_TEXT;
     this->_basePtr = QPointF(0.0, 0.0);
     this->_flag = Qt::AlignCenter;
-    this->_scale = 1.0;
+    this->_scaleX = 1.0;
+    this->_scaleY = 1.0;
     this->_rad = 0.0;
     this->_img = QImage();
 }
@@ -792,14 +793,19 @@ QPointF finFigureObjectImage::getBasePoint() const
     return this->_basePtr;
 }
 
-int finFigureObjectImage::getFontMetricFlags() const
+int finFigureObjectImage::getAlignFlags() const
 {
     return this->_flag;
 }
 
-double finFigureObjectImage::getScale() const
+double finFigureObjectImage::getScaleX() const
 {
-    return this->_scale;
+    return this->_scaleX;
+}
+
+double finFigureObjectImage::getScaleY() const
+{
+    return this->_scaleY;
 }
 
 double finFigureObjectImage::getRadian() const
@@ -825,15 +831,21 @@ finErrorCode finFigureObjectImage::setBasePoint(double ptx, double pty)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectImage::setFontMetricFlags(int flag)
+finErrorCode finFigureObjectImage::setAlignFlags(int flag)
 {
     this->_flag = flag;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectImage::setScale(double scale)
+finErrorCode finFigureObjectImage::setScaleX(double scale)
 {
-    this->_scale = scale;
+    this->_scaleX = scale;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectImage::setScaleY(double scale)
+{
+    this->_scaleY = scale;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -880,8 +892,8 @@ finFigureObjectImage::getPixelFigurePath(QList<finFigurePath> *pathlist, finGrap
 
 void finFigureObjectImage::dump() const
 {
-    printf(" * Fig Type: text; C: (%lf, %lf) F: %d S: %lf rad: %lf ImgSize: %dx%d\n",
-           this->_basePtr.x(), this->_basePtr.y(), this->_flag, this->_scale, this->_rad,
+    printf(" * Fig Type: text; C: (%lf, %lf) F: %d S: %lf x %lf rad: %lf ImgSize: %dx%d\n",
+           this->_basePtr.x(), this->_basePtr.y(), this->_flag, this->_scaleX, this->_scaleY, this->_rad,
            this->_img.size().width(), this->_img.size().height());
 }
 

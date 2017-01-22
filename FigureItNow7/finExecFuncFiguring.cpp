@@ -48,7 +48,7 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("circle"),           QString("cx,cy,r"),                     _sysfunc_circle           },
     { QString("ellipse"),          QString("cx,cy,lr,sr,rad"),             _sysfunc_ellipse          },
     { QString("draw_text"),        QString("text,cx,cy,rad,sc"),           _sysfunc_draw_text        },
-    { QString("draw_image"),       QString("image,cx,cy,rad,sc"),          _sysfunc_draw_text        },
+    { QString("draw_image"),       QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_text        },
     { QString("axis"),             QString("sx,sy,tx,ty,rx1,rx2,ry1,ry2"), _sysfunc_axis             },
     { QString("line3d"),           QString("x1,y1,z1,x2,y2,z2"),           _sysfunc_line3d           },
     { QString("named_color"),      QString("colorname"),                   _sysfunc_named_color      },
@@ -433,7 +433,7 @@ static finErrorCode _sysfunc_draw_image(finExecFunction *self, finExecEnvironmen
                                         finExecMachine *machine, finExecFlowControl *flowctl)
 {
     finErrorCode errcode;
-    finExecVariable *image, *cx, *cy, *rad, *scale;
+    finExecVariable *image, *cx, *cy, *rad, *sx, *sy;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
@@ -444,7 +444,8 @@ static finErrorCode _sysfunc_draw_image(finExecFunction *self, finExecEnvironmen
     cx = finExecVariable::transLinkTarget(env->findVariable("cx"));
     cy = finExecVariable::transLinkTarget(env->findVariable("cy"));
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
-    scale = finExecVariable::transLinkTarget(env->findVariable("sc"));
+    sx = finExecVariable::transLinkTarget(env->findVariable("sx"));
+    sy = finExecVariable::transLinkTarget(env->findVariable("sy"));
 
     if ( image == NULL || cx == NULL || cy == NULL )
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
@@ -455,8 +456,10 @@ static finErrorCode _sysfunc_draw_image(finExecFunction *self, finExecEnvironmen
          cy->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          (rad != NULL && rad->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
                          rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) ||
-         (scale != NULL && scale->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
-                           scale->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC))
+         (sx != NULL && sx->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
+                        sx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) ||
+         (sy != NULL && sy->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
+                        sy->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC))
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
     finFigureObjectImage *foimg = new finFigureObjectImage();
@@ -474,10 +477,14 @@ static finErrorCode _sysfunc_draw_image(finExecFunction *self, finExecEnvironmen
         foimg->setRadian(rad->getNumericValue());
     else
         foimg->setRadian(0.0);
-    if ( scale != NULL && scale->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC )
-        foimg->setScale(scale->getNumericValue());
+    if ( sx != NULL && sx->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC )
+        foimg->setScaleX(sx->getNumericValue());
     else
-        foimg->setScale(1.0);
+        foimg->setScaleX(1.0);
+    if ( sy != NULL && sy->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC )
+        foimg->setScaleY(sy->getNumericValue());
+    else
+        foimg->setScaleY(1.0);
 
     errcode = env->getFigureContainer()->appendFigureObject(foimg);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
