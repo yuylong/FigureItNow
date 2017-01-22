@@ -28,38 +28,12 @@ bool finExecOperartorClac::varLogicValue(finExecVariable *var)
     if ( var == NULL )
         return false;
 
-    switch ( var->getType() ) {
-      case finExecVariable::FIN_VR_TYPE_NULL:
+    bool retval = false;
+    finErrorCode errcode = var->readBoolValue(&retval);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
         return false;
-        break;
 
-      case finExecVariable::FIN_VR_TYPE_NUMERIC:
-        if ( var->getNumericValue() < 1.0e-6 && var->getNumericValue() > -1.0e-6)
-            return false;
-        else
-            return true;
-        break;
-
-      case finExecVariable::FIN_VR_TYPE_STRING:
-        if ( QString::compare(var->getStringValue(), "yes", Qt::CaseInsensitive) == 0 ||
-             QString::compare(var->getStringValue(), "true", Qt::CaseInsensitive) == 0 )
-            return true;
-        else
-            return false;
-        break;
-
-      case finExecVariable::FIN_VR_TYPE_ARRAY:
-        if ( var->getArrayLength() <= 0 )
-            return false;
-        else
-            return true;
-        break;
-
-      default:
-        return false;
-        break;
-    }
-    return false;
+    return retval;
 }
 
 finExecVariable *finExecOperartorClac::buildStdLogicVar(bool blval)
@@ -68,11 +42,10 @@ finExecVariable *finExecOperartorClac::buildStdLogicVar(bool blval)
     if ( retvar == NULL )
         return NULL;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
-    if ( blval ) {
-        retvar->setNumericValue(1.0);
-    } else {
-        retvar->setNumericValue(0.0);
+    finErrorCode errcode = retvar->setupBoolValue(blval);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete retvar;
+        return NULL;
     }
     retvar->setWriteProtected();
     retvar->clearLeftValue();
