@@ -22,6 +22,7 @@
 
 
 #include <QString>
+#include <QImage>
 #include <QList>
 
 #include "finErrorCode.h"
@@ -58,6 +59,8 @@ public:
 
         FIN_VR_TYPE_STRING,     //!< The variable is a character-based string.
 
+        FIN_VR_TYPE_IMAGE,      //!< The variable is an pixel-map-based image.
+
         FIN_VR_TYPE_ARRAY,      //!< The variable is a one-dimensioned list of another variable.
 
         FIN_VR_TYPE_LINK,       //!< The variable is a symbol link to another variable.
@@ -78,6 +81,7 @@ protected:
     double _numVal;
     QString _strVal;
     QList<finExecVariable *> _itemList;
+    QImage _image;
     finExecVariable *_parentVar;
 
 public:
@@ -101,9 +105,11 @@ public:
 
     double getNumericValue() const;
     QString getStringValue() const;
+    QImage getImageValue() const;
 
     finErrorCode setNumericValue(double val);
     finErrorCode setStringValue(const QString &strval);
+    finErrorCode setImageValue(const QImage &img);
 
     int getArrayLength() const;
     finErrorCode preallocArrayLength(int len);

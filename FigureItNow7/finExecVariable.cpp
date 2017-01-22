@@ -144,12 +144,12 @@ QString finExecVariable::getStringValue() const
     return this->_strVal;
 }
 
-int finExecVariable::getArrayLength() const
+QImage finExecVariable::getImageValue() const
 {
-    if ( this->_type != FIN_VR_TYPE_ARRAY )
-        return 0;
+    if ( this->_type != FIN_VR_TYPE_IMAGE )
+        return QImage();
 
-    return this->_itemList.count();
+    return this->_image;
 }
 
 finErrorCode finExecVariable::setNumericValue(double val)
@@ -174,6 +174,26 @@ finErrorCode finExecVariable::setStringValue(const QString &strval)
 
     this->_strVal = strval;
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecVariable::setImageValue(const QImage &img)
+{
+    if ( this->_type != FIN_VR_TYPE_IMAGE && this->_type != FIN_VR_TYPE_NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    if ( this->_type == FIN_VR_TYPE_NULL )
+        this->_type = FIN_VR_TYPE_IMAGE;
+
+    this->_image = img;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+int finExecVariable::getArrayLength() const
+{
+    if ( this->_type != FIN_VR_TYPE_ARRAY )
+        return 0;
+
+    return this->_itemList.count();
 }
 
 finErrorCode finExecVariable::preallocArrayLength(int len)
