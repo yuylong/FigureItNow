@@ -65,5 +65,10 @@ finErrorCode finGraphPanelScene::drawFigurePath(const finFigurePath &path) const
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     this->_scene->addPath(path.getPath(), path.getPen(), path.getBrush());
+
+    if ( !path.getImage().isNull() ) {
+        QGraphicsPixmapItem *item = this->_scene->addPixmap(path.getPixmap());
+        item->setPos(path.getImagePosition());
+    }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

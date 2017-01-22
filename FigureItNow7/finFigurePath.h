@@ -5,6 +5,7 @@
 #include <QBrush>
 #include <QPainterPath>
 #include <QPointF>
+#include <QPixmap>
 #include <QImage>
 
 #include "finErrorCode.h"
@@ -16,7 +17,7 @@ protected:
     QBrush _brush;
     QPainterPath _path;
     QPointF _imgPos;
-    QImage _img;
+    QPixmap _pixmap;
 
 public:
     finFigurePath();
@@ -26,12 +27,14 @@ public:
     QBrush getBrush() const;
     QPainterPath getPath() const;
     QPointF getImagePosition() const;
+    QPixmap getPixmap() const;
     QImage getImage() const;
 
     finErrorCode setPen(const QPen &pen);
     finErrorCode setBrush(const QBrush &brush);
     finErrorCode setPath(const QPainterPath &path);
     finErrorCode setImagePosition(const QPointF &imgpos);
+    finErrorCode setPixmap(const QPixmap &pixmap);
     finErrorCode setImage(const QImage &image);
 
     finFigurePath &operator = (const finFigurePath &figpath);
