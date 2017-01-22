@@ -14,27 +14,27 @@ finFigurePath::finFigurePath(const finFigurePath &figpath)
     /* Do Nothing */
 }
 
-QPen finFigurePath::getPen() const
+const QPen &finFigurePath::getPen() const
 {
     return this->_pen;
 }
 
-QBrush finFigurePath::getBrush() const
+const QBrush &finFigurePath::getBrush() const
 {
     return this->_brush;
 }
 
-QPainterPath finFigurePath::getPath() const
+const QPainterPath &finFigurePath::getPath() const
 {
     return this->_path;
 }
 
-QPointF finFigurePath::getImagePosition() const
+const QPointF &finFigurePath::getImagePosition() const
 {
     return this->_imgPos;
 }
 
-QPixmap finFigurePath::getPixmap() const
+const QPixmap &finFigurePath::getPixmap() const
 {
     return this->_pixmap;
 }

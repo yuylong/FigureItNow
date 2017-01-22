@@ -23,11 +23,11 @@ public:
     finFigurePath();
     finFigurePath(const finFigurePath &figpath);
 
-    QPen getPen() const;
-    QBrush getBrush() const;
-    QPainterPath getPath() const;
-    QPointF getImagePosition() const;
-    QPixmap getPixmap() const;
+    const QPen &getPen() const;
+    const QBrush &getBrush() const;
+    const QPainterPath &getPath() const;
+    const QPointF &getImagePosition() const;
+    const QPixmap &getPixmap() const;
     QImage getImage() const;
 
     finErrorCode setPen(const QPen &pen);
