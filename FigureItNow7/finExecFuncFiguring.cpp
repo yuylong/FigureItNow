@@ -48,7 +48,7 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("circle"),           QString("cx,cy,r"),                     _sysfunc_circle           },
     { QString("ellipse"),          QString("cx,cy,lr,sr,rad"),             _sysfunc_ellipse          },
     { QString("draw_text"),        QString("text,cx,cy,rad,sc"),           _sysfunc_draw_text        },
-    { QString("draw_image"),       QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_text        },
+    { QString("draw_image"),       QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_image       },
     { QString("axis"),             QString("sx,sy,tx,ty,rx1,rx2,ry1,ry2"), _sysfunc_axis             },
     { QString("line3d"),           QString("x1,y1,z1,x2,y2,z2"),           _sysfunc_line3d           },
     { QString("named_color"),      QString("colorname"),                   _sysfunc_named_color      },

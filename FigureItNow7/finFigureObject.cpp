@@ -879,20 +879,21 @@ finFigureObjectImage::getPixelFigurePath(QList<finFigurePath> *pathlist, finGrap
     if ( pathlist == NULL || cfg == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    //QPainterPath path = this->getPixelTextPath(cfg);
+    QPointF imgpos = cfg->transformPixelPoint(this->_basePtr);
 
-    //finFigurePath figpath;
-    //figpath.setPen(this->_figCfg.getTextPen());
-    //figpath.setBrush(this->_figCfg.getTextBrush());
-    //figpath.setPath(path);
-    //pathlist->append(figpath);
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getTextPen());
+    figpath.setBrush(this->_figCfg.getTextBrush());
+    figpath.setImagePosition(imgpos);
+    figpath.setImage(this->_img);
+    pathlist->append(figpath);
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 void finFigureObjectImage::dump() const
 {
-    printf(" * Fig Type: text; C: (%lf, %lf) F: %d S: %lf x %lf rad: %lf ImgSize: %dx%d\n",
+    printf(" * Fig Type: image; C: (%lf, %lf) F: %d S: %lf x %lf rad: %lf ImgSize: %dx%d\n",
            this->_basePtr.x(), this->_basePtr.y(), this->_flag, this->_scaleX, this->_scaleY, this->_rad,
            this->_img.size().width(), this->_img.size().height());
 }
