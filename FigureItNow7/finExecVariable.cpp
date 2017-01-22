@@ -520,6 +520,10 @@ finErrorCode finExecVariable::copyVariableValueIn(finExecVariable *srcvar)
         this->_strVal = srcvar->getStringValue();
         break;
 
+      case FIN_VR_TYPE_IMAGE:
+        this->_image = srcvar->getImageValue();
+        break;
+
       case FIN_VR_TYPE_ARRAY:
         errcode = this->copyArrayVariable(srcvar);
         if ( finErrorCodeKits::isErrorResult(errcode) )
@@ -569,6 +573,10 @@ bool finExecVariable::isSameValue(finExecVariable *var)
 
       case finExecVariable::FIN_VR_TYPE_STRING:
         return (QString::compare(var1->getStringValue(), var2->getStringValue()) == 0);
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_IMAGE:
+        return false;
         break;
 
       case finExecVariable::FIN_VR_TYPE_ARRAY:
@@ -648,6 +656,10 @@ finErrorCode finExecVariable::disposeValue()
 
       case finExecVariable::FIN_VR_TYPE_STRING:
         this->_strVal.clear();
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_IMAGE:
+        this->_image = QImage();
         break;
 
       case finExecVariable::FIN_VR_TYPE_ARRAY:
