@@ -1,13 +1,13 @@
 #include "finFigurePath.h"
 
 finFigurePath::finFigurePath()
-    : _pen(Qt::black, 1), _brush(Qt::transparent), _path()
+    : _pen(Qt::black, 1), _brush(Qt::transparent), _path(), _img()
 {
     /* Do Nothing */
 }
 
 finFigurePath::finFigurePath(const finFigurePath &figpath)
-    : _pen(figpath._pen), _brush(figpath._brush), _path(figpath._path)
+    : _pen(figpath._pen), _brush(figpath._brush), _path(figpath._path), _img(figpath._img)
 {
     /* Do Nothing */
 }
@@ -25,6 +25,11 @@ QBrush finFigurePath::getBrush() const
 QPainterPath finFigurePath::getPath() const
 {
     return this->_path;
+}
+
+QImage finFigurePath::getImage() const
+{
+    return this->_img;
 }
 
 finErrorCode finFigurePath::setPen(const QPen &pen)
@@ -45,10 +50,17 @@ finErrorCode finFigurePath::setPath(const QPainterPath &path)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finFigurePath::setImage(const QImage &image)
+{
+    this->_img = image;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finFigurePath &finFigurePath::operator = (const finFigurePath &figpath)
 {
     this->_pen = figpath._pen;
     this->_brush = figpath._brush;
     this->_path = figpath._path;
+    this->_img = figpath._img;
     return *this;
 }
