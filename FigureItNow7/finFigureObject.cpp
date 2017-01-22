@@ -772,6 +772,119 @@ void finFigureObjectText::dump() const
            this->_text.toLatin1().data());
 }
 
+finFigureObjectImage::finFigureObjectImage()
+{
+    this->_type = finFigureObject::FIN_FO_TYPE_TEXT;
+    this->_basePtr = QPointF(0.0, 0.0);
+    this->_flag = Qt::AlignCenter;
+    this->_scale = 1.0;
+    this->_rad = 0.0;
+    this->_img = QImage();
+}
+
+bool finFigureObjectImage::is3DFigure() const
+{
+    return false;
+}
+
+QPointF finFigureObjectImage::getBasePoint() const
+{
+    return this->_basePtr;
+}
+
+int finFigureObjectImage::getFontMetricFlags() const
+{
+    return this->_flag;
+}
+
+double finFigureObjectImage::getScale() const
+{
+    return this->_scale;
+}
+
+double finFigureObjectImage::getRadian() const
+{
+    return this->_rad;
+}
+
+QImage finFigureObjectImage::getImage() const
+{
+    return this->_img;
+}
+
+finErrorCode finFigureObjectImage::setBasePoint(const QPointF &pt)
+{
+    this->_basePtr = pt;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectImage::setBasePoint(double ptx, double pty)
+{
+    this->_basePtr.setX(ptx);
+    this->_basePtr.setY(pty);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectImage::setFontMetricFlags(int flag)
+{
+    this->_flag = flag;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectImage::setScale(double scale)
+{
+    this->_scale = scale;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectImage::setRadian(double rad)
+{
+    // Make the degree falling into the range (-180, 180].
+    rad = rad - floor(rad / (2 * M_PI)) * 2 * M_PI;
+    if ( rad > M_PI )
+        rad = rad - 2 * M_PI;
+
+    this->_rad = rad;
+    this->_sinrad = sin(rad);
+    this->_cosrad = cos(rad);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectImage::setImage(const QImage &image)
+{
+    this->_img = image;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+QRectF finFigureObjectImage::getBoundingRect() const
+{
+    return this->_img.rect();
+}
+
+finErrorCode
+finFigureObjectImage::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
+{
+    if ( pathlist == NULL || cfg == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    //QPainterPath path = this->getPixelTextPath(cfg);
+
+    //finFigurePath figpath;
+    //figpath.setPen(this->_figCfg.getTextPen());
+    //figpath.setBrush(this->_figCfg.getTextBrush());
+    //figpath.setPath(path);
+    //pathlist->append(figpath);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+void finFigureObjectImage::dump() const
+{
+    printf(" * Fig Type: text; C: (%lf, %lf) F: %d S: %lf rad: %lf ImgSize: %dx%d\n",
+           this->_basePtr.x(), this->_basePtr.y(), this->_flag, this->_scale, this->_rad,
+           this->_img.size().width(), this->_img.size().height());
+}
+
 finFigureObjectAxis::finFigureObjectAxis()
 {
     this->_minX = 1.0;

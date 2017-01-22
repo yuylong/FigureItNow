@@ -38,6 +38,7 @@ public:
         FIN_FO_TYPE_POLYGON,
         FIN_FO_TYPE_ELLIPSE,
         FIN_FO_TYPE_TEXT,
+        FIN_FO_TYPE_IMAGE,
         FIN_FO_TYPE_AXIS,
         FIN_FO_TYPE_LINE3D,
         FIN_FO_TYPE_MAX
@@ -246,6 +247,42 @@ public:
     QRectF getBoundingRect() const;
     QPainterPath getTextPath() const;
     QPainterPath getPixelTextPath(finGraphConfig *cfg) const;
+
+    virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
+    virtual void dump() const;
+};
+
+class finFigureObjectImage : public finFigureObject
+{
+protected:
+    QPointF _basePtr;
+    int _flag;
+    double _scale;
+    double _rad;
+    double _sinrad, _cosrad;
+
+    QImage _img;
+
+public:
+    finFigureObjectImage();
+    virtual ~finFigureObjectImage() { return; }
+
+    virtual bool is3DFigure() const;
+
+    QPointF getBasePoint() const;
+    int getFontMetricFlags() const;
+    double getScale() const;
+    double getRadian() const;
+    QImage getImage() const;
+
+    finErrorCode setBasePoint(const QPointF &pt);
+    finErrorCode setBasePoint(double ptx, double pty);
+    finErrorCode setFontMetricFlags(int flag);
+    finErrorCode setScale(double scale);
+    finErrorCode setRadian(double rad);
+    finErrorCode setImage(const QImage &image);
+
+    QRectF getBoundingRect() const;
 
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
     virtual void dump() const;
