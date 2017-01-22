@@ -879,13 +879,43 @@ finFigureObjectImage::getPixelFigurePath(QList<finFigurePath> *pathlist, finGrap
     if ( pathlist == NULL || cfg == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    QPointF imgpos = cfg->transformPixelPoint(this->_basePtr);
+    QTransform trans, subtrans;
+    trans.scale(this->_scaleX, this->_scaleY);
+    subtrans.rotateRadians(-this->_rad);
+    trans *= subtrans;
+
+    QPolygonF rtptlist(QRectF(this->_img.rect()));
+    QPointF offpt (0.0, 0.0);
+    for ( int i = 0; i < rtptlist.count(); i++ ) {
+        QPointF curpt = trans.map(rtptlist.at(i));
+        if ( curpt.x() < offpt.x() )
+            offpt.setX(curpt.x());
+        if ( curpt.y() < offpt.y() )
+            offpt.setY(curpt.y());
+    }
+    subtrans.reset();
+    subtrans.translate(-offpt.x(), -offpt.y());
+    trans *= subtrans;
+    QImage outimg = this->_img.transformed(trans);
+
+    QPointF imgoffpt = QPointF(0.0, 0.0);
+    if ( this->_flag & Qt::AlignRight ) {
+        imgoffpt.setX(imgoffpt.x() + this->_img.width());
+    } else if ( this->_flag & Qt::AlignHCenter ) {
+        imgoffpt.setX(imgoffpt.x() + this->_img.width() / 2.0);
+    }
+    if ( this->_flag & Qt::AlignBottom ) {
+        imgoffpt.setY(imgoffpt.y() + this->_img.height());
+    } else if ( this->_flag & Qt::AlignVCenter ) {
+        imgoffpt.setY(imgoffpt.y() + this->_img.height() / 2.0);
+    }
+    QPointF imgpos = cfg->transformPixelPoint(this->_basePtr) - trans.map(imgoffpt);
 
     finFigurePath figpath;
     figpath.setPen(this->_figCfg.getTextPen());
     figpath.setBrush(this->_figCfg.getTextBrush());
     figpath.setImagePosition(imgpos);
-    figpath.setImage(this->_img);
+    figpath.setImage(outimg);
     pathlist->append(figpath);
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
