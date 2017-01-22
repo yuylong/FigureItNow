@@ -692,6 +692,18 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
     } else if ( QString::compare(cfgname, "font_size") == 0 ) {
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
         cfgvalue->setNumericValue(figconfig->getFontPointSize());
+    } else if ( QString::compare(cfgname, "font_bold") == 0 ) {
+        errcode = cfgvalue->setupBoolValue(figconfig->getFontBold());
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            delete cfgvalue;
+            return errcode;
+        }
+    } else if ( QString::compare(cfgname, "font_italic") == 0 ) {
+        errcode = cfgvalue->setupBoolValue(figconfig->getFontItalic());
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            delete cfgvalue;
+            return errcode;
+        }
     } else if ( QString::compare(cfgname, "font_color") == 0 ) {
         errcode = cfgvalue->setupColorValue(figconfig->getFontColor());
         if ( finErrorCodeKits::isErrorResult(errcode) ) {
@@ -768,6 +780,18 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
             return finErrorCodeKits::FIN_EC_INVALID_PARAM;
         figconfig->setFontPointSize(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "font_bold") == 0 ) {
+        bool blval;
+        errcode = cfgvalue->readBoolValue(&blval);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+        figconfig->setFontBold(blval);
+    } else if ( QString::compare(cfgname, "font_italic") == 0 ) {
+        bool blval;
+        errcode = cfgvalue->readBoolValue(&blval);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+        figconfig->setFontItalic(blval);
     } else if ( QString::compare(cfgname, "font_color") == 0 ) {
         QColor color;
         errcode = cfgvalue->readColorValue(&color);

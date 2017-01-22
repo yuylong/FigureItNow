@@ -132,6 +132,8 @@ public:
     finErrorCode setLinkTarget(finExecVariable *target);
     finErrorCode unsetLinkTarget();
 
+    finErrorCode readBoolValue(bool *blval) const;
+    finErrorCode setupBoolValue(bool blval);
     finErrorCode readColorValue(QColor *color) const;
     finErrorCode setupColorValue(const QColor &color);
 

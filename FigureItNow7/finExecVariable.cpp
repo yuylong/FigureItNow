@@ -443,6 +443,55 @@ finErrorCode finExecVariable::unsetLinkTarget()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finExecVariable::readBoolValue(bool *blval) const
+{
+    if ( blval == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    switch ( this->getType() ) {
+      case finExecVariable::FIN_VR_TYPE_NULL:
+        *blval = false;
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_NUMERIC:
+        *blval = !(this->getNumericValue() < 1.0e-8 && this->getNumericValue() > -1.0e-8);
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_STRING:
+        *blval = (QString::compare(this->getStringValue(), "yes", Qt::CaseInsensitive) == 0 ||
+                  QString::compare(this->getStringValue(), "true", Qt::CaseInsensitive) == 0);
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_IMAGE:
+        *blval = !this->getImageValue().isNull();
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_ARRAY:
+        *blval = (this->getArrayLength() > 0);
+        break;
+
+      default:
+        *blval = false;
+        break;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecVariable::setupBoolValue(bool blval)
+{
+    if ( this->_type != finExecVariable::FIN_VR_TYPE_NULL &&
+         this->_type != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    this->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    if ( blval ) {
+        this->setNumericValue(1.0);
+    } else {
+        this->setNumericValue(0.0);
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode finExecVariable::readColorValue(QColor *color) const
 {
     if ( color == NULL )
