@@ -311,3 +311,23 @@ QPainterPath finGraphConfig::arcTransformPixelPath(const QPainterPath &path) con
     }
     return outpath;
 }
+
+QPolygonF finGraphConfig::transformPixelPolygon(const QPolygonF &polygon) const
+{
+    QPolygonF retpolygon;
+    for ( int i = 0; i < polygon.count(); i++ ) {
+        const QPointF &srcpt = polygon.at(i);
+        retpolygon.append(this->transformPixelPoint(srcpt));
+    }
+    return retpolygon;
+}
+
+QPolygonF finGraphConfig::arcTransformPixelPolygon(const QPolygonF &polygon) const
+{
+    QPolygonF retpolygon;
+    for ( int i = 0; i < polygon.count(); i++ ) {
+        const QPointF &srcpt = polygon.at(i);
+        retpolygon.append(this->arcTransformPixelPoint(srcpt));
+    }
+    return retpolygon;
+}

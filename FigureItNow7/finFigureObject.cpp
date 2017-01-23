@@ -94,12 +94,18 @@ finErrorCode finFigureObjectDot::getPixelFigurePath(QList<finFigurePath> *pathli
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
     QPointF pixpt = cfg->transformPixelPoint(this->_point);
+    double dotsize = this->_figCfg.getDotSize();
     QPainterPath path;
-    path.moveTo(pixpt);
-    path.lineTo(pixpt);
+    if ( this->_figCfg.getBorderPen().capStyle() == Qt::RoundCap ) {
+        path.addEllipse(pixpt, dotsize, dotsize);
+    } else {
+        QPointF tlpt = pixpt - QPointF(dotsize / 2.0, dotsize / 2.0);
+        path.addRect(tlpt.x(), tlpt.y(), dotsize, dotsize);
+    }
 
     finFigurePath figpath;
-    figpath.setPen(this->_figCfg.getBorderPen());
+    figpath.setPen(QPen(Qt::transparent));
+    figpath.setBrush(this->_figCfg.getBorderPen().brush());
     figpath.setPath(path);
     pathlist->append(figpath);
 

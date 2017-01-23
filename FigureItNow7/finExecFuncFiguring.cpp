@@ -11,6 +11,8 @@
 
 static finErrorCode _sysfunc_clear_fig(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_draw_dot(finExecFunction *self, finExecEnvironment *env,
+                                      finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_line(finExecFunction *self, finExecEnvironment *env,
                                   finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment *env,
@@ -45,6 +47,7 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
 
 static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("clear_fig"),         QString(""),                            _sysfunc_clear_fig         },
+    { QString("draw_dot"),          QString("cx,cy"),                       _sysfunc_draw_dot          },
     { QString("line"),              QString("x1,y1,x2,y2"),                 _sysfunc_line              },
     { QString("polyline"),          QString("x1,y1,x2,y2"),                 _sysfunc_polyline          },
     { QString("rect"),              QString("cx,cy,w,h,rad"),               _sysfunc_rect              },
@@ -79,6 +82,41 @@ static finErrorCode _sysfunc_clear_fig(finExecFunction *self, finExecEnvironment
 
     env->getFigureContainer()->clearFigureObjects();
 
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_draw_dot(finExecFunction *self, finExecEnvironment *env,
+                                      finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *cx, *cy;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    cx = finExecVariable::transLinkTarget(env->findVariable("cx"));
+    cy = finExecVariable::transLinkTarget(env->findVariable("cy"));
+    if ( cx == NULL || cy == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+
+    if ( cx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         cy->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    finFigureObjectDot *fodot = new finFigureObjectDot();
+    if ( fodot == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    fodot->setPoint(cx->getNumericValue(), cy->getNumericValue());
+
+    errcode = env->getFigureContainer()->appendFigureObject(fodot);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete fodot;
+        return errcode;
+    }
     flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

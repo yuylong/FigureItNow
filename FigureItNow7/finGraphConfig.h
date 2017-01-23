@@ -90,6 +90,8 @@ public:
     QPointF arcTransformPixelPoint(const QPointF &srcpt) const;
     QPainterPath transformPixelPath(const QPainterPath &path) const;
     QPainterPath arcTransformPixelPath(const QPainterPath &path) const;
+    QPolygonF transformPixelPolygon(const QPolygonF &polygon) const;
+    QPolygonF arcTransformPixelPolygon(const QPolygonF &polygon) const;
 };
 
 #endif // FINGRAPHCONFIG_H
