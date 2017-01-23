@@ -300,6 +300,13 @@ bool finFigureAlg::isPolygonInsideRect(const QList<QPointF> &polygon, const QRec
     return true;
 }
 
+void finFigureAlg::dumpMatrix(const QTransform &matrix)
+{
+    printf("Matrix = [ %lf, %lf, %lf ]\n", matrix.m11(), matrix.m21(), matrix.m31());
+    printf("         [ %lf, %lf, %lf ]\n", matrix.m12(), matrix.m22(), matrix.m32());
+    printf("         [ %lf, %lf, %lf ]\n", matrix.m13(), matrix.m23(), matrix.m33());
+}
+
 QTransform finFigureAlg::threePointMatrix(const QPointF &pt00, const QPointF &pt10, const QPointF &pt01)
 {
     double ma, mb, mc, md, me, mf;
@@ -310,7 +317,7 @@ QTransform finFigureAlg::threePointMatrix(const QPointF &pt00, const QPointF &pt
     md = pt10.y() - mf;
     mb = pt01.x() - mc;
     me = pt01.x() - mf;
-    return QTransform(ma, mb, mc, md, me, mf, 0.0, 0.0, 1.0);
+    return QTransform(ma, md, 0.0, mb, me, 0.0, mc, mf, 1.0);
 }
 
 QTransform finFigureAlg::threePointMatrix(const QList<QPointF> &fromlist, const QList<QPointF> &tolist)
@@ -325,7 +332,7 @@ QTransform finFigureAlg::threePointMatrix(const QList<QPointF> &fromlist, const 
 }
 
 QTransform finFigureAlg::fourPointMatrix(const QPointF &pt00, const QPointF &pt10,
-                                                const QPointF &pt01, const QPointF &pt11)
+                                         const QPointF &pt11, const QPointF &pt01)
 {
     double ma, mb, mc, md, me, mf, mg, mh;
 
@@ -342,8 +349,8 @@ QTransform finFigureAlg::fourPointMatrix(const QPointF &pt00, const QPointF &pt1
     ma = pt10.x() * (mg + 1.0) - mc;
     mb = pt01.x() * (mh + 1.0) - mc;
     md = pt10.y() * (mg + 1.0) - mf;
-    me = pt10.y() * (mh + 1.0) - mf;
-    return QTransform(ma, mb, mc, md, me, mf, mg, mh, 1.0);
+    me = pt01.y() * (mh + 1.0) - mf;
+    return QTransform(ma, md, mg, mb, me, mh, mc, mf, 1.0);
 }
 
 QTransform finFigureAlg::fourPointMatrix(const QList<QPointF> &fromlist, const QList<QPointF> &tolist)

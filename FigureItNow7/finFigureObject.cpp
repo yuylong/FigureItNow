@@ -946,6 +946,10 @@ QTransform finFigureObjectImage::getParameterTransformMatrix() const
 {
     QTransform trans, subtrans;
     trans.translate(-this->_basePtr.x(), -this->_basePtr.y());
+    subtrans.scale(this->_scaleX, this->_scaleY);
+    trans *= subtrans;
+
+    subtrans.reset();
     subtrans.rotateRadians(this->_rad);
     trans *= subtrans;
 
@@ -962,14 +966,21 @@ finErrorCode finFigureObjectImage::getPinnedPixelFigurePath(QList<finFigurePath>
     QPointF imgctrpt = this->_basePtr;
     if ( this->_flag & Qt::AlignRight ) {
         imgctrpt.setX(this->_basePtr.x() + imgmathsize.width() / 2.0);
-    } else if ( this->_flag & Qt::AlignHCenter ) {
+    } else if ( this->_flag & Qt::AlignLeft ) {
         imgctrpt.setX(this->_basePtr.x() - imgmathsize.width() / 2.0);
     }
     if ( this->_flag & Qt::AlignBottom ) {
         imgctrpt.setY(this->_basePtr.y() + imgmathsize.height() / 2.0);
-    } else if ( this->_flag & Qt::AlignVCenter ) {
+    } else if ( this->_flag & Qt::AlignTop ) {
         imgctrpt.setY(this->_basePtr.y() - imgmathsize.height() / 2.0);
     }
+
+    // I do not use the QT wrapped functions due to the corresponding point positions.
+    QPolygonF imgpg;
+    imgpg.append(QPointF(0.0, 0.0));
+    imgpg.append(QPointF(this->_img.width(), 0.0));
+    imgpg.append(QPointF(this->_img.width(), this->_img.height()));
+    imgpg.append(QPointF(0.0, this->_img.height()));
 
     QPolygonF imgmatpg;
     imgmatpg.append(imgctrpt + QPointF(-imgmathsize.width() / 2.0, imgmathsize.height() / 2.0));
@@ -987,8 +998,7 @@ finErrorCode finFigureObjectImage::getPinnedPixelFigurePath(QList<finFigurePath>
     }
     QPointF imgpos = imgpixpg.boundingRect().topLeft();
 
-    QTransform img2mattrans = finFigureAlg::fourPointMatrix(QPolygonF(this->getBoundingRect()).toList(),
-                                                            imgmatpg.toList());
+    QTransform img2mattrans = finFigureAlg::fourPointMatrix(imgpg.toList(), imgmatpg.toList());
     QTransform mat2pixtrans = finFigureAlg::fourPointMatrix(imgmatpg.toList(), imgpixpg.toList());
     QTransform img2pixtrans = img2mattrans * mat2pixtrans;
 
