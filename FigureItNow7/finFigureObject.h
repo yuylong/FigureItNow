@@ -255,6 +255,8 @@ public:
 
 private:
     QPointF getBasePointOffset(const QRectF &boundrect) const;
+    QPainterPath getPinnedPixelTextPath(finGraphConfig *cfg) const;
+    QPainterPath getUnpinnedPixelTextPath(finGraphConfig *cfg) const;
 };
 
 class finFigureObjectImage : public finFigureObject

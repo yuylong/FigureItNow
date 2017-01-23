@@ -709,7 +709,37 @@ QPointF finFigureObjectText::getBasePointOffset(const QRectF &boundrect) const
     return bloff;
 }
 
-QPainterPath finFigureObjectText::getPixelTextPath(finGraphConfig *cfg) const
+QPainterPath finFigureObjectText::getPinnedPixelTextPath(finGraphConfig *cfg) const
+{
+    QPainterPath path;
+    path.addText(0.0, 0.0, this->_figCfg.getFont(), this->_text);
+
+    QRectF bndrect = path.boundingRect().marginsAdded(this->_figCfg.getTextMargins());
+    QPointF bloff = this->getBasePointOffset(bndrect);
+
+    QTransform trans, subtrans;
+    trans.translate(bloff.x(), bloff.y());
+    subtrans.scale(this->_scale / cfg->getAxisUnitPixelSize(), -1.0 / cfg->getAxisUnitPixelSize());
+    trans *= subtrans;
+
+    subtrans.reset();
+    subtrans.rotateRadians(this->_rad);
+    trans *= subtrans;
+
+    subtrans.reset();
+    subtrans.translate(this->_basePtr.x(), this->_basePtr.y());
+    trans *= subtrans;
+    path = trans.map(path);
+
+    for ( int i = 0; i < path.elementCount(); i++ ) {
+        QPointF matpt = (QPointF)(path.elementAt(i));
+        QPointF pixpt = cfg->transformPixelPoint(matpt);
+        path.setElementPositionAt(i, pixpt.x(), pixpt.y());
+    }
+    return path;
+}
+
+QPainterPath finFigureObjectText::getUnpinnedPixelTextPath(finGraphConfig *cfg) const
 {
     QPainterPath path;
     path.addText(0.0, 0.0, this->_figCfg.getFont(), this->_text);
@@ -732,6 +762,17 @@ QPainterPath finFigureObjectText::getPixelTextPath(finGraphConfig *cfg) const
     trans *= subtrans;
 
     return trans.map(path);
+}
+
+QPainterPath finFigureObjectText::getPixelTextPath(finGraphConfig *cfg) const
+{
+    if ( cfg == NULL )
+        return QPainterPath();
+
+    if ( this->_isPinned )
+        return getPinnedPixelTextPath(cfg);
+    else
+        return getUnpinnedPixelTextPath(cfg);
 }
 
 finErrorCode

@@ -25,6 +25,8 @@ static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *
                                      finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_draw_text(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_draw_pinned_text(finExecFunction *self, finExecEnvironment *env,
+                                              finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_draw_image(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_draw_pinned_image(finExecFunction *self, finExecEnvironment *env,
@@ -50,6 +52,7 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("circle"),            QString("cx,cy,r"),                     _sysfunc_circle            },
     { QString("ellipse"),           QString("cx,cy,lr,sr,rad"),             _sysfunc_ellipse           },
     { QString("draw_text"),         QString("text,cx,cy,rad,sc"),           _sysfunc_draw_text         },
+    { QString("draw_pinned_text"),  QString("text,cx,cy,rad,sc"),           _sysfunc_draw_pinned_text  },
     { QString("draw_image"),        QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_image        },
     { QString("draw_pinned_image"), QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_pinned_image },
     { QString("axis"),              QString("sx,sy,tx,ty,rx1,rx2,ry1,ry2"), _sysfunc_axis              },
@@ -379,8 +382,8 @@ static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-static finErrorCode _sysfunc_draw_text(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl)
+static finErrorCode _sysfunc_draw_text_base(finExecFunction *self, finExecEnvironment *env,
+                                            finExecMachine *machine, finExecFlowControl *flowctl, bool pinned)
 {
     finErrorCode errcode;
     finExecVariable *text, *cx, *cy, *rad, *scale;
@@ -411,6 +414,7 @@ static finErrorCode _sysfunc_draw_text(finExecFunction *self, finExecEnvironment
     finFigureObjectText *fotext = new finFigureObjectText();
     if ( fotext == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+    fotext->setIsPinned(pinned);
 
     fotext->setText(text->getStringValue());
     fotext->setBasePoint(cx->getNumericValue(), cy->getNumericValue());
@@ -430,6 +434,18 @@ static finErrorCode _sysfunc_draw_text(finExecFunction *self, finExecEnvironment
     }
     flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_draw_text(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    return _sysfunc_draw_text_base(self, env, machine, flowctl, false);
+}
+
+static finErrorCode _sysfunc_draw_pinned_text(finExecFunction *self, finExecEnvironment *env,
+                                              finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    return _sysfunc_draw_text_base(self, env, machine, flowctl, true);
 }
 
 static finErrorCode _sysfunc_draw_image_base(finExecFunction *self, finExecEnvironment *env,
