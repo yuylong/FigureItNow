@@ -239,6 +239,14 @@ finErrorCode finGraphConfig::cloneTransform(const finGraphConfig *srccfg)
     return this->cloneTransform(srccfg->getTransform());
 }
 
+QTransform finGraphConfig::getNakePixelTransformMatrix() const
+{
+    QTransform trans, subtrans;
+    trans.scale(this->_axisUnitSize, -this->_axisUnitSize);
+    subtrans.translate(this->_originPoint.x(), this->_originPoint.y());
+    return trans * subtrans;
+}
+
 finErrorCode finGraphConfig::setRenderHints(QPainter::RenderHints hints)
 {
     this->_renderHints = hints;

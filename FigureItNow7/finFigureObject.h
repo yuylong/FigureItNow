@@ -294,6 +294,10 @@ public:
 
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
     virtual void dump() const;
+
+private:
+    finErrorCode getUnpinnedPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
+    finErrorCode getPinnedPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
 };
 
 class finFigureObjectAxis : public finFigureObject

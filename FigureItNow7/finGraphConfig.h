@@ -79,6 +79,8 @@ public:
     finErrorCode setTransformType(finGraphTransType type);
     finErrorCode cloneTransform(const finGraphTrans *srctrans);
     finErrorCode cloneTransform(const finGraphConfig *srccfg);
+    QTransform getNakePixelTransformMatrix() const;
+    //QTransform getPixelTransformMatrix() const;
 
     finErrorCode setRenderHints(QPainter::RenderHints hints);
 

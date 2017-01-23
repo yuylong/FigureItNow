@@ -897,12 +897,9 @@ QRectF finFigureObjectImage::getBoundingRect() const
     return this->_img.rect();
 }
 
-finErrorCode
-finFigureObjectImage::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
+finErrorCode finFigureObjectImage::getUnpinnedPixelFigurePath(QList<finFigurePath> *pathlist,
+                                                              finGraphConfig *cfg) const
 {
-    if ( pathlist == NULL || cfg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
-
     QTransform trans, subtrans;
     trans.scale(this->_scaleX, this->_scaleY);
     subtrans.rotateRadians(-this->_rad);
@@ -915,7 +912,7 @@ finFigureObjectImage::getPixelFigurePath(QList<finFigurePath> *pathlist, finGrap
         if ( curpt.x() < offpt.x() )
             offpt.setX(curpt.x());
         if ( curpt.y() < offpt.y() )
-            offpt.setY(curpt.y());
+             offpt.setY(curpt.y());
     }
     subtrans.reset();
     subtrans.translate(-offpt.x(), -offpt.y());
@@ -943,6 +940,24 @@ finFigureObjectImage::getPixelFigurePath(QList<finFigurePath> *pathlist, finGrap
     pathlist->append(figpath);
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectImage::getPinnedPixelFigurePath(QList<finFigurePath> *pathlist,
+                                                            finGraphConfig *cfg) const
+{
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+
+finErrorCode
+finFigureObjectImage::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
+{
+    if ( pathlist == NULL || cfg == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    if ( this->_isPinned )
+        return this->getPinnedPixelFigurePath(pathlist, cfg);
+    else
+        return this->getUnpinnedPixelFigurePath(pathlist, cfg);
 }
 
 void finFigureObjectImage::dump() const
