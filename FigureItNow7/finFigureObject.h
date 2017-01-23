@@ -296,6 +296,7 @@ public:
     virtual void dump() const;
 
 private:
+    QTransform getParameterTransformMatrix() const;
     finErrorCode getUnpinnedPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
     finErrorCode getPinnedPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
 };

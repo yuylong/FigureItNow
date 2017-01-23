@@ -465,6 +465,7 @@ static finErrorCode _sysfunc_draw_image(finExecFunction *self, finExecEnvironmen
     finFigureObjectImage *foimg = new finFigureObjectImage();
     if ( foimg == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+    //foimg->setIsPinned(true);
 
     if ( image->getType() == finExecVariable::FIN_VR_TYPE_STRING ) {
         QImage imginst = QImage(image->getStringValue());

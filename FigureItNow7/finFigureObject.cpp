@@ -942,9 +942,65 @@ finErrorCode finFigureObjectImage::getUnpinnedPixelFigurePath(QList<finFigurePat
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+QTransform finFigureObjectImage::getParameterTransformMatrix() const
+{
+    QTransform trans, subtrans;
+    trans.translate(-this->_basePtr.x(), -this->_basePtr.y());
+    subtrans.rotateRadians(this->_rad);
+    trans *= subtrans;
+
+    subtrans.reset();
+    subtrans.translate(this->_basePtr.x(), this->_basePtr.y());
+    return trans * subtrans;
+}
+
 finErrorCode finFigureObjectImage::getPinnedPixelFigurePath(QList<finFigurePath> *pathlist,
                                                             finGraphConfig *cfg) const
 {
+    QSizeF imgmathsize = QSizeF(this->_img.width() / cfg->getAxisUnitPixelSize(),
+                                this->_img.height() / cfg->getAxisUnitPixelSize());
+    QPointF imgctrpt = this->_basePtr;
+    if ( this->_flag & Qt::AlignRight ) {
+        imgctrpt.setX(this->_basePtr.x() + imgmathsize.width() / 2.0);
+    } else if ( this->_flag & Qt::AlignHCenter ) {
+        imgctrpt.setX(this->_basePtr.x() - imgmathsize.width() / 2.0);
+    }
+    if ( this->_flag & Qt::AlignBottom ) {
+        imgctrpt.setY(this->_basePtr.y() + imgmathsize.height() / 2.0);
+    } else if ( this->_flag & Qt::AlignVCenter ) {
+        imgctrpt.setY(this->_basePtr.y() - imgmathsize.height() / 2.0);
+    }
+
+    QPolygonF imgmatpg;
+    imgmatpg.append(imgctrpt + QPointF(-imgmathsize.width() / 2.0, imgmathsize.height() / 2.0));
+    imgmatpg.append(imgctrpt + QPointF(imgmathsize.width() / 2.0, imgmathsize.height() / 2.0));
+    imgmatpg.append(imgctrpt + QPointF(imgmathsize.width() / 2.0, -imgmathsize.height() / 2.0));
+    imgmatpg.append(imgctrpt + QPointF(-imgmathsize.width() / 2.0, -imgmathsize.height() / 2.0));
+
+    QTransform partrans = this->getParameterTransformMatrix();
+    imgmatpg = partrans.map(imgmatpg);
+
+    QPolygonF imgpixpg;
+    for ( int i = 0; i < imgmatpg.count(); i++ ) {
+        QPointF curpt = cfg->transformPixelPoint(imgmatpg.at(i));
+        imgpixpg.append(curpt);
+    }
+    QPointF imgpos = imgpixpg.boundingRect().topLeft();
+
+    QTransform img2mattrans = finFigureAlg::fourPointMatrix(QPolygonF(this->getBoundingRect()).toList(),
+                                                            imgmatpg.toList());
+    QTransform mat2pixtrans = finFigureAlg::fourPointMatrix(imgmatpg.toList(), imgpixpg.toList());
+    QTransform img2pixtrans = img2mattrans * mat2pixtrans;
+
+    QImage outimg = this->_img.transformed(img2pixtrans);
+
+    finFigurePath figpath;
+    figpath.setPen(this->_figCfg.getTextPen());
+    figpath.setBrush(this->_figCfg.getTextBrush());
+    figpath.setImagePosition(imgpos);
+    figpath.setImage(outimg);
+    pathlist->append(figpath);
+
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
@@ -953,6 +1009,8 @@ finFigureObjectImage::getPixelFigurePath(QList<finFigurePath> *pathlist, finGrap
 {
     if ( pathlist == NULL || cfg == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( this->_img.isNull() )
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
 
     if ( this->_isPinned )
         return this->getPinnedPixelFigurePath(pathlist, cfg);
