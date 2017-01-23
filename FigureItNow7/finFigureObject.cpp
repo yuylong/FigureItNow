@@ -766,7 +766,7 @@ QPainterPath finFigureObjectText::getUnpinnedPixelTextPath(finGraphConfig *cfg) 
 
 QPainterPath finFigureObjectText::getPixelTextPath(finGraphConfig *cfg) const
 {
-    if ( cfg == NULL )
+    if ( cfg == NULL || this->_text.isEmpty() )
         return QPainterPath();
 
     if ( this->_isPinned )
@@ -780,6 +780,8 @@ finFigureObjectText::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraph
 {
     if ( pathlist == NULL || cfg == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( this->_text.isEmpty() )
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
 
     QPainterPath path = this->getPixelTextPath(cfg);
 
@@ -1456,6 +1458,7 @@ finErrorCode finFigureObjectAxis::setupTickLabel(const QPointF &steppixvec, finF
 {
     finFigureConfig *textcfg = fotext->getFigureConfig();
     this->_figCfg.cloneFigureConfig(textcfg);
+    fotext->setIsPinned(false);
 
     QFont lblfont = textcfg->getFont();
     double basefontsize = lblfont.pointSizeF();
@@ -1595,6 +1598,7 @@ QPainterPath finFigureObjectAxis::getAxisTitlePath(const QPointF &axisstartpt, c
     finFigureObjectText fotext;
     finFigureConfig *textcfg = fotext.getFigureConfig();
     this->_figCfg.cloneFigureConfig(textcfg);
+    fotext.setIsPinned(false);
 
     QFont lblfont = textcfg->getFont();
     lblfont.setBold(true);
