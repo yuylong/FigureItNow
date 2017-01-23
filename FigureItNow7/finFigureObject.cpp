@@ -1030,8 +1030,9 @@ finFigureObjectImage::getPixelFigurePath(QList<finFigurePath> *pathlist, finGrap
 
 void finFigureObjectImage::dump() const
 {
-    printf(" * Fig Type: image; C: (%lf, %lf) F: %d S: %lf x %lf rad: %lf ImgSize: %dx%d\n",
-           this->_basePtr.x(), this->_basePtr.y(), this->_flag, this->_scaleX, this->_scaleY, this->_rad,
+    printf(" * Fig Type: image; P:%d C: (%lf, %lf) F: %d S: %lf x %lf rad: %lf ImgSize: %dx%d\n",
+           this->_isPinned, this->_basePtr.x(), this->_basePtr.y(), this->_flag,
+           this->_scaleX, this->_scaleY, this->_rad,
            this->_img.size().width(), this->_img.size().height());
 }
 
