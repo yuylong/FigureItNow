@@ -290,3 +290,24 @@ QPointF finGraphConfig::arcTransformPixelPoint(const QPointF &srcpt) const
         return midpt;
 }
 
+QPainterPath finGraphConfig::transformPixelPath(const QPainterPath &path) const
+{
+    QPainterPath outpath = path;
+    for ( int i = 0; i < outpath.elementCount(); i++ ) {
+        QPointF srcpt = (QPointF)(outpath.elementAt(i));
+        QPointF dstpt = this->transformPixelPoint(srcpt);
+        outpath.setElementPositionAt(i, dstpt.x(), dstpt.y());
+    }
+    return outpath;
+}
+
+QPainterPath finGraphConfig::arcTransformPixelPath(const QPainterPath &path) const
+{
+    QPainterPath outpath = path;
+    for ( int i = 0; i < outpath.elementCount(); i++ ) {
+        QPointF srcpt = (QPointF)(outpath.elementAt(i));
+        QPointF dstpt = this->arcTransformPixelPoint(srcpt);
+        outpath.setElementPositionAt(i, dstpt.x(), dstpt.y());
+    }
+    return outpath;
+}

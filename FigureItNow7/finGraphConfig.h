@@ -80,14 +80,16 @@ public:
     finErrorCode cloneTransform(const finGraphTrans *srctrans);
     finErrorCode cloneTransform(const finGraphConfig *srccfg);
     QTransform getNakePixelTransformMatrix() const;
-    //QTransform getPixelTransformMatrix() const;
 
     finErrorCode setRenderHints(QPainter::RenderHints hints);
 
     QPointF transformPixelPoint3D(double x, double y, double z) const;
     QPointF transformPixelPoint3D(const finFigurePoint3D &pt) const;
+
     QPointF transformPixelPoint(const QPointF &srcpt) const;
     QPointF arcTransformPixelPoint(const QPointF &srcpt) const;
+    QPainterPath transformPixelPath(const QPainterPath &path) const;
+    QPainterPath arcTransformPixelPath(const QPainterPath &path) const;
 };
 
 #endif // FINGRAPHCONFIG_H
