@@ -4,6 +4,7 @@
 #include <QPointF>
 #include <QRectF>
 #include <QList>
+#include <QTransform>
 
 struct finFigAlgLine2D {
     // f(x) = ax + by + c = 0
@@ -43,6 +44,12 @@ public:
     static bool isPointInsideRect(const QPointF &pt, const QRectF &baserect);
     static bool isRectInsideRect(const QRectF &rect, const QRectF &baserect);
     static bool isPolygonInsideRect(const QList<QPointF> &polygon, const QRectF &baserect);
+
+    static QTransform threePointMatrix(const QPointF &pt00, const QPointF &pt10, const QPointF &pt01);
+    static QTransform threePointMatrix(const QList<QPointF> &fromlist, const QList<QPointF> &tolist);
+    static QTransform fourPointMatrix(const QPointF &pt00, const QPointF &pt10,
+                                      const QPointF &pt01, const QPointF &pt11);
+    static QTransform fourPointMatrix(const QList<QPointF> &fromlist, const QList<QPointF> &tolist);
 };
 
 #endif // FINFIGUREALG_H

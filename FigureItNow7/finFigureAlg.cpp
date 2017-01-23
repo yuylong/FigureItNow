@@ -299,3 +299,60 @@ bool finFigureAlg::isPolygonInsideRect(const QList<QPointF> &polygon, const QRec
     }
     return true;
 }
+
+QTransform finFigureAlg::threePointMatrix(const QPointF &pt00, const QPointF &pt10, const QPointF &pt01)
+{
+    double ma, mb, mc, md, me, mf;
+
+    mc = pt00.x();
+    mf = pt00.y();
+    ma = pt10.x() - mc;
+    md = pt10.y() - mf;
+    mb = pt01.x() - mc;
+    me = pt01.x() - mf;
+    return QTransform(ma, mb, mc, md, me, mf, 0.0, 0.0, 1.0);
+}
+
+QTransform finFigureAlg::threePointMatrix(const QList<QPointF> &fromlist, const QList<QPointF> &tolist)
+{
+    if ( fromlist.count() < 3 || tolist.count() < 3 )
+        return QTransform();
+
+    QTransform frommatrix, tomatrix;
+    frommatrix = finFigureAlg::threePointMatrix(fromlist.at(0), fromlist.at(1), fromlist.at(2));
+    tomatrix = finFigureAlg::threePointMatrix(tolist.at(0), tolist.at(1), tolist.at(2));
+    return frommatrix.inverted() * tomatrix;
+}
+
+QTransform finFigureAlg::fourPointMatrix(const QPointF &pt00, const QPointF &pt10,
+                                                const QPointF &pt01, const QPointF &pt11)
+{
+    double ma, mb, mc, md, me, mf, mg, mh;
+
+    mc = pt00.x();
+    mf = pt00.y();
+    finFigAlgLine2D ghln1 = { pt10.x() - pt11.x(), pt01.x() - pt11.x(),
+                              pt10.x() + pt01.x() - pt11.x() - mc };
+    finFigAlgLine2D ghln2 = { pt10.y() - pt11.y(), pt01.y() - pt11.y(),
+                              pt10.y() + pt01.y() - pt11.y() - mf };
+    QPointF ghvpt = finFigureAlg::lineCrossPoint(ghln1, ghln2);
+    mg = ghvpt.x();
+    mh = ghvpt.y();
+
+    ma = pt10.x() * (mg + 1.0) - mc;
+    mb = pt01.x() * (mh + 1.0) - mc;
+    md = pt10.y() * (mg + 1.0) - mf;
+    me = pt10.y() * (mh + 1.0) - mf;
+    return QTransform(ma, mb, mc, md, me, mf, mg, mh, 1.0);
+}
+
+QTransform finFigureAlg::fourPointMatrix(const QList<QPointF> &fromlist, const QList<QPointF> &tolist)
+{
+    if ( fromlist.count() < 4 || tolist.count() < 4 )
+        return QTransform();
+
+    QTransform frommatrix, tomatrix;
+    frommatrix = finFigureAlg::fourPointMatrix(fromlist.at(0), fromlist.at(1), fromlist.at(2), fromlist.at(3));
+    tomatrix = finFigureAlg::fourPointMatrix(tolist.at(0), tolist.at(1), tolist.at(2), tolist.at(3));
+    return frommatrix.inverted() * tomatrix;
+}
