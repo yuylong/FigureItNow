@@ -1611,17 +1611,15 @@ QPainterPath finFigureObjectAxis::getAxisTitlePath(const QPointF &axisstartpt, c
                                                      this->_figCfg.getEndArrow().getLength());
 
     finFigureObjectText fotext;
-    finFigureConfig *textcfg = fotext.getFigureConfig();
-    this->_figCfg.cloneFigureConfig(textcfg);
     fotext.setIsPinned(false);
 
-    QFont lblfont = textcfg->getFont();
-    lblfont.setBold(true);
-    lblfont.setItalic(true);
-    textcfg->setFont(lblfont);
+    finFigureConfig *textcfg = fotext.getFigureConfig();
+    this->_figCfg.cloneFigureConfig(textcfg);
+    textcfg->setFontBold(true);
+    textcfg->setFontItalic(true);
 
-    double marginval = lblfont.pointSizeF() / 3.0;
-    QMarginsF margins = QMargins(marginval * 1.5, marginval, marginval * 1.5, marginval);
+    double marginval = textcfg->getFontPointSize() / 2.0;
+    QMarginsF margins = QMargins(marginval, marginval, marginval, marginval);
     textcfg->setTextMargins(margins);
 
     fotext.setText(title);
