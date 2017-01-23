@@ -591,6 +591,7 @@ finFigureObjectText::finFigureObjectText()
     this->_scale = 1.0;
     this->_rad = 0.0;
     this->_text = QString();
+    this->_isPinned = false;
 }
 
 bool finFigureObjectText::is3DFigure() const
@@ -621,6 +622,11 @@ double finFigureObjectText::getRadian() const
 QString finFigureObjectText::getText() const
 {
     return this->_text;
+}
+
+bool finFigureObjectText::isPinned() const
+{
+    return this->_isPinned;
 }
 
 finErrorCode finFigureObjectText::setBasePoint(const QPointF &pt)
@@ -664,6 +670,12 @@ finErrorCode finFigureObjectText::setRadian(double rad)
 finErrorCode finFigureObjectText::setText(const QString &text)
 {
     this->_text = text;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectText::setIsPinned(bool pinned)
+{
+    this->_isPinned = pinned;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -781,6 +793,7 @@ finFigureObjectImage::finFigureObjectImage()
     this->_scaleY = 1.0;
     this->_rad = 0.0;
     this->_img = QImage();
+    this->_isPinned = false;
 }
 
 bool finFigureObjectImage::is3DFigure() const
@@ -816,6 +829,11 @@ double finFigureObjectImage::getRadian() const
 QImage finFigureObjectImage::getImage() const
 {
     return this->_img;
+}
+
+bool finFigureObjectImage::isPinned() const
+{
+    return this->_isPinned;
 }
 
 finErrorCode finFigureObjectImage::setBasePoint(const QPointF &pt)
@@ -865,6 +883,12 @@ finErrorCode finFigureObjectImage::setRadian(double rad)
 finErrorCode finFigureObjectImage::setImage(const QImage &image)
 {
     this->_img = image;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectImage::setIsPinned(bool pinned)
+{
+    this->_isPinned = pinned;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

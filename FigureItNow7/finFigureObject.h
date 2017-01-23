@@ -224,6 +224,7 @@ protected:
     double _sinrad, _cosrad;
 
     QString _text;
+    bool _isPinned;
 
 public:
     finFigureObjectText();
@@ -236,6 +237,7 @@ public:
     double getScale() const;
     double getRadian() const;
     QString getText() const;
+    bool isPinned() const;
 
     finErrorCode setBasePoint(const QPointF &pt);
     finErrorCode setBasePoint(double ptx, double pty);
@@ -243,6 +245,7 @@ public:
     finErrorCode setScale(double scale);
     finErrorCode setRadian(double rad);
     finErrorCode setText(const QString &text);
+    finErrorCode setIsPinned(bool pinned);
 
     QRectF getBoundingRect() const;
     QPainterPath getTextPath() const;
@@ -262,6 +265,7 @@ protected:
     double _sinrad, _cosrad;
 
     QImage _img;
+    bool _isPinned;
 
 public:
     finFigureObjectImage();
@@ -275,6 +279,7 @@ public:
     double getScaleY() const;
     double getRadian() const;
     QImage getImage() const;
+    bool isPinned() const;
 
     finErrorCode setBasePoint(const QPointF &pt);
     finErrorCode setBasePoint(double ptx, double pty);
@@ -283,6 +288,7 @@ public:
     finErrorCode setScaleY(double scale);
     finErrorCode setRadian(double rad);
     finErrorCode setImage(const QImage &image);
+    finErrorCode setIsPinned(bool pinned);
 
     QRectF getBoundingRect() const;
 
