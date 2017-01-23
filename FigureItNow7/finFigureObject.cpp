@@ -1454,14 +1454,20 @@ QPointF finFigureObjectAxis::getStepPixelVector(const QPointF &steppt, const QPo
     return steppixpt - xpixpt;
 }
 
-QPointF finFigureObjectAxis::getTickPixelVector(const QPointF &steppixvec) const
+QPointF finFigureObjectAxis::getTickPixelVector(const QPointF &steppixvec, double ticksize) const
 {
-    double ticksize = 3.0 + this->_figCfg.getDotSize() / 2.0;
     QPointF tickvec = finFigureAlg::getVerticalVector(steppixvec, ticksize);
     if ( steppixvec.x() > 0 )
         return tickvec;
     else
         return -tickvec;
+}
+
+
+QPointF finFigureObjectAxis::getTickPixelVector(const QPointF &steppixvec) const
+{
+    double ticksize = 3.0 + this->_figCfg.getDotSize() / 2.0;
+    return this->getTickPixelVector(steppixvec, ticksize);
 }
 
 double finFigureObjectAxis::getAxisPixelRadian(const QPointF &steppixvec) const
@@ -1624,29 +1630,56 @@ QPainterPath finFigureObjectAxis::getAxisTitlePath(const QPointF &axisstartpt, c
 
     fotext.setText(title);
     QRectF textrect = fotext.getBoundingRect();
+    QRectF panelrect = cfg->getWholePanelPixelRect();
 
     const double cutbs = M_PI / 8.0;
     if ( axpixrad > -cutbs && axpixrad < cutbs ) {
         fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignBottom);
         fotext.setRadian(axpixrad);
+        QPointF chkpt = txtpixpt + this->getTickPixelVector(axpixvec, textrect.height());
+        if ( chkpt.x() > panelrect.right() ) {
+            txtpixpt = finFigureAlg::movePointInside(txtpixpt, axpixpt1,
+                                                     (panelrect.right() - chkpt.x()) / sin(axpixrad));
+        }
     } else if ( axpixrad >= cutbs && axpixrad <= 3.0 * cutbs ) {
         fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignBottom);
         fotext.setRadian(0.0);
+        QPointF chkpt = txtpixpt - QPointF(0.0, textrect.height());
+        if ( chkpt.y() < 0.0 ) {
+            txtpixpt = finFigureAlg::movePointInside(txtpixpt, axpixpt1, -chkpt.y() / sin(axpixrad));
+        }
     } else if ( axpixrad > 3.0 * cutbs && axpixrad < 4.0 * cutbs ) {
         fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignTop);
         fotext.setRadian(axpixrad - M_PI / 2.0);
+        QPointF chkpt = txtpixpt + this->getTickPixelVector(axpixvec, textrect.width());
+        if ( chkpt.y() < 0.0 ) {
+            txtpixpt = finFigureAlg::movePointInside(txtpixpt, axpixpt1, -chkpt.y() / sin(axpixrad));
+        }
     } else if ( axpixrad >= 4.0 * cutbs && axpixrad < 5.0 * cutbs ) {
         fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignTop);
         fotext.setRadian(axpixrad - M_PI / 2.0);
+        QPointF chkpt = txtpixpt + this->getTickPixelVector(axpixvec, textrect.width());
+        if ( chkpt.y() < 0.0 ) {
+            txtpixpt = finFigureAlg::movePointInside(txtpixpt, axpixpt1, -chkpt.y() / sin(axpixrad));
+        }
     } else if ( axpixrad >= 5.0 * cutbs && axpixrad <= 7.0 * cutbs ) {
         fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignBottom);
         fotext.setRadian(0.0);
+        QPointF chkpt = txtpixpt + QPointF(0.0, textrect.height());
+        if ( chkpt.y() < 0.0 ) {
+            txtpixpt = finFigureAlg::movePointInside(txtpixpt, axpixpt1, -chkpt.y() / sin(axpixrad));
+        }
     } else if ( axpixrad > 7.0 * cutbs ) {
         fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignBottom);
         fotext.setRadian(axpixrad - M_PI);
     } else if ( axpixrad >= -3.0 * cutbs && axpixrad <= -cutbs ) {
         fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignBottom);
         fotext.setRadian(0.0);
+        QPointF chkpt = txtpixpt - QPointF(textrect.width(), 0.0);
+        if ( chkpt.x() > panelrect.width() ) {
+            txtpixpt = finFigureAlg::movePointInside(txtpixpt, axpixpt1,
+                                                     chkpt.x() - panelrect.width() / cos(axpixrad));
+        }
     } else if ( axpixrad >= -4.0 * cutbs && axpixrad < -3.0 * cutbs ) {
         fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignBottom);
         fotext.setRadian(axpixrad + M_PI / 2.0);
@@ -1656,9 +1689,17 @@ QPainterPath finFigureObjectAxis::getAxisTitlePath(const QPointF &axisstartpt, c
     } else if ( axpixrad >= -7.0 * cutbs && axpixrad <= -5.0 * cutbs ) {
         fotext.setFontMetricFlags(Qt::AlignRight | Qt::AlignBottom);
         fotext.setRadian(0.0);
+        QPointF chkpt = txtpixpt - QPointF(textrect.width(), 0.0);
+        if ( chkpt.x() < 0 ) {
+            txtpixpt = finFigureAlg::movePointInside(txtpixpt, axpixpt1, -chkpt.x() / cos(axpixrad));
+        }
     } else /*if ( axpixrad < -7.0 * cutbs )*/ {
         fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignBottom);
         fotext.setRadian(axpixrad + M_PI);
+        QPointF chkpt = txtpixpt + this->getTickPixelVector(axpixvec, textrect.height());
+        if ( chkpt.x() < 0.0 ) {
+            txtpixpt = finFigureAlg::movePointInside(txtpixpt, axpixpt1, -chkpt.x() / cos(axpixrad));
+        }
     }
 
     fotext.setBasePoint(cfg->arcTransformPixelPoint(txtpixpt));
