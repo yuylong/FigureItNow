@@ -43,26 +43,32 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
                                              finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvironment *env,
                                               finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnvironment *env,
+                                               finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEnvironment *env,
+                                                finExecMachine *machine, finExecFlowControl *flowctl);
 
 
 static finExecSysFuncRegItem _finSysFuncFigureList[] = {
-    { QString("clear_fig"),         QString(""),                            _sysfunc_clear_fig         },
-    { QString("draw_dot"),          QString("cx,cy"),                       _sysfunc_draw_dot          },
-    { QString("line"),              QString("x1,y1,x2,y2"),                 _sysfunc_line              },
-    { QString("polyline"),          QString("x1,y1,x2,y2"),                 _sysfunc_polyline          },
-    { QString("rect"),              QString("cx,cy,w,h,rad"),               _sysfunc_rect              },
-    { QString("polygon"),           QString("x1,y1,x2,y2"),                 _sysfunc_polygon           },
-    { QString("circle"),            QString("cx,cy,r"),                     _sysfunc_circle            },
-    { QString("ellipse"),           QString("cx,cy,lr,sr,rad"),             _sysfunc_ellipse           },
-    { QString("draw_text"),         QString("text,cx,cy,rad,sc"),           _sysfunc_draw_text         },
-    { QString("draw_pinned_text"),  QString("text,cx,cy,rad,sc"),           _sysfunc_draw_pinned_text  },
-    { QString("draw_image"),        QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_image        },
-    { QString("draw_pinned_image"), QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_pinned_image },
-    { QString("axis"),              QString("sx,sy,tx,ty,rx1,rx2,ry1,ry2"), _sysfunc_axis              },
-    { QString("line3d"),            QString("x1,y1,z1,x2,y2,z2"),           _sysfunc_line3d            },
-    { QString("named_color"),       QString("colorname"),                   _sysfunc_named_color       },
-    { QString("read_fig_config"),   QString("cfgname"),                     _sysfunc_read_fig_config   },
-    { QString("write_fig_config"),  QString("cfgname,value"),               _sysfunc_write_fig_config  },
+    { QString("clear_fig"),          QString(""),                            _sysfunc_clear_fig          },
+    { QString("draw_dot"),           QString("cx,cy"),                       _sysfunc_draw_dot           },
+    { QString("line"),               QString("x1,y1,x2,y2"),                 _sysfunc_line               },
+    { QString("polyline"),           QString("x1,y1,x2,y2"),                 _sysfunc_polyline           },
+    { QString("rect"),               QString("cx,cy,w,h,rad"),               _sysfunc_rect               },
+    { QString("polygon"),            QString("x1,y1,x2,y2"),                 _sysfunc_polygon            },
+    { QString("circle"),             QString("cx,cy,r"),                     _sysfunc_circle             },
+    { QString("ellipse"),            QString("cx,cy,lr,sr,rad"),             _sysfunc_ellipse            },
+    { QString("draw_text"),          QString("text,cx,cy,rad,sc"),           _sysfunc_draw_text          },
+    { QString("draw_pinned_text"),   QString("text,cx,cy,rad,sc"),           _sysfunc_draw_pinned_text   },
+    { QString("draw_image"),         QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_image         },
+    { QString("draw_pinned_image"),  QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_pinned_image  },
+    { QString("axis"),               QString("sx,sy,tx,ty,rx1,rx2,ry1,ry2"), _sysfunc_axis               },
+    { QString("line3d"),             QString("x1,y1,z1,x2,y2,z2"),           _sysfunc_line3d             },
+    { QString("named_color"),        QString("colorname"),                   _sysfunc_named_color        },
+    { QString("read_fig_config"),    QString("cfgname"),                     _sysfunc_read_fig_config    },
+    { QString("write_fig_config"),   QString("cfgname,value"),               _sysfunc_write_fig_config   },
+    { QString("read_graph_config"),  QString("cfgname"),                     _sysfunc_read_graph_config  },
+    { QString("write_graph_config"), QString("cfgname,value"),               _sysfunc_write_graph_config },
 
     { QString(), QString(), NULL }
 };
@@ -868,6 +874,84 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
         figconfig->setFontColor(color);
+    } else {
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnvironment *env,
+                                               finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *cfgnamevar, *cfgvalue;
+    finGraphConfig *graphconfig;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    graphconfig = env->getFigureContainer()->getGraphConfig();
+    if ( graphconfig == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    cfgnamevar = finExecVariable::transLinkTarget(env->findVariable("cfgname"));
+    if ( cfgnamevar == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    if ( cfgnamevar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    cfgvalue = new finExecVariable();
+    if ( cfgvalue == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    QString cfgname = cfgnamevar->getStringValue();
+    if ( QString::compare(cfgname, "unit_size") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(graphconfig->getAxisUnitPixelSize());
+    } else {
+        delete cfgvalue;
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+
+    cfgvalue->setWriteProtected();
+    cfgvalue->clearLeftValue();
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(cfgvalue);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEnvironment *env,
+                                                finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *cfgnamevar, *cfgvalue;
+    finGraphConfig *graphconfig;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    graphconfig = env->getFigureContainer()->getGraphConfig();
+    if ( graphconfig == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    cfgnamevar = finExecVariable::transLinkTarget(env->findVariable("cfgname"));
+    cfgvalue = finExecVariable::transLinkTarget(env->findVariable("value"));
+    if ( cfgnamevar == NULL || cfgvalue == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    if ( cfgnamevar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    QString cfgname = cfgnamevar->getStringValue();
+    if ( QString::compare(cfgname, "unit_size") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        graphconfig->setAxisUnitPixelSize(cfgvalue->getNumericValue());
     } else {
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
     }
