@@ -248,11 +248,13 @@ public:
     finErrorCode setIsPinned(bool pinned);
 
     QRectF getBoundingRect() const;
-    QPainterPath getTextPath() const;
     QPainterPath getPixelTextPath(finGraphConfig *cfg) const;
 
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
     virtual void dump() const;
+
+private:
+    QPointF getBasePointOffset(const QRectF &boundrect) const;
 };
 
 class finFigureObjectImage : public finFigureObject

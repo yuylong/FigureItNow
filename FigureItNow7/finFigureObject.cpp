@@ -685,41 +685,28 @@ QRectF finFigureObjectText::getBoundingRect() const
     return metric.boundingRect(this->_text).marginsAdded(this->_figCfg.getTextMargins());
 }
 
-QPainterPath finFigureObjectText::getTextPath() const
+QPointF finFigureObjectText::getBasePointOffset(const QRectF &boundrect) const
 {
-    QPainterPath path;
-    path.addText(0.0, 0.0, this->_figCfg.getFont(), this->_text);
-
-    QRectF bndrect = path.boundingRect().marginsAdded(this->_figCfg.getTextMargins());
     QPointF bloff = QPointF(0.0, 0.0);
     if ( this->_flag & Qt::AlignLeft ) {
-        bloff.setX(-bndrect.x());
+        bloff.setX(-boundrect.x());
     } else if ( this->_flag & Qt::AlignRight ) {
-        bloff.setX(-bndrect.x() - bndrect.width());
+        bloff.setX(-boundrect.x() - boundrect.width());
     } else if ( this->_flag & Qt::AlignJustify ) {
         bloff.setX(0.0);
     } else {
-        bloff.setX(-bndrect.x() - bndrect.width() / 2.0);
+        bloff.setX(-boundrect.x() - boundrect.width() / 2.0);
     }
     if ( this->_flag &  Qt::AlignTop ) {
-        bloff.setY(-bndrect.y() - bndrect.height());
+        bloff.setY(-boundrect.y());
     } else if ( this->_flag & Qt::AlignBottom ) {
-        bloff.setY(-bndrect.y());
+        bloff.setY(-boundrect.y() - boundrect.height());
     } else if ( this->_flag & Qt::AlignBaseline ) {
         bloff.setY(0.0);
     } else {
-        bloff.setY(-bndrect.y() - bndrect.height() / 2.0);
+        bloff.setY(-boundrect.y() - boundrect.height() / 2.0);
     }
-    path.translate(bloff);
-
-    QTransform trans, subtrans1, subtrans2;
-    trans.scale(this->_scale, 1.0);
-    subtrans1.rotateRadians(this->_rad);
-    trans *= subtrans1;
-    subtrans2.translate(this->_basePtr.x(), this->_basePtr.y());
-    trans *= subtrans2;
-
-    return trans.map(path);
+    return bloff;
 }
 
 QPainterPath finFigureObjectText::getPixelTextPath(finGraphConfig *cfg) const
@@ -728,34 +715,21 @@ QPainterPath finFigureObjectText::getPixelTextPath(finGraphConfig *cfg) const
     path.addText(0.0, 0.0, this->_figCfg.getFont(), this->_text);
 
     QRectF bndrect = path.boundingRect().marginsAdded(this->_figCfg.getTextMargins());
-    QPointF bloff = QPointF(0.0, 0.0);
-    if ( this->_flag & Qt::AlignLeft ) {
-        bloff.setX(-bndrect.x());
-    } else if ( this->_flag & Qt::AlignRight ) {
-        bloff.setX(-bndrect.x() - bndrect.width());
-    } else if ( this->_flag & Qt::AlignJustify ) {
-        bloff.setX(0.0);
-    } else {
-        bloff.setX(-bndrect.x() - bndrect.width() / 2.0);
-    }
-    if ( this->_flag &  Qt::AlignTop ) {
-        bloff.setY(-bndrect.y());
-    } else if ( this->_flag & Qt::AlignBottom ) {
-        bloff.setY(-bndrect.y() - bndrect.height());
-    } else if ( this->_flag & Qt::AlignBaseline ) {
-        bloff.setY(0.0);
-    } else {
-        bloff.setY(-bndrect.y() - bndrect.height() / 2.0);
-    }
-    path.translate(bloff);
+    QPointF bloff = this->getBasePointOffset(bndrect);
 
-    QTransform trans, subtrans1, subtrans2;
-    trans.scale(this->_scale, 1.0);
-    subtrans1.rotateRadians(-this->_rad);
-    trans *= subtrans1;
+    QTransform trans, subtrans;
+    trans.translate(bloff.x(), bloff.y());
+    subtrans.scale(this->_scale, 1.0);
+    trans *= subtrans;
+
+    subtrans.reset();
+    subtrans.rotateRadians(-this->_rad);
+    trans *= subtrans;
+
     QPointF pixbp = cfg->transformPixelPoint(this->_basePtr);
-    subtrans2.translate(pixbp.x(), pixbp.y());
-    trans *= subtrans2;
+    subtrans.reset();
+    subtrans.translate(pixbp.x(), pixbp.y());
+    trans *= subtrans;
 
     return trans.map(path);
 }
