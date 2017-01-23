@@ -370,18 +370,26 @@ finErrorCode finFigureObjectRect::setRadian(double rad)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+QPolygonF finFigureObjectRect::getPolygonInstance() const
+{
+    QPolygonF polygon;
+    QPointF ulpt = this->getUpperLeftPoint();
+    polygon.append(ulpt);
+    polygon.append(this->getUpperRightPoint());
+    polygon.append(this->getLowerRightPoint());
+    polygon.append(this->getLowerLeftPoint());
+    polygon.append(ulpt);
+    return polygon;
+}
+
 finErrorCode finFigureObjectRect::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
+    QPolygonF polygon = this->getPolygonInstance();
     QPainterPath path;
-    QPointF startptr = cfg->transformPixelPoint(this->getUpperLeftPoint());
-    path.moveTo(startptr);
-    path.lineTo(cfg->transformPixelPoint(this->getUpperRightPoint()));
-    path.lineTo(cfg->transformPixelPoint(this->getLowerRightPoint()));
-    path.lineTo(cfg->transformPixelPoint(this->getLowerLeftPoint()));
-    path.lineTo(startptr);
+    path.addPolygon(cfg->transformPixelPolygon(polygon));
 
     finFigurePath figpath;
     figpath.setPen(this->_figCfg.getBorderPen());
@@ -438,22 +446,26 @@ finErrorCode finFigureObjectPolygon::removePointAt(int idx)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+QPolygonF finFigureObjectPolygon::getPolygonInstance() const
+{
+    QPolygonF polygon;
+    for ( int i = 0; i < this->_ptList.count(); i++ )
+        polygon.append(this->_ptList.at(i));
+    polygon.append(this->_ptList.at(0));
+    return polygon;
+}
+
 finErrorCode
 finFigureObjectPolygon::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
-
     if ( this->_ptList.count() < 2 )
         return finErrorCodeKits::FIN_EC_NORMAL_WARN;
 
+    QPolygonF polygon = this->getPolygonInstance();
     QPainterPath path;
-    QPointF startpt = cfg->transformPixelPoint(this->_ptList.at(0));
-    path.moveTo(startpt);
-    for ( int i = 1; i < this->_ptList.count(); i++ ) {
-        path.lineTo(cfg->transformPixelPoint(this->_ptList.at(i)));
-    }
-    path.lineTo(startpt);
+    path.addPolygon(cfg->transformPixelPolygon(polygon));
 
     finFigurePath figpath;
     figpath.setPen(this->_figCfg.getBorderPen());
@@ -565,13 +577,15 @@ finErrorCode finFigureObjectEllipse::getPixelFigurePath(QList<finFigurePath> *pa
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
     QPainterPath path;
-    QPointF startpt = cfg->transformPixelPoint(this->getEllipsePointAtRad(0.0));
-    static const double drawstep = M_PI / 36.0;
+    path.addEllipse(QPointF(0.0, 0.0), this->_longR, this->_shortR);
 
-    path.moveTo(startpt);
-    for ( double rad = drawstep; rad < 2 * M_PI; rad += drawstep)
-        path.lineTo(cfg->transformPixelPoint(this->getEllipsePointAtRad(rad)));
-    path.lineTo(startpt);
+    QTransform trans, subtrans;
+    trans.rotateRadians(this->_radian);
+    subtrans.translate(this->_center.x(), this->_center.y());
+    trans *= subtrans;
+
+    path = trans.map(path);
+    path = cfg->transformPixelPath(path);
 
     finFigurePath figpath;
     figpath.setPen(this->_figCfg.getBorderPen());
@@ -737,12 +751,7 @@ QPainterPath finFigureObjectText::getPinnedPixelTextPath(finGraphConfig *cfg) co
     trans *= subtrans;
     path = trans.map(path);
 
-    for ( int i = 0; i < path.elementCount(); i++ ) {
-        QPointF matpt = (QPointF)(path.elementAt(i));
-        QPointF pixpt = cfg->transformPixelPoint(matpt);
-        path.setElementPositionAt(i, pixpt.x(), pixpt.y());
-    }
-    return path;
+    return cfg->transformPixelPath(path);
 }
 
 QPainterPath finFigureObjectText::getUnpinnedPixelTextPath(finGraphConfig *cfg) const

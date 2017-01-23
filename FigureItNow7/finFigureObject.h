@@ -157,6 +157,8 @@ public:
     finErrorCode setSize(double width, double height);
     finErrorCode setRadian(double rad);
 
+    QPolygonF getPolygonInstance() const;
+
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
     virtual void dump() const;
 };
@@ -178,6 +180,8 @@ public:
     finErrorCode appendPoint(const QPointF &pt);
     finErrorCode appendPoint(double ptx, double pty);
     finErrorCode removePointAt(int idx);
+
+    QPolygonF getPolygonInstance() const;
 
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
     virtual void dump() const;
