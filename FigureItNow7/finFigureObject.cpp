@@ -1675,10 +1675,10 @@ QPainterPath finFigureObjectAxis::getAxisTitlePath(const QPointF &axisstartpt, c
     } else if ( axpixrad >= -3.0 * cutbs && axpixrad <= -cutbs ) {
         fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignBottom);
         fotext.setRadian(0.0);
-        QPointF chkpt = txtpixpt - QPointF(textrect.width(), 0.0);
+        QPointF chkpt = txtpixpt + QPointF(textrect.width(), 0.0);
         if ( chkpt.x() > panelrect.width() ) {
             txtpixpt = finFigureAlg::movePointInside(txtpixpt, axpixpt1,
-                                                     chkpt.x() - panelrect.width() / cos(axpixrad));
+                                                     (chkpt.x() - panelrect.width()) / cos(axpixrad));
         }
     } else if ( axpixrad >= -4.0 * cutbs && axpixrad < -3.0 * cutbs ) {
         fotext.setFontMetricFlags(Qt::AlignLeft | Qt::AlignBottom);
