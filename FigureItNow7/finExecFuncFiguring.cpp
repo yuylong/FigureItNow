@@ -964,6 +964,30 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
     } else if ( QString::compare(cfgname, "transform") == 0 ) {
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_STRING);
         cfgvalue->setStringValue(finGraphTrans::getTransformTypeName(graphconfig->getTransformType()));
+    } else if ( QString::compare(cfgname, "rect_trans_zoom_x") == 0 ) {
+        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_RECT ) {
+            delete cfgvalue;
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        }
+        finGraphTransRect *recttrans = (finGraphTransRect *)graphconfig->getTransform();
+        if ( recttrans == NULL ) {
+            delete cfgvalue;
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        }
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(recttrans->getAxisZoomX());
+    } else if ( QString::compare(cfgname, "rect_trans_zoom_y") == 0 ) {
+        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_RECT ) {
+            delete cfgvalue;
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        }
+        finGraphTransRect *recttrans = (finGraphTransRect *)graphconfig->getTransform();
+        if ( recttrans == NULL ) {
+            delete cfgvalue;
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        }
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(recttrans->getAxisZoomY());
     } else if ( QString::compare(cfgname, "affine_trans_act_cnt") == 0 ) {
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
         if ( graphconfig->getTransformType() == finGraphTrans::FIN_GT_TYPE_AFFINE ) {
