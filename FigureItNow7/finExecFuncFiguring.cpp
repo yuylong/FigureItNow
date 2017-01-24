@@ -952,6 +952,12 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
         itemvar = cfgvalue->getVariableItemAt(1);
         itemvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
         itemvar->setNumericValue(panelsize.y());
+    } else if ( QString::compare(cfgname, "axis_rad_z") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(graphconfig->getAxisRadZ());
+    } else if ( QString::compare(cfgname, "axis_scale_z") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(graphconfig->getAxisScaleZ());
     } else {
         delete cfgvalue;
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
@@ -1026,6 +1032,14 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
             return finErrorCodeKits::FIN_EC_INVALID_PARAM;
         graphconfig->setOriginPixelPoint(cfgvalue->getVariableItemAt(0)->getNumericValue(),
                                          cfgvalue->getVariableItemAt(1)->getNumericValue());
+    } else if ( QString::compare(cfgname, "axis_rad_z") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        graphconfig->setAxisRadZ(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "axis_scale_z") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        graphconfig->setAxisScaleZ(cfgvalue->getNumericValue());
     } else {
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
     }
