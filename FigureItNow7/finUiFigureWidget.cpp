@@ -31,6 +31,10 @@ finGraphPanelWidget *finUiFigureWidget::getGraphPanel()
 
 finErrorCode finUiFigureWidget::applyFigure()
 {
+    QRect georect = this->geometry();
+    georect.setSize(this->_figcontainer.getGraphConfig()->getPanelPixelSize().toSize());
+    this->setGeometry(georect);
+
     this->_graphpanel.setFigureContainer(&this->_figcontainer);
     this->repaint();
     return finErrorCodeKits::FIN_EC_SUCCESS;

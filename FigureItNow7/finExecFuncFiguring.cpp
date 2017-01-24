@@ -918,6 +918,9 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
             delete cfgvalue;
             return errcode;
         }
+    } else if ( QString::compare(cfgname, "panel_width") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(graphconfig->getAxisUnitPixelSize());
     } else {
         delete cfgvalue;
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;

@@ -52,9 +52,19 @@ finErrorCode finGraphConfig::copyGraphConfig(const finGraphConfig *srccfg)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-QSizeF finGraphConfig::getPanelPixelSize() const
+const QSizeF &finGraphConfig::getPanelPixelSize() const
 {
     return this->_panelSize;
+}
+
+double finGraphConfig::getPanelPixelWidth() const
+{
+    return this->_panelSize.width();
+}
+
+double finGraphConfig::getPanelPixelHeight() const
+{
+    return this->_panelSize.height();
 }
 
 QRectF finGraphConfig::getWholePanelPixelRect() const
@@ -73,7 +83,7 @@ QList<QPointF> finGraphConfig::getCornerAxisPoints() const
     return ptlist;
 }
 
-QColor finGraphConfig::getBackgroundColor() const
+const QColor &finGraphConfig::getBackgroundColor() const
 {
     return this->_bgColor;
 }
@@ -137,6 +147,18 @@ QPainter::RenderHints finGraphConfig::getRenderHints() const
 finErrorCode finGraphConfig::setPanelPixelSize(const QSizeF &size)
 {
     this->_panelSize = size;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::setPanelPixelWidth(double width)
+{
+    this->_panelSize.setWidth(width);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::setPanelPixelHeight(double height)
+{
+    this->_panelSize.setHeight(height);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
