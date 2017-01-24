@@ -964,6 +964,17 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
     } else if ( QString::compare(cfgname, "transform") == 0 ) {
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_STRING);
         cfgvalue->setStringValue(finGraphTrans::getTransformTypeName(graphconfig->getTransformType()));
+    } else if ( QString::compare(cfgname, "affine_trans_act_cnt") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        if ( graphconfig->getTransformType() == finGraphTrans::FIN_GT_TYPE_AFFINE ) {
+            finGraphTransAffine *affinetrans = (finGraphTransAffine *)graphconfig->getTransform();
+            if ( affinetrans != NULL )
+                cfgvalue->setNumericValue(affinetrans->getActionCount());
+            else
+                cfgvalue->setNumericValue(0.0);
+        } else {
+            cfgvalue->setNumericValue(0.0);
+        }
     } else {
         delete cfgvalue;
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
