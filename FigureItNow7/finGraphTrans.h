@@ -64,6 +64,10 @@ public:
         FIN_GTA_TYPE_SCALE,
         FIN_GTA_TYPE_TRANSLATE
     };
+
+    static QString getAffineTransActionName(ActionType type);
+    static ActionType parseAffineTransAction(const QString &name);
+
     struct Action {
         ActionType _type;
         double _arg1, _arg2;

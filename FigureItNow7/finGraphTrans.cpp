@@ -130,6 +130,37 @@ QPointF finGraphTransRect::arcTransPoint(const QPointF &ptr)
     return resptr;
 }
 
+QString finGraphTransAffine::getAffineTransActionName(finGraphTransAffine::ActionType type)
+{
+    switch ( type ) {
+      case finGraphTransAffine::FIN_GTA_TYPE_ROTATE:
+        return QString("rotate");
+        break;
+
+      case finGraphTransAffine::FIN_GTA_TYPE_SCALE:
+        return QString("scale");
+        break;
+
+      case finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE:
+        return QString("translate");
+        break;
+    }
+    return QString("none");
+}
+
+finGraphTransAffine::ActionType finGraphTransAffine::parseAffineTransAction(const QString &name)
+{
+    if ( QString::compare(name, QString("rotate"), Qt::CaseInsensitive) == 0 ) {
+        return finGraphTransAffine::FIN_GTA_TYPE_ROTATE;
+    } else if ( QString::compare(name, QString("scale"), Qt::CaseInsensitive) == 0 ) {
+        return finGraphTransAffine::FIN_GTA_TYPE_SCALE;
+    } else if ( QString::compare(name, QString("translate"), Qt::CaseInsensitive) == 0 ) {
+        return finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE;
+    }
+    // We have no dummy value here, and just return a safest one.
+    return finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE;
+}
+
 finGraphTransAffine::finGraphTransAffine()
     : _matrix(), _invMatrix()
 {
