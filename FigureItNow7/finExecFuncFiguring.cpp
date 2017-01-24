@@ -1086,6 +1086,24 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
             return finErrorCodeKits::FIN_EC_INVALID_PARAM;
         finGraphTransType type = finGraphTrans::parseTransformType(cfgvalue->getStringValue());
         graphconfig->setTransformType(type);
+    } else if ( QString::compare(cfgname, "rect_trans_zoom_x") == 0 ) {
+        if ( cfgvalue->getType() !=  finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_RECT )
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        finGraphTransRect *recttrans = (finGraphTransRect *)graphconfig->getTransform();
+        if ( recttrans == NULL )
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        recttrans->setAxisZoomX(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "rect_trans_zoom_y") == 0 ) {
+        if ( cfgvalue->getType() !=  finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_RECT )
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        finGraphTransRect *recttrans = (finGraphTransRect *)graphconfig->getTransform();
+        if ( recttrans == NULL )
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        recttrans->setAxisZoomY(cfgvalue->getNumericValue());
     } else {
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
     }
