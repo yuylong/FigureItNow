@@ -924,6 +924,17 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
     } else if ( QString::compare(cfgname, "panel_height") == 0 ) {
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
         cfgvalue->setNumericValue(graphconfig->getPanelPixelHeight());
+    } else if ( QString::compare(cfgname, "panel_size") == 0 ) {
+        QSizeF panelsize = graphconfig->getPanelPixelSize();
+        cfgvalue->preallocArrayLength(2);
+
+        finExecVariable *itemvar = cfgvalue->getVariableItemAt(0);
+        itemvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        itemvar->setNumericValue(panelsize.width());
+
+        itemvar = cfgvalue->getVariableItemAt(1);
+        itemvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        itemvar->setNumericValue(panelsize.height());
     } else {
         delete cfgvalue;
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
@@ -978,6 +989,12 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
             return finErrorCodeKits::FIN_EC_INVALID_PARAM;
         graphconfig->setPanelPixelHeight(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "panel_size") == 0 ) {
+        int arylen = 0;
+        if ( !cfgvalue->isNumericArray(&arylen) )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        graphconfig->setPanelPixelSize(cfgvalue->getVariableItemAt(0)->getNumericValue(),
+                                       cfgvalue->getVariableItemAt(1)->getNumericValue());
     } else {
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
     }
