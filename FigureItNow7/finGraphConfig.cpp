@@ -93,9 +93,19 @@ QBrush finGraphConfig::getBackgroundBrush() const
     return QBrush(this->_bgColor, Qt::SolidPattern);
 }
 
-QPointF finGraphConfig::getOriginPixelPoint() const
+const QPointF &finGraphConfig::getOriginPixelPoint() const
 {
     return this->_originPoint;
+}
+
+double finGraphConfig::getOriginPixelPointX() const
+{
+    return this->_originPoint.x();
+}
+
+double finGraphConfig::getOriginPixelPointY() const
+{
+    return this->_originPoint.y();
 }
 
 double finGraphConfig::getAxisUnitPixelSize() const
@@ -178,6 +188,18 @@ finErrorCode finGraphConfig::setBackgroundColor(const QColor &color)
 finErrorCode finGraphConfig::setOriginPixelPoint(const QPointF &pt)
 {
     this->_originPoint = pt;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::setOriginPixelPointX(double ptx)
+{
+    this->_originPoint.setX(ptx);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finGraphConfig::setOriginPixelPointY(double pty)
+{
+    this->_originPoint.setY(pty);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

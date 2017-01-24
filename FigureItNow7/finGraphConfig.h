@@ -55,7 +55,9 @@ public:
     const QColor &getBackgroundColor() const;
     QBrush getBackgroundBrush() const;
 
-    QPointF getOriginPixelPoint() const;
+    const QPointF &getOriginPixelPoint() const;
+    double getOriginPixelPointX() const;
+    double getOriginPixelPointY() const;
     double getAxisUnitPixelSize() const;
     double getAxisRadZ() const;
     double getAxisScaleZ() const;
@@ -75,6 +77,8 @@ public:
     finErrorCode setBackgroundColor(const QColor &color);
 
     finErrorCode setOriginPixelPoint(const QPointF &pt);
+    finErrorCode setOriginPixelPointX(double ptx);
+    finErrorCode setOriginPixelPointY(double pty);
     finErrorCode setOriginPixelPoint(double ptx, double pty);
     finErrorCode setAxisUnitPixelSize(double size);
     finErrorCode setAxisRadZ(double rad);

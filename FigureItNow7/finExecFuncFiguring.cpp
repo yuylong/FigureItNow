@@ -935,6 +935,23 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
         itemvar = cfgvalue->getVariableItemAt(1);
         itemvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
         itemvar->setNumericValue(panelsize.height());
+    } else if ( QString::compare(cfgname, "origin_point_x") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(graphconfig->getOriginPixelPointX());
+    } else if ( QString::compare(cfgname, "origin_point_y") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(graphconfig->getOriginPixelPointY());
+    } else if ( QString::compare(cfgname, "origin_point") == 0 ) {
+        QPointF panelsize = graphconfig->getOriginPixelPoint();
+        cfgvalue->preallocArrayLength(2);
+
+        finExecVariable *itemvar = cfgvalue->getVariableItemAt(0);
+        itemvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        itemvar->setNumericValue(panelsize.x());
+
+        itemvar = cfgvalue->getVariableItemAt(1);
+        itemvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        itemvar->setNumericValue(panelsize.y());
     } else {
         delete cfgvalue;
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
@@ -995,6 +1012,20 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
             return finErrorCodeKits::FIN_EC_INVALID_PARAM;
         graphconfig->setPanelPixelSize(cfgvalue->getVariableItemAt(0)->getNumericValue(),
                                        cfgvalue->getVariableItemAt(1)->getNumericValue());
+    } else if ( QString::compare(cfgname, "origin_point_x") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        graphconfig->setOriginPixelPointX(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "origin_point_y") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        graphconfig->setOriginPixelPointY(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "origin_point") == 0 ) {
+        int arylen = 0;
+        if ( !cfgvalue->isNumericArray(&arylen) )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        graphconfig->setOriginPixelPoint(cfgvalue->getVariableItemAt(0)->getNumericValue(),
+                                         cfgvalue->getVariableItemAt(1)->getNumericValue());
     } else {
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
     }
