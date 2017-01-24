@@ -100,6 +100,9 @@ public:
     QPainterPath arcTransformPixelPath(const QPainterPath &path) const;
     QPolygonF transformPixelPolygon(const QPolygonF &polygon) const;
     QPolygonF arcTransformPixelPolygon(const QPolygonF &polygon) const;
+
+    static QString getRenderHintsName(const QPainter::RenderHints &hints);
+    static QPainter::RenderHints parseRenderHints(const QString &name);
 };
 
 #endif // FINGRAPHCONFIG_H

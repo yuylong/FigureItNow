@@ -27,7 +27,7 @@ finGraphConfig::finGraphConfig()
 
     this->_transform = NULL;
 
-    this->_renderHints = (QPainter::Antialiasing | QPainter::TextAntialiasing);
+    this->_renderHints = QPainter::Antialiasing | QPainter::SmoothPixmapTransform;
 }
 
 finGraphConfig::~finGraphConfig()
@@ -374,4 +374,31 @@ QPolygonF finGraphConfig::arcTransformPixelPolygon(const QPolygonF &polygon) con
         retpolygon.append(this->arcTransformPixelPoint(srcpt));
     }
     return retpolygon;
+}
+
+QString finGraphConfig::getRenderHintsName(const QPainter::RenderHints &hints)
+{
+    if ( hints.testFlag(QPainter::Antialiasing) &&
+         hints.testFlag(QPainter::SmoothPixmapTransform) ) {
+        return QString("high_antialiasing");
+    } else if ( hints.testFlag(QPainter::Antialiasing) ) {
+        return QString("antialiasing");
+    } else if ( hints.testFlag(QPainter::SmoothPixmapTransform) ) {
+        return QString("smooth_image");
+    } else {
+        return QString("none");
+    }
+}
+
+QPainter::RenderHints finGraphConfig::parseRenderHints(const QString &name)
+{
+    if ( QString::compare(name, QString("high_antialiasing"), Qt::CaseInsensitive) == 0 ) {
+        return (QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    } else if ( QString::compare(name, QString("antialiasing"), Qt::CaseInsensitive) == 0 ) {
+        return (QPainter::Antialiasing);
+    } else if ( QString::compare(name, QString("smooth_image"), Qt::CaseInsensitive) == 0 ) {
+        return (QPainter::SmoothPixmapTransform);
+    } else {
+        return 0x0;
+    }
 }
