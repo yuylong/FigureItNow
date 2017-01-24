@@ -1,6 +1,8 @@
 
 #include "finExecFunction.h"
 
+#include <qmath.h>
+
 #include "finExecVariable.h"
 #include "finExecEnvironment.h"
 #include "finExecMachine.h"
@@ -1039,6 +1041,60 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
             QString actname = finGraphTransAffine::getAffineTransActionName(action);
             cfgvalue->setType(finExecVariable::FIN_VR_TYPE_STRING);
             cfgvalue->setStringValue(actname);
+        }
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(affinetrans->getActionCount());
+    } else if ( QString::compare(cfgname, "affine_trans_act_arg") == 0 ) {
+        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE ) {
+            delete cfgvalue;
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        }
+        finGraphTransAffine *affinetrans = (finGraphTransAffine *)graphconfig->getTransform();
+        if ( affinetrans == NULL ) {
+            delete cfgvalue;
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        }
+        int extargcnt = finExecFunction::getExtendArgCount(env);
+        if ( extargcnt <= 0 ) {
+            int actcnt = affinetrans->getActionCount();
+            cfgvalue->preallocArrayLength(actcnt);
+            for ( int i = 0; i < actcnt; i++ ) {
+                finGraphTransAffine::ActionType action = affinetrans->getActionAt(i)._type;
+                finExecVariable *subitem = cfgvalue->getVariableItemAt(i);
+                if ( action == finGraphTransAffine::FIN_GTA_TYPE_ROTATE ) {
+                    subitem->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+                    subitem->setNumericValue(affinetrans->getActionAt(i)._arg1);
+                } else {
+                    subitem->preallocArrayLength(2);
+                    subitem->getVariableItemAt(0)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+                    subitem->getVariableItemAt(0)->setNumericValue(affinetrans->getActionAt(i)._arg1);
+                    subitem->getVariableItemAt(1)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+                    subitem->getVariableItemAt(1)->setNumericValue(affinetrans->getActionAt(i)._arg2);
+                }
+            }
+        } else {
+            finExecVariable *extarg = finExecFunction::getExtendArgAt(env, 0);
+            if ( extarg->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+                delete cfgvalue;
+                return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            }
+            int idx = (int)floor(extarg->getNumericValue());
+            if ( idx < 0 || idx >= affinetrans->getActionCount() ) {
+                delete cfgvalue;
+                return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            }
+            finGraphTransAffine::ActionType action = affinetrans->getActionAt(idx)._type;
+            finExecVariable *subitem = cfgvalue->getVariableItemAt(idx);
+            if ( action == finGraphTransAffine::FIN_GTA_TYPE_ROTATE ) {
+                subitem->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+                subitem->setNumericValue(affinetrans->getActionAt(idx)._arg1);
+            } else {
+                subitem->preallocArrayLength(2);
+                subitem->getVariableItemAt(0)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+                subitem->getVariableItemAt(0)->setNumericValue(affinetrans->getActionAt(idx)._arg1);
+                subitem->getVariableItemAt(1)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+                subitem->getVariableItemAt(1)->setNumericValue(affinetrans->getActionAt(idx)._arg2);
+            }
         }
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
         cfgvalue->setNumericValue(affinetrans->getActionCount());
