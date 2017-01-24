@@ -912,6 +912,12 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
     if ( QString::compare(cfgname, "unit_size") == 0 ) {
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
         cfgvalue->setNumericValue(graphconfig->getAxisUnitPixelSize());
+    } else if ( QString::compare(cfgname, "background_color") == 0 ) {
+        errcode = cfgvalue->setupColorValue(graphconfig->getBackgroundColor());
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            delete cfgvalue;
+            return errcode;
+        }
     } else {
         delete cfgvalue;
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
@@ -952,6 +958,12 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
             return finErrorCodeKits::FIN_EC_INVALID_PARAM;
         graphconfig->setAxisUnitPixelSize(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "background_color") == 0 ) {
+        QColor color;
+        errcode = cfgvalue->readColorValue(&color);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+        graphconfig->setBackgroundColor(color);
     } else {
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
     }
