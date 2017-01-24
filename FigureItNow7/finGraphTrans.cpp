@@ -19,11 +19,11 @@ QString finGraphTrans::getTransformTypeName(finGraphTransType type)
 
 finGraphTransType finGraphTrans::parseTransformType(const QString &name)
 {
-    if ( QString::compare(name, QString("none")) == 0 )
+    if ( QString::compare(name, QString("none"), Qt::CaseInsensitive) == 0 )
         return finGraphTrans::FIN_GT_TYPE_NONE;
-    else if ( QString::compare(name, QString("rect")) == 0 )
+    else if ( QString::compare(name, QString("rect"), Qt::CaseInsensitive) == 0 )
         return finGraphTrans::FIN_GT_TYPE_RECT;
-    else if ( QString::compare(name, QString("affine")) == 0 )
+    else if ( QString::compare(name, QString("affine"), Qt::CaseInsensitive) == 0 )
         return finGraphTrans::FIN_GT_TYPE_AFFINE;
     else
         return finGraphTrans::FIN_GT_TYPE_NONE;

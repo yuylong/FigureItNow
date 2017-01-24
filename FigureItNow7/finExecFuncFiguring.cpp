@@ -961,6 +961,9 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
     } else if ( QString::compare(cfgname, "axis_scale_z") == 0 ) {
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
         cfgvalue->setNumericValue(graphconfig->getAxisScaleZ());
+    } else if ( QString::compare(cfgname, "render_level") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_STRING);
+        cfgvalue->setStringValue(finGraphConfig::getRenderHintsName(graphconfig->getRenderHints()));
     } else if ( QString::compare(cfgname, "transform") == 0 ) {
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_STRING);
         cfgvalue->setStringValue(finGraphTrans::getTransformTypeName(graphconfig->getTransformType()));
@@ -1081,6 +1084,11 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
             return finErrorCodeKits::FIN_EC_INVALID_PARAM;
         graphconfig->setAxisScaleZ(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "render_level") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        QPainter::RenderHints hints = finGraphConfig::parseRenderHints(cfgvalue->getStringValue());
+        graphconfig->setRenderHints(hints);
     } else if ( QString::compare(cfgname, "transform") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_STRING )
             return finErrorCodeKits::FIN_EC_INVALID_PARAM;

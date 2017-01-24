@@ -22,7 +22,7 @@ finGraphConfig::finGraphConfig()
 
     this->_originPoint = QPointF(320.0, 240.0);
     this->_axisUnitSize = 40.0;
-    this->_axisRadZ = (-3.0/4.0) * M_PI;
+    this->_axisRadZ = (-3.0 / 4.0) * M_PI;
     this->_axisScaleZ = 0.618;
 
     this->_transform = NULL;
@@ -392,7 +392,9 @@ QString finGraphConfig::getRenderHintsName(const QPainter::RenderHints &hints)
 
 QPainter::RenderHints finGraphConfig::parseRenderHints(const QString &name)
 {
-    if ( QString::compare(name, QString("high_antialiasing"), Qt::CaseInsensitive) == 0 ) {
+    if ( QString::compare(name, QString("none"), Qt::CaseInsensitive) == 0 ) {
+        return 0x0;
+    } else if ( QString::compare(name, QString("high_antialiasing"), Qt::CaseInsensitive) == 0 ) {
         return (QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     } else if ( QString::compare(name, QString("antialiasing"), Qt::CaseInsensitive) == 0 ) {
         return (QPainter::Antialiasing);
