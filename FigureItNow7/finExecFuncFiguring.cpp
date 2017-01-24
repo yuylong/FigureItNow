@@ -920,7 +920,10 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
         }
     } else if ( QString::compare(cfgname, "panel_width") == 0 ) {
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
-        cfgvalue->setNumericValue(graphconfig->getAxisUnitPixelSize());
+        cfgvalue->setNumericValue(graphconfig->getPanelPixelWidth());
+    } else if ( QString::compare(cfgname, "panel_height") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(graphconfig->getPanelPixelHeight());
     } else {
         delete cfgvalue;
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
@@ -967,6 +970,14 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
         graphconfig->setBackgroundColor(color);
+    } else if ( QString::compare(cfgname, "panel_width") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        graphconfig->setPanelPixelWidth(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "panel_height") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        graphconfig->setPanelPixelHeight(cfgvalue->getNumericValue());
     } else {
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
     }
