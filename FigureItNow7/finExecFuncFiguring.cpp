@@ -1104,6 +1104,48 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
         if ( recttrans == NULL )
             return finErrorCodeKits::FIN_EC_STATE_ERROR;
         recttrans->setAxisZoomY(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "affine_trans_clear_act") == 0 ) {
+        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE )
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        finGraphTransAffine *affine = (finGraphTransAffine *)graphconfig->getTransform();
+        if ( affine == NULL )
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        affine->reset();
+    } else if ( QString::compare(cfgname, "affine_trans_append_rotate") == 0 ) {
+        if ( cfgvalue->getType() !=  finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE )
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        finGraphTransAffine *affine = (finGraphTransAffine *)graphconfig->getTransform();
+        if ( affine == NULL )
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        affine->appendRotate(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "affine_trans_append_scale") == 0 ) {
+        int arylen = 0;
+        if ( !cfgvalue->isNumericArray(&arylen) )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        if ( arylen < 2 )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE )
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        finGraphTransAffine *affine = (finGraphTransAffine *)graphconfig->getTransform();
+        if ( affine == NULL )
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        affine->appendScale(cfgvalue->getVariableItemAt(0)->getNumericValue(),
+                            cfgvalue->getVariableItemAt(1)->getNumericValue());
+    } else if ( QString::compare(cfgname, "affine_trans_append_translate") == 0 ) {
+        int arylen = 0;
+        if ( !cfgvalue->isNumericArray(&arylen) )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        if ( arylen < 2 )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE )
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        finGraphTransAffine *affine = (finGraphTransAffine *)graphconfig->getTransform();
+        if ( affine == NULL )
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        affine->appendTranslate(cfgvalue->getVariableItemAt(0)->getNumericValue(),
+                                cfgvalue->getVariableItemAt(1)->getNumericValue());
     } else {
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
     }
