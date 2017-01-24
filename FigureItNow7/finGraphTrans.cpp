@@ -1,5 +1,34 @@
 #include "finGraphTrans.h"
 
+QString finGraphTrans::getTransformTypeName(finGraphTransType type)
+{
+    switch ( type ) {
+      case finGraphTrans::FIN_GT_TYPE_RECT:
+        return QString("rect");
+        break;
+
+      case finGraphTrans::FIN_GT_TYPE_AFFINE:
+        return QString("affine");
+        break;
+
+      default:
+        return QString("none");
+        break;
+    }
+}
+
+finGraphTransType finGraphTrans::parseTransformType(const QString &name)
+{
+    if ( QString::compare(name, QString("none")) == 0 )
+        return finGraphTrans::FIN_GT_TYPE_NONE;
+    else if ( QString::compare(name, QString("rect")) == 0 )
+        return finGraphTrans::FIN_GT_TYPE_RECT;
+    else if ( QString::compare(name, QString("affine")) == 0 )
+        return finGraphTrans::FIN_GT_TYPE_AFFINE;
+    else
+        return finGraphTrans::FIN_GT_TYPE_NONE;
+}
+
 finGraphTrans::finGraphTrans()
 {
     this->_type = finGraphTrans::FIN_GT_TYPE_NONE;

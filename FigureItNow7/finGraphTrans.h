@@ -16,6 +16,9 @@ public:
         FIN_GT_TYPE_AFFINE,
     };
 
+    static QString getTransformTypeName(finGraphTransType type);
+    static finGraphTransType parseTransformType(const QString &name);
+
 protected:
     finGraphTransType _type;
 
