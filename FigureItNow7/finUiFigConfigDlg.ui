@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>522</width>
-    <height>424</height>
+    <height>330</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,9 +16,9 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>380</y>
-     <width>341</width>
+     <x>10</x>
+     <y>290</y>
+     <width>501</width>
      <height>32</height>
     </rect>
    </property>
@@ -41,7 +41,7 @@
    <property name="title">
     <string>Border Pen</string>
    </property>
-   <widget class="QLabel" name="lblColorTitle">
+   <widget class="QLabel" name="lblBorderColorTitle">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -57,7 +57,7 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="lblColor">
+   <widget class="QLabel" name="lblBorderColor">
     <property name="geometry">
      <rect>
       <x>100</x>
@@ -306,9 +306,9 @@
      <number>40</number>
     </property>
    </widget>
-   <zorder>lblColorTitle</zorder>
-   <zorder>lblColor</zorder>
-   <zorder>groupBox_2</zorder>
+   <zorder>lblBorderColorTitle</zorder>
+   <zorder>lblBorderColor</zorder>
+   <zorder>grbFillingBrush</zorder>
    <zorder>lblDotSizeTitle</zorder>
    <zorder>spbDotSize</zorder>
    <zorder>lblStartArwTitle</zorder>
@@ -324,31 +324,199 @@
    <zorder>spbDotSize_4</zorder>
    <zorder>spbStartArwSize</zorder>
   </widget>
-  <widget class="QGroupBox" name="groupBox_2">
+  <widget class="QGroupBox" name="grbFillingBrush">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>130</y>
      <width>501</width>
-     <height>91</height>
+     <height>61</height>
     </rect>
    </property>
    <property name="title">
     <string>Filling Brush</string>
    </property>
+   <widget class="QLabel" name="lblFillingColorTitle">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>20</y>
+      <width>54</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Color:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblFillingColor">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>20</y>
+      <width>121</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
   </widget>
-  <widget class="QGroupBox" name="groupBox_3">
+  <widget class="QGroupBox" name="grbFont">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>240</y>
+     <y>199</y>
      <width>501</width>
-     <height>80</height>
+     <height>81</height>
     </rect>
    </property>
    <property name="title">
     <string>Text and Font</string>
    </property>
+   <widget class="QFontComboBox" name="fcbFontName">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>20</y>
+      <width>221</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblFontNameTitle">
+    <property name="geometry">
+     <rect>
+      <x>13</x>
+      <y>20</y>
+      <width>81</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Font Name:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblFontSizeTitle">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>20</y>
+      <width>81</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Font Size:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="dsbFontSize">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>20</y>
+      <width>71</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+    <property name="decimals">
+     <number>1</number>
+    </property>
+    <property name="minimum">
+     <double>6.000000000000000</double>
+    </property>
+    <property name="maximum">
+     <double>72.000000000000000</double>
+    </property>
+    <property name="value">
+     <double>12.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblFontColor">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>50</y>
+      <width>121</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblFontColorTitle">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>50</y>
+      <width>54</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Color:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="ckbFontBold">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>50</y>
+      <width>71</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Bold</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="ckbFontItalic">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>50</y>
+      <width>71</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="text">
+     <string>Italic</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>
