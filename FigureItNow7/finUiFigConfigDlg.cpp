@@ -55,5 +55,18 @@ void finUiFigConfigDlg::fillFromFigureConfig(finFigureConfig *figcfg)
 
 void finUiFigConfigDlg::applyToFigureConfig(finFigureConfig *figcfg) const
 {
+    figcfg->setBorderColor(ui->lblBorderColor->color());
+    figcfg->setDotSize((double)ui->spbDotSize->value());
 
+    figcfg->setStartArrowType(finFigureArrow::parseTypeString(ui->cmbStartArrow->currentText()));
+    figcfg->setStartArrowSize((double)ui->spbStartArwSize->value());
+    figcfg->setStartArrowRadian(_deg_to_rad(ui->spbStartArwDeg->value()));
+
+    figcfg->setEndArrowType(finFigureArrow::parseTypeString(ui->cmbEndArrow->currentText()));
+    figcfg->setEndArrowSize((double)ui->spbEndArwSize->value());
+    figcfg->setEndArrowRadian(_deg_to_rad(ui->spbEndArwDeg->value()));
+
+    figcfg->setFillColor(ui->lblFillingColor->color());
+
+    figcfg->setFontName(ui->fcbFontName->font().family());
 }
