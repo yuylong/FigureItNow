@@ -36,14 +36,17 @@ void finUiColorLabel::setColor(const QColor &color)
     emit this->colorChanged(this->_color);
 }
 
-void finUiColorLabel::mouseDoubleClickEvent(QMouseEvent * ev)
+void finUiColorLabel::mouseDoubleClickEvent(QMouseEvent *ev)
 {
     if ( ev->button() == Qt::LeftButton) {
         QColorDialog colordlg;
         colordlg.setCurrentColor(this->_color);
-        if ( colordlg.exec() != QDialog::Accepted )
+        colordlg.exec();
+
+        if ( colordlg.result() != QDialog::Accepted )
             return;
 
         this->setColor(colordlg.currentColor());
+        ev->accept();
     }
 }

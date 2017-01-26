@@ -31,8 +31,6 @@ public:
 
 private:
     Ui::finUiFigConfigDlg *ui;
-
-    void setupLableBackgroudColor(QLabel *label, const QColor &color);
 };
 
 #endif // FINUIFIGCONFIGDLG_H
