@@ -5,10 +5,13 @@
 #include "finExecEnvironment.h"
 #include "finExecMachine.h"
 
+static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *env,
+                                   finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
+    { QString("array"),   QString("n"),         _sysfunc_array   },
     { QString("mat_add"), QString("mat1,mat2"), _sysfunc_mat_add },
 
     { QString(), QString(), NULL }
@@ -18,6 +21,62 @@ static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
 finErrorCode finExecFunction::registSysFuncMatrix()
 {
     return finExecFunction::registSysFuncFromArray(_finSysFuncMatrixList);
+}
+
+static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *env,
+                                   finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *cntvar;
+    int arylen = -1;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    cntvar = finExecVariable::transLinkTarget(env->findVariable("n"));
+    if ( cntvar != NULL && cntvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC &&
+                           cntvar->getType() != finExecVariable::FIN_VR_TYPE_NULL )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    else if ( cntvar != NULL && cntvar->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC )
+        arylen = cntvar->getNumericValue();
+
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    retvar->setType(finExecVariable::FIN_VR_TYPE_ARRAY);
+    if ( arylen == 0 )
+        goto out;
+    else if ( arylen > 0 )
+        retvar->preallocArrayLength(arylen);
+
+    int aryidx = 0;
+    while ( true ) {
+        if ( aryidx >= finExecFunction::getExtendArgCount(env) )
+            break;
+        else if ( arylen > 0 && aryidx >= arylen )
+            break;
+
+        finExecVariable *itemvar = finExecVariable::transLinkTarget(finExecFunction::getExtendArgAt(env, aryidx));
+        finExecVariable *retitemvar = retvar->getVariableItemAt(aryidx);
+        if ( retitemvar == NULL ) {
+            delete retvar;
+            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        }
+
+        errcode = retitemvar->copyVariableValue(itemvar);
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            delete retvar;
+            return errcode;
+        }
+    }
+
+out:
+    retvar->clearLeftValue();
+    retvar->setWriteProtected();
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *env,
