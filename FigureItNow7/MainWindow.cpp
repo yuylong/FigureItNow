@@ -6,6 +6,7 @@
 
 #include "finExecEnvironment.h"
 #include "finGraphPanelScene.h"
+#include "finUiFigConfigDlg.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -127,3 +128,13 @@ void MainWindow::paintEvent(QPaintEvent *e)
     e->accept();
 }
 
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    finFigureContainer *figcontainer = this->figui->getFigureContainer();
+    finFigureConfig *figconfig = figcontainer->getFigureConfig();
+
+    finUiFigConfigDlg figcfgdlg;
+    figcfgdlg.fillFromFigureConfig(figconfig);
+    figcfgdlg.exec();
+}
