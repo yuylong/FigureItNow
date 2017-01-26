@@ -27,6 +27,15 @@ void finUiColorLabel::setColor(const QColor &color)
     palette.setColor(QPalette::Active, QPalette::Base, color);
     palette.setColor(QPalette::Disabled, QPalette::Base, color);
     palette.setColor(QPalette::Inactive, QPalette::Base, color);
+    if ( color.alphaF() > 0.75 && color.lightnessF() < 0.4 ) {
+        palette.setColor(QPalette::Active, QPalette::Text, QColor(Qt::white));
+        palette.setColor(QPalette::Disabled, QPalette::Text,  QColor(Qt::lightGray));
+        palette.setColor(QPalette::Inactive, QPalette::Text, QColor(Qt::lightGray));
+    } else {
+        palette.setColor(QPalette::Active, QPalette::Text, QColor(Qt::black));
+        palette.setColor(QPalette::Disabled, QPalette::Text,  QColor(Qt::darkGray));
+        palette.setColor(QPalette::Inactive, QPalette::Text, QColor(Qt::darkGray));
+    }
 
     this->setPalette(palette);
     this->setBackgroundRole(QPalette::Base);
