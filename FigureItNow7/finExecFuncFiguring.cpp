@@ -1101,7 +1101,7 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
                 }
             }
         } else {
-            finExecVariable *extarg = finExecFunction::getExtendArgAt(env, 0);
+            finExecVariable *extarg = finExecVariable::transLinkTarget(finExecFunction::getExtendArgAt(env, 0));
             if ( extarg->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
                 delete cfgvalue;
                 return finErrorCodeKits::FIN_EC_INVALID_PARAM;
