@@ -59,7 +59,11 @@ public:
     QColor getBorderColor() const;
     QColor getFillColor() const;
     finFigureArrowType getStartArrowType() const;
+    double getStartArrowSize() const;
+    double getStartArrowRadian() const;
     finFigureArrowType getEndArrowType() const;
+    double getEndArrowSize() const;
+    double getEndArrowRadian() const;
 
     QString getFontName() const;
     double getFontPointSize() const;
@@ -80,7 +84,11 @@ public:
     finErrorCode setBorderColor(const QColor &color);
     finErrorCode setFillColor(const QColor &color);
     finErrorCode setStartArrowType(finFigureArrowType type);
+    finErrorCode setStartArrowSize(double size);
+    finErrorCode setStartArrowRadian(double rad);
     finErrorCode setEndArrowType(finFigureArrowType type);
+    finErrorCode setEndArrowSize(double size);
+    finErrorCode setEndArrowRadian(double rad);
 
     finErrorCode setFontName(const QString &ftname);
     finErrorCode setFontPointSize(double size);

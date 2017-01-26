@@ -83,9 +83,29 @@ finFigureArrowType finFigureConfig::getStartArrowType() const
     return this->_startArrow.getType();
 }
 
+double finFigureConfig::getStartArrowSize() const
+{
+    return this->_startArrow.getLength();
+}
+
+double finFigureConfig::getStartArrowRadian() const
+{
+    return this->_startArrow.getRadian();
+}
+
 finFigureArrowType finFigureConfig::getEndArrowType() const
 {
     return this->_endArrow.getType();
+}
+
+double finFigureConfig::getEndArrowSize() const
+{
+    return this->_endArrow.getLength();
+}
+
+double finFigureConfig::getEndArrowRadian() const
+{
+    return this->_endArrow.getRadian();
 }
 
 QString finFigureConfig::getFontName() const
@@ -188,6 +208,36 @@ finErrorCode finFigureConfig::setStartArrowType(finFigureArrowType type)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finFigureConfig::setStartArrowSize(double size)
+{
+    this->_startArrow.setLength(size);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setStartArrowRadian(double rad)
+{
+    this->_endArrow.setRadian(rad);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setEndArrowType(finFigureArrowType type)
+{
+    this->_endArrow.setType(type);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setEndArrowSize(double size)
+{
+    this->_endArrow.setLength(size);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureConfig::setEndArrowRadian(double rad)
+{
+    this->_endArrow.setRadian(rad);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode finFigureConfig::setFontName(const QString &ftname)
 {
     this->_font.setFamily(ftname);
@@ -215,12 +265,6 @@ finErrorCode finFigureConfig::setFontItalic(bool italic)
 finErrorCode finFigureConfig::setFontColor(const QColor &color)
 {
     this->_textBrush.setColor(color);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
-finErrorCode finFigureConfig::setEndArrowType(finFigureArrowType type)
-{
-    this->_endArrow.setType(type);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
