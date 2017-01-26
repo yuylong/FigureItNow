@@ -763,10 +763,22 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
         finFigureArrowType arwtype = figconfig->getStartArrowType();
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_STRING);
         cfgvalue->setStringValue(finFigureArrow::getTypeName(arwtype));
+    } else if ( QString::compare(cfgname, "start_arrow_size") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(figconfig->getStartArrowSize());
+    } else if ( QString::compare(cfgname, "start_arrow_rad") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(figconfig->getStartArrowRadian());
     } else if ( QString::compare(cfgname, "end_arrow_type") == 0 ) {
         finFigureArrowType arwtype = figconfig->getEndArrowType();
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_STRING);
         cfgvalue->setStringValue(finFigureArrow::getTypeName(arwtype));
+    } else if ( QString::compare(cfgname, "end_arrow_size") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(figconfig->getEndArrowSize());
+    } else if ( QString::compare(cfgname, "end_arrow_rad") == 0 ) {
+        cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+        cfgvalue->setNumericValue(figconfig->getEndArrowRadian());
     } else if ( QString::compare(cfgname, "font_name") == 0 ) {
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_STRING);
         cfgvalue->setStringValue(figconfig->getFontName());
@@ -848,11 +860,27 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
             return finErrorCodeKits::FIN_EC_INVALID_PARAM;
         finFigureArrowType arwtype = finFigureArrow::parseTypeString(cfgvalue->getStringValue());
         figconfig->setStartArrowType(arwtype);
+    } else if ( QString::compare(cfgname, "start_arrow_size") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        figconfig->setStartArrowSize(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "start_arrow_rad") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        figconfig->setStartArrowRadian(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "end_arrow_type") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_STRING )
             return finErrorCodeKits::FIN_EC_INVALID_PARAM;
         finFigureArrowType arwtype = finFigureArrow::parseTypeString(cfgvalue->getStringValue());
         figconfig->setEndArrowType(arwtype);
+    } else if ( QString::compare(cfgname, "end_arrow_size") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        figconfig->setEndArrowSize(cfgvalue->getNumericValue());
+    } else if ( QString::compare(cfgname, "end_arrow_rad") == 0 ) {
+        if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        figconfig->setEndArrowRadian(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "font_name") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_STRING )
             return finErrorCodeKits::FIN_EC_INVALID_PARAM;
