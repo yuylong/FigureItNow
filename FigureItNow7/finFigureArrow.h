@@ -7,6 +7,7 @@
 #include <QPen>
 #include <QBrush>
 #include <QPainterPath>
+#include <QComboBox>
 
 #include "finErrorCode.h"
 #include "finFigurePath.h"
@@ -24,6 +25,7 @@ public:
 
     static QString getTypeName(finFigureArrow::Type type);
     static finFigureArrow::Type parseTypeString(const QString &str);
+    static finErrorCode fillTypesInComboBox(QComboBox *cmbox);
 
 protected:
     finFigureArrow::Type _type;

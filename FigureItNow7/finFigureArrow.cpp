@@ -1,6 +1,7 @@
 #include "finFigureArrow.h"
 
 #include <qmath.h>
+#include <QVariant>
 
 #include "finFigureConfig.h"
 #include "finGraphConfig.h"
@@ -28,6 +29,18 @@ finFigureArrowType finFigureArrow::parseTypeString(const QString &str)
         return finFigureArrow::FIN_FA_TYPE_TRIANGLE;
     else
         return finFigureArrow::FIN_FA_TYPE_NONE;
+}
+
+finErrorCode finFigureArrow::fillTypesInComboBox(QComboBox *cmbox)
+{
+    if ( cmbox == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    cmbox->setEditable(false);
+    cmbox->addItem("none", QVariant("none"));
+    cmbox->addItem("triangle", QVariant("triangle"));
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finFigureArrow::finFigureArrow()

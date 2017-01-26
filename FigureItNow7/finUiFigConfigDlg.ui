@@ -149,6 +149,9 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="editable">
+     <bool>false</bool>
+    </property>
    </widget>
    <widget class="QComboBox" name="cmbEndArrow">
     <property name="geometry">
@@ -268,7 +271,7 @@
      <number>5</number>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spbDotSize_4">
+   <widget class="QSpinBox" name="spbEndArwSize">
     <property name="geometry">
      <rect>
       <x>290</x>
@@ -321,7 +324,7 @@
    <zorder>lblEndArwDegTitle</zorder>
    <zorder>spbStartArwDeg</zorder>
    <zorder>spbEndArwDeg</zorder>
-   <zorder>spbDotSize_4</zorder>
+   <zorder>spbEndArwSize</zorder>
    <zorder>spbStartArwSize</zorder>
   </widget>
   <widget class="QGroupBox" name="grbFillingBrush">
