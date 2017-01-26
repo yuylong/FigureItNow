@@ -136,7 +136,8 @@ static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *e
             if ( extidx >= extcnt )
                 break;
 
-            finExecVariable *srcvar = finExecFunction::getExtendArgAt(env, extidx);
+            finExecVariable *srcvar = finExecVariable::transLinkTarget(
+                        finExecFunction::getExtendArgAt(env, extidx));
             finExecVariable *itemvar = rowvar->getVariableItemAt(colidx);
             if ( itemvar == NULL ) {
                 delete retvar;
