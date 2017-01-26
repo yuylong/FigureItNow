@@ -46,7 +46,8 @@ static inline double _deg_to_rad(int deg)
 
 void finUiFigConfigDlg::fillFromFigureConfig(finFigureConfig *figcfg)
 {
-    this->setupLableBackgroudColor(ui->lblBorderColor, figcfg->getBorderColor());
+    ui->lblBorderColor->setColor(figcfg->getBorderColor());
+    //this->setupLableBackgroudColor(ui->lblBorderColor, figcfg->getBorderColor());
     ui->spbDotSize->setValue((int)floor(figcfg->getDotSize()));
 
     ui->cmbStartArrow->setCurrentText(finFigureArrow::getTypeName(figcfg->getStartArrowType()));

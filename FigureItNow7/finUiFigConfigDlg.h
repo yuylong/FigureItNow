@@ -6,6 +6,7 @@
 #include <QLabel>
 
 #include "finFigureConfig.h"
+#include "finUiColorLabel.h"
 
 
 namespace Ui {

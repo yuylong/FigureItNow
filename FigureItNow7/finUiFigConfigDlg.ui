@@ -72,12 +72,12 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="lblBorderColor">
+   <widget class="finUiColorLabel" name="lblBorderColor">
     <property name="geometry">
      <rect>
       <x>100</x>
       <y>20</y>
-      <width>121</width>
+      <width>111</width>
       <height>22</height>
      </rect>
     </property>
@@ -324,6 +324,25 @@
      <number>40</number>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>20</y>
+      <width>21</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>...</string>
+    </property>
+    <property name="autoDefault">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
    <zorder>lblBorderColorTitle</zorder>
    <zorder>lblBorderColor</zorder>
    <zorder>grbFillingBrush</zorder>
@@ -341,6 +360,7 @@
    <zorder>spbEndArwDeg</zorder>
    <zorder>spbEndArwSize</zorder>
    <zorder>spbStartArwSize</zorder>
+   <zorder>pushButton</zorder>
   </widget>
   <widget class="QGroupBox" name="grbFillingBrush">
    <property name="geometry">
@@ -537,6 +557,27 @@
    </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>finUiColorLabel</class>
+   <extends>QLabel</extends>
+   <header>finUiColorLabel.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>pushButton</tabstop>
+  <tabstop>spbDotSize</tabstop>
+  <tabstop>cmbStartArrow</tabstop>
+  <tabstop>spbStartArwSize</tabstop>
+  <tabstop>spbStartArwDeg</tabstop>
+  <tabstop>cmbEndArrow</tabstop>
+  <tabstop>spbEndArwSize</tabstop>
+  <tabstop>spbEndArwDeg</tabstop>
+  <tabstop>fcbFontName</tabstop>
+  <tabstop>dsbFontSize</tabstop>
+  <tabstop>ckbFontBold</tabstop>
+  <tabstop>ckbFontItalic</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -546,8 +587,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>138</x>
+     <y>290</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -562,8 +603,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>206</x>
+     <y>290</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
