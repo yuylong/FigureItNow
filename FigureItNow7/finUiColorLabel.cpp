@@ -31,7 +31,7 @@ void finUiColorLabel::setColor(const QColor &color)
     this->setPalette(palette);
     this->setBackgroundRole(QPalette::Base);
     this->setAutoFillBackground(true);
-    this->setText(color.name());
+    this->setText(color.name(QColor::HexArgb));
 
     emit this->colorChanged(this->_color);
 }
@@ -40,6 +40,7 @@ void finUiColorLabel::mouseDoubleClickEvent(QMouseEvent *ev)
 {
     if ( ev->button() == Qt::LeftButton) {
         QColorDialog colordlg;
+        colordlg.setOptions(QColorDialog::ShowAlphaChannel);
         colordlg.setCurrentColor(this->_color);
         colordlg.exec();
 
