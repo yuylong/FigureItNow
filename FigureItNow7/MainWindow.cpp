@@ -137,4 +137,9 @@ void MainWindow::on_pushButton_4_clicked()
     finUiFigConfigDlg figcfgdlg;
     figcfgdlg.fillFromFigureConfig(figconfig);
     figcfgdlg.exec();
+
+    if ( figcfgdlg.result() != QDialog::Accepted )
+        return;
+
+    figcfgdlg.applyToFigureConfig(figconfig);
 }
