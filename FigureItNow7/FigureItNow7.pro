@@ -50,7 +50,8 @@ SOURCES += main.cpp\
     finFigurePath.cpp \
     finFigureArrow.cpp \
     finUiFigConfigDlg.cpp \
-    finUiColorLabel.cpp
+    finUiColorLabel.cpp \
+    finUiGraphConfigDlg.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
@@ -83,7 +84,9 @@ HEADERS  += MainWindow.h \
     finFigurePath.h \
     finFigureArrow.h \
     finUiFigConfigDlg.h \
-    finUiColorLabel.h
+    finUiColorLabel.h \
+    finUiGraphConfigDlg.h
 
 FORMS    += MainWindow.ui \
-    finUiFigConfigDlg.ui
+    finUiFigConfigDlg.ui \
+    finUiGraphConfigDlg.ui
