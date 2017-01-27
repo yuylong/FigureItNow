@@ -8,6 +8,8 @@ finUiColorLabel::finUiColorLabel(QWidget *parent) :
     QLabel(parent), _color()
 {
     this->setFrameShape(QFrame::Box);
+    this->setAlignment(Qt::AlignCenter);
+    this->setColor(this->_color);
 }
 
 finUiColorLabel::~finUiColorLabel()
