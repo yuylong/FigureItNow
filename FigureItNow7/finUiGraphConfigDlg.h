@@ -26,11 +26,10 @@ public:
     void applyToGraphConfig(finGraphConfig *graphcfg) const;
 
 private slots:
-    void on_spbPanelWidth_valueChanged(int arg1);
-
-    void on_spbPanelHeight_valueChanged(int arg1);
-
-    void on_ckbPanelSizeRatio_stateChanged(int arg1);
+    void on_spbPanelWidth_valueChanged(int value);
+    void on_spbPanelHeight_valueChanged(int value);
+    void on_ckbPanelSizeRatio_stateChanged(int state);
+    void on_ckbOriginPtRatio_stateChanged(int state);
 
 private:
     Ui::finUiGraphConfigDlg *ui;

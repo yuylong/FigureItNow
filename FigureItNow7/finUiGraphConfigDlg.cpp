@@ -60,34 +60,63 @@ void finUiGraphConfigDlg::applyToGraphConfig(finGraphConfig *graphcfg) const
 
 }
 
-void finUiGraphConfigDlg::on_spbPanelWidth_valueChanged(int arg1)
+void finUiGraphConfigDlg::on_spbPanelWidth_valueChanged(int value)
 {
     if ( this->_inFilling )
         return;
 
     this->_inFilling = true;
-    if ( ui->ckbPanelSizeRatio->isChecked() )
-        ui->spbPanelHeight->setValue((int)floor(arg1 / this->_whRatio));
+    double pw = (double)value;
+    double ph = 0.0;
+    if ( ui->ckbPanelSizeRatio->isChecked() ) {
+        ph = pw / this->_whRatio;
+        ui->spbPanelHeight->setValue((int)floor(ph));
+    }
+    if ( ui->ckbOriginPtRatio->isChecked() ) {
+        ui->spbOriginPtX->setValue((int)floor(pw * this->_origXPosRatio));
+        if ( ui->ckbPanelSizeRatio->isChecked() )
+            ui->spbOriginPtY->setValue((int)floor(ph * this->_origYPosRatio));
+    }
     this->_inFilling = false;
 }
 
-void finUiGraphConfigDlg::on_spbPanelHeight_valueChanged(int arg1)
+void finUiGraphConfigDlg::on_spbPanelHeight_valueChanged(int value)
 {
     if ( this->_inFilling )
         return;
 
     this->_inFilling = true;
-    if ( ui->ckbPanelSizeRatio->isChecked() )
-        ui->spbPanelWidth->setValue((int)floor(arg1 * this->_whRatio));
+    double ph = (double)value;
+    double pw = 0.0;
+    if ( ui->ckbPanelSizeRatio->isChecked() ) {
+        pw = ph * this->_whRatio;
+        ui->spbPanelWidth->setValue((int)floor(pw));
+    }
+    if ( ui->ckbOriginPtRatio->isChecked() ) {
+        ui->spbOriginPtY->setValue((int)floor(ph * this->_origYPosRatio));
+        if ( ui->ckbPanelSizeRatio->isChecked() )
+            ui->spbOriginPtX->setValue((int)floor(pw * this->_origXPosRatio));
+    }
     this->_inFilling = false;
 }
 
-void finUiGraphConfigDlg::on_ckbPanelSizeRatio_stateChanged(int arg1)
+void finUiGraphConfigDlg::on_ckbPanelSizeRatio_stateChanged(int state)
 {
-    if ( arg1 != Qt::Checked )
+    if ( state != Qt::Checked )
         return;
 
     double pw = (double)ui->spbPanelWidth->value();
     double ph = (double)ui->spbPanelHeight->value();
     this->_whRatio = pw / ph;
+}
+
+void finUiGraphConfigDlg::on_ckbOriginPtRatio_stateChanged(int state)
+{
+    if ( state != Qt::Checked )
+        return;
+
+    double pw = (double)ui->spbPanelWidth->value();
+    double ph = (double)ui->spbPanelHeight->value();
+    this->_origXPosRatio = ui->spbOriginPtX->value() / pw;
+    this->_origYPosRatio = ui->spbOriginPtY->value() / ph;
 }
