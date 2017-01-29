@@ -139,6 +139,18 @@
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
+    <property name="minimum">
+     <number>10</number>
+    </property>
+    <property name="maximum">
+     <number>65535</number>
+    </property>
+    <property name="singleStep">
+     <number>10</number>
+    </property>
+    <property name="value">
+     <number>640</number>
+    </property>
    </widget>
    <widget class="QSpinBox" name="spbPanelHeight">
     <property name="geometry">
@@ -151,6 +163,18 @@
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+    <property name="minimum">
+     <number>10</number>
+    </property>
+    <property name="maximum">
+     <number>65535</number>
+    </property>
+    <property name="singleStep">
+     <number>10</number>
+    </property>
+    <property name="value">
+     <number>480</number>
     </property>
    </widget>
    <widget class="QLabel" name="lblPanelHeightUnit">
@@ -229,6 +253,18 @@
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
+    <property name="minimum">
+     <number>-65535</number>
+    </property>
+    <property name="maximum">
+     <number>65535</number>
+    </property>
+    <property name="singleStep">
+     <number>10</number>
+    </property>
+    <property name="value">
+     <number>320</number>
+    </property>
    </widget>
    <widget class="QSpinBox" name="spbOriginPtY">
     <property name="geometry">
@@ -241,6 +277,18 @@
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+    <property name="minimum">
+     <number>-65535</number>
+    </property>
+    <property name="maximum">
+     <number>65535</number>
+    </property>
+    <property name="singleStep">
+     <number>10</number>
+    </property>
+    <property name="value">
+     <number>240</number>
     </property>
    </widget>
    <widget class="QLabel" name="lblOriginPtXUnit">
@@ -368,7 +416,13 @@
      <number>1</number>
     </property>
     <property name="minimum">
-     <double>1.000000000000000</double>
+     <double>0.100000000000000</double>
+    </property>
+    <property name="maximum">
+     <double>8192.000000000000000</double>
+    </property>
+    <property name="value">
+     <double>40.000000000000000</double>
     </property>
    </widget>
    <widget class="QLabel" name="lblAxisUnitSizeUnit">
@@ -415,6 +469,18 @@
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
+    <property name="minimum">
+     <number>-179</number>
+    </property>
+    <property name="maximum">
+     <number>180</number>
+    </property>
+    <property name="singleStep">
+     <number>10</number>
+    </property>
+    <property name="value">
+     <number>-135</number>
+    </property>
    </widget>
    <widget class="QLabel" name="lblAxisZRatioTitle">
     <property name="geometry">
@@ -448,10 +514,16 @@
      <number>3</number>
     </property>
     <property name="minimum">
-     <double>0.000000000000000</double>
+     <double>0.001000000000000</double>
     </property>
     <property name="maximum">
      <double>5.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.100000000000000</double>
+    </property>
+    <property name="value">
+     <double>0.618000000000000</double>
     </property>
    </widget>
   </widget>

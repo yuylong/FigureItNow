@@ -7,6 +7,7 @@
 #include "finExecEnvironment.h"
 #include "finGraphPanelScene.h"
 #include "finUiFigConfigDlg.h"
+#include "finUiGraphConfigDlg.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -142,4 +143,19 @@ void MainWindow::on_pushButton_4_clicked()
         return;
 
     figcfgdlg.applyToFigureConfig(figconfig);
+}
+
+void MainWindow::on_pushButton_5_clicked()
+{
+    finFigureContainer *figcontainer = this->figui->getFigureContainer();
+    finGraphConfig *graphconfig = figcontainer->getGraphConfig();
+
+    finUiGraphConfigDlg graphcfgdlg;
+    graphcfgdlg.fillFromGraphConfig(graphconfig);
+    graphcfgdlg.exec();
+
+    if ( graphcfgdlg.result() != QDialog::Accepted )
+        return;
+
+    graphcfgdlg.applyToGraphConfig(graphconfig);
 }
