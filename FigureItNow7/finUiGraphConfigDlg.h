@@ -25,6 +25,13 @@ public:
     void fillFromGraphConfig(const finGraphConfig *graphcfg);
     void applyToGraphConfig(finGraphConfig *graphcfg) const;
 
+private slots:
+    void on_spbPanelWidth_valueChanged(int arg1);
+
+    void on_spbPanelHeight_valueChanged(int arg1);
+
+    void on_ckbPanelSizeRatio_stateChanged(int arg1);
+
 private:
     Ui::finUiGraphConfigDlg *ui;
 };

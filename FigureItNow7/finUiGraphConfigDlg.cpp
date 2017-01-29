@@ -59,3 +59,35 @@ void finUiGraphConfigDlg::applyToGraphConfig(finGraphConfig *graphcfg) const
 {
 
 }
+
+void finUiGraphConfigDlg::on_spbPanelWidth_valueChanged(int arg1)
+{
+    if ( this->_inFilling )
+        return;
+
+    this->_inFilling = true;
+    if ( ui->ckbPanelSizeRatio->isChecked() )
+        ui->spbPanelHeight->setValue((int)floor(arg1 / this->_whRatio));
+    this->_inFilling = false;
+}
+
+void finUiGraphConfigDlg::on_spbPanelHeight_valueChanged(int arg1)
+{
+    if ( this->_inFilling )
+        return;
+
+    this->_inFilling = true;
+    if ( ui->ckbPanelSizeRatio->isChecked() )
+        ui->spbPanelWidth->setValue((int)floor(arg1 * this->_whRatio));
+    this->_inFilling = false;
+}
+
+void finUiGraphConfigDlg::on_ckbPanelSizeRatio_stateChanged(int arg1)
+{
+    if ( arg1 != Qt::Checked )
+        return;
+
+    double pw = (double)ui->spbPanelWidth->value();
+    double ph = (double)ui->spbPanelHeight->value();
+    this->_whRatio = pw / ph;
+}
