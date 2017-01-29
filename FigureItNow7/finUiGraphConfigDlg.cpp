@@ -4,12 +4,17 @@
 #include <qmath.h>
 #include <QPointF>
 
+#include "finErrorCode.h"
+#include "finGraphTrans.h"
+
 finUiGraphConfigDlg::finUiGraphConfigDlg(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::finUiGraphConfigDlg)
 {
     this->_inFilling = true;
     ui->setupUi(this);
+    finGraphTrans::fillTypesInComboBox(ui->cmbTransformType);
+
     this->_whRatio = 4.0 / 3.0;
     this->_origXPosRatio = 0.5;
     this->_origYPosRatio = 0.5;
@@ -51,6 +56,9 @@ void finUiGraphConfigDlg::fillFromGraphConfig(const finGraphConfig *graphcfg)
     ui->dsbAxisUnitSize->setValue(graphcfg->getAxisUnitPixelSize());
     ui->spbAxisZDeg->setValue(_rad_to_deg(graphcfg->getAxisRadZ()));
     ui->dsbAxisZRatio->setValue(graphcfg->getAxisScaleZ());
+
+    QString transtypestr = finGraphTrans::getTransformTypeName(graphcfg->getTransformType());
+    //ui->cmbTransformType->setCurrentIndex(ui->cmbTransformType->);
 
     this->_inFilling = false;
 }

@@ -29,6 +29,17 @@ finGraphTransType finGraphTrans::parseTransformType(const QString &name)
         return finGraphTrans::FIN_GT_TYPE_NONE;
 }
 
+finErrorCode finGraphTrans::fillTypesInComboBox(QComboBox *cmbox)
+{
+    if ( cmbox == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    cmbox->addItem(QString("None"), QVariant(QString("none")));
+    cmbox->addItem(QString("Rectangle"), QVariant(QString("rect")));
+    cmbox->addItem(QString("Affine"), QVariant(QString("affine")));
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finGraphTrans::finGraphTrans()
 {
     this->_type = finGraphTrans::FIN_GT_TYPE_NONE;

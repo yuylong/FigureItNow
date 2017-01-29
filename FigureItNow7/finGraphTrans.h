@@ -3,6 +3,7 @@
 
 #include <QPointF>
 #include <QTransform>
+#include <QComboBox>
 
 #include "finErrorCode.h"
 
@@ -18,6 +19,7 @@ public:
 
     static QString getTransformTypeName(finGraphTransType type);
     static finGraphTransType parseTransformType(const QString &name);
+    static finErrorCode fillTypesInComboBox(QComboBox *cmbox);
 
 protected:
     finGraphTransType _type;
