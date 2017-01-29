@@ -120,3 +120,29 @@ void finUiGraphConfigDlg::on_ckbOriginPtRatio_stateChanged(int state)
     this->_origXPosRatio = ui->spbOriginPtX->value() / pw;
     this->_origYPosRatio = ui->spbOriginPtY->value() / ph;
 }
+
+void finUiGraphConfigDlg::on_spbOriginPtX_valueChanged(int value)
+{
+    if ( this->_inFilling )
+        return;
+
+    this->_inFilling = true;
+    if ( ui->ckbOriginPtRatio->isChecked() ) {
+        double pw = (double)ui->spbPanelWidth->value();
+        this->_origXPosRatio = (double)value / pw;
+    }
+    this->_inFilling = false;
+}
+
+void finUiGraphConfigDlg::on_spbOriginPtY_valueChanged(int value)
+{
+    if ( this->_inFilling )
+        return;
+
+    this->_inFilling = true;
+    if ( ui->ckbOriginPtRatio->isChecked() ) {
+        double ph = (double)ui->spbPanelHeight->value();
+        this->_origYPosRatio = (double)value / ph;
+    }
+    this->_inFilling = false;
+}

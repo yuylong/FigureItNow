@@ -29,7 +29,10 @@ private slots:
     void on_spbPanelWidth_valueChanged(int value);
     void on_spbPanelHeight_valueChanged(int value);
     void on_ckbPanelSizeRatio_stateChanged(int state);
+
     void on_ckbOriginPtRatio_stateChanged(int state);
+    void on_spbOriginPtX_valueChanged(int value);
+    void on_spbOriginPtY_valueChanged(int value);
 
 private:
     Ui::finUiGraphConfigDlg *ui;
