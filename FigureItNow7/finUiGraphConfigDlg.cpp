@@ -14,6 +14,7 @@ finUiGraphConfigDlg::finUiGraphConfigDlg(QWidget *parent) :
     this->_inFilling = true;
     ui->setupUi(this);
     finGraphTrans::fillTypesInComboBox(ui->cmbTransformType);
+    finGraphTransAffine::fillAffineTransActionsInComboBox(ui->cmbTransAffineNewAct);
 
     this->_whRatio = 4.0 / 3.0;
     this->_origXPosRatio = 0.5;

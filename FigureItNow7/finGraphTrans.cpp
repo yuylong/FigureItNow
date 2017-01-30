@@ -172,6 +172,17 @@ finGraphTransAffine::ActionType finGraphTransAffine::parseAffineTransAction(cons
     return finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE;
 }
 
+finErrorCode finGraphTransAffine::fillAffineTransActionsInComboBox(QComboBox *cmbox)
+{
+    if ( cmbox == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    cmbox->addItem(QString("Rotate"), QVariant(QString("rotate")));
+    cmbox->addItem(QString("Scale"), QVariant(QString("scale")));
+    cmbox->addItem(QString("Translate"), QVariant(QString("translate")));
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finGraphTransAffine::finGraphTransAffine()
     : _matrix(), _invMatrix()
 {

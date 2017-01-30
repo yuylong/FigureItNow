@@ -69,6 +69,7 @@ public:
 
     static QString getAffineTransActionName(ActionType type);
     static ActionType parseAffineTransAction(const QString &name);
+    static finErrorCode fillAffineTransActionsInComboBox(QComboBox *cmbox);
 
     struct Action {
         ActionType _type;
