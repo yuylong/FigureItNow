@@ -33,7 +33,7 @@ static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *en
 {
     finErrorCode errcode;
     finExecVariable *cntvar;
-    int arylen = -1;
+    int arylen = -1, aryidx = 0;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
@@ -55,7 +55,6 @@ static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *en
     else if ( arylen > 0 )
         retvar->preallocArrayLength(arylen);
 
-    int aryidx = 0;
     while ( true ) {
         if ( aryidx >= finExecFunction::getExtendArgCount(env) )
             break;
@@ -90,6 +89,7 @@ static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *e
     finErrorCode errcode;
     finExecVariable *rowvar, *colvar;
     int matrow, matcol;
+    int extcnt;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
@@ -119,7 +119,7 @@ static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *e
     if ( matcol == 0 )
         goto out;
 
-    int extcnt = finExecFunction::getExtendArgCount(env);
+    extcnt = finExecFunction::getExtendArgCount(env);
     for ( int rowidx = 0; rowidx < matrow; rowidx++ ) {
         if ( rowidx * matcol >= extcnt )
             break;
