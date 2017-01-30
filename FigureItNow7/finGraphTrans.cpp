@@ -40,6 +40,30 @@ finErrorCode finGraphTrans::fillTypesInComboBox(QComboBox *cmbox)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+int finGraphTrans::getComboBoxIndexForType(QComboBox *cmbox, finGraphTransType type)
+{
+    if ( cmbox == NULL )
+        return -1;
+
+    QString typestr = finGraphTrans::getTransformTypeName(type);
+    for ( int idx = 0; idx < cmbox->count(); idx++ ) {
+        QVariant var = cmbox->itemData(idx);
+        if ( QString::compare(var.toString(), typestr) == 0 )
+            return idx;
+    }
+    return -1;
+}
+
+finErrorCode finGraphTrans::setComboBoxCurrentItemToType(QComboBox *cmbox, finGraphTransType type)
+{
+    int idx = finGraphTrans::getComboBoxIndexForType(cmbox, type);
+    if ( idx < 0 )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+
+    cmbox->setCurrentIndex(idx);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finGraphTrans::finGraphTrans()
 {
     this->_type = finGraphTrans::FIN_GT_TYPE_NONE;

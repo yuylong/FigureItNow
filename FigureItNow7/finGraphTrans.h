@@ -20,6 +20,8 @@ public:
     static QString getTransformTypeName(finGraphTransType type);
     static finGraphTransType parseTransformType(const QString &name);
     static finErrorCode fillTypesInComboBox(QComboBox *cmbox);
+    static int getComboBoxIndexForType(QComboBox *cmbox, finGraphTransType type);
+    static finErrorCode setComboBoxCurrentItemToType(QComboBox *cmbox, finGraphTransType type);
 
 protected:
     finGraphTransType _type;
