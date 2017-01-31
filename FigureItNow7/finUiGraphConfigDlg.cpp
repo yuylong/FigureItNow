@@ -15,6 +15,8 @@ finUiGraphConfigDlg::finUiGraphConfigDlg(QWidget *parent) :
     ui->setupUi(this);
     finGraphTrans::fillTypesInComboBox(ui->cmbTransformType);
     finGraphTransAffine::fillAffineTransActionsInComboBox(ui->cmbTransAffineNewAct);
+    ui->cmbTransAffineNewAct->setCurrentIndex(0);
+    this->syncTransAffineActionArg(0);
 
     this->_whRatio = 4.0 / 3.0;
     this->_origXPosRatio = 0.5;
@@ -59,7 +61,7 @@ void finUiGraphConfigDlg::fillFromGraphConfig(const finGraphConfig *graphcfg)
     ui->dsbAxisZRatio->setValue(graphcfg->getAxisScaleZ());
 
     finGraphTrans::setComboBoxCurrentItemToType(ui->cmbTransformType, graphcfg->getTransformType());
-    syncTransStackView();
+    syncTransStackView(ui->cmbTransformType->currentIndex());
 
     this->_inFilling = false;
 }
@@ -69,12 +71,15 @@ void finUiGraphConfigDlg::applyToGraphConfig(finGraphConfig *graphcfg) const
 
 }
 
-void finUiGraphConfigDlg::syncTransStackView()
+void finUiGraphConfigDlg::syncTransStackView(int idx)
 {
     if ( ui->cmbTransformType->count() <= 0 )
         return;
 
-    QString curdat = ui->cmbTransformType->currentData().toString();
+    if ( idx < 0 || idx >= ui->cmbTransformType->count() )
+        idx = ui->cmbTransformType->currentIndex();
+
+    QString curdat = ui->cmbTransformType->itemData(idx).toString();
     if ( QString::compare(curdat, QString("none")) == 0 )
         ui->stwTransformArgs->setCurrentWidget(ui->stpTransArgNone);
     else if ( QString::compare(curdat, QString("rect")) == 0 )
@@ -82,6 +87,30 @@ void finUiGraphConfigDlg::syncTransStackView()
     else if ( QString::compare(curdat, QString("affine")) == 0 )
         ui->stwTransformArgs->setCurrentWidget(ui->stpTransArgAffine);
     return;
+}
+
+void finUiGraphConfigDlg::syncTransAffineActionArg(int idx)
+{
+    int argcnt = 0;
+
+    if ( ui->cmbTransAffineNewAct->count() <= 0 ) {
+        argcnt = 0;
+    } else {
+        QString actstr = ui->cmbTransAffineNewAct->itemData(idx).toString();
+        finGraphTransAffine::ActionType acttype = finGraphTransAffine::parseAffineTransAction(actstr);
+        argcnt = finGraphTransAffine::getAffineTransActionArgCnt(acttype);
+    }
+
+    if ( argcnt <= 0 ) {
+        ui->dsbTransAffineArgX->setEnabled(false);
+        ui->dsbTransAffineArgY->setEnabled(false);
+    } else if ( argcnt == 1 ) {
+        ui->dsbTransAffineArgX->setEnabled(true);
+        ui->dsbTransAffineArgY->setEnabled(false);
+    } else /*if ( argcnt >= 2 )*/ {
+        ui->dsbTransAffineArgX->setEnabled(true);
+        ui->dsbTransAffineArgY->setEnabled(true);
+    }
 }
 
 void finUiGraphConfigDlg::on_spbPanelWidth_valueChanged(int value)
@@ -173,5 +202,10 @@ void finUiGraphConfigDlg::on_spbOriginPtY_valueChanged(int value)
 
 void finUiGraphConfigDlg::on_cmbTransformType_currentIndexChanged(int index)
 {
-    this->syncTransStackView();
+    this->syncTransStackView(index);
+}
+
+void finUiGraphConfigDlg::on_cmbTransAffineNewAct_currentIndexChanged(int index)
+{
+    this->syncTransAffineActionArg(index);
 }

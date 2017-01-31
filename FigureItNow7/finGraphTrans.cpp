@@ -207,6 +207,24 @@ finErrorCode finGraphTransAffine::fillAffineTransActionsInComboBox(QComboBox *cm
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+int finGraphTransAffine::getAffineTransActionArgCnt(finGraphTransAffine::ActionType type)
+{
+    switch ( type ) {
+      case finGraphTransAffine::FIN_GTA_TYPE_ROTATE:
+        return 1;
+        break;
+
+      case finGraphTransAffine::FIN_GTA_TYPE_SCALE:
+      case finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE:
+        return 2;
+        break;
+
+      default:
+        return 0;
+        break;
+    }
+}
+
 finGraphTransAffine::finGraphTransAffine()
     : _matrix(), _invMatrix()
 {
