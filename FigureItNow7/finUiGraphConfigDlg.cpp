@@ -58,8 +58,8 @@ void finUiGraphConfigDlg::fillFromGraphConfig(const finGraphConfig *graphcfg)
     ui->spbAxisZDeg->setValue(_rad_to_deg(graphcfg->getAxisRadZ()));
     ui->dsbAxisZRatio->setValue(graphcfg->getAxisScaleZ());
 
-    QString transtypestr = finGraphTrans::getTransformTypeName(graphcfg->getTransformType());
-    //ui->cmbTransformType->setCurrentIndex(ui->cmbTransformType->);
+    finGraphTrans::setComboBoxCurrentItemToType(ui->cmbTransformType, graphcfg->getTransformType());
+    syncTransStackView();
 
     this->_inFilling = false;
 }
@@ -67,6 +67,21 @@ void finUiGraphConfigDlg::fillFromGraphConfig(const finGraphConfig *graphcfg)
 void finUiGraphConfigDlg::applyToGraphConfig(finGraphConfig *graphcfg) const
 {
 
+}
+
+void finUiGraphConfigDlg::syncTransStackView()
+{
+    if ( ui->cmbTransformType->count() <= 0 )
+        return;
+
+    QString curdat = ui->cmbTransformType->currentData().toString();
+    if ( QString::compare(curdat, QString("none")) == 0 )
+        ui->stwTransformArgs->setCurrentWidget(ui->stpTransArgNone);
+    else if ( QString::compare(curdat, QString("rect")) == 0 )
+        ui->stwTransformArgs->setCurrentWidget(ui->stpTransArgRect);
+    else if ( QString::compare(curdat, QString("affine")) == 0 )
+        ui->stwTransformArgs->setCurrentWidget(ui->stpTransArgAffine);
+    return;
 }
 
 void finUiGraphConfigDlg::on_spbPanelWidth_valueChanged(int value)
@@ -154,4 +169,9 @@ void finUiGraphConfigDlg::on_spbOriginPtY_valueChanged(int value)
         this->_origYPosRatio = (double)value / ph;
     }
     this->_inFilling = false;
+}
+
+void finUiGraphConfigDlg::on_cmbTransformType_currentIndexChanged(int index)
+{
+    this->syncTransStackView();
 }

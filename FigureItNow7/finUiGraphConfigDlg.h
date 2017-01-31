@@ -25,6 +25,9 @@ public:
     void fillFromGraphConfig(const finGraphConfig *graphcfg);
     void applyToGraphConfig(finGraphConfig *graphcfg) const;
 
+protected:
+    void syncTransStackView();
+
 private slots:
     void on_spbPanelWidth_valueChanged(int value);
     void on_spbPanelHeight_valueChanged(int value);
@@ -33,6 +36,8 @@ private slots:
     void on_ckbOriginPtRatio_stateChanged(int state);
     void on_spbOriginPtX_valueChanged(int value);
     void on_spbOriginPtY_valueChanged(int value);
+
+    void on_cmbTransformType_currentIndexChanged(int index);
 
 private:
     Ui::finUiGraphConfigDlg *ui;
