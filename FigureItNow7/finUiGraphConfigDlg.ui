@@ -832,12 +832,67 @@
        <rect>
         <x>0</x>
         <y>150</y>
-        <width>151</width>
+        <width>111</width>
         <height>24</height>
        </rect>
       </property>
       <property name="text">
-       <string>Clear all actions</string>
+       <string>Clear All</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbTransAffineRemove">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>150</y>
+        <width>101</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Remove</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lblTransAffineMoveTitle">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>150</y>
+        <width>50</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Move:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbTransAffineMoveUp">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>150</y>
+        <width>60</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Up</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbTransAffineMoveDown">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>150</y>
+        <width>60</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Down</string>
       </property>
      </widget>
     </widget>

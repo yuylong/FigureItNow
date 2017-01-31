@@ -101,11 +101,9 @@ void finUiGraphConfigDlg::fillAffineTransArgs(const finGraphTransAffine *affinet
     int rowcnt = affinetrans->getActionCount();
     ui->tbwTransAffineActList->clearContents();
     ui->tbwTransAffineActList->setRowCount(rowcnt);
-    QStringList idlist;
 
     for ( int i = 0; i < rowcnt; i++ ) {
         finGraphTransAffine::Action curact = affinetrans->getActionAt(i);
-        idlist.append(QString::number(i));
         QTableWidgetItem *tblitem;
 
         tblitem = new QTableWidgetItem(finGraphTransAffine::getAffineTransActionName(curact._type));
@@ -116,7 +114,6 @@ void finUiGraphConfigDlg::fillAffineTransArgs(const finGraphTransAffine *affinet
         if ( curact._type == finGraphTransAffine::FIN_GTA_TYPE_ROTATE )
             arg1 = _rad_to_lf_deg(arg1);
         tblitem = new QTableWidgetItem(QString::number(arg1));
-        tblitem->setTextAlignment(Qt::AlignCenter);
         tblitem->setTextAlignment(Qt::AlignCenter);
         ui->tbwTransAffineActList->setItem(i, 1, tblitem);
 
@@ -300,4 +297,33 @@ void finUiGraphConfigDlg::on_cmbTransformType_currentIndexChanged(int index)
 void finUiGraphConfigDlg::on_cmbTransAffineNewAct_currentIndexChanged(int index)
 {
     this->syncTransAffineActionArg(index);
+}
+
+void finUiGraphConfigDlg::on_pbTransAffineReset_clicked()
+{
+    ui->tbwTransAffineActList->clearContents();
+    ui->tbwTransAffineActList->setRowCount(0);
+}
+
+void finUiGraphConfigDlg::on_pbTransAffineAppendAct_clicked()
+{
+    QTableWidgetItem *tblitem;
+    int newrowidx = ui->tbwTransAffineActList->rowCount();
+    ui->tbwTransAffineActList->insertRow(newrowidx);
+
+    tblitem = new QTableWidgetItem(ui->cmbTransAffineNewAct->currentData().toString());
+    tblitem->setTextAlignment(Qt::AlignCenter);
+    ui->tbwTransAffineActList->setItem(newrowidx, 0, tblitem);
+
+    if ( ui->dsbTransAffineArgX->isEnabled() ) {
+        tblitem = new QTableWidgetItem(QString::number(ui->dsbTransAffineArgX->value()));
+        tblitem->setTextAlignment(Qt::AlignCenter);
+        ui->tbwTransAffineActList->setItem(newrowidx, 1, tblitem);
+    }
+
+    if ( ui->dsbTransAffineArgY->isEnabled() ) {
+        tblitem = new QTableWidgetItem(QString::number(ui->dsbTransAffineArgY->value()));
+        tblitem->setTextAlignment(Qt::AlignCenter);
+        ui->tbwTransAffineActList->setItem(newrowidx, 2, tblitem);
+    }
 }

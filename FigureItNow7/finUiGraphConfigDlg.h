@@ -45,6 +45,10 @@ private slots:
     void on_cmbTransformType_currentIndexChanged(int index);
     void on_cmbTransAffineNewAct_currentIndexChanged(int index);
 
+    void on_pbTransAffineReset_clicked();
+
+    void on_pbTransAffineAppendAct_clicked();
+
 private:
     Ui::finUiGraphConfigDlg *ui;
 };
