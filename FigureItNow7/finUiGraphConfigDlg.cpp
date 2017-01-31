@@ -91,25 +91,56 @@ void finUiGraphConfigDlg::syncTransStackView(int idx)
 
 void finUiGraphConfigDlg::syncTransAffineActionArg(int idx)
 {
-    int argcnt = 0;
+    finGraphTransAffine::ActionType acttype = finGraphTransAffine::FIN_GTA_TYPE_ROTATE;
+    finGraphTransAffine::ActArgType argtype = finGraphTransAffine::FIN_GTA_AAT_NONE;
 
-    if ( ui->cmbTransAffineNewAct->count() <= 0 ) {
-        argcnt = 0;
-    } else {
+    if ( ui->cmbTransAffineNewAct->count() > 0 ) {
         QString actstr = ui->cmbTransAffineNewAct->itemData(idx).toString();
-        finGraphTransAffine::ActionType acttype = finGraphTransAffine::parseAffineTransAction(actstr);
-        argcnt = finGraphTransAffine::getAffineTransActionArgCnt(acttype);
+        acttype = finGraphTransAffine::parseAffineTransAction(actstr);
+        argtype = finGraphTransAffine::getAffineTransActionArgType(acttype);
     }
 
-    if ( argcnt <= 0 ) {
-        ui->dsbTransAffineArgX->setEnabled(false);
-        ui->dsbTransAffineArgY->setEnabled(false);
-    } else if ( argcnt == 1 ) {
+    switch ( argtype ) {
+      case finGraphTransAffine::FIN_GTA_AAT_RADIAN:
+        ui->lblTransAffineArgXTitle->setEnabled(true);
         ui->dsbTransAffineArgX->setEnabled(true);
+        ui->dsbTransAffineArgX->setRange(-179.0, 180.0);
+        ui->dsbTransAffineArgX->setSingleStep(5.0);
+        ui->dsbTransAffineArgX->setDecimals(1);
+        ui->dsbTransAffineArgX->setValue(0.0);
+
+        ui->lblTransAffineArgYTitle->setEnabled(false);
         ui->dsbTransAffineArgY->setEnabled(false);
-    } else /*if ( argcnt >= 2 )*/ {
+        break;
+
+      case finGraphTransAffine::FIN_GTA_AAT_XY:
+        ui->lblTransAffineArgXTitle->setEnabled(true);
         ui->dsbTransAffineArgX->setEnabled(true);
+        ui->dsbTransAffineArgX->setRange(-65535.0, 65535.0);
+        ui->dsbTransAffineArgX->setSingleStep(1.0);
+        ui->dsbTransAffineArgX->setDecimals(1);
+        if ( acttype == finGraphTransAffine::FIN_GTA_TYPE_SCALE )
+            ui->dsbTransAffineArgX->setValue(1.0);
+        else
+            ui->dsbTransAffineArgX->setValue(0.0);
+
+        ui->lblTransAffineArgYTitle->setEnabled(true);
         ui->dsbTransAffineArgY->setEnabled(true);
+        ui->dsbTransAffineArgY->setRange(-65535.0, 65535.0);
+        ui->dsbTransAffineArgY->setSingleStep(1.0);
+        ui->dsbTransAffineArgY->setDecimals(1);
+        if ( acttype == finGraphTransAffine::FIN_GTA_TYPE_SCALE )
+            ui->dsbTransAffineArgY->setValue(1.0);
+        else
+            ui->dsbTransAffineArgY->setValue(0.0);
+        break;
+
+      default:
+        ui->lblTransAffineArgXTitle->setEnabled(false);
+        ui->dsbTransAffineArgX->setEnabled(false);
+        ui->lblTransAffineArgYTitle->setEnabled(false);
+        ui->dsbTransAffineArgY->setEnabled(false);
+        break;
     }
 }
 

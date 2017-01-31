@@ -69,10 +69,18 @@ public:
         FIN_GTA_TYPE_TRANSLATE
     };
 
+    enum ActArgType {
+        FIN_GTA_AAT_NONE,
+        FIN_GTA_AAT_RADIAN,
+        FIN_GTA_AAT_XY,
+    };
+
     static QString getAffineTransActionName(ActionType type);
     static ActionType parseAffineTransAction(const QString &name);
     static finErrorCode fillAffineTransActionsInComboBox(QComboBox *cmbox);
+
     static int getAffineTransActionArgCnt(ActionType type);
+    static ActArgType getAffineTransActionArgType(ActionType type);
 
     struct Action {
         ActionType _type;

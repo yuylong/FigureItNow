@@ -225,6 +225,25 @@ int finGraphTransAffine::getAffineTransActionArgCnt(finGraphTransAffine::ActionT
     }
 }
 
+finGraphTransAffine::ActArgType
+finGraphTransAffine::getAffineTransActionArgType(finGraphTransAffine::ActionType type)
+{
+    switch ( type ) {
+      case finGraphTransAffine::FIN_GTA_TYPE_ROTATE:
+        return finGraphTransAffine::FIN_GTA_AAT_RADIAN;
+        break;
+
+      case finGraphTransAffine::FIN_GTA_TYPE_SCALE:
+      case finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE:
+        return finGraphTransAffine::FIN_GTA_AAT_XY;
+        break;
+
+      default:
+        return finGraphTransAffine::FIN_GTA_AAT_NONE;
+        break;
+    }
+}
+
 finGraphTransAffine::finGraphTransAffine()
     : _matrix(), _invMatrix()
 {
