@@ -29,9 +29,14 @@ finUiGraphConfigDlg::~finUiGraphConfigDlg()
     delete ui;
 }
 
+static inline double _rad_to_lf_deg(double rad)
+{
+    return rad * 180.0 / M_PI;
+}
+
 static inline int _rad_to_deg(double rad)
 {
-    return (int)floor(rad * 180.0 / M_PI);
+    return (int)floor(_rad_to_lf_deg(rad));
 }
 
 static inline double _deg_to_rad(int deg)
@@ -94,19 +99,32 @@ void finUiGraphConfigDlg::fillRectTransArgs(const finGraphTransRect *recttrans)
 void finUiGraphConfigDlg::fillAffineTransArgs(const finGraphTransAffine *affinetrans)
 {
     int rowcnt = affinetrans->getActionCount();
+    ui->tbwTransAffineActList->clearContents();
     ui->tbwTransAffineActList->setRowCount(rowcnt);
     QStringList idlist;
 
     for ( int i = 0; i < rowcnt; i++ ) {
-        idlist.append(QString::number(i));
-
         finGraphTransAffine::Action curact = affinetrans->getActionAt(i);
-        ui->tbwTransAffineActList->setItem(
-                    i, 0, new QTableWidgetItem(finGraphTransAffine::getAffineTransActionName(curact._type)));
-        ui->tbwTransAffineActList->setItem(
-                    i, 1, new QTableWidgetItem(QString::number(curact._arg1)));
-        ui->tbwTransAffineActList->setItem(
-                    i, 2, new QTableWidgetItem(QString::number(curact._arg2)));
+        idlist.append(QString::number(i));
+        QTableWidgetItem *tblitem;
+
+        tblitem = new QTableWidgetItem(finGraphTransAffine::getAffineTransActionName(curact._type));
+        tblitem->setTextAlignment(Qt::AlignCenter);
+        ui->tbwTransAffineActList->setItem(i, 0, tblitem);
+
+        double arg1 = curact._arg1;
+        if ( curact._type == finGraphTransAffine::FIN_GTA_TYPE_ROTATE )
+            arg1 = _rad_to_lf_deg(arg1);
+        tblitem = new QTableWidgetItem(QString::number(arg1));
+        tblitem->setTextAlignment(Qt::AlignCenter);
+        tblitem->setTextAlignment(Qt::AlignCenter);
+        ui->tbwTransAffineActList->setItem(i, 1, tblitem);
+
+        if ( finGraphTransAffine::getAffineTransActionArgCnt(curact._type) >= 2 ) {
+            tblitem = new QTableWidgetItem(QString::number(curact._arg2));
+            tblitem->setTextAlignment(Qt::AlignCenter);
+            ui->tbwTransAffineActList->setItem(i, 2, tblitem);
+        }
     }
 }
 

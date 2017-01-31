@@ -666,17 +666,24 @@
         <height>141</height>
        </rect>
       </property>
-      <property name="columnCount">
-       <number>4</number>
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
       </property>
-      <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>90</number>
-      </attribute>
-      <column>
-       <property name="text">
-        <string>ID</string>
-       </property>
-      </column>
+      <property name="showDropIndicator" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="dragDropOverwriteMode">
+       <bool>false</bool>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
+      <property name="columnCount">
+       <number>3</number>
+      </property>
       <column>
        <property name="text">
         <string>Action</string>
