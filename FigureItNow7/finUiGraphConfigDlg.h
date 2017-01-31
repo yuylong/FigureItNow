@@ -26,6 +26,10 @@ public:
     void applyToGraphConfig(finGraphConfig *graphcfg) const;
 
 protected:
+    void resetAllTransArgs();
+    void fillRectTransArgs(const finGraphTransRect *recttrans);
+    void fillAffineTransArgs(const finGraphTransAffine *affinetrans);
+
     void syncTransStackView(int idx);
     void syncTransAffineActionArg(int idx);
 
@@ -39,7 +43,6 @@ private slots:
     void on_spbOriginPtY_valueChanged(int value);
 
     void on_cmbTransformType_currentIndexChanged(int index);
-
     void on_cmbTransAffineNewAct_currentIndexChanged(int index);
 
 private:

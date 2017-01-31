@@ -60,10 +60,54 @@ void finUiGraphConfigDlg::fillFromGraphConfig(const finGraphConfig *graphcfg)
     ui->spbAxisZDeg->setValue(_rad_to_deg(graphcfg->getAxisRadZ()));
     ui->dsbAxisZRatio->setValue(graphcfg->getAxisScaleZ());
 
-    finGraphTrans::setComboBoxCurrentItemToType(ui->cmbTransformType, graphcfg->getTransformType());
+    finGraphTransType transtype = graphcfg->getTransformType();
+    finGraphTrans::setComboBoxCurrentItemToType(ui->cmbTransformType, transtype);
     syncTransStackView(ui->cmbTransformType->currentIndex());
 
+    finGraphTrans *trans = graphcfg->getTransform();
+    this->resetAllTransArgs();
+    if ( transtype == finGraphTrans::FIN_GT_TYPE_RECT )
+        this->fillRectTransArgs((finGraphTransRect *)trans);
+    else if ( transtype == finGraphTrans::FIN_GT_TYPE_AFFINE )
+        this->fillAffineTransArgs((finGraphTransAffine *)trans);
+
     this->_inFilling = false;
+}
+
+void finUiGraphConfigDlg::resetAllTransArgs()
+{
+    // Rect Transformation
+    ui->dsbTransRectZoomX->setValue(1.0);
+    ui->dsbTransRectZoomY->setValue(1.0);
+
+    // Affine Transformation
+    ui->tbwTransAffineActList->clearContents();
+    ui->tbwTransAffineActList->setRowCount(0);
+}
+
+void finUiGraphConfigDlg::fillRectTransArgs(const finGraphTransRect *recttrans)
+{
+    ui->dsbTransRectZoomX->setValue(recttrans->getAxisZoomX());
+    ui->dsbTransRectZoomY->setValue(recttrans->getAxisZoomY());
+}
+
+void finUiGraphConfigDlg::fillAffineTransArgs(const finGraphTransAffine *affinetrans)
+{
+    int rowcnt = affinetrans->getActionCount();
+    ui->tbwTransAffineActList->setRowCount(rowcnt);
+    QStringList idlist;
+
+    for ( int i = 0; i < rowcnt; i++ ) {
+        idlist.append(QString::number(i));
+
+        finGraphTransAffine::Action curact = affinetrans->getActionAt(i);
+        ui->tbwTransAffineActList->setItem(
+                    i, 0, new QTableWidgetItem(finGraphTransAffine::getAffineTransActionName(curact._type)));
+        ui->tbwTransAffineActList->setItem(
+                    i, 1, new QTableWidgetItem(QString::number(curact._arg1)));
+        ui->tbwTransAffineActList->setItem(
+                    i, 2, new QTableWidgetItem(QString::number(curact._arg2)));
+    }
 }
 
 void finUiGraphConfigDlg::applyToGraphConfig(finGraphConfig *graphcfg) const
