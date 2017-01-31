@@ -91,17 +91,15 @@ void finUiGraphConfigDlg::syncTransStackView(int idx)
 
 void finUiGraphConfigDlg::syncTransAffineActionArg(int idx)
 {
-    finGraphTransAffine::ActionType acttype = finGraphTransAffine::FIN_GTA_TYPE_ROTATE;
-    finGraphTransAffine::ActArgType argtype = finGraphTransAffine::FIN_GTA_AAT_NONE;
+    finGraphTransAffine::ActionType acttype = finGraphTransAffine::FIN_GTA_TYPE_DUMMY;
 
     if ( ui->cmbTransAffineNewAct->count() > 0 ) {
         QString actstr = ui->cmbTransAffineNewAct->itemData(idx).toString();
         acttype = finGraphTransAffine::parseAffineTransAction(actstr);
-        argtype = finGraphTransAffine::getAffineTransActionArgType(acttype);
     }
 
-    switch ( argtype ) {
-      case finGraphTransAffine::FIN_GTA_AAT_RADIAN:
+    switch ( acttype ) {
+      case finGraphTransAffine::FIN_GTA_TYPE_ROTATE:
         ui->lblTransAffineArgXTitle->setEnabled(true);
         ui->dsbTransAffineArgX->setEnabled(true);
         ui->dsbTransAffineArgX->setRange(-179.0, 180.0);
@@ -113,7 +111,8 @@ void finUiGraphConfigDlg::syncTransAffineActionArg(int idx)
         ui->dsbTransAffineArgY->setEnabled(false);
         break;
 
-      case finGraphTransAffine::FIN_GTA_AAT_XY:
+      case finGraphTransAffine::FIN_GTA_TYPE_SCALE:
+      case finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE:
         ui->lblTransAffineArgXTitle->setEnabled(true);
         ui->dsbTransAffineArgX->setEnabled(true);
         ui->dsbTransAffineArgX->setRange(-65535.0, 65535.0);

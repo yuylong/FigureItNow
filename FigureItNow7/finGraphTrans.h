@@ -64,6 +64,7 @@ class finGraphTransAffine : public finGraphTrans
 {
 public:
     enum ActionType {
+        FIN_GTA_TYPE_DUMMY,
         FIN_GTA_TYPE_ROTATE,
         FIN_GTA_TYPE_SCALE,
         FIN_GTA_TYPE_TRANSLATE

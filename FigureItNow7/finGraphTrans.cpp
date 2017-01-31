@@ -193,7 +193,7 @@ finGraphTransAffine::ActionType finGraphTransAffine::parseAffineTransAction(cons
         return finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE;
     }
     // We have no dummy value here, and just return a safest one.
-    return finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE;
+    return finGraphTransAffine::FIN_GTA_TYPE_DUMMY;
 }
 
 finErrorCode finGraphTransAffine::fillAffineTransActionsInComboBox(QComboBox *cmbox)
