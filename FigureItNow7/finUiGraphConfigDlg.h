@@ -49,6 +49,8 @@ private slots:
 
     void on_pbTransAffineAppendAct_clicked();
 
+    void on_pbTransAffineRemove_clicked();
+
 private:
     Ui::finUiGraphConfigDlg *ui;
 };

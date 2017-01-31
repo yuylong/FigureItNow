@@ -327,3 +327,18 @@ void finUiGraphConfigDlg::on_pbTransAffineAppendAct_clicked()
         ui->tbwTransAffineActList->setItem(newrowidx, 2, tblitem);
     }
 }
+
+void finUiGraphConfigDlg::on_pbTransAffineRemove_clicked()
+{
+    QList<QTableWidgetSelectionRange> selrange = ui->tbwTransAffineActList->selectedRanges();
+    if ( selrange.count() <= 0 )
+        return;
+
+    ui->tbwTransAffineActList->clearSelection();
+    for ( int i = selrange.count() - 1; i >= 0; i-- ) {
+        const QTableWidgetSelectionRange &currange = selrange.at(i);
+        for ( int rowidx = currange.bottomRow(); rowidx >= currange.topRow(); rowidx-- ) {
+            ui->tbwTransAffineActList->removeRow(rowidx);
+        }
+    }
+}
