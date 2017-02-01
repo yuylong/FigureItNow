@@ -129,6 +129,19 @@ void finUiGraphConfigDlg::fillAffineTransArgs(const finGraphTransAffine *affinet
 
 void finUiGraphConfigDlg::applyToGraphConfig(finGraphConfig *graphcfg) const
 {
+    graphcfg->setBackgroundColor(ui->lblBgColor->color());
+    graphcfg->setPanelPixelWidth((double)ui->spbPanelWidth->value());
+    graphcfg->setPanelPixelHeight((double)ui->spbPanelHeight->value());
+    graphcfg->setOriginPixelPointX((double)ui->spbOriginPtX->value());
+    graphcfg->setOriginPixelPointY((double)ui->spbOriginPtY->value());
+
+    graphcfg->setAxisUnitPixelSize((double)ui->dsbAxisUnitSize->value());
+    graphcfg->setAxisRadZ(_deg_to_rad(ui->spbAxisZDeg->value()));
+    graphcfg->setAxisScaleZ(ui->dsbAxisZRatio->value());
+
+    finGraphTransType transtype = finGraphTrans::parseTransformType(
+                ui->cmbTransformType->currentData().toString());
+    graphcfg->setTransformType(transtype);
 
 }
 
