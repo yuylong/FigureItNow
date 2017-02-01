@@ -32,6 +32,7 @@ protected:
 
     void syncTransStackView(int idx);
     void syncTransAffineActionArg(int idx);
+    void syncTransAffineListMoveButton();
 
 private slots:
     void on_spbPanelWidth_valueChanged(int value);
@@ -54,6 +55,8 @@ private slots:
     void on_pbTransAffineMoveUp_clicked();
 
     void on_pbTransAffineMoveDown_clicked();
+
+    void on_tbwTransAffineActList_itemSelectionChanged();
 
 private:
     Ui::finUiGraphConfigDlg *ui;

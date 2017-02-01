@@ -88,6 +88,7 @@ void finUiGraphConfigDlg::resetAllTransArgs()
     // Affine Transformation
     ui->tbwTransAffineActList->clearContents();
     ui->tbwTransAffineActList->setRowCount(0);
+    this->syncTransAffineListMoveButton();
 }
 
 void finUiGraphConfigDlg::fillRectTransArgs(const finGraphTransRect *recttrans)
@@ -123,6 +124,7 @@ void finUiGraphConfigDlg::fillAffineTransArgs(const finGraphTransAffine *affinet
             ui->tbwTransAffineActList->setItem(i, 2, tblitem);
         }
     }
+    this->syncTransAffineListMoveButton();
 }
 
 void finUiGraphConfigDlg::applyToGraphConfig(finGraphConfig *graphcfg) const
@@ -303,6 +305,7 @@ void finUiGraphConfigDlg::on_pbTransAffineReset_clicked()
 {
     ui->tbwTransAffineActList->clearContents();
     ui->tbwTransAffineActList->setRowCount(0);
+    this->syncTransAffineListMoveButton();
 }
 
 void finUiGraphConfigDlg::on_pbTransAffineAppendAct_clicked()
@@ -326,6 +329,7 @@ void finUiGraphConfigDlg::on_pbTransAffineAppendAct_clicked()
         tblitem->setTextAlignment(Qt::AlignCenter);
         ui->tbwTransAffineActList->setItem(newrowidx, 2, tblitem);
     }
+    this->syncTransAffineListMoveButton();
 }
 
 void finUiGraphConfigDlg::on_pbTransAffineRemove_clicked()
@@ -340,6 +344,35 @@ void finUiGraphConfigDlg::on_pbTransAffineRemove_clicked()
         for ( int rowidx = currange.bottomRow(); rowidx >= currange.topRow(); rowidx-- ) {
             ui->tbwTransAffineActList->removeRow(rowidx);
         }
+    }
+    this->syncTransAffineListMoveButton();
+}
+
+void finUiGraphConfigDlg::syncTransAffineListMoveButton()
+{
+    if ( ui->tbwTransAffineActList->rowCount() < 2 ) {
+        ui->pbTransAffineMoveUp->setEnabled(false);
+        ui->pbTransAffineMoveDown->setEnabled(false);
+        return;
+    }
+
+    QList<QTableWidgetSelectionRange> selrange = ui->tbwTransAffineActList->selectedRanges();
+    if ( selrange.count() <= 0 ) {
+        ui->pbTransAffineMoveUp->setEnabled(false);
+        ui->pbTransAffineMoveDown->setEnabled(false);
+        return;
+    }
+
+    int currow = selrange.first().topRow();
+    if ( currow == 0 ) {
+        ui->pbTransAffineMoveUp->setEnabled(false);
+        ui->pbTransAffineMoveDown->setEnabled(true);
+    } else if ( currow >= ui->tbwTransAffineActList->rowCount() - 1 ) {
+        ui->pbTransAffineMoveUp->setEnabled(true);
+        ui->pbTransAffineMoveDown->setEnabled(false);
+    } else {
+        ui->pbTransAffineMoveUp->setEnabled(true);
+        ui->pbTransAffineMoveDown->setEnabled(true);
     }
 }
 
@@ -383,4 +416,9 @@ void finUiGraphConfigDlg::on_pbTransAffineMoveDown_clicked()
         ui->tbwTransAffineActList->setItem(currow + 1, colidx, curitem);
     }
     ui->tbwTransAffineActList->selectRow(currow + 1);
+}
+
+void finUiGraphConfigDlg::on_tbwTransAffineActList_itemSelectionChanged()
+{
+    this->syncTransAffineListMoveButton();
 }
