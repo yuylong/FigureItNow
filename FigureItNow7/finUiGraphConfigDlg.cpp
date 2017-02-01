@@ -129,6 +129,9 @@ void finUiGraphConfigDlg::fillAffineTransArgs(const finGraphTransAffine *affinet
 
 void finUiGraphConfigDlg::applyToGraphConfig(finGraphConfig *graphcfg) const
 {
+    if ( graphcfg == NULL )
+        return /*finErrorCodeKits::FIN_EC_NULL_POINTER*/;
+
     graphcfg->setBackgroundColor(ui->lblBgColor->color());
     graphcfg->setPanelPixelWidth((double)ui->spbPanelWidth->value());
     graphcfg->setPanelPixelHeight((double)ui->spbPanelHeight->value());
@@ -143,7 +146,41 @@ void finUiGraphConfigDlg::applyToGraphConfig(finGraphConfig *graphcfg) const
                 ui->cmbTransformType->currentData().toString());
     graphcfg->setTransformType(transtype);
 
+    finGraphTrans *trans = graphcfg->getTransform();
+    if ( transtype == finGraphTrans::FIN_GT_TYPE_RECT )
+        this->applyRectTransArgs((finGraphTransRect *)trans);
+    else if ( transtype == finGraphTrans::FIN_GT_TYPE_AFFINE )
+        this->applyAffineTransArgs((finGraphTransAffine *)trans);
 }
+
+void finUiGraphConfigDlg::applyRectTransArgs(finGraphTransRect *recttrans) const
+{
+    if ( recttrans == NULL )
+        return /*finErrorCodeKits::FIN_EC_NULL_POINTER*/;
+
+    double zoomx = ui->dsbTransRectZoomX->value();
+    double zoomy = ui->dsbTransRectZoomY->value();
+
+    if ( zoomx > -1.0e-8 && zoomx < 1.0e-8 )
+        recttrans->setAxisZoomX(1.0);
+    else
+        recttrans->setAxisZoomX(ui->dsbTransRectZoomX->value());
+
+    if ( zoomy > -1.0e-8 && zoomy < 1.0e-8 )
+        recttrans->setAxisZoomY(1.0);
+    else
+        recttrans->setAxisZoomY(ui->dsbTransRectZoomY->value());
+}
+
+void finUiGraphConfigDlg::applyAffineTransArgs(finGraphTransAffine *affinetrans) const
+{
+    if ( affinetrans == NULL )
+        return /*finErrorCodeKits::FIN_EC_NULL_POINTER*/;
+
+    affinetrans->reset();
+
+}
+
 
 void finUiGraphConfigDlg::syncTransStackView(int idx)
 {

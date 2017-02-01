@@ -30,6 +30,9 @@ protected:
     void fillRectTransArgs(const finGraphTransRect *recttrans);
     void fillAffineTransArgs(const finGraphTransAffine *affinetrans);
 
+    void applyRectTransArgs(finGraphTransRect *recttrans) const;
+    void applyAffineTransArgs(finGraphTransAffine *affinetrans) const;
+
     void syncTransStackView(int idx);
     void syncTransAffineActionArg(int idx);
     void syncTransAffineListMoveButton();
