@@ -51,6 +51,10 @@ private slots:
 
     void on_pbTransAffineRemove_clicked();
 
+    void on_pbTransAffineMoveUp_clicked();
+
+    void on_pbTransAffineMoveDown_clicked();
+
 private:
     Ui::finUiGraphConfigDlg *ui;
 };

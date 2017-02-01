@@ -342,3 +342,45 @@ void finUiGraphConfigDlg::on_pbTransAffineRemove_clicked()
         }
     }
 }
+
+void finUiGraphConfigDlg::on_pbTransAffineMoveUp_clicked()
+{
+    QList<QTableWidgetSelectionRange> selrange = ui->tbwTransAffineActList->selectedRanges();
+    if ( selrange.count() <= 0 )
+        return;
+
+    int currow = selrange.first().topRow();
+    if ( currow < 1 )
+        return;
+
+    QTableWidgetItem *curitem, *preitem;
+    for ( int colidx = 0; colidx < ui->tbwTransAffineActList->columnCount(); colidx++ ) {
+        curitem = ui->tbwTransAffineActList->takeItem(currow, colidx);
+        preitem = ui->tbwTransAffineActList->takeItem(currow - 1, colidx);
+
+        ui->tbwTransAffineActList->setItem(currow, colidx, preitem);
+        ui->tbwTransAffineActList->setItem(currow - 1, colidx, curitem);
+    }
+    ui->tbwTransAffineActList->selectRow(currow - 1);
+}
+
+void finUiGraphConfigDlg::on_pbTransAffineMoveDown_clicked()
+{
+    QList<QTableWidgetSelectionRange> selrange = ui->tbwTransAffineActList->selectedRanges();
+    if ( selrange.count() <= 0 )
+        return;
+
+    int currow = selrange.first().topRow();
+    if ( currow >= ui->tbwTransAffineActList->rowCount() - 1 )
+        return;
+
+    QTableWidgetItem *curitem, *nxtitem;
+    for ( int colidx = 0; colidx < ui->tbwTransAffineActList->columnCount(); colidx++ ) {
+        curitem = ui->tbwTransAffineActList->takeItem(currow, colidx);
+        nxtitem = ui->tbwTransAffineActList->takeItem(currow + 1, colidx);
+
+        ui->tbwTransAffineActList->setItem(currow, colidx, nxtitem);
+        ui->tbwTransAffineActList->setItem(currow + 1, colidx, curitem);
+    }
+    ui->tbwTransAffineActList->selectRow(currow + 1);
+}
