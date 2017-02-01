@@ -350,14 +350,23 @@ void finUiGraphConfigDlg::on_pbTransAffineRemove_clicked()
 
 void finUiGraphConfigDlg::syncTransAffineListMoveButton()
 {
-    if ( ui->tbwTransAffineActList->rowCount() < 2 ) {
+    int rowcnt = ui->tbwTransAffineActList->rowCount();
+    if ( rowcnt <= 0 )
+        ui->pbTransAffineReset->setEnabled(false);
+    else
+        ui->pbTransAffineReset->setEnabled(true);
+
+
+    QList<QTableWidgetSelectionRange> selrange = ui->tbwTransAffineActList->selectedRanges();
+    if ( selrange.count() <= 0 ) {
+        ui->pbTransAffineRemove->setEnabled(false);
         ui->pbTransAffineMoveUp->setEnabled(false);
         ui->pbTransAffineMoveDown->setEnabled(false);
         return;
     }
 
-    QList<QTableWidgetSelectionRange> selrange = ui->tbwTransAffineActList->selectedRanges();
-    if ( selrange.count() <= 0 ) {
+    ui->pbTransAffineRemove->setEnabled(true);
+    if ( rowcnt < 2 ) {
         ui->pbTransAffineMoveUp->setEnabled(false);
         ui->pbTransAffineMoveDown->setEnabled(false);
         return;
