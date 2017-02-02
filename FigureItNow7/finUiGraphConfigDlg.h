@@ -1,3 +1,17 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ *
+ * History:
+ *
+ * DATE      REV  AUTHOR       COMMENTS
+ * 20170127    0  Yulong Yu    Create this file.
+ * 20170202    1  Yulong Yu    Implement the basic functions in the dialog.
+ */
+
 #ifndef FINUIGRAPHCONFIGDLG_H
 #define FINUIGRAPHCONFIGDLG_H
 
