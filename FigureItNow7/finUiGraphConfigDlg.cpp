@@ -179,10 +179,21 @@ void finUiGraphConfigDlg::applyAffineTransArgs(finGraphTransAffine *affinetrans)
 
     affinetrans->reset();
     for ( int rowidx = 0; rowidx < ui->tbwTransAffineActList->rowCount(); rowidx++ ) {
-        finGraphTransAffine::ActionType acttype =
-                finGraphTransAffine::parseAffineTransAction(ui->tbwTransAffineActList->itemAt(rowidx, 0)->text());
-        double arg1 = ui->tbwTransAffineActList->itemAt(rowidx, 1)->text().toDouble();
-        double arg2 = ui->tbwTransAffineActList->itemAt(rowidx, 2)->text().toDouble();
+        QTableWidgetItem *tblitem;
+        finGraphTransAffine::ActionType acttype = finGraphTransAffine::FIN_GTA_TYPE_DUMMY;
+        double arg1 = 0.0, arg2 = 0.0;
+
+        tblitem = ui->tbwTransAffineActList->item(rowidx, 0);
+        if ( tblitem != NULL )
+            acttype = finGraphTransAffine::parseAffineTransAction(tblitem->text());
+
+        tblitem = ui->tbwTransAffineActList->item(rowidx, 1);
+        if ( tblitem != NULL )
+            arg1 = tblitem->text().toDouble();
+
+        tblitem = ui->tbwTransAffineActList->item(rowidx, 2);
+        if ( tblitem != NULL )
+            arg2 = tblitem->text().toDouble();
 
         switch ( acttype ) {
           case finGraphTransAffine::FIN_GTA_TYPE_ROTATE:

@@ -90,15 +90,6 @@ void MainWindow::on_pushButton_3_clicked()
 {
     finErrorCode errcode;
 
-    finFigureContainer *figcontainer = this->figui->getFigureContainer();
-    finGraphConfig *graphcfg = figcontainer->getGraphConfig();
-    //graphcfg->setAxisUnitPixelSize(20);
-
-    graphcfg->setTransformType(finGraphTrans::FIN_GT_TYPE_AFFINE);
-    finGraphTransAffine *trans = (finGraphTransAffine *)graphcfg->getTransform();
-    trans->reset();
-    trans->appendRotate(-M_PI/4);
-
     this->machine.setScriptCode(ui->plainTextEdit->toPlainText());
 
     errcode = this->machine.compile();
@@ -114,6 +105,7 @@ void MainWindow::on_pushButton_3_clicked()
     else
         printf("Syntax Tree is NULL\n");
 
+    finFigureContainer *figcontainer = this->figui->getFigureContainer();
     figcontainer->dump();
     this->figui->applyFigure();
     fflush(stdout);
