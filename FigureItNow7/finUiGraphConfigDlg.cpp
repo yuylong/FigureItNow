@@ -178,7 +178,33 @@ void finUiGraphConfigDlg::applyAffineTransArgs(finGraphTransAffine *affinetrans)
         return /*finErrorCodeKits::FIN_EC_NULL_POINTER*/;
 
     affinetrans->reset();
+    for ( int rowidx = 0; rowidx < ui->tbwTransAffineActList->rowCount(); rowidx++ ) {
+        finGraphTransAffine::ActionType acttype =
+                finGraphTransAffine::parseAffineTransAction(ui->tbwTransAffineActList->itemAt(rowidx, 0)->text());
+        double arg1 = ui->tbwTransAffineActList->itemAt(rowidx, 1)->text().toDouble();
+        double arg2 = ui->tbwTransAffineActList->itemAt(rowidx, 2)->text().toDouble();
 
+        switch ( acttype ) {
+          case finGraphTransAffine::FIN_GTA_TYPE_ROTATE:
+            affinetrans->appendRotate(_deg_to_rad((int)floor(arg1)));
+            break;
+
+          case finGraphTransAffine::FIN_GTA_TYPE_SCALE:
+            if ( arg1 > -1.0e-8 && arg1 < 1.0e-8 )
+                arg1 = 1.0;
+            if ( arg2 > -1.0e-8 && arg2 < 1.0e-8 )
+                arg2 = 1.0;
+            affinetrans->appendScale(arg1, arg2);
+            break;
+
+          case finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE:
+            affinetrans->appendTranslate(arg1, arg2);
+            break;
+
+          default:
+            break;
+        }
+    }
 }
 
 
