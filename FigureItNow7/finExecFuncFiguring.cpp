@@ -72,7 +72,7 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("draw_image"),         QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_image         },
     { QString("draw_pinned_image"),  QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_pinned_image  },
     { QString("axis"),               QString("sx,sy,tx,ty,rx1,rx2,ry1,ry2"), _sysfunc_axis               },
-    { QString("fig_function"),       QString("func"),                        _sysfunc_fig_function       },
+    { QString("fig_function"),       QString("x1,x2,func"),                  _sysfunc_fig_function       },
     { QString("line3d"),             QString("x1,y1,z1,x2,y2,z2"),           _sysfunc_line3d             },
     { QString("named_color"),        QString("colorname"),                   _sysfunc_named_color        },
     { QString("read_fig_config"),    QString("cfgname"),                     _sysfunc_read_fig_config    },
@@ -645,17 +645,93 @@ static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env
 static finErrorCode _sysfunc_fig_function(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
+    finErrorCode errcode;
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    finExecVariable *x1var, *x2var;
+    x1var = finExecVariable::transLinkTarget(env->findVariable("x1"));
+    x2var = finExecVariable::transLinkTarget(env->findVariable("x2"));
+    if ( x1var == NULL || x2var == NULL ||
+         x1var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
+         x2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    double x1 = x1var->getNumericValue();
+    double x2 = x2var->getNumericValue();
+    if ( x1 > x2 ) {
+        x1 = x2;
+        x2 = x1var->getNumericValue();
+    }
+    double step = 0.1;
+    finGraphConfig *graphcfg = env->getFigureContainer()->getGraphConfig();
+    if ( graphcfg != NULL ) {
+        step = 3.0 * 1.0 / graphcfg->getAxisUnitPixelSize();
+    }
 
     finExecVariable *funcvar;
     funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
     if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
-    QList<finExecVariable *> funcarglist;
+    QString funcname = funcvar->getStringValue();
+    finExecFunction *func = env->findFunction(funcname);
+    if ( funcname == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
 
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    QList<finExecVariable *> funcarglist = finExecFunction::getExtendArgList(env);
+
+    finExecVariable *xvar = new finExecVariable();
+    if ( xvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    xvar->setName("__fig_func_drv_arg_x");
+    xvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    xvar->setLeftValue();
+    xvar->clearWriteProtected();
+    env->addVariable(xvar);
+    funcarglist.prepend(xvar);
+
+    finFigureObjectPolyline *funcfigobj = new finFigureObjectPolyline();
+    if ( funcfigobj == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    for ( double x = x1; x <= x2; x += step ) {
+        xvar->setNumericValue(x);
+
+        errcode = func->execFunction(&funcarglist, env, machine, flowctl);
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            delete funcfigobj;
+            return errcode;
+        }
+
+        bool goon = true;
+        errcode = flowctl->checkFlowForExpress(&goon, NULL, machine);
+        if ( finErrorCodeKits::isErrorResult(errcode) || !goon ) {
+            delete funcfigobj;
+            return errcode;
+        }
+
+        finExecVariable *retvar = flowctl->pickReturnVariable();
+        if ( retvar == NULL || retvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+            finExecVariable::releaseNonLeftVariable(retvar);
+            delete funcfigobj;
+            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        }
+
+        double y = retvar->getNumericValue();
+        funcfigobj->appendPoint(x, y);
+    }
+
+    errcode = env->getFigureContainer()->appendFigureObject(funcfigobj);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete funcfigobj;
+        return errcode;
+    }
+
+    // Because all extended arguments are left values, we do not release the memory for arglist.
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 static finErrorCode

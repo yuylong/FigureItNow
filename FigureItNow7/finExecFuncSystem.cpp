@@ -54,6 +54,8 @@ static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironm
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
 
     QList<finExecVariable *> arglist = finExecFunction::getExtendArgList(env);
+
+    // All the extended arguments are left values, we do not release the memory here.
     return func->execFunction(&arglist, env, machine, flowctl);
 }
 
