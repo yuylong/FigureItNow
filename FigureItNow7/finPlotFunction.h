@@ -50,6 +50,9 @@ public:
     finErrorCode setMachine(finExecMachine *machine);
     finErrorCode setFlowControl(finExecFlowControl *flowctl);
     finErrorCode setFigureContainer(finFigureContainer *figcontainer);
+
+    bool checkValid() const;
+    finErrorCode plot();
 };
 
 #endif // FINPLOTFUNCTION_H

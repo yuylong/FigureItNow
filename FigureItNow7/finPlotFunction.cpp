@@ -118,3 +118,22 @@ finErrorCode finPlotFunction::setFigureContainer(finFigureContainer *figcontaine
     this->_figcontainer = figcontainer;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+bool finPlotFunction::checkValid() const
+{
+    if ( this->_funcname.isEmpty() )
+        return false;
+    if ( this->_callArgList == NULL || this->_environment == NULL || this->_machine == NULL ||
+         this->_flowctl == NULL || this->_figcontainer == NULL )
+        return false;
+
+    return true;
+}
+
+finErrorCode finPlotFunction::plot()
+{
+    if ( !this->checkValid() )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
