@@ -17,6 +17,7 @@ class finPlotFunction
 protected:
     QString _funcname;
     double _fromX, _toX;
+    double _stepX;
     int _xidx;
 
     QList<finExecVariable *> *_callArgList;
@@ -28,6 +29,15 @@ protected:
 
 public:
     finPlotFunction();
+
+    const QString &getFunctionName() const;
+    double getFigureFromPosition() const;
+    double getFigureToPosition() const;
+    int getIndependentVarIndex() const;
+
+    finErrorCode setFunctionName(const QString &funcname);
+    finErrorCode setFigureRange(double x1, double x2);
+    finErrorCode setIndependentVarIndex(int idx);
 };
 
 #endif // FINPLOTFUNCTION_H
