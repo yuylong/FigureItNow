@@ -12,6 +12,7 @@
 #include "finFigureContainer.h"
 #include "finGraphConfig.h"
 #include "finGraphTrans.h"
+#include "finPlotFunction.h"
 
 
 static finErrorCode _sysfunc_clear_fig(finExecFunction *self, finExecEnvironment *env,
@@ -649,9 +650,15 @@ static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env
 static finErrorCode _sysfunc_fig_function(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    finExecVariable *funcvar;
+    funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
+    if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
     finExecVariable *x1var, *x2var;
     x1var = finExecVariable::transLinkTarget(env->findVariable("x1"));
@@ -661,77 +668,27 @@ static finErrorCode _sysfunc_fig_function(finExecFunction *self, finExecEnvironm
          x2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC )
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
+    QString funcname = funcvar->getStringValue();
     double x1 = x1var->getNumericValue();
     double x2 = x2var->getNumericValue();
-    if ( x1 > x2 ) {
-        x1 = x2;
-        x2 = x1var->getNumericValue();
-    }
-    double step = 0.1;
-    finGraphConfig *graphcfg = env->getFigureContainer()->getGraphConfig();
-    if ( graphcfg != NULL ) {
-        step = 3.0 * 1.0 / graphcfg->getAxisUnitPixelSize();
-    }
 
-    finExecVariable *funcvar;
-    funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
-    if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    finPlotFunction plotfunc;
+    plotfunc.setFunctionName(funcname);
+    plotfunc.setFigureRange(x1, x2);
+    plotfunc.setIndependentVarIndex(0);
 
-    QString funcname = funcvar->getStringValue();
-    finExecFunction *func = env->findFunction(funcname);
-    if ( funcname == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    QList<finExecVariable *> extarglist = finExecFunction::getExtendArgList(env);
+    plotfunc.setCallArgList(&extarglist);
+    plotfunc.setEnvironment(env);
+    plotfunc.setMachine(machine);
+    plotfunc.setFlowControl(flowctl);
+    plotfunc.setFigureContainer(env->getFigureContainer());
 
-    QList<finExecVariable *> funcarglist = finExecFunction::getExtendArgList(env);
-
-    finExecVariable *xvar = new finExecVariable();
-    if ( xvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-
-    xvar->setName("__fig_func_drv_arg_x");
-    xvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
-    xvar->setLeftValue();
-    xvar->clearWriteProtected();
-    env->addVariable(xvar);
-    funcarglist.prepend(xvar);
-
-    finFigureObjectPolyline *funcfigobj = new finFigureObjectPolyline();
-    if ( funcfigobj == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-
-    for ( double x = x1; x <= x2; x += step ) {
-        xvar->setNumericValue(x);
-
-        errcode = func->execFunction(&funcarglist, env, machine, flowctl);
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
-            delete funcfigobj;
-            return errcode;
-        }
-
-        bool goon = true;
-        errcode = flowctl->checkFlowForExpress(&goon, NULL, machine);
-        if ( finErrorCodeKits::isErrorResult(errcode) || !goon ) {
-            delete funcfigobj;
-            return errcode;
-        }
-
-        finExecVariable *retvar = flowctl->pickReturnVariable();
-        if ( retvar == NULL || retvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
-            finExecVariable::releaseNonLeftVariable(retvar);
-            delete funcfigobj;
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
-        }
-
-        double y = retvar->getNumericValue();
-        funcfigobj->appendPoint(x, y);
-    }
-
-    errcode = env->getFigureContainer()->appendFigureObject(funcfigobj);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        delete funcfigobj;
+    finErrorCode errcode = plotfunc.plot();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
-    }
+    if ( !flowctl->isFlowNext() )
+        return errcode;
 
     // Because all extended arguments are left values, we do not release the memory for arglist.
     flowctl->setFlowNext();
