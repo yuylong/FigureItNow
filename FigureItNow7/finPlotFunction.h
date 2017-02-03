@@ -53,6 +53,10 @@ public:
 
     bool checkValid() const;
     finErrorCode plot();
+
+private:
+    double getCurrentStep() const;
+    finErrorCode buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **xvar);
 };
 
 #endif // FINPLOTFUNCTION_H
