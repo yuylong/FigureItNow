@@ -291,7 +291,7 @@ static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment
     double x = xvar->getNumericValue();
     double a = avar->getNumericValue();
     double b = bvar->getNumericValue();
-    double c = bvar->getNumericValue();
+    double c = cvar->getNumericValue();
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
