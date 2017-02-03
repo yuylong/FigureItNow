@@ -215,9 +215,11 @@ finErrorCode finPlotFunction::plot()
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
-    bool goon;
+    bool goon = true, newline = true;
     QPointF prevpt, curpt, nextpt;
-    errcode = this->calcAPoint(this->_fromX, func, &funcarglist, xvar, &prevpt, &goon);
+    double x = this->_fromX;
+
+    errcode = this->calcAPoint(x, func, &funcarglist, xvar, &curpt, &goon);
     if ( finErrorCodeKits::isErrorResult(errcode) || !goon ) {
         delete xvar;
         return errcode;
@@ -228,29 +230,18 @@ finErrorCode finPlotFunction::plot()
         return errcode;
     }
 
-    double x = this->_fromX + step / 2.0;
-    if ( x > this->_toX )
-        x = this->_toX;
-    errcode = this->calcAPoint(x, func, &funcarglist, xvar, &curpt, &goon);
-    if ( finErrorCodeKits::isErrorResult(errcode) || !goon ) {
-        delete xvar;
-        return errcode;
-    }
-
-    finFigureObjectPolyline *funcfigobj = new finFigureObjectPolyline();
-    if ( funcfigobj == NULL ) {
-        delete xvar;
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-    }
-    funcfigobj->appendPoint(prevpt);
-
-    double currad = finFigureAlg::getVectorRadian(curpt - prevpt);
-    double nextrad = 0.0;
+    double curstep;
+    double currad, nextrad = 0.0;
+    finFigureObjectPolyline *funcfigobj = NULL;
 
     while ( curpt.x() < this->_toX ) {
-        double curstep = step * cos(currad);
-        if ( curstep < step * 0.01 )
-            curstep = step * 0.01;
+        if ( newline ) {
+            curstep = step * 0.5;
+        } else {
+            curstep = step * cos(currad);
+            if ( curstep < step * 0.01 )
+                curstep = step * 0.01;
+        }
 
         x += curstep;
         if ( x > this->_toX )
@@ -264,10 +255,31 @@ finErrorCode finPlotFunction::plot()
         }
 
         nextrad = finFigureAlg::getVectorRadian(nextpt - curpt);
-        if ( fabs(nextrad - currad) < 1.0e-8 ) {
-            curpt = nextpt;
-            currad = finFigureAlg::getVectorRadian(curpt - prevpt);
-            continue;
+        if ( newline ) {
+            funcfigobj = new finFigureObjectPolyline();
+            if ( funcfigobj == NULL ) {
+                delete xvar;
+                return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+            }
+            newline = false;
+        } else {
+            double raddiff = fabs(nextrad - currad);
+            if ( raddiff < 1.0e-8 ) {
+                curpt = nextpt;
+                currad = finFigureAlg::getVectorRadian(curpt - prevpt);
+                continue;
+            } else if ( raddiff > M_PI * 0.499999 ) {
+                funcfigobj->appendPoint(curpt);
+                curpt = nextpt;
+                newline = true;
+
+                errcode = this->_figcontainer->appendFigureObject(funcfigobj);
+                if ( finErrorCodeKits::isErrorResult(errcode) ) {
+                    delete funcfigobj;
+                    return errcode;
+                }
+                funcfigobj = NULL;
+            }
         }
 
         prevpt = curpt;
@@ -275,7 +287,10 @@ finErrorCode finPlotFunction::plot()
         currad = nextrad;
         funcfigobj->appendPoint(prevpt);
     }
-    funcfigobj->appendPoint(curpt);
+    if ( newline )
+        this->plotSinglePoint(curpt);
+    else
+        funcfigobj->appendPoint(curpt);
 
     funcarglist.removeOne(xvar);
     delete xvar;
