@@ -231,12 +231,12 @@ finErrorCode finPlotFunction::plot()
     }
 
     double curstep;
-    double currad, nextrad = 0.0;
+    double currad = M_PI / 4.0, nextrad = 0.0;
     finFigureObjectPolyline *funcfigobj = NULL;
 
     while ( curpt.x() < this->_toX ) {
         if ( newline ) {
-            curstep = step * 0.5;
+            curstep = step * 0.01;
         } else {
             curstep = step * cos(currad);
             if ( curstep < step * 0.01 )
@@ -269,9 +269,9 @@ finErrorCode finPlotFunction::plot()
                 currad = finFigureAlg::getVectorRadian(curpt - prevpt);
                 continue;
             } else if ( raddiff > M_PI * 0.499999 ) {
+                funcfigobj->appendPoint(prevpt);
                 funcfigobj->appendPoint(curpt);
                 curpt = nextpt;
-                newline = true;
 
                 errcode = this->_figcontainer->appendFigureObject(funcfigobj);
                 if ( finErrorCodeKits::isErrorResult(errcode) ) {
@@ -279,6 +279,8 @@ finErrorCode finPlotFunction::plot()
                     return errcode;
                 }
                 funcfigobj = NULL;
+                newline = true;
+                continue;
             }
         }
 
