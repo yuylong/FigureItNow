@@ -51,7 +51,8 @@ SOURCES += main.cpp\
     finFigureArrow.cpp \
     finUiFigConfigDlg.cpp \
     finUiColorLabel.cpp \
-    finUiGraphConfigDlg.cpp
+    finUiGraphConfigDlg.cpp \
+    finPlotFunction.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
@@ -85,7 +86,8 @@ HEADERS  += MainWindow.h \
     finFigureArrow.h \
     finUiFigConfigDlg.h \
     finUiColorLabel.h \
-    finUiGraphConfigDlg.h
+    finUiGraphConfigDlg.h \
+    finPlotFunction.h
 
 FORMS    += MainWindow.ui \
     finUiFigConfigDlg.ui \
