@@ -60,6 +60,7 @@ private:
 
     finErrorCode calcAPoint(double x, finExecFunction *func, QList<finExecVariable *> *varlist,
                             finExecVariable *xvar, QPointF *pt, bool *goon);
+    finErrorCode plotSinglePoint(const QPointF &pt);
 };
 
 #endif // FINPLOTFUNCTION_H

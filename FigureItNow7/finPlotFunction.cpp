@@ -1,8 +1,10 @@
 #include "finPlotFunction.h"
 
+#include <qmath.h>
 #include <QPointF>
 
 #include "finExecFunction.h"
+#include "finFigureAlg.h"
 #include "finFigureObject.h"
 #include "finGraphConfig.h"
 
@@ -143,7 +145,7 @@ double finPlotFunction::getCurrentStep() const
 
     finGraphConfig *graphcfg = this->_figcontainer->getGraphConfig();
     if ( graphcfg != NULL )
-        step = 3.0 * 1.0 / graphcfg->getAxisUnitPixelSize();
+        step = 6.0 * 1.0 / graphcfg->getAxisUnitPixelSize();
     return step;
 }
 
@@ -213,24 +215,68 @@ finErrorCode finPlotFunction::plot()
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
+    bool goon;
+    QPointF prevpt, curpt, nextpt;
+    errcode = this->calcAPoint(this->_fromX, func, &funcarglist, xvar, &prevpt, &goon);
+    if ( finErrorCodeKits::isErrorResult(errcode) || !goon ) {
+        delete xvar;
+        return errcode;
+    }
+    if ( this->_toX - this->_fromX < 1.0e-8 ) {
+        errcode = this->plotSinglePoint(prevpt);
+        delete xvar;
+        return errcode;
+    }
+
+    double x = this->_fromX + step / 2.0;
+    if ( x > this->_toX )
+        x = this->_toX;
+    errcode = this->calcAPoint(x, func, &funcarglist, xvar, &curpt, &goon);
+    if ( finErrorCodeKits::isErrorResult(errcode) || !goon ) {
+        delete xvar;
+        return errcode;
+    }
+
     finFigureObjectPolyline *funcfigobj = new finFigureObjectPolyline();
     if ( funcfigobj == NULL ) {
         delete xvar;
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
     }
+    funcfigobj->appendPoint(prevpt);
 
-    for ( double x = this->_fromX; x <= this->_toX; x += step ) {
-        bool goon = true;
-        QPointF curpt;
+    double currad = finFigureAlg::getVectorRadian(curpt - prevpt);
+    double nextrad = 0.0;
 
-        errcode = this->calcAPoint(x, func, &funcarglist, xvar, &curpt, &goon);
+    while ( curpt.x() < this->_toX ) {
+        double curstep = step * cos(currad);
+        if ( curstep < step * 0.01 )
+            curstep = step * 0.01;
+
+        x += curstep;
+        if ( x > this->_toX )
+            x = this->_toX;
+
+        errcode = this->calcAPoint(x, func, &funcarglist, xvar, &nextpt, &goon);
         if ( finErrorCodeKits::isErrorResult(errcode) || !goon ) {
             delete funcfigobj;
             delete xvar;
             return errcode;
         }
-        funcfigobj->appendPoint(curpt);
+
+        nextrad = finFigureAlg::getVectorRadian(nextpt - curpt);
+        if ( fabs(nextrad - currad) < 1.0e-8 ) {
+            curpt = nextpt;
+            currad = finFigureAlg::getVectorRadian(curpt - prevpt);
+            continue;
+        }
+
+        prevpt = curpt;
+        curpt = nextpt;
+        currad = nextrad;
+        funcfigobj->appendPoint(prevpt);
     }
+    funcfigobj->appendPoint(curpt);
+
     funcarglist.removeOne(xvar);
     delete xvar;
 
@@ -242,4 +288,14 @@ finErrorCode finPlotFunction::plot()
 
     // Because all extended arguments are left values, we do not release the memory for arglist.
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotFunction::plotSinglePoint(const QPointF &pt)
+{
+    finFigureObjectDot *fodot = new finFigureObjectDot();
+    if ( fodot == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    fodot->setPoint(pt);
+    return this->_figcontainer->appendFigureObject(fodot);
 }
