@@ -1,6 +1,8 @@
 #include "finPlotFunction.h"
 
 #include "finExecFunction.h"
+#include "finFigureObject.h"
+
 
 finPlotFunction::finPlotFunction()
 {
@@ -59,5 +61,60 @@ finErrorCode finPlotFunction::setIndependentVarIndex(int idx)
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
     this->_xidx = idx;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+QList<finExecVariable *> *finPlotFunction::getCallArgList() const
+{
+    return this->_callArgList;
+}
+
+finExecEnvironment *finPlotFunction::getEnvironment() const
+{
+    return this->_environment;
+}
+
+finExecMachine *finPlotFunction::getMachine() const
+{
+    return this->_machine;
+}
+
+finExecFlowControl *finPlotFunction::getFlowControl() const
+{
+    return this->_flowctl;
+}
+
+finFigureContainer *finPlotFunction::getFigureContainer() const
+{
+    return this->_figcontainer;
+}
+
+finErrorCode finPlotFunction::setCallArgList(QList<finExecVariable *> *arglist)
+{
+    this->_callArgList = arglist;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotFunction::setEnvironment(finExecEnvironment *env)
+{
+    this->_environment = env;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotFunction::setMachine(finExecMachine *machine)
+{
+    this->_machine = machine;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotFunction::setFlowControl(finExecFlowControl *flowctl)
+{
+    this->_flowctl = flowctl;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotFunction::setFigureContainer(finFigureContainer *figcontainer)
+{
+    this->_figcontainer = figcontainer;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
