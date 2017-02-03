@@ -92,6 +92,8 @@ public:
     static finExecVariable *getExtendArgHereAt(finExecEnvironment *env, int idx);
     static int getExtendArgCount(finExecEnvironment *env);
     static finExecVariable *getExtendArgAt(finExecEnvironment *env, int idx);
+    static QList<finExecVariable *> getExtendArgList(finExecEnvironment *env);
+
     static int getPreviousExtendArgCount(finExecEnvironment *env);
     static finExecVariable *getPreviousExtendArgAt(finExecEnvironment *env, int idx);
     static int getPreviousExtendArgCount(finExecEnvironment *env, int level);

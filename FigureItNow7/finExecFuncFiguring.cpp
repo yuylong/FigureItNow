@@ -40,8 +40,12 @@ static finErrorCode _sysfunc_draw_pinned_image(finExecFunction *self, finExecEnv
                                                finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env,
                                   finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_fig_function(finExecFunction *self, finExecEnvironment *env,
+                                          finExecMachine *machine, finExecFlowControl *flowctl);
+
 static finErrorCode _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl);
+
 static finErrorCode _sysfunc_named_color(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvironment *env,
@@ -68,6 +72,7 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("draw_image"),         QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_image         },
     { QString("draw_pinned_image"),  QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_pinned_image  },
     { QString("axis"),               QString("sx,sy,tx,ty,rx1,rx2,ry1,ry2"), _sysfunc_axis               },
+    { QString("fig_function"),       QString("func"),                        _sysfunc_fig_function       },
     { QString("line3d"),             QString("x1,y1,z1,x2,y2,z2"),           _sysfunc_line3d             },
     { QString("named_color"),        QString("colorname"),                   _sysfunc_named_color        },
     { QString("read_fig_config"),    QString("cfgname"),                     _sysfunc_read_fig_config    },
@@ -635,6 +640,22 @@ static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env
     }
     flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_fig_function(finExecFunction *self, finExecEnvironment *env,
+                                          finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    finExecVariable *funcvar;
+    funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
+    if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    QList<finExecVariable *> funcarglist;
+
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
 
 static finErrorCode

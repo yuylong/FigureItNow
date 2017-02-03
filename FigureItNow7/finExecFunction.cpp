@@ -399,6 +399,22 @@ finExecVariable *finExecFunction::getExtendArgAt(finExecEnvironment *env, int id
     return finExecFunction::getExtendArgHereAt(funcenv, idx);
 }
 
+QList<finExecVariable *> finExecFunction::getExtendArgList(finExecEnvironment *env)
+{
+    QList<finExecVariable *> arglist;
+    finExecVariable *argvar;
+    int idx = 0;
+    while ( true ) {
+        argvar = finExecFunction::getExtendArgAt(env, idx);
+        if ( argvar == NULL )
+            break;
+
+        arglist.append(argvar);
+        idx++;
+    }
+    return arglist;
+}
+
 int finExecFunction::getPreviousExtendArgCount(finExecEnvironment *env)
 {
     int envlevel = env->getPreviousBelongFunctionEnvLevelIdx();

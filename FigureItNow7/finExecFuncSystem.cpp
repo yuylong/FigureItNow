@@ -53,18 +53,7 @@ static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironm
     if ( func == NULL )
         return finErrorCodeKits::FIN_EC_NOT_FOUND;
 
-    QList<finExecVariable *> arglist;
-    finExecVariable *argvar;
-    int idx = 0;
-    while ( true ) {
-        argvar = finExecFunction::getExtendArgAt(env, idx);
-        if ( argvar == NULL )
-            break;
-
-        arglist.append(argvar);
-        idx++;
-    }
-
+    QList<finExecVariable *> arglist = finExecFunction::getExtendArgList(env);
     return func->execFunction(&arglist, env, machine, flowctl);
 }
 
