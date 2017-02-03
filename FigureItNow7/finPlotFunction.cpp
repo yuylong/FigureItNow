@@ -160,8 +160,8 @@ finErrorCode finPlotFunction::buildFuncArgList(QList<finExecVariable *> *varlist
 
     (*xvar)->setName("__fig_func_drv_arg_x");
     (*xvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
-    (*xvar)->clearLeftValue();
-    (*xvar)->setWriteProtected();
+    (*xvar)->setLeftValue();
+    (*xvar)->clearWriteProtected();
 
     *varlist = *this->_callArgList;
     varlist->insert(this->_xidx, *xvar);
