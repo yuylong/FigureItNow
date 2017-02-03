@@ -1,5 +1,7 @@
 #include "finPlotFunction.h"
 
+#include <QPointF>
+
 #include "finExecFunction.h"
 #include "finFigureObject.h"
 #include "finGraphConfig.h"
@@ -164,6 +166,35 @@ finErrorCode finPlotFunction::buildFuncArgList(QList<finExecVariable *> *varlist
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finPlotFunction::calcAPoint(double x, finExecFunction *func, QList<finExecVariable *> *varlist,
+                                         finExecVariable *xvar, QPointF *pt, bool *goon)
+{
+    if ( varlist == NULL || xvar == NULL || pt == NULL || goon == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    finErrorCode errcode;
+    xvar->setNumericValue(x);
+
+    errcode = func->execFunction(varlist, this->_environment, this->_machine, this->_flowctl);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    errcode = this->_flowctl->checkFlowForExpress(goon, NULL, this->_machine);
+    if ( finErrorCodeKits::isErrorResult(errcode) || !(*goon) )
+        return errcode;
+
+    finExecVariable *retvar = this->_flowctl->pickReturnVariable();
+    if ( retvar == NULL || retvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+        finExecVariable::releaseNonLeftVariable(retvar);
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+
+    pt->setX(x);
+    pt->setY(retvar->getNumericValue());
+    finExecVariable::releaseNonLeftVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode finPlotFunction::plot()
 {
     if ( !this->checkValid() )
@@ -189,35 +220,18 @@ finErrorCode finPlotFunction::plot()
     }
 
     for ( double x = this->_fromX; x <= this->_toX; x += step ) {
-        xvar->setNumericValue(x);
-
-        errcode = func->execFunction(&funcarglist, this->_environment, this->_machine, this->_flowctl);
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
-            delete funcfigobj;
-            delete xvar;
-            return errcode;
-        }
-
         bool goon = true;
-        errcode = this->_flowctl->checkFlowForExpress(&goon, NULL, this->_machine);
+        QPointF curpt;
+
+        errcode = this->calcAPoint(x, func, &funcarglist, xvar, &curpt, &goon);
         if ( finErrorCodeKits::isErrorResult(errcode) || !goon ) {
             delete funcfigobj;
             delete xvar;
             return errcode;
         }
-
-        finExecVariable *retvar = this->_flowctl->pickReturnVariable();
-        if ( retvar == NULL || retvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
-            finExecVariable::releaseNonLeftVariable(retvar);
-            delete funcfigobj;
-            delete xvar;
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
-        }
-
-        double y = retvar->getNumericValue();
-        finExecVariable::releaseNonLeftVariable(retvar);
-        funcfigobj->appendPoint(x, y);
+        funcfigobj->appendPoint(curpt);
     }
+    funcarglist.removeOne(xvar);
     delete xvar;
 
     errcode = this->_figcontainer->appendFigureObject(funcfigobj);

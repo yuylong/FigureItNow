@@ -57,6 +57,9 @@ public:
 private:
     double getCurrentStep() const;
     finErrorCode buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **xvar);
+
+    finErrorCode calcAPoint(double x, finExecFunction *func, QList<finExecVariable *> *varlist,
+                            finExecVariable *xvar, QPointF *pt, bool *goon);
 };
 
 #endif // FINPLOTFUNCTION_H
