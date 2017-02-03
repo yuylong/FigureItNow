@@ -42,16 +42,17 @@ static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment
                                        finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
-    { QString("sin"),    QString("rad"),      _sysfunc_sin    },
-    { QString("cos"),    QString("rad"),      _sysfunc_cos    },
-    { QString("tan"),    QString("rad"),      _sysfunc_tan    },
-    { QString("tg"),     QString("rad"),      _sysfunc_tan    },
-    { QString("cot"),    QString("rad"),      _sysfunc_cot    },
-    { QString("ctg"),    QString("rad"),      _sysfunc_cot    },
-    { QString("ln"),     QString("base"),     _sysfunc_ln     },
-    { QString("log"),    QString("idx,base"), _sysfunc_log    },
+    { QString("sin"),       QString("rad"),      _sysfunc_sin       },
+    { QString("cos"),       QString("rad"),      _sysfunc_cos       },
+    { QString("tan"),       QString("rad"),      _sysfunc_tan       },
+    { QString("tg"),        QString("rad"),      _sysfunc_tan       },
+    { QString("cot"),       QString("rad"),      _sysfunc_cot       },
+    { QString("ctg"),       QString("rad"),      _sysfunc_cot       },
+    { QString("ln"),        QString("base"),     _sysfunc_ln        },
+    { QString("log"),       QString("idx,base"), _sysfunc_log       },
 
-    { QString("linear"), QString ("x,a,b"),   _sysfunc_linear },
+    { QString("linear"),    QString ("x,a,b"),   _sysfunc_linear    },
+    { QString("quadratic"), QString ("x,a,b,c"), _sysfunc_quadratic },
 
     { QString(), QString(), NULL }
 };
@@ -259,6 +260,45 @@ static finErrorCode _sysfunc_linear(finExecFunction *self, finExecEnvironment *e
 
     retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
     retvar->setNumericValue(a * x + b);
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *xvar, *avar, *bvar, *cvar, *retvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    xvar = finExecVariable::transLinkTarget(env->findVariable("x"));
+    avar = finExecVariable::transLinkTarget(env->findVariable("a"));
+    bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
+    cvar = finExecVariable::transLinkTarget(env->findVariable("c"));
+    if ( xvar == NULL || avar == NULL || bvar == NULL || cvar == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    if ( xvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         avar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         bvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         cvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    double x = xvar->getNumericValue();
+    double a = avar->getNumericValue();
+    double b = bvar->getNumericValue();
+    double c = bvar->getNumericValue();
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setNumericValue((a * x + b) * x + c);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
 
