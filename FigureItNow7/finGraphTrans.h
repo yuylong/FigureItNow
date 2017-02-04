@@ -28,6 +28,7 @@ protected:
 
 public:
     finGraphTrans();
+    virtual ~finGraphTrans();
 
     virtual finErrorCode cloneTransform(const finGraphTrans *trans);
     finGraphTransType getTransformType() const;
@@ -46,6 +47,7 @@ protected:
 
 public:
     finGraphTransRect();
+    virtual ~finGraphTransRect();
 
     virtual finErrorCode cloneTransform(const finGraphTrans *trans);
     virtual bool isLinear() const;
@@ -95,6 +97,7 @@ protected:
 
 public:
     finGraphTransAffine();
+    virtual ~finGraphTransAffine();
 
     virtual finErrorCode cloneTransform(const finGraphTrans *trans);
     virtual bool isLinear() const;

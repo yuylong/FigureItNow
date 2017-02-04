@@ -69,6 +69,11 @@ finGraphTrans::finGraphTrans()
     this->_type = finGraphTrans::FIN_GT_TYPE_NONE;
 }
 
+finGraphTrans::~finGraphTrans()
+{
+    return;
+}
+
 finErrorCode finGraphTrans::cloneTransform(const finGraphTrans *trans)
 {
     if ( trans == NULL || trans->getTransformType() != this->_type )
@@ -102,6 +107,11 @@ finGraphTransRect::finGraphTransRect()
     this->_type = finGraphTrans::FIN_GT_TYPE_RECT;
     this->_axisZoomX = 1.0;
     this->_axisZoomY = 1.0;
+}
+
+finGraphTransRect::~finGraphTransRect()
+{
+    return;
 }
 
 finErrorCode finGraphTransRect::cloneTransform(const finGraphTrans *trans)
@@ -179,8 +189,11 @@ QString finGraphTransAffine::getAffineTransActionName(finGraphTransAffine::Actio
       case finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE:
         return QString("translate");
         break;
+
+      default:
+        return QString("none");
+        break;
     }
-    return QString("none");
 }
 
 finGraphTransAffine::ActionType finGraphTransAffine::parseAffineTransAction(const QString &name)
@@ -248,6 +261,11 @@ finGraphTransAffine::finGraphTransAffine()
     : _matrix(), _invMatrix()
 {
     this->_type = finGraphTrans::FIN_GT_TYPE_AFFINE;
+}
+
+finGraphTransAffine::~finGraphTransAffine()
+{
+    return;
 }
 
 finErrorCode finGraphTransAffine::cloneTransform(const finGraphTrans *trans)
