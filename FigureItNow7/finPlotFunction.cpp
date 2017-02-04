@@ -10,6 +10,7 @@
 
 
 finPlotFunction::finPlotFunction()
+    : _stmPlot()
 {
     this->_funcname = QString();
     this->_fromX = 0.0;
@@ -19,7 +20,9 @@ finPlotFunction::finPlotFunction()
     this->_environment = NULL;
     this->_machine = NULL;
     this->_flowctl = NULL;
-    this->_figcontainer = NULL;
+    this->_stmPlot.setFigureContainer(NULL);
+    this->_stmPlot.clearPoints();
+    this->_stmPlot.clearBreakPoints();
 }
 
 const QString &finPlotFunction::getFunctionName() const
@@ -91,7 +94,7 @@ finExecFlowControl *finPlotFunction::getFlowControl() const
 
 finFigureContainer *finPlotFunction::getFigureContainer() const
 {
-    return this->_figcontainer;
+    return this->_stmPlot.getFigureContainer();
 }
 
 finErrorCode finPlotFunction::setCallArgList(QList<finExecVariable *> *arglist)
@@ -120,8 +123,7 @@ finErrorCode finPlotFunction::setFlowControl(finExecFlowControl *flowctl)
 
 finErrorCode finPlotFunction::setFigureContainer(finFigureContainer *figcontainer)
 {
-    this->_figcontainer = figcontainer;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return this->_stmPlot.setFigureContainer(figcontainer);
 }
 
 bool finPlotFunction::checkValid() const
@@ -129,7 +131,7 @@ bool finPlotFunction::checkValid() const
     if ( this->_funcname.isEmpty() )
         return false;
     if ( this->_callArgList == NULL || this->_environment == NULL || this->_machine == NULL ||
-         this->_flowctl == NULL || this->_figcontainer == NULL )
+         this->_flowctl == NULL || this->_stmPlot.getFigureContainer() == NULL )
         return false;
     if ( this->_xidx < 0 || this->_xidx > this->_callArgList->count() )
         return false;
@@ -140,12 +142,12 @@ bool finPlotFunction::checkValid() const
 double finPlotFunction::getCurrentStep() const
 {
     double step = 0.1;
-    if ( this->_figcontainer == NULL )
+    if ( this->_stmPlot.getFigureContainer() == NULL )
         return step;
 
-    finGraphConfig *graphcfg = this->_figcontainer->getGraphConfig();
+    finGraphConfig *graphcfg = this->_stmPlot.getFigureContainer()->getGraphConfig();
     if ( graphcfg != NULL )
-        step = 6.0 * 1.0 / graphcfg->getAxisUnitPixelSize();
+        step = 6.0 / graphcfg->getAxisUnitPixelSize();
     return step;
 }
 
@@ -215,104 +217,43 @@ finErrorCode finPlotFunction::plot()
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
-    bool goon = true, newline = true;
-    QPointF prevpt, curpt, nextpt;
-    double x = this->_fromX;
+    bool goon = true;
+    QPointF prevpt, curpt;
+    bool prevNaN = true, prevInf = false;
 
-    errcode = this->calcAPoint(x, func, &funcarglist, xvar, &curpt, &goon);
-    if ( finErrorCodeKits::isErrorResult(errcode) || !goon ) {
-        delete xvar;
-        return errcode;
-    }
-    if ( this->_toX - this->_fromX < 1.0e-8 ) {
-        errcode = this->plotSinglePoint(prevpt);
-        delete xvar;
-        return errcode;
-    }
-
-    double curstep;
-    double currad = M_PI / 4.0, nextrad = 0.0;
-    finFigureObjectPolyline *funcfigobj = NULL;
-
-    while ( curpt.x() < this->_toX ) {
-        if ( newline ) {
-            curstep = step * 0.01;
-        } else {
-            curstep = step * cos(currad);
-            if ( curstep < step * 0.01 )
-                curstep = step * 0.01;
-        }
-
-        x += curstep;
-        if ( x > this->_toX )
-            x = this->_toX;
-
-        errcode = this->calcAPoint(x, func, &funcarglist, xvar, &nextpt, &goon);
+    for ( double x = this->_fromX; x <= this->_toX; x += step ) {
+        errcode = this->calcAPoint(x, func, &funcarglist, xvar, &curpt, &goon);
         if ( finErrorCodeKits::isErrorResult(errcode) || !goon ) {
-            delete funcfigobj;
             delete xvar;
             return errcode;
         }
 
-        nextrad = finFigureAlg::getVectorRadian(nextpt - curpt);
-        if ( newline ) {
-            funcfigobj = new finFigureObjectPolyline();
-            if ( funcfigobj == NULL ) {
-                delete xvar;
-                return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-            }
-            newline = false;
+        if ( qIsNaN(curpt.y()) ) {
+            if ( !prevNaN && !prevInf )
+                this->_stmPlot.appendBreakPoint(prevpt);
+            prevNaN = true;
         } else {
-            double raddiff = fabs(nextrad - currad);
-            if ( raddiff < 1.0e-8 ) {
-                curpt = nextpt;
-                currad = finFigureAlg::getVectorRadian(curpt - prevpt);
-                continue;
-            } else if ( raddiff > M_PI * 0.499999 ) {
-                funcfigobj->appendPoint(prevpt);
-                funcfigobj->appendPoint(curpt);
-                curpt = nextpt;
-
-                errcode = this->_figcontainer->appendFigureObject(funcfigobj);
-                if ( finErrorCodeKits::isErrorResult(errcode) ) {
-                    delete funcfigobj;
-                    return errcode;
-                }
-                funcfigobj = NULL;
-                newline = true;
-                continue;
-            }
+            prevNaN = false;
+        }
+        if ( qIsInf(curpt.y()) ) {
+            if ( curpt.y() < 0 )
+                curpt.setY(-65535.0);
+            else
+                curpt.setY(65535.0);
+            this->_stmPlot.appendBreakPoint(curpt);
+            prevInf = true;
+        } else {
+            prevInf = false;
         }
 
+        this->_stmPlot.appendPoint(curpt);
         prevpt = curpt;
-        curpt = nextpt;
-        currad = nextrad;
-        funcfigobj->appendPoint(prevpt);
     }
-    if ( newline )
-        this->plotSinglePoint(curpt);
-    else
-        funcfigobj->appendPoint(curpt);
 
     funcarglist.removeOne(xvar);
     delete xvar;
 
-    errcode = this->_figcontainer->appendFigureObject(funcfigobj);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        delete funcfigobj;
-        return errcode;
-    }
-
     // Because all extended arguments are left values, we do not release the memory for arglist.
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return this->_stmPlot.plot();
 }
 
-finErrorCode finPlotFunction::plotSinglePoint(const QPointF &pt)
-{
-    finFigureObjectDot *fodot = new finFigureObjectDot();
-    if ( fodot == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-
-    fodot->setPoint(pt);
-    return this->_figcontainer->appendFigureObject(fodot);
-}

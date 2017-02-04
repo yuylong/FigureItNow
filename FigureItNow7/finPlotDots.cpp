@@ -216,15 +216,16 @@ finErrorCode finPlotDotsStream::plot()
 
     for ( int i = 0; i + 1 < this->_ptList.count(); i++ ) {
         const QPointF &curpt = this->_ptList.at(i);
+        prevrad = currad;
+        currad = finFigureAlg::getVectorRadian(this->_ptList.at(i + 1) - curpt);
+
         if ( this->checkBreakPointFrom(curpt, brkptidx, &brkptidx) ) {
             isnewline = true;
         } else if ( !isnewline ) {
-            currad = finFigureAlg::getVectorRadian(this->_ptList.at(i + 1) - curpt);
             if ( fabs(currad - prevrad) >= M_PI * 0.49998 )
                 isnewline = true;
             else
                 isnewline = false;
-            prevrad = currad;
         } else {
             isnewline = false;
         }

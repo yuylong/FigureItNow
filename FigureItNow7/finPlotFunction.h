@@ -10,6 +10,7 @@
 #include "finExecEnvironment.h"
 #include "finExecMachine.h"
 #include "finFigureContainer.h"
+#include "finPlotDots.h"
 
 
 class finPlotFunction
@@ -25,7 +26,7 @@ protected:
     finExecMachine *_machine;
 
     finExecFlowControl *_flowctl;
-    finFigureContainer *_figcontainer;
+    finPlotDotsStream _stmPlot;
 
 public:
     finPlotFunction();

@@ -264,7 +264,7 @@ void finFigureObjectPolyline::dump() const
         return;
     }
 
-    printf("(%lf, %lf)", this->_ptList.at(0).x(), this->_ptList.at(1).y());
+    printf("(%lf, %lf)", this->_ptList.at(0).x(), this->_ptList.at(0).y());
     for ( int i = 1; i < this->_ptList.count(); i++ ) {
         printf(" -- (%lf, %lf)", this->_ptList.at(i).x(), this->_ptList.at(i).y());
     }
@@ -484,7 +484,7 @@ void finFigureObjectPolygon::dump() const
         return;
     }
 
-    printf("(%lf, %lf)", this->_ptList.at(0).x(), this->_ptList.at(1).y());
+    printf("(%lf, %lf)", this->_ptList.at(0).x(), this->_ptList.at(0).y());
     for ( int i = 1; i < this->_ptList.count(); i++ ) {
         printf(" -- (%lf, %lf)", this->_ptList.at(i).x(), this->_ptList.at(i).y());
     }
