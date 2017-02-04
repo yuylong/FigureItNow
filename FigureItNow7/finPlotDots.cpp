@@ -198,6 +198,28 @@ finErrorCode finPlotDotsStream::clearBreakPoints()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+bool finPlotDotsStream::checkNaNOrInfPoint(QPointF *pt)
+{
+    if ( this->isNanPoint(*pt) )
+        return true;
+
+    bool isinf = false;
+    if ( qIsInf(pt->x()) ) {
+        isinf = true;
+        pt->setX(pt->x() > 0 ? 65535.0 : -65535.0);
+    }
+    if ( qIsInf(pt->y()) ) {
+        isinf = true;
+        pt->setY(pt->y() > 0 ? 65535.0 : -65535.0);
+    }
+    return isinf;
+}
+
+bool finPlotDotsStream::isNanPoint(const QPointF &pt)
+{
+    return ( qIsNaN(pt.x()) || qIsNaN(pt.y()) || (qIsInf(pt.x()) && qIsInf(pt.y())) );
+}
+
 finErrorCode finPlotDotsStream::plot()
 {
     if ( this->_figcontainer == NULL )
@@ -215,11 +237,13 @@ finErrorCode finPlotDotsStream::plot()
     int brkptidx = 0;
 
     for ( int i = 0; i + 1 < this->_ptList.count(); i++ ) {
-        const QPointF &curpt = this->_ptList.at(i);
+        QPointF curpt = this->_ptList.at(i);
         prevrad = currad;
         currad = finFigureAlg::getVectorRadian(this->_ptList.at(i + 1) - curpt);
 
         if ( this->checkBreakPointFrom(curpt, brkptidx, &brkptidx) ) {
+            isnewline = true;
+        } else if ( this->checkNaNOrInfPoint(&curpt) ) {
             isnewline = true;
         } else if ( !isnewline ) {
             if ( fabs(currad - prevrad) >= M_PI * 0.49998 )
@@ -230,7 +254,8 @@ finErrorCode finPlotDotsStream::plot()
             isnewline = false;
         }
 
-        lnplot.appendPoint(curpt);
+        if ( !this->isNanPoint(curpt) )
+            lnplot.appendPoint(curpt);
         if ( isnewline ) {
             lnplot.plot();
             lnplot.clearPoints();

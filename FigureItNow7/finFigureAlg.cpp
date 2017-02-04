@@ -48,7 +48,13 @@ double finFigureAlg::getVectorRadian(const QPointF &vec)
     if ( veclen <= 0.0 )
         return 0.0;
 
-    double acosrad = acos(vec.x() / veclen);
+    double cosval = vec.x() / veclen;
+    if ( cosval >= 1.0 )
+        cosval = 1.0;
+    else if ( cosval <= -1.0 )
+        cosval = -1.0;
+
+    double acosrad = acos(cosval);
     if ( vec.y() >= 0.0 )
         return acosrad;
     else

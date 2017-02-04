@@ -234,9 +234,8 @@ finErrorCode finPlotFunction::plot()
 
     bool goon = true, loopit = true;
     double curstep = this->getCurrentStepWoRad(basestep);
-    double currad = M_PI / 2.0;
+    double currad = M_PI * 0.499;
     QPointF prevpt, curpt;
-    bool prevNaN = true, prevInf = false;
 
     for ( double x = this->_fromX; loopit; x += curstep ) {
         if ( x > this->_toX ) {
@@ -250,28 +249,17 @@ finErrorCode finPlotFunction::plot()
             return errcode;
         }
 
-        if ( qIsNaN(curpt.y()) ) {
-            if ( !prevNaN && !prevInf )
-                this->_stmPlot.appendBreakPoint(prevpt);
-            prevNaN = true;
-        } else {
-            prevNaN = false;
-            currad = finFigureAlg::getVectorRadian(curpt - prevpt);
-        }
-        if ( qIsInf(curpt.y()) ) {
-            if ( curpt.y() < 0 )
-                curpt.setY(-65535.0);
-            else
-                curpt.setY(65535.0);
-            this->_stmPlot.appendBreakPoint(curpt);
-            prevInf = true;
-        } else {
-            prevInf = false;
-        }
+        if ( x > this->_fromX && !(qIsNaN(curpt.y()) && qIsNaN(prevpt.y())) )
+            this->_stmPlot.appendPoint(curpt);
 
-        this->_stmPlot.appendPoint(curpt);
-        prevpt = curpt;
+        if ( x <= this->_fromX ||
+             qIsNaN(curpt.y()) || qIsInf(curpt.y()) || qIsNaN(prevpt.y()) || qIsInf(prevpt.y()) )
+            currad = M_PI * 0.499;
+        else
+            currad = finFigureAlg::getVectorRadian(curpt - prevpt);
+
         curstep = this->getCurrentStep(currad, basestep);
+        prevpt = curpt;
     }
 
     funcarglist.removeOne(xvar);

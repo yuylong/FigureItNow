@@ -59,6 +59,8 @@ public:
 
 private:
     bool checkBreakPointFrom(const QPointF &pt, int fromidx, int *nextidx) const;
+    bool checkNaNOrInfPoint(QPointF *pt);
+    bool isNanPoint(const QPointF &pt);
 };
 
 #endif // FINPLOTDOTS_H
