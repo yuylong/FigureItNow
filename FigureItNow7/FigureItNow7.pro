@@ -52,7 +52,8 @@ SOURCES += main.cpp\
     finUiFigConfigDlg.cpp \
     finUiColorLabel.cpp \
     finUiGraphConfigDlg.cpp \
-    finPlotFunction.cpp
+    finPlotFunction.cpp \
+    finPlotDots.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
@@ -87,7 +88,8 @@ HEADERS  += MainWindow.h \
     finUiFigConfigDlg.h \
     finUiColorLabel.h \
     finUiGraphConfigDlg.h \
-    finPlotFunction.h
+    finPlotFunction.h \
+    finPlotDots.h
 
 FORMS    += MainWindow.ui \
     finUiFigConfigDlg.ui \
