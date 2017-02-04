@@ -261,8 +261,8 @@ finErrorCode finPlotDotsStream::plot()
             lnplot.clearPoints();
         }
     }
-
-    lnplot.appendPoint(this->_ptList.last());
+    if ( !this->isNanPoint(this->_ptList.last()) )
+        lnplot.appendPoint(this->_ptList.last());
     lnplot.plot();
 
     return finErrorCodeKits::FIN_EC_SUCCESS;

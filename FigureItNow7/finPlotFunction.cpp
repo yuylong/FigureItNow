@@ -249,6 +249,7 @@ finErrorCode finPlotFunction::plot()
             return errcode;
         }
 
+        // Avoid duplicated NaN points.
         if ( x > this->_fromX && !(qIsNaN(curpt.y()) && qIsNaN(prevpt.y())) )
             this->_stmPlot.appendPoint(curpt);
 
