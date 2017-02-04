@@ -38,4 +38,13 @@ public:
     virtual finErrorCode plot();
 };
 
+class finPlotDotsStream : public finPlotDots
+{
+public:
+    finPlotDotsStream();
+    virtual ~finPlotDotsStream();
+
+    virtual finErrorCode plot();
+};
+
 #endif // FINPLOTDOTS_H

@@ -121,3 +121,24 @@ finErrorCode finPlotDotsLine::plot()
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+finPlotDotsStream::finPlotDotsStream()
+{
+    return;
+}
+
+finPlotDotsStream::~finPlotDotsStream()
+{
+    return;
+}
+
+finErrorCode finPlotDotsStream::plot()
+{
+    if ( this->_figcontainer == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    if ( this->_ptList.count() == 0 )
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
