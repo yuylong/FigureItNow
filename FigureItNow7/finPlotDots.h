@@ -15,6 +15,7 @@ protected:
 
 public:
     finPlotDots();
+    virtual ~finPlotDots();
 
     int getPointCount() const;
     const QPointF &getPointAt(int idx) const;
@@ -23,6 +24,15 @@ public:
     finErrorCode appendPoint(const QPointF &pt);
     finErrorCode clearPoints();
     finErrorCode setFigureContainer(finFigureContainer *figcontainer);
+
+    virtual finErrorCode plot();
+};
+
+class finPlotDotsLine : public finPlotDots
+{
+public:
+    finPlotDotsLine();
+    virtual ~finPlotDotsLine();
 
     virtual finErrorCode plot();
 };
