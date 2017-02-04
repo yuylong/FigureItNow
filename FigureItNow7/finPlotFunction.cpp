@@ -253,6 +253,7 @@ finErrorCode finPlotFunction::plot()
         if ( x > this->_fromX && !(qIsNaN(curpt.y()) && qIsNaN(prevpt.y())) )
             this->_stmPlot.appendPoint(curpt);
 
+        // Radian is set to default when current or previous points do not exist.
         if ( x <= this->_fromX ||
              qIsNaN(curpt.y()) || qIsInf(curpt.y()) || qIsNaN(prevpt.y()) || qIsInf(prevpt.y()) )
             currad = M_PI * 0.499;
@@ -263,6 +264,7 @@ finErrorCode finPlotFunction::plot()
         prevpt = curpt;
     }
 
+    // Release the resource occupied by the independent variable.
     funcarglist.removeOne(xvar);
     delete xvar;
 
