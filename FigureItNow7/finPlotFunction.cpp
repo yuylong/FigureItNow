@@ -139,7 +139,7 @@ bool finPlotFunction::checkValid() const
     return true;
 }
 
-double finPlotFunction::getCurrentStep() const
+double finPlotFunction::getBaseStep() const
 {
     double step = 0.1;
     if ( this->_stmPlot.getFigureContainer() == NULL )
@@ -168,6 +168,21 @@ finErrorCode finPlotFunction::buildFuncArgList(QList<finExecVariable *> *varlist
     *varlist = *this->_callArgList;
     varlist->insert(this->_xidx, *xvar);
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+double finPlotFunction::getCurrentStepWoRad(double basestep) const
+{
+    return basestep * 0.01;
+}
+
+double finPlotFunction::getCurrentStep(double rad, double basestep) const
+{
+    double curstep = basestep * cos(rad);
+    double minstep = this->getCurrentStepWoRad(basestep);
+    if ( curstep < minstep )
+        return minstep;
+    else
+        return curstep;
 }
 
 finErrorCode finPlotFunction::calcAPoint(double x, finExecFunction *func, QList<finExecVariable *> *varlist,
@@ -205,7 +220,7 @@ finErrorCode finPlotFunction::plot()
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     finErrorCode errcode;
-    double step = this->getCurrentStep();
+    double basestep = this->getBaseStep();
 
     finExecFunction *func = this->_environment->findFunction(this->_funcname);
     if ( func == NULL )
@@ -217,11 +232,18 @@ finErrorCode finPlotFunction::plot()
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
-    bool goon = true;
+    bool goon = true, loopit = true;
+    double curstep = this->getCurrentStepWoRad(basestep);
+    double currad = M_PI / 2.0;
     QPointF prevpt, curpt;
     bool prevNaN = true, prevInf = false;
 
-    for ( double x = this->_fromX; x <= this->_toX; x += step ) {
+    for ( double x = this->_fromX; loopit; x += curstep ) {
+        if ( x > this->_toX ) {
+            x = this->_toX;
+            loopit = false;
+        }
+
         errcode = this->calcAPoint(x, func, &funcarglist, xvar, &curpt, &goon);
         if ( finErrorCodeKits::isErrorResult(errcode) || !goon ) {
             delete xvar;
@@ -234,6 +256,7 @@ finErrorCode finPlotFunction::plot()
             prevNaN = true;
         } else {
             prevNaN = false;
+            currad = finFigureAlg::getVectorRadian(curpt - prevpt);
         }
         if ( qIsInf(curpt.y()) ) {
             if ( curpt.y() < 0 )
@@ -248,6 +271,7 @@ finErrorCode finPlotFunction::plot()
 
         this->_stmPlot.appendPoint(curpt);
         prevpt = curpt;
+        curstep = this->getCurrentStep(currad, basestep);
     }
 
     funcarglist.removeOne(xvar);
@@ -256,4 +280,3 @@ finErrorCode finPlotFunction::plot()
     // Because all extended arguments are left values, we do not release the memory for arglist.
     return this->_stmPlot.plot();
 }
-

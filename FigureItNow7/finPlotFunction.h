@@ -56,12 +56,13 @@ public:
     finErrorCode plot();
 
 private:
-    double getCurrentStep() const;
+    double getBaseStep() const;
     finErrorCode buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **xvar);
 
+    double getCurrentStepWoRad(double basestep) const;
+    double getCurrentStep(double rad, double basestep) const;
     finErrorCode calcAPoint(double x, finExecFunction *func, QList<finExecVariable *> *varlist,
                             finExecVariable *xvar, QPointF *pt, bool *goon);
-    finErrorCode plotSinglePoint(const QPointF &pt);
 };
 
 #endif // FINPLOTFUNCTION_H

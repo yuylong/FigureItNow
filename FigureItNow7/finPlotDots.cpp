@@ -240,5 +240,5 @@ finErrorCode finPlotDotsStream::plot()
     lnplot.appendPoint(this->_ptList.last());
     lnplot.plot();
 
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
