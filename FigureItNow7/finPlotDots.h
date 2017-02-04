@@ -22,6 +22,7 @@ public:
     finFigureContainer *getFigureContainer() const;
 
     finErrorCode appendPoint(const QPointF &pt);
+    finErrorCode appendPoint(double ptx, double pty);
     finErrorCode clearPoints();
     finErrorCode setFigureContainer(finFigureContainer *figcontainer);
 

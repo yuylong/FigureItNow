@@ -13,6 +13,7 @@
 #include "finFigureContainer.h"
 #include "finGraphConfig.h"
 #include "finGraphTrans.h"
+#include "finPlotDots.h"
 #include "finPlotFunction.h"
 
 
@@ -28,6 +29,30 @@ static finExecSysFuncRegItem _finSysFuncPlotList[] = {
 finErrorCode finExecFunction::registSysFuncPlot()
 {
     return finExecFunction::registSysFuncFromArray(_finSysFuncPlotList);
+}
+
+static finErrorCode _sysfunc_plot_help_readdots_array(finPlotDots *plotdots, finExecVariable *ary)
+{
+    if ( plotdots == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    if ( ary == NULL || ary->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
+        plotdots->clearPoints();
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+    }
+
+    int arylen = 0;
+    if ( !ary->isNumericArray(&arylen) )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    plotdots->clearPoints();
+    for ( int i = 0; i + 1 < arylen; i += 2 ) {
+        finExecVariable *varx = ary->getVariableItemAt(i);
+        finExecVariable *vary = ary->getVariableItemAt(i + 1);
+
+        plotdots->appendPoint(varx->getNumericValue(), vary->getNumericValue());
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnvironment *env,

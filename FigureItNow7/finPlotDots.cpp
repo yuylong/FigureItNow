@@ -37,6 +37,12 @@ finErrorCode finPlotDots::appendPoint(const QPointF &pt)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finPlotDots::appendPoint(double ptx, double pty)
+{
+    this->_ptList.append(QPointF(ptx, pty));
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode finPlotDots::clearPoints()
 {
     this->_ptList.clear();
