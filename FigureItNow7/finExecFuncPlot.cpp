@@ -26,6 +26,7 @@ static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnviron
 
 static finExecSysFuncRegItem _finSysFuncPlotList[] = {
     { QString("plot_dots"),         QString("ary"),                  _sysfunc_plot_dots          },
+    { QString("plot_line"),         QString("ary"),                  _sysfunc_plot_line          },
     { QString("plot_function"),     QString("x1,x2,func"),           _sysfunc_plot_function      },
 
     { QString(), QString(), NULL }
@@ -60,6 +61,62 @@ static finErrorCode _sysfunc_plot_help_readdots_array(finPlotDots *plotdots, fin
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+static finErrorCode _sysfunc_plot_help_readdots_xyarray(finPlotDots *plotdots,
+                                                        finExecVariable *xary, finExecVariable *yary)
+{
+    if ( plotdots == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    if ( (xary == NULL || xary->getType() == finExecVariable::FIN_VR_TYPE_NULL) &&
+         (yary == NULL || yary->getType() == finExecVariable::FIN_VR_TYPE_NULL) ) {
+        plotdots->clearPoints();
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+    }
+
+    int arylen = 0, yarylen = 0;
+    if ( !xary->isNumericArray(&arylen) || !yary->isNumericArray(&yarylen) )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    if ( arylen > yarylen )
+        arylen = yarylen;
+
+    plotdots->clearPoints();
+    for ( int i = 0; i < arylen; i++ ) {
+        finExecVariable *varx = xary->getVariableItemAt(i);
+        finExecVariable *vary = yary->getVariableItemAt(i);
+
+        plotdots->appendPoint(varx->getNumericValue(), vary->getNumericValue());
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_plot_help_readdots_xymat(finPlotDots *plotdots, finExecVariable *mat)
+{
+    if ( plotdots == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    if ( mat == NULL || mat->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
+        plotdots->clearPoints();
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+    }
+
+    int row = 0, col = 0;
+    if ( !mat->isNumericMatrix(&row, &col) )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    if ( col < 2 )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    plotdots->clearPoints();
+    for ( int i = 0; i < row; i++ ) {
+        finExecVariable *ptvar = mat->getVariableItemAt(i);
+        finExecVariable *varx = ptvar->getVariableItemAt(0);
+        finExecVariable *vary = ptvar->getVariableItemAt(1);
+
+        plotdots->appendPoint(varx->getNumericValue(), vary->getNumericValue());
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+
 static finErrorCode _sysfunc_plot_dots(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -71,6 +128,30 @@ static finErrorCode _sysfunc_plot_dots(finExecFunction *self, finExecEnvironment
     finExecVariable *aryvar = finExecVariable::transLinkTarget(env->findVariable("ary"));
 
     finPlotDots dotplot;
+    finErrorCode errcode = _sysfunc_plot_help_readdots_array(&dotplot, aryvar);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    dotplot.setFigureContainer(env->getFigureContainer());
+    errcode = dotplot.plot();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_plot_line(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    finExecVariable *aryvar = finExecVariable::transLinkTarget(env->findVariable("ary"));
+
+    finPlotDotsLine dotplot;
     finErrorCode errcode = _sysfunc_plot_help_readdots_array(&dotplot, aryvar);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
