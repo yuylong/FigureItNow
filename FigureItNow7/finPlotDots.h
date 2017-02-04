@@ -40,11 +40,25 @@ public:
 
 class finPlotDotsStream : public finPlotDots
 {
+protected:
+    QList<QPointF> _breakPtList;
+
 public:
     finPlotDotsStream();
     virtual ~finPlotDotsStream();
 
+    int getBreakPointCount() const;
+    const QPointF &getBreakPointAt(int idx) const;
+    bool checkBreakPoint(const QPointF &pt) const;
+
+    finErrorCode appendBreakPoint(const QPointF &pt);
+    finErrorCode appendBreakPoint(double ptx, double pty);
+    finErrorCode clearBreakPoints();
+
     virtual finErrorCode plot();
+
+private:
+    bool checkBreakPointFrom(const QPointF &pt, int fromidx, int *nextidx) const;
 };
 
 #endif // FINPLOTDOTS_H
