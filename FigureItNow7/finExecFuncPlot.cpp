@@ -17,11 +17,16 @@
 #include "finPlotFunction.h"
 
 
+static finErrorCode _sysfunc_plot_dots(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_plot_line(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl);
 
 static finExecSysFuncRegItem _finSysFuncPlotList[] = {
-    { QString("plot_function"),       QString("x1,x2,func"),                  _sysfunc_plot_function      },
+    { QString("plot_dots"),         QString("ary"),                  _sysfunc_plot_dots          },
+    { QString("plot_function"),     QString("x1,x2,func"),           _sysfunc_plot_function      },
 
     { QString(), QString(), NULL }
 };
@@ -52,6 +57,30 @@ static finErrorCode _sysfunc_plot_help_readdots_array(finPlotDots *plotdots, fin
 
         plotdots->appendPoint(varx->getNumericValue(), vary->getNumericValue());
     }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_plot_dots(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    finExecVariable *aryvar = finExecVariable::transLinkTarget(env->findVariable("ary"));
+
+    finPlotDots dotplot;
+    finErrorCode errcode = _sysfunc_plot_help_readdots_array(&dotplot, aryvar);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    dotplot.setFigureContainer(env->getFigureContainer());
+    errcode = dotplot.plot();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
