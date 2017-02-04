@@ -42,9 +42,6 @@ static finErrorCode _sysfunc_draw_pinned_image(finExecFunction *self, finExecEnv
 static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env,
                                   finExecMachine *machine, finExecFlowControl *flowctl);
 
-static finErrorCode _sysfunc_fig_function(finExecFunction *self, finExecEnvironment *env,
-                                          finExecMachine *machine, finExecFlowControl *flowctl);
-
 static finErrorCode _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl);
 
@@ -74,8 +71,6 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("draw_image"),         QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_image         },
     { QString("draw_pinned_image"),  QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_pinned_image  },
     { QString("axis"),               QString("sx,sy,tx,ty,rx1,rx2,ry1,ry2"), _sysfunc_axis               },
-
-    { QString("fig_function"),       QString("x1,x2,func"),                  _sysfunc_fig_function       },
 
     { QString("line3d"),             QString("x1,y1,z1,x2,y2,z2"),           _sysfunc_line3d             },
 
@@ -643,54 +638,6 @@ static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env
         delete foaxis;
         return errcode;
     }
-    flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
-static finErrorCode _sysfunc_fig_function(finExecFunction *self, finExecEnvironment *env,
-                                          finExecMachine *machine, finExecFlowControl *flowctl)
-{
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
-    if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
-
-    finExecVariable *funcvar;
-    funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
-    if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
-
-    finExecVariable *x1var, *x2var;
-    x1var = finExecVariable::transLinkTarget(env->findVariable("x1"));
-    x2var = finExecVariable::transLinkTarget(env->findVariable("x2"));
-    if ( x1var == NULL || x2var == NULL ||
-         x1var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
-         x2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
-
-    QString funcname = funcvar->getStringValue();
-    double x1 = x1var->getNumericValue();
-    double x2 = x2var->getNumericValue();
-
-    finPlotFunction plotfunc;
-    plotfunc.setFunctionName(funcname);
-    plotfunc.setFigureRange(x1, x2);
-    plotfunc.setIndependentVarIndex(0);
-
-    QList<finExecVariable *> extarglist = finExecFunction::getExtendArgList(env);
-    plotfunc.setCallArgList(&extarglist);
-    plotfunc.setEnvironment(env);
-    plotfunc.setMachine(machine);
-    plotfunc.setFlowControl(flowctl);
-    plotfunc.setFigureContainer(env->getFigureContainer());
-
-    finErrorCode errcode = plotfunc.plot();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
-        return errcode;
-    if ( !flowctl->isFlowNext() )
-        return errcode;
-
-    // Because all extended arguments are left values, we do not release the memory for arglist.
     flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

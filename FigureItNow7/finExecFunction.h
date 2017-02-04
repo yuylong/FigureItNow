@@ -121,6 +121,7 @@ private:
     static finErrorCode registSysFuncFile();
     static finErrorCode registSysFuncSystem();
     static finErrorCode registSysFuncFiguring();
+    static finErrorCode registSysFuncPlot();
 };
 
 typedef finExecFunction::finExecFunctionType finExecFunctionType;

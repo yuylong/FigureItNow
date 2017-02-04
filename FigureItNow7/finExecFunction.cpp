@@ -513,7 +513,7 @@ finErrorCode finExecFunction::registSysFuncAll()
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
-    errcode = finExecFunction::registSysFuncFiguring();
+    errcode = finExecFunction::registSysFuncPlot();
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
