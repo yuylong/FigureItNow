@@ -1,3 +1,17 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ *
+ * History:
+ *
+ * DATE      REV  AUTHOR       COMMENTS
+ * 20170204    0  Yulong Yu    Create this file.
+ * 20170205    1  Yulong Yu    Add scatter plotting class.
+ */
+
 #include "finPlotDots.h"
 
 #include <qmath.h>
