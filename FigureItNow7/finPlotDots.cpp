@@ -267,3 +267,22 @@ finErrorCode finPlotDotsStream::plot()
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+finPlotDotsScatter::finPlotDotsScatter()
+{
+    return;
+}
+
+finPlotDotsScatter::~finPlotDotsScatter()
+{
+    return;
+}
+
+finErrorCode finPlotDotsScatter::plot()
+{
+    if ( this->_figcontainer == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}
+

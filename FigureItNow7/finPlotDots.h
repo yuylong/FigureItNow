@@ -63,4 +63,13 @@ private:
     bool isNanPoint(const QPointF &pt);
 };
 
+class finPlotDotsScatter : public finPlotDots
+{
+public:
+    finPlotDotsScatter();
+    virtual ~finPlotDotsScatter();
+
+    virtual finErrorCode plot();
+};
+
 #endif // FINPLOTDOTS_H
