@@ -16,7 +16,7 @@ class finPlotEquation2D
 protected:
     QString _funcname;
     double _fromX, _toX, _fromY, _toY;
-    double _stepX, _stepY;
+    QList<double> _posListX, _posListY;
     int _xidx, _yidx;
 
     QList<finExecVariable *> *_callArgList;
@@ -62,7 +62,8 @@ private:
                                   finExecVariable **xvar, finExecVariable **yvar);
 
     finErrorCode buildSearchPositions(double from, double to, double step, QList<double> *poslist);
-    finErrorCode buildSearchRangeList(double step, QList<double> *xlist, QList<double> *ylist);
+    finErrorCode buildSearchRangeList(double step);
+    finErrorCode disposeSearchRangeList();
 
     finErrorCode calcAPoint(double x, double y, finExecFunction *func, QList<finExecVariable *> *varlist,
                             finExecVariable *xvar, finExecVariable *yvar, double *retval, bool *goon);

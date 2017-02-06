@@ -5,15 +5,13 @@
 #include "finExecFunction.h"
 
 finPlotEquation2D::finPlotEquation2D()
-    : _scrtPlot()
+    : _posListX(), _posListY(), _scrtPlot()
 {
     this->_funcname = QString();
     this->_fromX = 0.0;
     this->_toX = 0.0;
     this->_fromY = 0.0;
     this->_toY = 0.0;
-    this->_stepX = 0.1;
-    this->_stepY = 0.1;
     this->_xidx = 0;
     this->_yidx = 1;
     this->_callArgList = NULL;
@@ -250,6 +248,7 @@ finErrorCode finPlotEquation2D::buildSearchPositions(double from, double to, dou
     if ( step <= 0.0 )
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
+    poslist->clear();
     for ( double pos = from; pos < to; pos += step ) {
         poslist->append(pos);
     }
@@ -257,17 +256,24 @@ finErrorCode finPlotEquation2D::buildSearchPositions(double from, double to, dou
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finPlotEquation2D::buildSearchRangeList(double step, QList<double> *xlist, QList<double> *ylist)
+finErrorCode finPlotEquation2D::buildSearchRangeList(double step)
 {
     finErrorCode errcode;
-    errcode = this->buildSearchPositions(this->_fromX, this->_toX, step, xlist);
+    errcode = this->buildSearchPositions(this->_fromX, this->_toX, step, &this->_posListX);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
-    errcode = this->buildSearchPositions(this->_fromY, this->_toY, step, ylist);
+    errcode = this->buildSearchPositions(this->_fromY, this->_toY, step, &this->_posListY);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotEquation2D::disposeSearchRangeList()
+{
+    this->_posListX.clear();
+    this->_posListY.clear();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -275,6 +281,34 @@ finErrorCode finPlotEquation2D::plot()
 {
     if ( !this->checkValid() )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    finErrorCode errcode;
+    double basestep = this->getBaseStep();
+
+    finExecFunction *func = this->_environment->findFunction(this->_funcname);
+    if ( func == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+
+    errcode = this->buildSearchRangeList(basestep);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    QList<finExecVariable *> funcarglist;
+    finExecVariable *xvar, *yvar;
+    errcode = this->buildFuncArgList(&funcarglist, &xvar, &yvar);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    int xposcnt = this->_posListX.count(), yposcnt = this->_posListY.count();
+    QList<double> prexretval;
+    double preyretval, curretval;
+    bool goon = true;
+
+    for ( int xidx = 0; xidx < xposcnt; xidx++ ) {
+        for ( int yidx = 0; yidx < yposcnt; yidx++ ) {
+
+        }
+    }
 
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
