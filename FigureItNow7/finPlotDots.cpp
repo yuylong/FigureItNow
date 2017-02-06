@@ -306,7 +306,8 @@ finErrorCode finPlotDotsScatter::setDistanceLimit(double limit)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-int finPlotDotsScatter::findNearestPoint(const QPointF &chkpt, const QList<QPointF> &ptlist, QPointF *outpt)
+int finPlotDotsScatter::findNearestPoint(const QPointF &chkpt, const QList<QPointF> &ptlist,
+                                         int exceptcnt, QPointF *outpt)
 {
     QRectF srchrange;
     srchrange.setX(chkpt.x() - this->_distLimit);
@@ -314,9 +315,10 @@ int finPlotDotsScatter::findNearestPoint(const QPointF &chkpt, const QList<QPoin
     srchrange.setSize(QSizeF(2 * this->_distLimit, 2 * this->_distLimit));
 
     double mindist = this->_distLimit * 2.0;
+    int checkcnt = ptlist.count() - exceptcnt;
     int nearestidx = -1;
 
-    for ( int i = 0; i < ptlist.count(); i++ ) {
+    for ( int i = 0; i < checkcnt; i++ ) {
         const QPointF &curpt = ptlist.at(i);
         if ( !srchrange.contains(curpt) )
             continue;
@@ -327,7 +329,7 @@ int finPlotDotsScatter::findNearestPoint(const QPointF &chkpt, const QList<QPoin
             nearestidx = i;
         }
     }
-    if ( nearestidx >= 0 )
+    if ( nearestidx < 0 )
         return -1;
 
     if ( outpt != NULL )
@@ -351,7 +353,7 @@ finErrorCode finPlotDotsScatter::plot()
         postpt.append(curpt);
 
         while ( true ) {
-            int nearestidx = this->findNearestPoint(curpt, pendpt, NULL);
+            int nearestidx = this->findNearestPoint(curpt, pendpt);
             if ( nearestidx < 0 )
                 break;
 
@@ -360,7 +362,7 @@ finErrorCode finPlotDotsScatter::plot()
             postpt.append(curpt);
         }
 
-        int enclptidx = this->findNearestPoint(curpt, postpt, NULL);
+        int enclptidx = this->findNearestPoint(curpt, postpt, 2);
         if ( enclptidx >= 0 )
             lnplot.appendPoint(postpt.at(enclptidx));
 

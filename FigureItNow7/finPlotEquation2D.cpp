@@ -395,6 +395,8 @@ finErrorCode finPlotEquation2D::plot()
 
     finErrorCode errcode;
     double basestep = this->getBaseStep();
+    this->_scrtPlot.setDistanceLimit(basestep * 3.0);
+
     errcode = this->buildSearchRangeList(basestep);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;

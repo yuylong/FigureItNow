@@ -78,7 +78,8 @@ public:
     virtual finErrorCode plot();
 
 private:
-    int findNearestPoint(const QPointF &chkpt, const QList<QPointF> &ptlist, QPointF *outpt);
+    int findNearestPoint(const QPointF &chkpt, const QList<QPointF> &ptlist,
+                         int exceptcnt = 0, QPointF *outpt = NULL);
 };
 
 #endif // FINPLOTDOTS_H
