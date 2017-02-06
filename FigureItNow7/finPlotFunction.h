@@ -18,7 +18,6 @@ class finPlotFunction
 protected:
     QString _funcname;
     double _fromX, _toX;
-    double _stepX;
     int _xidx;
 
     QList<finExecVariable *> *_callArgList;
