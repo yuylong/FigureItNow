@@ -33,6 +33,14 @@ public:
     double getEndPostionX() const;
     double getStartPostionY() const;
     double getEndPostionY() const;
+    int getVariableXIndex() const;
+    int getVariableYIndex() const;
+
+    finErrorCode setFiguringRangeX(double x1, double x2);
+    finErrorCode setFiguringRangeY(double y1, double y2);
+    finErrorCode setVariableXIndex(int idx);
+    finErrorCode setVariableYIndex(int idx);
+
 };
 
 #endif // FINPLOTEQUATION2D_H

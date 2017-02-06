@@ -39,3 +39,55 @@ double finPlotEquation2D::getEndPostionY() const
 {
     return this->_toY;
 }
+
+int finPlotEquation2D::getVariableXIndex() const
+{
+    return this->_xidx;
+}
+
+int finPlotEquation2D::getVariableYIndex() const
+{
+    return this->_yidx;
+}
+
+finErrorCode finPlotEquation2D::setFiguringRangeX(double x1, double x2)
+{
+    if ( x1 <= x2 ) {
+        this->_fromX = x1;
+        this->_toX = x2;
+    } else {
+        this->_fromX = x2;
+        this->_toX = x1;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotEquation2D::setFiguringRangeY(double y1, double y2)
+{
+    if ( y1 <= y2 ) {
+        this->_fromY = y1;
+        this->_toY = y2;
+    } else {
+        this->_fromY = y2;
+        this->_toY = y1;
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotEquation2D::setVariableXIndex(int idx)
+{
+    if ( idx < 0 )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    this->_xidx = idx;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotEquation2D::setVariableYIndex(int idx)
+{
+    if ( idx < 0 )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    this->_yidx = idx;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
