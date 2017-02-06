@@ -65,9 +65,15 @@ private:
 
 class finPlotDotsScatter : public finPlotDots
 {
+protected:
+    double _distLimit;
+
 public:
     finPlotDotsScatter();
     virtual ~finPlotDotsScatter();
+
+    double getDistanceLimit() const;
+    finErrorCode setDistanceLimit(double limit);
 
     virtual finErrorCode plot();
 };

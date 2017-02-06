@@ -284,12 +284,26 @@ finErrorCode finPlotDotsStream::plot()
 
 finPlotDotsScatter::finPlotDotsScatter()
 {
-    return;
+    this->_distLimit = 0.1;
 }
 
 finPlotDotsScatter::~finPlotDotsScatter()
 {
     return;
+}
+
+double finPlotDotsScatter::getDistanceLimit() const
+{
+    return this->_distLimit;
+}
+
+finErrorCode finPlotDotsScatter::setDistanceLimit(double limit)
+{
+    if ( limit < 1.0e-8 )
+        limit = 1.0e-8;
+
+    this->_distLimit = limit;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finPlotDotsScatter::plot()
