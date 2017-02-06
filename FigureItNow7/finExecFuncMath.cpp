@@ -41,18 +41,23 @@ static finErrorCode _sysfunc_linear(finExecFunction *self, finExecEnvironment *e
 static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl);
 
-static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
-    { QString("sin"),       QString("rad"),      _sysfunc_sin       },
-    { QString("cos"),       QString("rad"),      _sysfunc_cos       },
-    { QString("tan"),       QString("rad"),      _sysfunc_tan       },
-    { QString("tg"),        QString("rad"),      _sysfunc_tan       },
-    { QString("cot"),       QString("rad"),      _sysfunc_cot       },
-    { QString("ctg"),       QString("rad"),      _sysfunc_cot       },
-    { QString("ln"),        QString("base"),     _sysfunc_ln        },
-    { QString("log"),       QString("idx,base"), _sysfunc_log       },
+static finErrorCode _sysfunc_eq2d_circle(finExecFunction *self, finExecEnvironment *env,
+                                         finExecMachine *machine, finExecFlowControl *flowctl);
 
-    { QString("linear"),    QString ("x,a,b"),   _sysfunc_linear    },
-    { QString("quadratic"), QString ("x,a,b,c"), _sysfunc_quadratic },
+static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
+    { QString("sin"),         QString("rad"),      _sysfunc_sin         },
+    { QString("cos"),         QString("rad"),      _sysfunc_cos         },
+    { QString("tan"),         QString("rad"),      _sysfunc_tan         },
+    { QString("tg"),          QString("rad"),      _sysfunc_tan         },
+    { QString("cot"),         QString("rad"),      _sysfunc_cot         },
+    { QString("ctg"),         QString("rad"),      _sysfunc_cot         },
+    { QString("ln"),          QString("base"),     _sysfunc_ln          },
+    { QString("log"),         QString("idx,base"), _sysfunc_log         },
+
+    { QString("linear"),      QString ("x,a,b"),   _sysfunc_linear      },
+    { QString("quadratic"),   QString ("x,a,b,c"), _sysfunc_quadratic   },
+
+    { QString("eq2d_circle"), QString ("x,y,r"),   _sysfunc_eq2d_circle },
 
     { QString(), QString(), NULL }
 };
@@ -299,6 +304,42 @@ static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment
 
     retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
     retvar->setNumericValue((a * x + b) * x + c);
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_eq2d_circle(finExecFunction *self, finExecEnvironment *env,
+                                         finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *xvar, *yvar, *rvar, *retvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    xvar = finExecVariable::transLinkTarget(env->findVariable("x"));
+    yvar = finExecVariable::transLinkTarget(env->findVariable("y"));
+    rvar = finExecVariable::transLinkTarget(env->findVariable("r"));
+    if ( xvar == NULL || yvar == NULL || rvar == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    if ( xvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         yvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         rvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    double x = xvar->getNumericValue();
+    double y = yvar->getNumericValue();
+    double r = rvar->getNumericValue();
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setNumericValue(x * x + y * y - r * r);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
 
