@@ -1,5 +1,9 @@
 #include "finPlotEquation2D.h"
 
+#include <qmath.h>
+
+#include "finExecFunction.h"
+
 finPlotEquation2D::finPlotEquation2D()
     : _scrtPlot()
 {
@@ -159,6 +163,85 @@ bool finPlotEquation2D::checkValid() const
         return false;
 
     return true;
+}
+
+double finPlotEquation2D::getBaseStep() const
+{
+    double step = 0.1;
+    if ( this->_scrtPlot.getFigureContainer() == NULL )
+        return step;
+
+    finGraphConfig *graphcfg = this->_scrtPlot.getFigureContainer()->getGraphConfig();
+    if ( graphcfg != NULL )
+        step = 3.0 / graphcfg->getAxisUnitPixelSize();
+    return step;
+}
+
+finErrorCode finPlotEquation2D::buildFuncArgList(QList<finExecVariable *> *varlist,
+                                                 finExecVariable **xvar, finExecVariable **yvar)
+{
+    if ( varlist == NULL || xvar == NULL || yvar == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    *xvar = new finExecVariable();
+    if ( *xvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+    *yvar = new finExecVariable();
+    if ( *yvar == NULL ) {
+        delete *xvar;
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+    }
+
+    (*xvar)->setName("__fig_func_drv_arg_x");
+    (*xvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    (*xvar)->setLeftValue();
+    (*xvar)->clearWriteProtected();
+
+    (*yvar)->setName("__fig_func_drv_arg_y");
+    (*yvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    (*yvar)->setLeftValue();
+    (*yvar)->clearWriteProtected();
+
+    *varlist = *this->_callArgList;
+    if ( this->_xidx < this->_yidx ) {
+        varlist->insert(this->_xidx, *xvar);
+        varlist->insert(this->_yidx, *yvar);
+    } else {
+        varlist->insert(this->_yidx, *yvar);
+        varlist->insert(this->_xidx, *xvar);
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+
+}
+
+finErrorCode finPlotEquation2D::calcAPoint(
+        double x, double y, finExecFunction *func, QList<finExecVariable *> *varlist,
+        finExecVariable *xvar, finExecVariable *yvar, double *retval, bool *goon)
+{
+    if ( varlist == NULL || xvar == NULL || xvar == NULL || retval == NULL || goon == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    finErrorCode errcode;
+    xvar->setNumericValue(x);
+    yvar->setNumericValue(y);
+
+    errcode = func->execFunction(varlist, this->_environment, this->_machine, this->_flowctl);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    errcode = this->_flowctl->checkFlowForExpress(goon, NULL, this->_machine);
+    if ( finErrorCodeKits::isErrorResult(errcode) || !(*goon) )
+        return errcode;
+
+    finExecVariable *retvar = this->_flowctl->pickReturnVariable();
+    if ( retvar == NULL || retvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+        finExecVariable::releaseNonLeftVariable(retvar);
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+
+    *retval = retvar->getNumericValue();
+    finExecVariable::releaseNonLeftVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::plot()

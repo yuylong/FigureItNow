@@ -55,6 +55,14 @@ public:
 
     bool checkValid() const;
     finErrorCode plot();
+
+private:
+    double getBaseStep() const;
+    finErrorCode buildFuncArgList(QList<finExecVariable *> *varlist,
+                                  finExecVariable **xvar, finExecVariable **yvar);
+
+    finErrorCode calcAPoint(double x, double y, finExecFunction *func, QList<finExecVariable *> *varlist,
+                            finExecVariable *xvar, finExecVariable *yvar, double *retval, bool *goon);
 };
 
 #endif // FINPLOTEQUATION2D_H
