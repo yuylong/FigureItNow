@@ -67,6 +67,14 @@ private:
 
     finErrorCode calcAPoint(double x, double y, finExecFunction *func, QList<finExecVariable *> *varlist,
                             finExecVariable *xvar, finExecVariable *yvar, double *retval, bool *goon);
+    finErrorCode checkOnePosition(int xidx, int yidx, double curretval, QList<double> *prevretval,
+                                   unsigned long *srchflags);
+    finErrorCode updateRetValList(int xidx, int yidx, double curretval, QList<double> *prevretval);
+
+    finErrorCode searchBinary(double x1, double y1, double retval1, double x2, double y2, double retval2,
+                              finExecFunction *func, QList<finExecVariable *> *varlist,
+                              finExecVariable *xvar, finExecVariable *yvar,
+                              double *xret, double *yret, bool *goon, int level = 0);
 };
 
 #endif // FINPLOTEQUATION2D_H
