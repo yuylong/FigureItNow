@@ -174,10 +174,11 @@ finErrorCode finPlotFunction::buildFuncArgList(QList<finExecVariable *> *varlist
     if ( *xvar == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
-    (*xvar)->setName("__fig_func_drv_arg_x");
+    (*xvar)->setName("_@_fig_func_drv_arg_x");
     (*xvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
     (*xvar)->setLeftValue();
     (*xvar)->clearWriteProtected();
+    this->_environment->addVariable(*xvar);
 
     *varlist = *this->_callArgList;
     varlist->insert(this->_xidx, *xvar);
@@ -258,10 +259,8 @@ finErrorCode finPlotFunction::plot()
         }
 
         errcode = this->calcAPoint(x, func, &funcarglist, xvar, &curpt, &goon);
-        if ( finErrorCodeKits::isErrorResult(errcode) || !goon ) {
-            delete xvar;
+        if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
             return errcode;
-        }
 
         // Avoid duplicated NaN points.
         if ( x > this->_fromX && !(qIsNaN(curpt.y()) && qIsNaN(prevpt.y())) )
@@ -277,10 +276,6 @@ finErrorCode finPlotFunction::plot()
         curstep = this->getCurrentStep(currad, basestep);
         prevpt = curpt;
     }
-
-    // Release the resource occupied by the independent variable.
-    funcarglist.removeOne(xvar);
-    delete xvar;
 
     // Because all extended arguments are left values, we do not release the memory for arglist.
     return this->_stmPlot.plot();
