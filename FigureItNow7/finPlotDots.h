@@ -23,6 +23,8 @@ public:
 
     finErrorCode appendPoint(const QPointF &pt);
     finErrorCode appendPoint(double ptx, double pty);
+    finErrorCode prependPoint(const QPointF &pt);
+    finErrorCode prependPoint(double ptx, double pty);
     finErrorCode clearPoints();
     finErrorCode setFigureContainer(finFigureContainer *figcontainer);
 
@@ -80,6 +82,10 @@ public:
 private:
     int findNearestPoint(const QPointF &chkpt, const QList<QPointF> &ptlist,
                          int exceptcnt = 0, QPointF *outpt = NULL);
+    int findNearestPointWithRad(const QPointF &chkpt, const QPointF &prevpt, const QList<QPointF> &ptlist,
+                                int exceptcnt = 0, QPointF *outpt = NULL);
+    finErrorCode handleEnclosePoint(const QList<QPointF> &curptlist, const QList<QPointF> &pstptlist,
+                                    finPlotDotsLine *lnplot);
 };
 
 #endif // FINPLOTDOTS_H

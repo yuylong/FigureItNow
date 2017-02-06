@@ -382,7 +382,7 @@ static finErrorCode _sysfunc_eq2d_hyperbola(finExecFunction *self, finExecEnviro
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
-    retvar->setNumericValue(b2 * x * x + a2 * y * y - a2 * b2);
+    retvar->setNumericValue(b2 * x * x - a2 * y * y - a2 * b2);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
 

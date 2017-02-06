@@ -62,6 +62,18 @@ finErrorCode finPlotDots::appendPoint(double ptx, double pty)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finPlotDots::prependPoint(const QPointF &pt)
+{
+    this->_ptList.prepend(pt);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotDots::prependPoint(double ptx, double pty)
+{
+    this->_ptList.prepend(QPointF(ptx, pty));
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode finPlotDots::clearPoints()
 {
     this->_ptList.clear();
@@ -337,12 +349,93 @@ int finPlotDotsScatter::findNearestPoint(const QPointF &chkpt, const QList<QPoin
     return nearestidx;
 }
 
+int finPlotDotsScatter::findNearestPointWithRad(const QPointF &chkpt, const QPointF &prevpt,
+                                                const QList<QPointF> &ptlist, int exceptcnt, QPointF *outpt)
+{
+    QRectF srchrange;
+    srchrange.setX(chkpt.x() - this->_distLimit);
+    srchrange.setY(chkpt.y() - this->_distLimit);
+    srchrange.setSize(QSizeF(2 * this->_distLimit, 2 * this->_distLimit));
+
+    double mindist = this->_distLimit * 2.0;
+    int checkcnt = ptlist.count() - exceptcnt;
+    double chkrad = finFigureAlg::getVectorRadian(chkpt - prevpt);
+    int nearestidx = -1;
+
+    for ( int i = 0; i < checkcnt; i++ ) {
+        const QPointF &curpt = ptlist.at(i);
+        if ( !srchrange.contains(curpt) )
+            continue;
+
+        double currad = finFigureAlg::getVectorRadian(curpt - chkpt);
+        if ( fabs(finFigureAlg::radianDifference(currad, chkrad)) > M_PI * 0.4999 )
+            continue;
+
+        double curdist = finFigureAlg::pointsDistance(chkpt, curpt);
+        if ( curdist < mindist && curpt != chkpt ) {
+            mindist = curdist;
+            nearestidx = i;
+        }
+    }
+    if ( nearestidx < 0 )
+        return -1;
+
+    if ( outpt != NULL )
+        *outpt = ptlist.at(nearestidx);
+    return nearestidx;
+}
+
+
+finErrorCode finPlotDotsScatter::handleEnclosePoint(
+        const QList<QPointF> &curptlist, const QList<QPointF> &pstptlist, finPlotDotsLine *lnplot)
+{
+    if ( curptlist.empty() )
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+
+    const QPointF &lastpt = curptlist.last();
+    const QPointF &firstpt = curptlist.first();
+    int lastnidx = -1, firstnidx = -1;
+
+    if ( !pstptlist.empty() ) {
+        lastnidx = this->findNearestPoint(lastpt, pstptlist);
+        if ( lastnidx >= 0 )
+            lnplot->appendPoint(pstptlist.at(lastnidx));
+
+        if ( curptlist.count() > 1 ) {
+            firstnidx = this->findNearestPoint(firstpt, pstptlist);
+            if ( firstnidx >= 0 )
+                lnplot->prependPoint(pstptlist.at(firstnidx));
+        } else {
+            firstnidx = lastnidx;
+        }
+    }
+    if ( curptlist.count() <= 1 )
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+
+    if ( lastnidx < 0 ) {
+        const QPointF &prevpt = curptlist.at(curptlist.count() - 2);
+        lastnidx = this->findNearestPointWithRad(lastpt, prevpt, curptlist, 2);
+        if ( lastnidx >= 0 )
+            lnplot->appendPoint(curptlist.at(lastnidx));
+    }
+    if ( lastnidx == 0 )
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+
+    if ( firstnidx < 0 ) {
+        const QPointF &prevpt = curptlist.at(1);
+        firstnidx = this->findNearestPointWithRad(firstpt, prevpt, curptlist);
+        if ( firstnidx >= 0 )
+            lnplot->prependPoint(curptlist.at(firstnidx));
+    }
+}
+
 finErrorCode finPlotDotsScatter::plot()
 {
     if ( this->_figcontainer == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     QList<QPointF> pendpt = this->_ptList;
+    QList<QPointF> curptlist;
     QList<QPointF> postpt;
     finPlotDotsLine lnplot;
     lnplot.setFigureContainer(this->_figcontainer);
@@ -350,7 +443,7 @@ finErrorCode finPlotDotsScatter::plot()
     while ( !pendpt.empty() ) {
         QPointF curpt = pendpt.takeFirst();
         lnplot.appendPoint(curpt);
-        postpt.append(curpt);
+        curptlist.append(curpt);
 
         while ( true ) {
             int nearestidx = this->findNearestPoint(curpt, pendpt);
@@ -359,15 +452,15 @@ finErrorCode finPlotDotsScatter::plot()
 
             curpt = pendpt.takeAt(nearestidx);
             lnplot.appendPoint(curpt);
-            postpt.append(curpt);
+            curptlist.append(curpt);
         }
 
-        int enclptidx = this->findNearestPoint(curpt, postpt, 2);
-        if ( enclptidx >= 0 )
-            lnplot.appendPoint(postpt.at(enclptidx));
-
+        this->handleEnclosePoint(curptlist, postpt, &lnplot);
         lnplot.plot();
+
         lnplot.clearPoints();
+        postpt.append(curptlist);
+        curptlist.clear();
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

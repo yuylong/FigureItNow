@@ -22,6 +22,7 @@ public:
     static QPointF movePointOutside(const QPointF &basept, const QPointF &dirpt, double len);
 
     static double getVectorRadian(const QPointF &vec);
+    static double radianDifference(double rad1, double rad2);
     static QPointF getVerticalVector(const QPointF &vec, double len);
 
     static finFigAlgLine2D vecLineFromXVal(double xval);

@@ -61,6 +61,16 @@ double finFigureAlg::getVectorRadian(const QPointF &vec)
         return -acosrad;
 }
 
+double finFigureAlg::radianDifference(double rad1, double rad2)
+{
+    double raddiff = rad1 - rad2;
+    while ( raddiff > M_PI )
+        raddiff -= M_PI * 2.0;
+    while ( raddiff <= -M_PI )
+        raddiff += M_PI * 2.0;
+    return raddiff;
+}
+
 QPointF finFigureAlg::getVerticalVector(const QPointF &vec, double len)
 {
     double base = len / finFigureAlg::vectorLength(vec);
