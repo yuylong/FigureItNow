@@ -29,6 +29,16 @@ protected:
 
 public:
     finPlotPolar();
+
+    const QString &getFunctionName() const;
+    double getFigureFromRadian() const;
+    double getFigureToRadian() const;
+    int getRadianVarIndex() const;
+
+    finErrorCode setFunctionName(const QString &funcname);
+    finErrorCode setFigureRange(double rad1, double rad2);
+    finErrorCode setRadianVarIndex(int idx);
+
 };
 
 #endif // FINPLOTPOLAR_H
