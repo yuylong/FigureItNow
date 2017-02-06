@@ -318,6 +318,14 @@ finErrorCode finPlotDotsScatter::setDistanceLimit(double limit)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+bool finPlotDotsScatter::isNaNOrInfPoint(const QPointF &pt) const
+{
+    if ( qIsNaN(pt.x()) || qIsNaN(pt.y()) || qIsInf(pt.x()) || qIsInf(pt.y()) )
+        return true;
+    else
+        return false;
+}
+
 int finPlotDotsScatter::findNearestPoint(const QPointF &chkpt, const QList<QPointF> &ptlist,
                                          int exceptcnt, QPointF *outpt)
 {
@@ -332,7 +340,7 @@ int finPlotDotsScatter::findNearestPoint(const QPointF &chkpt, const QList<QPoin
 
     for ( int i = 0; i < checkcnt; i++ ) {
         const QPointF &curpt = ptlist.at(i);
-        if ( !srchrange.contains(curpt) )
+        if ( this->isNaNOrInfPoint(curpt) || !srchrange.contains(curpt) )
             continue;
 
         double curdist = finFigureAlg::pointsDistance(chkpt, curpt);
@@ -364,7 +372,7 @@ int finPlotDotsScatter::findNearestPointWithRad(const QPointF &chkpt, const QPoi
 
     for ( int i = 0; i < checkcnt; i++ ) {
         const QPointF &curpt = ptlist.at(i);
-        if ( !srchrange.contains(curpt) )
+        if ( this->isNaNOrInfPoint(curpt) || !srchrange.contains(curpt) )
             continue;
 
         double currad = finFigureAlg::getVectorRadian(curpt - chkpt);
@@ -442,6 +450,9 @@ finErrorCode finPlotDotsScatter::plot()
 
     while ( !pendpt.empty() ) {
         QPointF curpt = pendpt.takeFirst();
+        if ( this->isNaNOrInfPoint(curpt) )
+            continue;
+
         lnplot.appendPoint(curpt);
         curptlist.append(curpt);
 

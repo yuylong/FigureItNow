@@ -80,6 +80,8 @@ public:
     virtual finErrorCode plot();
 
 private:
+    bool isNaNOrInfPoint(const QPointF &pt) const;
+
     int findNearestPoint(const QPointF &chkpt, const QList<QPointF> &ptlist,
                          int exceptcnt = 0, QPointF *outpt = NULL);
     int findNearestPointWithRad(const QPointF &chkpt, const QPointF &prevpt, const QList<QPointF> &ptlist,
