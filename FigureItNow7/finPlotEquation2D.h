@@ -29,6 +29,7 @@ protected:
 public:
     finPlotEquation2D();
 
+    const QString &getFunctionName() const;
     double getStartPositionX() const;
     double getEndPostionX() const;
     double getStartPostionY() const;
@@ -36,6 +37,7 @@ public:
     int getVariableXIndex() const;
     int getVariableYIndex() const;
 
+    finErrorCode setFunctionName(const QString &funcname);
     finErrorCode setFiguringRangeX(double x1, double x2);
     finErrorCode setFiguringRangeY(double y1, double y2);
     finErrorCode setVariableXIndex(int idx);

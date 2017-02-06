@@ -15,6 +15,7 @@
 #include "finGraphTrans.h"
 #include "finPlotDots.h"
 #include "finPlotFunction.h"
+#include "finPlotEquation2D.h"
 
 
 static finErrorCode _sysfunc_plot_dots(finExecFunction *self, finExecEnvironment *env,
@@ -31,6 +32,8 @@ static finErrorCode _sysfunc_plot_line_mat(finExecFunction *self, finExecEnviron
                                            finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_plot_equation(finExecFunction *self, finExecEnvironment *env,
+                                           finExecMachine *machine, finExecFlowControl *flowctl);
 
 static finExecSysFuncRegItem _finSysFuncPlotList[] = {
     { QString("plot_dots"),         QString("ary"),                  _sysfunc_plot_dots          },
@@ -40,6 +43,7 @@ static finExecSysFuncRegItem _finSysFuncPlotList[] = {
     { QString("plot_line_xy"),      QString("xary,yary"),            _sysfunc_plot_line_xy       },
     { QString("plot_line_mat"),     QString("mat"),                  _sysfunc_plot_line_mat      },
     { QString("plot_function"),     QString("x1,x2,func"),           _sysfunc_plot_function      },
+    { QString("plot_equation"),     QString("x1,x2,y1,y2,func"),     _sysfunc_plot_equation      },
 
     { QString(), QString(), NULL }
 };
@@ -312,6 +316,62 @@ static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnviron
     plotfunc.setFigureContainer(env->getFigureContainer());
 
     finErrorCode errcode = plotfunc.plot();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+    if ( !flowctl->isFlowNext() )
+        return errcode;
+
+    // Because all extended arguments are left values, we do not release the memory for arglist.
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_plot_equation(finExecFunction *self, finExecEnvironment *env,
+                                           finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    finExecVariable *funcvar;
+    funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
+    if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    finExecVariable *x1var, *x2var, *y1var, *y2var;
+    x1var = finExecVariable::transLinkTarget(env->findVariable("x1"));
+    x2var = finExecVariable::transLinkTarget(env->findVariable("x2"));
+    y1var = finExecVariable::transLinkTarget(env->findVariable("y1"));
+    y2var = finExecVariable::transLinkTarget(env->findVariable("y2"));
+    if ( x1var == NULL || x2var == NULL || y1var == NULL || y2var == NULL ||
+         x1var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
+         x2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
+         y1var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
+         y2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC)
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    QString funcname = funcvar->getStringValue();
+    double x1 = x1var->getNumericValue();
+    double x2 = x2var->getNumericValue();
+    double y1 = y1var->getNumericValue();
+    double y2 = y2var->getNumericValue();
+
+    finPlotEquation2D ploteq;
+    ploteq.setFunctionName(funcname);
+    ploteq.setFiguringRangeX(x1, x2);
+    ploteq.setFiguringRangeY(y1, y2);
+    ploteq.setVariableXIndex(0);
+    ploteq.setVariableYIndex(1);
+
+    QList<finExecVariable *> extarglist = finExecFunction::getExtendArgList(env);
+    ploteq.setCallArgList(&extarglist);
+    ploteq.setEnvironment(env);
+    ploteq.setMachine(machine);
+    ploteq.setFlowControl(flowctl);
+    ploteq.setFigureContainer(env->getFigureContainer());
+
+    finErrorCode errcode = ploteq.plot();
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
     if ( !flowctl->isFlowNext() )

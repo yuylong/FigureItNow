@@ -22,6 +22,11 @@ finPlotEquation2D::finPlotEquation2D()
     this->_scrtPlot.clearPoints();
 }
 
+const QString &finPlotEquation2D::getFunctionName() const
+{
+    return this->_funcname;
+}
+
 double finPlotEquation2D::getStartPositionX() const
 {
     return this->_fromX;
@@ -50,6 +55,12 @@ int finPlotEquation2D::getVariableXIndex() const
 int finPlotEquation2D::getVariableYIndex() const
 {
     return this->_yidx;
+}
+
+finErrorCode finPlotEquation2D::setFunctionName(const QString &funcname)
+{
+    this->_funcname = funcname;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::setFiguringRangeX(double x1, double x2)
