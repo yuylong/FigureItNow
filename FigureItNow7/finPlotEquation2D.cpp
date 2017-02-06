@@ -211,7 +211,6 @@ finErrorCode finPlotEquation2D::buildFuncArgList(QList<finExecVariable *> *varli
         varlist->insert(this->_xidx, *xvar);
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
-
 }
 
 finErrorCode finPlotEquation2D::calcAPoint(
@@ -241,6 +240,34 @@ finErrorCode finPlotEquation2D::calcAPoint(
 
     *retval = retvar->getNumericValue();
     finExecVariable::releaseNonLeftVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotEquation2D::buildSearchPositions(double from, double to, double step, QList<double> *poslist)
+{
+    if ( poslist == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( step <= 0.0 )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    for ( double pos = from; pos < to; pos += step ) {
+        poslist->append(pos);
+    }
+    poslist->append(to);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotEquation2D::buildSearchRangeList(double step, QList<double> *xlist, QList<double> *ylist)
+{
+    finErrorCode errcode;
+    errcode = this->buildSearchPositions(this->_fromX, this->_toX, step, xlist);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    errcode = this->buildSearchPositions(this->_fromY, this->_toY, step, ylist);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

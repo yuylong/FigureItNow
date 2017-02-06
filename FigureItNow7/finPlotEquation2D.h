@@ -61,6 +61,9 @@ private:
     finErrorCode buildFuncArgList(QList<finExecVariable *> *varlist,
                                   finExecVariable **xvar, finExecVariable **yvar);
 
+    finErrorCode buildSearchPositions(double from, double to, double step, QList<double> *poslist);
+    finErrorCode buildSearchRangeList(double step, QList<double> *xlist, QList<double> *ylist);
+
     finErrorCode calcAPoint(double x, double y, finExecFunction *func, QList<finExecVariable *> *varlist,
                             finExecVariable *xvar, finExecVariable *yvar, double *retval, bool *goon);
 };
