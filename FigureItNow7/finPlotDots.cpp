@@ -10,6 +10,7 @@
  * DATE      REV  AUTHOR       COMMENTS
  * 20170204    0  Yulong Yu    Create this file.
  * 20170205    1  Yulong Yu    Add scatter plotting class.
+ * 20170206    2  Yulong Yu    Implement plotting method for scatter dots.
  */
 
 #include "finPlotDots.h"

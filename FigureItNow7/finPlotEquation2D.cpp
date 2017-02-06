@@ -1,3 +1,16 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ *
+ * History:
+ *
+ * DATE      REV  AUTHOR       COMMENTS
+ * 20170206    0  Yulong Yu    Create this file.
+ */
+
 #include "finPlotEquation2D.h"
 
 #include <qmath.h>
