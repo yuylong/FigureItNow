@@ -306,11 +306,67 @@ finErrorCode finPlotDotsScatter::setDistanceLimit(double limit)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+int finPlotDotsScatter::findNearestPoint(const QPointF &chkpt, const QList<QPointF> &ptlist, QPointF *outpt)
+{
+    QRectF srchrange;
+    srchrange.setX(chkpt.x() - this->_distLimit);
+    srchrange.setY(chkpt.y() - this->_distLimit);
+    srchrange.setSize(QSizeF(2 * this->_distLimit, 2 * this->_distLimit));
+
+    double mindist = this->_distLimit * 2.0;
+    int nearestidx = -1;
+
+    for ( int i = 0; i < ptlist.count(); i++ ) {
+        const QPointF &curpt = ptlist.at(i);
+        if ( !srchrange.contains(curpt) )
+            continue;
+
+        double curdist = finFigureAlg::pointsDistance(chkpt, curpt);
+        if ( curdist < mindist && curpt != chkpt ) {
+            mindist = curdist;
+            nearestidx = i;
+        }
+    }
+    if ( nearestidx >= 0 )
+        return -1;
+
+    if ( outpt != NULL )
+        *outpt = ptlist.at(nearestidx);
+    return nearestidx;
+}
+
 finErrorCode finPlotDotsScatter::plot()
 {
     if ( this->_figcontainer == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    QList<QPointF> pendpt = this->_ptList;
+    QList<QPointF> postpt;
+    finPlotDotsLine lnplot;
+    lnplot.setFigureContainer(this->_figcontainer);
+
+    while ( !pendpt.empty() ) {
+        QPointF curpt = pendpt.takeFirst();
+        lnplot.appendPoint(curpt);
+        postpt.append(curpt);
+
+        while ( true ) {
+            int nearestidx = this->findNearestPoint(curpt, pendpt, NULL);
+            if ( nearestidx < 0 )
+                break;
+
+            curpt = pendpt.takeAt(nearestidx);
+            lnplot.appendPoint(curpt);
+            postpt.append(curpt);
+        }
+
+        int enclptidx = this->findNearestPoint(curpt, postpt, NULL);
+        if ( enclptidx >= 0 )
+            lnplot.appendPoint(postpt.at(enclptidx));
+
+        lnplot.plot();
+        lnplot.clearPoints();
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

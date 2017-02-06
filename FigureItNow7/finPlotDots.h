@@ -76,6 +76,9 @@ public:
     finErrorCode setDistanceLimit(double limit);
 
     virtual finErrorCode plot();
+
+private:
+    int findNearestPoint(const QPointF &chkpt, const QList<QPointF> &ptlist, QPointF *outpt);
 };
 
 #endif // FINPLOTDOTS_H
