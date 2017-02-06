@@ -272,7 +272,7 @@ finErrorCode finPlotDotsStream::plot()
         } else if ( this->checkNaNOrInfPoint(&curpt) ) {
             isnewline = true;
         } else if ( !isnewline ) {
-            if ( fabs(currad - prevrad) >= M_PI * 0.49998 )
+            if ( fabs(finFigureAlg::radianDifference(currad, prevrad)) > M_PI * 0.4999 )
                 isnewline = true;
             else
                 isnewline = false;
@@ -385,7 +385,6 @@ int finPlotDotsScatter::findNearestPointWithRad(const QPointF &chkpt, const QPoi
     return nearestidx;
 }
 
-
 finErrorCode finPlotDotsScatter::handleEnclosePoint(
         const QList<QPointF> &curptlist, const QList<QPointF> &pstptlist, finPlotDotsLine *lnplot)
 {
@@ -427,6 +426,7 @@ finErrorCode finPlotDotsScatter::handleEnclosePoint(
         if ( firstnidx >= 0 )
             lnplot->prependPoint(curptlist.at(firstnidx));
     }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finPlotDotsScatter::plot()
