@@ -91,3 +91,80 @@ finErrorCode finPlotEquation2D::setVariableYIndex(int idx)
     this->_yidx = idx;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+QList<finExecVariable *> *finPlotEquation2D::getCallArgList() const
+{
+    return this->_callArgList;
+}
+
+finExecEnvironment *finPlotEquation2D::getEnvironment() const
+{
+    return this->_environment;
+}
+
+finExecMachine *finPlotEquation2D::getMachine() const
+{
+    return this->_machine;
+}
+
+finExecFlowControl *finPlotEquation2D::getFlowControl() const
+{
+    return this->_flowctl;
+}
+
+finFigureContainer *finPlotEquation2D::getFigureContainer() const
+{
+    return this->_scrtPlot.getFigureContainer();
+}
+
+finErrorCode finPlotEquation2D::setCallArgList(QList<finExecVariable *> *arglist)
+{
+    this->_callArgList = arglist;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotEquation2D::setEnvironment(finExecEnvironment *env)
+{
+    this->_environment = env;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotEquation2D::setMachine(finExecMachine *machine)
+{
+    this->_machine = machine;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotEquation2D::setFlowControl(finExecFlowControl *flowctl)
+{
+    this->_flowctl = flowctl;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotEquation2D::setFigureContainer(finFigureContainer *figcontainer)
+{
+    return this->_scrtPlot.setFigureContainer(figcontainer);
+}
+
+bool finPlotEquation2D::checkValid() const
+{
+    if ( this->_funcname.isEmpty() || this->_fromX >= this->_toX || this->_fromY >= this->_toY)
+        return false;
+    if ( this->_callArgList == NULL || this->_environment == NULL || this->_machine == NULL ||
+         this->_flowctl == NULL || this->_scrtPlot.getFigureContainer() == NULL )
+        return false;
+    if ( this->_xidx == this->_yidx ||
+         this->_xidx < 0 || this->_xidx >= this->_callArgList->count() + 2 ||
+         this->_yidx < 0 || this->_yidx >= this->_callArgList->count() + 2 )
+        return false;
+
+    return true;
+}
+
+finErrorCode finPlotEquation2D::plot()
+{
+    if ( !this->checkValid() )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}

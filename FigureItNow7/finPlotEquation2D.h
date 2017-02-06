@@ -41,6 +41,20 @@ public:
     finErrorCode setVariableXIndex(int idx);
     finErrorCode setVariableYIndex(int idx);
 
+    QList<finExecVariable *> *getCallArgList() const;
+    finExecEnvironment *getEnvironment() const;
+    finExecMachine *getMachine() const;
+    finExecFlowControl *getFlowControl() const;
+    finFigureContainer *getFigureContainer() const;
+
+    finErrorCode setCallArgList(QList<finExecVariable *> *arglist);
+    finErrorCode setEnvironment(finExecEnvironment *env);
+    finErrorCode setMachine(finExecMachine *machine);
+    finErrorCode setFlowControl(finExecFlowControl *flowctl);
+    finErrorCode setFigureContainer(finFigureContainer *figcontainer);
+
+    bool checkValid() const;
+    finErrorCode plot();
 };
 
 #endif // FINPLOTEQUATION2D_H
