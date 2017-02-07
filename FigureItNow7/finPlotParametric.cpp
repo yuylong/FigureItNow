@@ -68,3 +68,57 @@ finErrorCode finPlotParametric::setParameterVarIndex(int idx)
     this->_tIdx = idx;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+QList<finExecVariable *> *finPlotParametric::getCallArgList() const
+{
+    return this->_callArgList;
+}
+
+finExecEnvironment *finPlotParametric::getEnvironment() const
+{
+    return this->_environment;
+}
+
+finExecMachine *finPlotParametric::getMachine() const
+{
+    return this->_machine;
+}
+
+finExecFlowControl *finPlotParametric::getFlowControl() const
+{
+    return this->_flowctl;
+}
+
+finFigureContainer *finPlotParametric::getFigureContainer() const
+{
+    return this->_stmPlot.getFigureContainer();
+}
+
+finErrorCode finPlotParametric::setCallArgList(QList<finExecVariable *> *arglist)
+{
+    this->_callArgList = arglist;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotParametric::setEnvironment(finExecEnvironment *env)
+{
+    this->_environment = env;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotParametric::setMachine(finExecMachine *machine)
+{
+    this->_machine = machine;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotParametric::setFlowControl(finExecFlowControl *flowctl)
+{
+    this->_flowctl = flowctl;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotParametric::setFigureContainer(finFigureContainer *figcontainer)
+{
+    return this->_stmPlot.setFigureContainer(figcontainer);
+}

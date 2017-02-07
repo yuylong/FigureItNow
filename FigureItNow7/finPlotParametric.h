@@ -38,6 +38,18 @@ public:
     finErrorCode setFunctionName(const QString &funcname);
     finErrorCode setParameterValueRange(double t1, double t2);
     finErrorCode setParameterVarIndex(int idx);
+
+    QList<finExecVariable *> *getCallArgList() const;
+    finExecEnvironment *getEnvironment() const;
+    finExecMachine *getMachine() const;
+    finExecFlowControl *getFlowControl() const;
+    finFigureContainer *getFigureContainer() const;
+
+    finErrorCode setCallArgList(QList<finExecVariable *> *arglist);
+    finErrorCode setEnvironment(finExecEnvironment *env);
+    finErrorCode setMachine(finExecMachine *machine);
+    finErrorCode setFlowControl(finExecFlowControl *flowctl);
+    finErrorCode setFigureContainer(finFigureContainer *figcontainer);
 };
 
 #endif // FINPLOTPARAMETRIC_H
