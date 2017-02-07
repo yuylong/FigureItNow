@@ -43,6 +43,8 @@ static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment
 
 static finErrorCode _sysfunc_eq2d_circle(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_eq2d_ellipse(finExecFunction *self, finExecEnvironment *env,
+                                          finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_eq2d_hyperbola(finExecFunction *self, finExecEnvironment *env,
                                             finExecMachine *machine, finExecFlowControl *flowctl);
 
@@ -60,6 +62,7 @@ static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
     { QString("quadratic"),      QString ("x,a,b,c"), _sysfunc_quadratic      },
 
     { QString("eq2d_circle"),    QString ("x,y,r"),   _sysfunc_eq2d_circle    },
+    { QString("eq2d_ellipse"),   QString ("x,y,a,b"), _sysfunc_eq2d_ellipse },
     { QString("eq2d_hyperbola"), QString ("x,y,a,b"), _sysfunc_eq2d_hyperbola },
 
     { QString(), QString(), NULL }
@@ -343,6 +346,46 @@ static finErrorCode _sysfunc_eq2d_circle(finExecFunction *self, finExecEnvironme
 
     retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
     retvar->setNumericValue(x * x + y * y - r * r);
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_eq2d_ellipse(finExecFunction *self, finExecEnvironment *env,
+                                          finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *xvar, *yvar, *avar, *bvar, *retvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    xvar = finExecVariable::transLinkTarget(env->findVariable("x"));
+    yvar = finExecVariable::transLinkTarget(env->findVariable("y"));
+    avar = finExecVariable::transLinkTarget(env->findVariable("a"));
+    bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
+    if ( xvar == NULL || yvar == NULL || avar == NULL || bvar == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    if ( xvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         yvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         avar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         bvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    double x = xvar->getNumericValue();
+    double y = yvar->getNumericValue();
+    double a = avar->getNumericValue();
+    double b = bvar->getNumericValue();
+    double a2 = a * a, b2 = b * b;
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setNumericValue(b2 * x * x + a2 * y * y - a2 * b2);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
 
