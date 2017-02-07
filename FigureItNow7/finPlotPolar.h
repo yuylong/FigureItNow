@@ -55,8 +55,11 @@ public:
     finErrorCode plot();
 
 private:
+    double refineRadianStep(double rad) const;
+    double getBaseStep() const;
     finErrorCode buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **radvar);
 
+    double getRadianStep(double rlen) const;
     finErrorCode calcAPoint(double rad, finExecFunction *func, QList<finExecVariable *> *varlist,
                             finExecVariable *radvar, QPointF *pt, bool *goon);
 };

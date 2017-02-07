@@ -141,6 +141,27 @@ bool finPlotPolar::checkValid() const
     return true;
 }
 
+double finPlotPolar::refineRadianStep(double rad) const
+{
+    if ( rad < M_PI / 1800.0 )
+        return M_PI / 1800.0;
+    else if ( rad > M_PI / 18.0 )
+        return M_PI / 18.0;
+    else
+        return rad;
+
+}
+double finPlotPolar::getBaseStep() const
+{
+    double axisstep = 0.1;
+    finFigureContainer *figcontainer = this->_stmPlot.getFigureContainer();
+    if ( figcontainer != NULL && figcontainer->getGraphConfig() != NULL )
+        axisstep = 3.0 / figcontainer->getGraphConfig()->getAxisUnitPixelSize();
+
+    double radstep = atan(axisstep);
+    return this->refineRadianStep(radstep);
+}
+
 finErrorCode finPlotPolar::buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **radvar)
 {
     if ( varlist == NULL || radvar == NULL )
@@ -191,13 +212,19 @@ finErrorCode finPlotPolar::calcAPoint(double rad, finExecFunction *func, QList<f
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+double finPlotPolar::getRadianStep(double basestep, double rlen) const
+{
+    double radstep = basestep / rlen;
+    return this->refineRadianStep(radstep);
+}
+
 finErrorCode finPlotPolar::plot()
 {
     if ( !this->checkValid() )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     finErrorCode errcode;
-    double basestep = M_PI / 180.0;
+    double basestep = this->getBaseStep();
 
     finExecFunction *func = this->_environment->findFunction(this->_funcname);
     if ( func == NULL )
