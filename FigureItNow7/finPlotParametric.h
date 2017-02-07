@@ -29,6 +29,15 @@ protected:
 
 public:
     finPlotParametric();
+
+    const QString &getFunctionName() const;
+    double getParameterFromValue() const;
+    double getParameterToValue() const;
+    int getParameterVarIndex() const;
+
+    finErrorCode setFunctionName(const QString &funcname);
+    finErrorCode setParameterValueRange(double t1, double t2);
+    finErrorCode setParameterVarIndex(int idx);
 };
 
 #endif // FINPLOTPARAMETRIC_H
