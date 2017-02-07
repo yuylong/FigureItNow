@@ -254,7 +254,6 @@ finExecMachine::appendExecutionError(finLexNode *lexnode, const QString &errinfo
 finErrorCode
 finExecMachine::instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Single!"); synnode->dump();
     if ( synnode == NULL || env == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
@@ -267,7 +266,6 @@ finExecMachine::instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, 
 finErrorCode
 finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Declared Direct!"); synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
 
     if ( lexnode->getType() != finLexNode::FIN_LN_TYPE_VARIABLE ) {
@@ -303,7 +301,6 @@ finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment
 finErrorCode
 finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Declared Assigned!");synnode->dump();
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
 
@@ -356,7 +353,6 @@ finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironme
 finErrorCode
 finExecMachine::instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Declared Comma!");synnode->dump();
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
 
@@ -383,7 +379,6 @@ finExecMachine::instExecDeclareComma(finSyntaxNode *synnode, finExecEnvironment 
 finErrorCode
 finExecMachine::instExecDeclareExpr(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Declared Expr!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
 
     if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
@@ -408,7 +403,6 @@ finExecMachine::instExecDeclareExpr(finSyntaxNode *synnode, finExecEnvironment *
 finErrorCode
 finExecMachine::instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Declare!");synnode->dump();
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
 
@@ -427,7 +421,6 @@ finExecMachine::instExecDeclare(finSyntaxNode *synnode, finExecEnvironment *env,
 finErrorCode
 finExecMachine::instExecStatIn(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Statement Inner!");synnode->dump();
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
 
@@ -462,7 +455,6 @@ finExecMachine::instExecStatIn(finSyntaxNode *synnode, finExecEnvironment *env, 
 finErrorCode
 finExecMachine::instExecStatement(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Statement!");synnode->dump();
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
     finExecEnvironment *curenv = env;
@@ -501,7 +493,6 @@ finErrorCode finExecMachine::instExecExprNull(finExecFlowControl *flowctl)
 finErrorCode
 finExecMachine::instExecExprVar(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Expr Var!");synnode->dump();
     finExecVariable *retvar;
     finLexNode *lexnode = synnode->getCommandLexNode();
 
@@ -519,7 +510,6 @@ finExecMachine::instExecExprVar(finSyntaxNode *synnode, finExecEnvironment *env,
 finErrorCode
 finExecMachine::instExecExprNum(finSyntaxNode *synnode, finExecFlowControl *flowctl)
 {
-    printf("Expr Num!");synnode->dump();
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
@@ -538,7 +528,6 @@ finExecMachine::instExecExprNum(finSyntaxNode *synnode, finExecFlowControl *flow
 finErrorCode
 finExecMachine::instExecExprStr(finSyntaxNode *synnode, finExecFlowControl *flowctl)
 {
-    printf("Expr Str!");synnode->dump();
     finExecVariable *retvar = new finExecVariable();;
     if ( retvar == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
@@ -557,7 +546,6 @@ finExecMachine::instExecExprStr(finSyntaxNode *synnode, finExecFlowControl *flow
 finErrorCode
 finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Expr Func!");synnode->dump();
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
 
@@ -598,7 +586,6 @@ finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env
 finErrorCode
 finExecMachine::instExecExprOper(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Expr Operator!");synnode->dump();
     finErrorCode errcode = finErrorCodeKits::FIN_EC_SUCCESS;
     finLexNode *lexnode = synnode->getCommandLexNode();
     QList<finExecVariable *> oprands;
@@ -644,7 +631,6 @@ out:
 finErrorCode
 finExecMachine::instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Expression!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
     finLexNodeType lextype = finLexNode::FIN_LN_TYPE_DUMMY;
     if ( lexnode != NULL )
@@ -770,7 +756,6 @@ finExecMachine::instExecFuncBody(finSyntaxNode *synnode, finExecFunction *func)
 finErrorCode
 finExecMachine::instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Function!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
 
     if ( synnode->getSubListCount() < 3 ) {
@@ -823,7 +808,6 @@ finErrorCode finExecMachine::instExecBrCondVoid(bool *retblval, finExecFlowContr
 finErrorCode finExecMachine::instExecBrCond(finSyntaxNode *synnode, finExecEnvironment *env,
                                             bool *retblval, finExecFlowControl *flowctl)
 {
-    printf("Branch Cond!");synnode->dump();
     if ( synnode == NULL )
         return this->instExecBrCondVoid(retblval, flowctl);
 
@@ -858,7 +842,6 @@ finErrorCode finExecMachine::instExecBrCond(finSyntaxNode *synnode, finExecEnvir
 finErrorCode
 finExecMachine::instExecBranch(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Branch!");synnode->dump();
     finErrorCode errcode;
     finLexNode *lexnode = synnode->getCommandLexNode();
     int bridx = 0;
@@ -904,7 +887,6 @@ finErrorCode finExecMachine::instExecLoopCondVoid(bool *retblval, finExecFlowCon
 finErrorCode finExecMachine::instExecLoopCond(finSyntaxNode *synnode, finExecEnvironment *env,
                                               bool *retblval, finExecFlowControl *flowctl)
 {
-    printf("Loop Cond!");synnode->dump();
     if ( synnode == NULL )
         return this->instExecLoopCondVoid(retblval, flowctl);
 
@@ -939,7 +921,6 @@ finErrorCode finExecMachine::instExecLoopCond(finSyntaxNode *synnode, finExecEnv
 finErrorCode
 finExecMachine::instExecLoopWhile(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Loop While!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
     if ( synnode->getSubListCount() < 2 ) {
         this->appendExecutionError(lexnode, QString("Unrecognized while loop."));
@@ -1056,8 +1037,6 @@ finErrorCode finExecMachine::instExecLoopForHead(finSyntaxNode *synnode,
 finErrorCode
 finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Loop For!");synnode->dump();
-
     finErrorCode errcode;
     finSyntaxNode *inithead, *condhead, *stephead, *loopbody;
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -1127,7 +1106,6 @@ finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env,
 finErrorCode
 finExecMachine::instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Loop!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
     QString loophdstr = lexnode->getString();
 
@@ -1144,7 +1122,6 @@ finExecMachine::instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env, fi
 finErrorCode
 finExecMachine::instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Label!");synnode->dump();
     if ( synnode == NULL || env == NULL || flowctl == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
@@ -1311,7 +1288,6 @@ finErrorCode finExecMachine::instExecJumpBreak(finSyntaxNode *synnode, finExecFl
 finErrorCode
 finExecMachine::instExecJump(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Jump!");synnode->dump();
     finLexNode *lexnode = synnode->getCommandLexNode();
     QString jumpkw = lexnode->getString();
 
@@ -1334,9 +1310,7 @@ finExecMachine::instExecJump(finSyntaxNode *synnode, finExecEnvironment *env, fi
 finErrorCode
 finExecMachine::instExecProgram(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    printf("Program!");synnode->dump();
     finExecEnvironment *curenv;
-
     env->buildChildEnvironment(&curenv);
 
     finErrorCode errcode = instExecStatIn(synnode, curenv, flowctl);
