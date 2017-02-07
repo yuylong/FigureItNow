@@ -141,6 +141,26 @@ bool finPlotPolar::checkValid() const
     return true;
 }
 
+finErrorCode finPlotPolar::buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **radvar)
+{
+    if ( varlist == NULL || radvar == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    *radvar = new finExecVariable();
+    if ( *radvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    (*radvar)->setName("_@_fig_func_drv_arg_rad");
+    (*radvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    (*radvar)->setLeftValue();
+    (*radvar)->clearWriteProtected();
+    this->_environment->addVariable(*radvar);
+
+    *varlist = *this->_callArgList;
+    varlist->insert(this->_radIdx, *radvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode finPlotPolar::calcAPoint(double rad, finExecFunction *func, QList<finExecVariable *> *varlist,
                                       finExecVariable *radvar, QPointF *pt, bool *goon)
 {

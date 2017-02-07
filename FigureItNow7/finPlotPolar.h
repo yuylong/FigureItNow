@@ -55,6 +55,8 @@ public:
     finErrorCode plot();
 
 private:
+    finErrorCode buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **radvar);
+
     finErrorCode calcAPoint(double rad, finExecFunction *func, QList<finExecVariable *> *varlist,
                             finExecVariable *radvar, QPointF *pt, bool *goon);
 };
