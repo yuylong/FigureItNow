@@ -183,7 +183,7 @@ finErrorCode finPlotPolar::buildFuncArgList(QList<finExecVariable *> *varlist, f
 }
 
 finErrorCode finPlotPolar::calcAPoint(double rad, finExecFunction *func, QList<finExecVariable *> *varlist,
-                                      finExecVariable *radvar, QPointF *pt, bool *goon)
+                                      finExecVariable *radvar, double *retrlen, QPointF *pt, bool *goon)
 {
     if ( varlist == NULL || radvar == NULL || pt == NULL || goon == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
@@ -208,6 +208,8 @@ finErrorCode finPlotPolar::calcAPoint(double rad, finExecFunction *func, QList<f
     double rlen = retvar->getNumericValue();
     pt->setX(rlen * cos(rad));
     pt->setY(rlen * sin(rad));
+    if ( retrlen != NULL )
+        *retrlen = rlen;
     finExecVariable::releaseNonLeftVariable(retvar);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
@@ -223,6 +225,9 @@ finErrorCode finPlotPolar::plot()
     if ( !this->checkValid() )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
+    this->_stmPlot.clearBreakPoints();
+    this->_stmPlot.clearPoints();
+
     finErrorCode errcode;
     double basestep = this->getBaseStep();
 
@@ -236,5 +241,34 @@ finErrorCode finPlotPolar::plot()
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    bool goon = true, loopit = true;
+    double curstep = basestep;
+    double rlen;
+    QPointF curpt;
+
+    for ( double rad = this->_fromRad; loopit; rad += curstep ) {
+        if ( rad > this->_toRad ) {
+            rad = this->_toRad;
+            loopit = false;
+        }
+
+        errcode = this->calcAPoint(rad, func, &funcarglist, radvar, &rlen, &curpt, &goon);
+        if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+            return errcode;
+
+        this->_stmPlot.appendPoint(curpt);
+
+
+        // Radian is set to default when current or previous points do not exist.
+        if ( qIsNaN(curpt.x()) || qIsNaN(curpt.y()) || qIsInf(curpt.x()) || qIsInf(curpt.y()) )
+            curstep = basestep;
+        else
+            curstep = this->getRadianStep(basestep, rlen);
+    }
+
+    // Because all extended arguments are left values, we do not release the memory for arglist.
+    errcode = this->_stmPlot.plot();
+    this->_stmPlot.clearBreakPoints();
+    this->_stmPlot.clearPoints();
+    return errcode;
 }

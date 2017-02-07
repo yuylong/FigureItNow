@@ -59,9 +59,9 @@ private:
     double getBaseStep() const;
     finErrorCode buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **radvar);
 
-    double getRadianStep(double rlen) const;
+    double getRadianStep(double basestep, double rlen) const;
     finErrorCode calcAPoint(double rad, finExecFunction *func, QList<finExecVariable *> *varlist,
-                            finExecVariable *radvar, QPointF *pt, bool *goon);
+                            finExecVariable *radvar, double *retrlen, QPointF *pt, bool *goon);
 };
 
 #endif // FINPLOTPOLAR_H
