@@ -50,6 +50,20 @@ public:
     finErrorCode setMachine(finExecMachine *machine);
     finErrorCode setFlowControl(finExecFlowControl *flowctl);
     finErrorCode setFigureContainer(finFigureContainer *figcontainer);
+
+    bool checkValid() const;
+    finErrorCode plot();
+
+private:
+    double getBaseStep() const;
+    finErrorCode buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **tvar);
+
+    double getCurrentStep(double basestep, double detlen, double prevstep);
+    finErrorCode calcAPoint(double t, finExecFunction *func, QList<finExecVariable *> *varlist,
+                            finExecVariable *tvar, QPointF *pt, bool *goon);
+
+    bool isDuplicatedNaN(double t, const QPointF &prevpt, const QPointF &curpt);
+    double calcDetLength(double t, const QPointF &prevpt, const QPointF &curpt);
 };
 
 #endif // FINPLOTPARAMETRIC_H
