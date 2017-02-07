@@ -39,6 +39,17 @@ public:
     finErrorCode setFigureRange(double rad1, double rad2);
     finErrorCode setRadianVarIndex(int idx);
 
+    QList<finExecVariable *> *getCallArgList() const;
+    finExecEnvironment *getEnvironment() const;
+    finExecMachine *getMachine() const;
+    finExecFlowControl *getFlowControl() const;
+    finFigureContainer *getFigureContainer() const;
+
+    finErrorCode setCallArgList(QList<finExecVariable *> *arglist);
+    finErrorCode setEnvironment(finExecEnvironment *env);
+    finErrorCode setMachine(finExecMachine *machine);
+    finErrorCode setFlowControl(finExecFlowControl *flowctl);
+    finErrorCode setFigureContainer(finFigureContainer *figcontainer);
 };
 
 #endif // FINPLOTPOLAR_H
