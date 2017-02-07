@@ -15,6 +15,7 @@
 #include "finGraphTrans.h"
 #include "finPlotDots.h"
 #include "finPlotFunction.h"
+#include "finPlotPolar.h"
 #include "finPlotEquation2D.h"
 
 
@@ -32,6 +33,8 @@ static finErrorCode _sysfunc_plot_line_mat(finExecFunction *self, finExecEnviron
                                            finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_plot_polar(finExecFunction *self, finExecEnvironment *env,
+                                        finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_plot_equation(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl);
 
@@ -42,7 +45,9 @@ static finExecSysFuncRegItem _finSysFuncPlotList[] = {
     { QString("plot_line"),         QString("ary"),                  _sysfunc_plot_line          },
     { QString("plot_line_xy"),      QString("xary,yary"),            _sysfunc_plot_line_xy       },
     { QString("plot_line_mat"),     QString("mat"),                  _sysfunc_plot_line_mat      },
+
     { QString("plot_function"),     QString("x1,x2,func"),           _sysfunc_plot_function      },
+    { QString("plot_polar"),        QString("rad1,rad2,func"),       _sysfunc_plot_polar         },
     { QString("plot_equation"),     QString("x1,x2,y1,y2,func"),     _sysfunc_plot_equation      },
 
     { QString(), QString(), NULL }
@@ -316,6 +321,54 @@ static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnviron
     plotfunc.setFigureContainer(env->getFigureContainer());
 
     finErrorCode errcode = plotfunc.plot();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+    if ( !flowctl->isFlowNext() )
+        return errcode;
+
+    // Because all extended arguments are left values, we do not release the memory for arglist.
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_plot_polar(finExecFunction *self, finExecEnvironment *env,
+                                        finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    finExecVariable *funcvar;
+    funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
+    if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    finExecVariable *rad1var, *rad2var;
+    rad1var = finExecVariable::transLinkTarget(env->findVariable("rad1"));
+    rad2var = finExecVariable::transLinkTarget(env->findVariable("rad2"));
+    if ( rad1var == NULL || rad2var == NULL ||
+         rad1var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
+         rad2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    QString funcname = funcvar->getStringValue();
+    double rad1 = rad1var->getNumericValue();
+    double rad2 = rad2var->getNumericValue();
+
+    finPlotPolar plotpolar;
+    plotpolar.setFunctionName(funcname);
+    plotpolar.setFigureRange(rad1, rad2);
+    plotpolar.setRadianVarIndex(0);
+
+    QList<finExecVariable *> extarglist = finExecFunction::getExtendArgList(env);
+    plotpolar.setCallArgList(&extarglist);
+    plotpolar.setEnvironment(env);
+    plotpolar.setMachine(machine);
+    plotpolar.setFlowControl(flowctl);
+    plotpolar.setFigureContainer(env->getFigureContainer());
+
+    finErrorCode errcode = plotpolar.plot();
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
     if ( !flowctl->isFlowNext() )

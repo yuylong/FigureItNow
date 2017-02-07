@@ -216,7 +216,7 @@ finErrorCode finPlotPolar::calcAPoint(double rad, finExecFunction *func, QList<f
 
 double finPlotPolar::getRadianStep(double basestep, double rlen) const
 {
-    double radstep = basestep / rlen;
+    double radstep = basestep / fabs(rlen);
     return this->refineRadianStep(radstep);
 }
 
