@@ -135,6 +135,9 @@ public:
 
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
     virtual void dump() const;
+
+private:
+    QList<QPointF> getTransformedPointList(finGraphConfig *cfg) const;
 };
 
 class finFigureObjectRect : public finFigureObject

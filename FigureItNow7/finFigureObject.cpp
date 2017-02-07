@@ -285,18 +285,48 @@ finErrorCode finFigureObjectPolyline::setIgnoreArrow(bool blval)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+QList<QPointF> finFigureObjectPolyline::getTransformedPointList(finGraphConfig *cfg) const
+{
+    QList<QPointF> retptlist;
+    for ( int i = 0; i < this->_ptList.count(); i++ )
+        retptlist.append(cfg->transformPixelPoint(this->_ptList.at(i)));
+
+    return retptlist;
+}
+
 finErrorCode finFigureObjectPolyline::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    if ( this->_ptList.count() < 2 )
+    int ptcnt = this->_ptList.count();
+    if ( ptcnt < 2 )
         return finErrorCodeKits::FIN_EC_NORMAL_WARN;
 
+    QList<QPointF> ptlist = this->getTransformedPointList(cfg);
     QPainterPath path;
-    path.moveTo(cfg->transformPixelPoint(this->_ptList.at(0)));
-    for ( int i = 1; i < this->_ptList.count(); i++ ) {
-        path.lineTo(cfg->transformPixelPoint(this->_ptList.at(i)));
+
+    // The first point
+    if ( this->_ignoreArrow ) {
+        path.moveTo(ptlist.first());
+    } else {
+        QPointF spt0 = this->_figCfg.getStartArrow().lineShrinkPoint(
+                    ptlist.at(0), ptlist.at(1), &this->_figCfg);
+        path.moveTo(spt0);
+    }
+
+    // The medium points
+    for ( int i = 1; i < ptcnt - 1; i++ ) {
+        path.lineTo(ptlist.at(i));
+    }
+
+    // The last point
+    if ( this->_ignoreArrow ) {
+        path.lineTo(ptlist.last());
+    } else {
+        QPointF sptN = this->_figCfg.getEndArrow().lineShrinkPoint(
+                    ptlist.at(ptcnt - 1), ptlist.at(ptcnt - 2), &this->_figCfg);
+        path.lineTo(sptN);
     }
 
     finFigurePath figpath;
@@ -304,6 +334,12 @@ finErrorCode finFigureObjectPolyline::getPixelFigurePath(QList<finFigurePath> *p
     figpath.setPath(path);
     pathlist->append(figpath);
 
+    if ( !this->_ignoreArrow ) {
+        this->_figCfg.getStartArrow().getPixelPath(
+                    pathlist, ptlist.at(0), ptlist.at(1), &this->_figCfg);
+        this->_figCfg.getEndArrow().getPixelPath(
+                    pathlist, ptlist.at(ptcnt - 1), ptlist.at(ptcnt - 2), &this->_figCfg);
+    }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
