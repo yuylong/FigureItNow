@@ -234,6 +234,9 @@ finErrorCode finPlotFunction::plot()
     if ( !this->checkValid() )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
+    this->_stmPlot.clearBreakPoints();
+    this->_stmPlot.clearPoints();
+
     finErrorCode errcode;
     double basestep = this->getBaseStep();
 
@@ -267,16 +270,21 @@ finErrorCode finPlotFunction::plot()
             this->_stmPlot.appendPoint(curpt);
 
         // Radian is set to default when current or previous points do not exist.
-        if ( x <= this->_fromX ||
-             qIsNaN(curpt.y()) || qIsInf(curpt.y()) || qIsNaN(prevpt.y()) || qIsInf(prevpt.y()) )
-            currad = M_PI * 0.499;
-        else
-            currad = finFigureAlg::getVectorRadian(curpt - prevpt);
+        if ( loopit ) {
+            if ( x <= this->_fromX ||
+                 qIsNaN(curpt.y()) || qIsInf(curpt.y()) || qIsNaN(prevpt.y()) || qIsInf(prevpt.y()) )
+                currad = M_PI * 0.499;
+            else
+                currad = finFigureAlg::getVectorRadian(curpt - prevpt);
 
-        curstep = this->getCurrentStep(currad, basestep);
-        prevpt = curpt;
+            curstep = this->getCurrentStep(currad, basestep);
+            prevpt = curpt;
+        }
     }
 
     // Because all extended arguments are left values, we do not release the memory for arglist.
-    return this->_stmPlot.plot();
+    errcode = this->_stmPlot.plot();
+    this->_stmPlot.clearBreakPoints();
+    this->_stmPlot.clearPoints();
+    return errcode;
 }

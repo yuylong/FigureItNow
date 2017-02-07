@@ -258,12 +258,13 @@ finErrorCode finPlotPolar::plot()
 
         this->_stmPlot.appendPoint(curpt);
 
-
         // Radian is set to default when current or previous points do not exist.
-        if ( qIsNaN(curpt.x()) || qIsNaN(curpt.y()) || qIsInf(curpt.x()) || qIsInf(curpt.y()) )
-            curstep = basestep;
-        else
-            curstep = this->getRadianStep(basestep, rlen);
+        if ( loopit ) {
+            if ( qIsNaN(curpt.x()) || qIsNaN(curpt.y()) || qIsInf(curpt.x()) || qIsInf(curpt.y()) )
+                curstep = basestep;
+            else
+                curstep = this->getRadianStep(basestep, rlen);
+        }
     }
 
     // Because all extended arguments are left values, we do not release the memory for arglist.
