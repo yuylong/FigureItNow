@@ -50,7 +50,7 @@ protected:
 
 public:
     finFigureObject();
-    virtual ~finFigureObject() { return; }
+    virtual ~finFigureObject();
 
     virtual bool is3DFigure() const;
 
@@ -71,7 +71,7 @@ protected:
 
 public:
     finFigureObjectDot();
-    virtual ~finFigureObjectDot() { return; }
+    virtual ~finFigureObjectDot();
 
     virtual bool is3DFigure() const;
 
@@ -91,7 +91,7 @@ protected:
 
 public:
     finFigureObjectLine();
-    virtual ~finFigureObjectLine() { return; }
+    virtual ~finFigureObjectLine();
 
     virtual bool is3DFigure() const;
 
@@ -114,7 +114,7 @@ protected:
 
 public:
     finFigureObjectPolyline();
-    virtual ~finFigureObjectPolyline() { return; }
+    virtual ~finFigureObjectPolyline();
 
     virtual bool is3DFigure() const;
 
@@ -139,7 +139,7 @@ protected:
 
 public:
     finFigureObjectRect();
-    virtual ~finFigureObjectRect() { return; }
+    virtual ~finFigureObjectRect();
 
     virtual bool is3DFigure() const;
 
@@ -170,7 +170,7 @@ protected:
 
 public:
     finFigureObjectPolygon();
-    virtual ~finFigureObjectPolygon() { return; }
+    virtual ~finFigureObjectPolygon();
 
     virtual bool is3DFigure() const;
 
@@ -197,7 +197,7 @@ protected:
 
 public:
     finFigureObjectEllipse();
-    virtual ~finFigureObjectEllipse() { return; }
+    virtual ~finFigureObjectEllipse();
 
     virtual bool is3DFigure() const;
 
@@ -232,7 +232,7 @@ protected:
 
 public:
     finFigureObjectText();
-    virtual ~finFigureObjectText() { return; }
+    virtual ~finFigureObjectText();
 
     virtual bool is3DFigure() const;
 
@@ -277,7 +277,7 @@ protected:
 
 public:
     finFigureObjectImage();
-    virtual ~finFigureObjectImage() { return; }
+    virtual ~finFigureObjectImage();
 
     virtual bool is3DFigure() const;
 
@@ -320,7 +320,7 @@ protected:
 
 public:
     finFigureObjectAxis();
-    virtual ~finFigureObjectAxis() { return; }
+    virtual ~finFigureObjectAxis();
 
     virtual bool is3DFigure() const;
 
@@ -390,7 +390,7 @@ protected:
 
 public:
     finFigureObjectLine3D();
-    virtual ~finFigureObjectLine3D() { return; }
+    virtual ~finFigureObjectLine3D();
 
     virtual bool is3DFigure() const;
 

@@ -26,6 +26,11 @@ finFigureObject::finFigureObject()
     this->_type = finFigureObject::FIN_FO_TYPE_DUMMY;
 }
 
+finFigureObject::~finFigureObject()
+{
+    return;
+}
+
 bool finFigureObject::is3DFigure() const
 {
     return false;
@@ -63,6 +68,11 @@ finFigureObjectDot::finFigureObjectDot()
 {
     this->_type = finFigureObject::FIN_FO_TYPE_DOT;
     this->_point = QPointF(0.0, 0.0);
+}
+
+finFigureObjectDot::~finFigureObjectDot()
+{
+    return;
 }
 
 bool finFigureObjectDot::is3DFigure() const
@@ -122,6 +132,11 @@ finFigureObjectLine::finFigureObjectLine()
     this->_type = finFigureObject::FIN_FO_TYPE_LINE;
     this->_pt1 = QPointF(0.0, 0.0);
     this->_pt2 = QPointF(0.0, 0.0);
+}
+
+finFigureObjectLine::~finFigureObjectLine()
+{
+    return;
 }
 
 bool finFigureObjectLine::is3DFigure() const
@@ -201,6 +216,11 @@ finFigureObjectPolyline::finFigureObjectPolyline()
     this->_type = finFigureObject::FIN_FO_TYPE_POLYLINE;
 }
 
+finFigureObjectPolyline::~finFigureObjectPolyline()
+{
+    return;
+}
+
 bool finFigureObjectPolyline::is3DFigure() const
 {
     return false;
@@ -277,6 +297,11 @@ finFigureObjectRect::finFigureObjectRect()
     this->_center = QPointF(0.0, 0.0);
     this->_size = QSizeF(0.0, 0.0);
     this->_radian = 0.0;
+}
+
+finFigureObjectRect::~finFigureObjectRect()
+{
+    return;
 }
 
 bool finFigureObjectRect::is3DFigure() const
@@ -413,6 +438,11 @@ finFigureObjectPolygon::finFigureObjectPolygon()
     this->_type = finFigureObject::FIN_FO_TYPE_POLYGON;
 }
 
+finFigureObjectPolygon::~finFigureObjectPolygon()
+{
+    return;
+}
+
 bool finFigureObjectPolygon::is3DFigure() const
 {
     return false;
@@ -498,6 +528,11 @@ finFigureObjectEllipse::finFigureObjectEllipse()
     this->_longR = 0.0;
     this->_shortR = 0.0;
     this->_radian = 0.0;
+}
+
+finFigureObjectEllipse::~finFigureObjectEllipse()
+{
+    return;
 }
 
 bool finFigureObjectEllipse::is3DFigure() const
@@ -612,6 +647,11 @@ finFigureObjectText::finFigureObjectText()
     this->_rad = 0.0;
     this->_text = QString();
     this->_isPinned = false;
+}
+
+finFigureObjectText::~finFigureObjectText()
+{
+    return;
 }
 
 bool finFigureObjectText::is3DFigure() const
@@ -826,6 +866,11 @@ finFigureObjectImage::finFigureObjectImage()
     this->_rad = 0.0;
     this->_img = QImage();
     this->_isPinned = false;
+}
+
+finFigureObjectImage::~finFigureObjectImage()
+{
+    return;
 }
 
 bool finFigureObjectImage::is3DFigure() const
@@ -1080,6 +1125,11 @@ finFigureObjectAxis::finFigureObjectAxis()
     this->_titleY = QString("y");
 }
 
+finFigureObjectAxis::~finFigureObjectAxis()
+{
+    return;
+}
+
 bool finFigureObjectAxis::is3DFigure() const
 {
     return false;
@@ -1315,7 +1365,6 @@ QPointF finFigureObjectAxis::getAxisCrossPoint(const QList<QPointF> &panelrect) 
 
     double ptx = this->getGivenAxisCrossPosition(candrect.left(), candrect.right());
     double pty = this->getGivenAxisCrossPosition(candrect.top(), candrect.bottom());
-    printf("CP:(%lf,%lf)\n", ptx,pty);fflush(stdout);
     return QPointF(ptx, pty);
 }
 
@@ -1329,7 +1378,7 @@ QRectF finFigureObjectAxis::getAxisDrawRange(const QList<QPointF> &panelrect, co
     double xrng[2];
     xrng[0] = (xrngpt.at(0).x() < xrngpt.at(1).x() ? xrngpt.at(0).x() : xrngpt.at(1).x());
     xrng[1] = (xrngpt.at(0).x() < xrngpt.at(1).x() ? xrngpt.at(1).x() : xrngpt.at(0).x());
-    printf("%lf, %lf\n", xrng[0], xrng[1]);
+
     for ( int i = 0; i < xrngpt.count(); i++ ) {
         if ( xrngpt.at(i).x() < xrng[0] )
             xrng[0] = xrngpt.at(i).x();
@@ -1363,7 +1412,6 @@ QRectF finFigureObjectAxis::getAxisDrawRange(const QList<QPointF> &panelrect, co
         if ( yrng[1] > this->_maxY )
             yrng[1] = this->_maxY;
     }
-    printf("Range:x:%lf,%lf  y:%lf,%lf\n", xrng[0], xrng[1], yrng[0], yrng[1]);fflush(stdout);
     return QRectF(xrng[0], yrng[0], (xrng[1] - xrng[0]), (yrng[1] - yrng[0]));
 }
 
@@ -1784,6 +1832,11 @@ finFigureObjectLine3D::finFigureObjectLine3D()
     this->_type = finFigureObject::FIN_FO_TYPE_LINE3D;
     this->_pt1 = finFigurePoint3D(0.0, 0.0, 0.0);
     this->_pt2 = finFigurePoint3D(0.0, 0.0, 0.0);
+}
+
+finFigureObjectLine3D::~finFigureObjectLine3D()
+{
+    return;
 }
 
 bool finFigureObjectLine3D::is3DFigure() const
