@@ -143,6 +143,7 @@ finErrorCode finPlotDotsLine::plot()
     if ( fopln == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
+    fopln->setIgnoreArrow(true);
     for ( int i = 0; i < this->_ptList.count(); i++ )
         fopln->appendPoint(this->_ptList.at(i));
 
