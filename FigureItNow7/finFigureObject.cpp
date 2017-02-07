@@ -132,6 +132,7 @@ finFigureObjectLine::finFigureObjectLine()
     this->_type = finFigureObject::FIN_FO_TYPE_LINE;
     this->_pt1 = QPointF(0.0, 0.0);
     this->_pt2 = QPointF(0.0, 0.0);
+    this->_ignoreArrow = false;
 }
 
 finFigureObjectLine::~finFigureObjectLine()
@@ -180,6 +181,17 @@ finErrorCode finFigureObjectLine::setPoint2(double ptx, double pty)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+bool finFigureObjectLine::isArrowIgnored() const
+{
+    return this->_ignoreArrow;
+}
+
+finErrorCode finFigureObjectLine::setIgnoreArrow(bool blval)
+{
+    this->_ignoreArrow = blval;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode finFigureObjectLine::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
@@ -214,6 +226,7 @@ finFigureObjectPolyline::finFigureObjectPolyline()
     : _ptList()
 {
     this->_type = finFigureObject::FIN_FO_TYPE_POLYLINE;
+    this->_ignoreArrow = false;
 }
 
 finFigureObjectPolyline::~finFigureObjectPolyline()
@@ -251,6 +264,17 @@ finErrorCode finFigureObjectPolyline::appendPoint(double ptx, double pty)
 finErrorCode finFigureObjectPolyline::removePointAt(int idx)
 {
     this->_ptList.removeAt(idx);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+bool finFigureObjectPolyline::isArrowIgnored() const
+{
+    return this->_ignoreArrow;
+}
+
+finErrorCode finFigureObjectPolyline::setIgnoreArrow(bool blval)
+{
+    this->_ignoreArrow = blval;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

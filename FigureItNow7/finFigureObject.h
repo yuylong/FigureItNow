@@ -88,6 +88,7 @@ class finFigureObjectLine : public finFigureObject
 {
 protected:
     QPointF _pt1, _pt2;
+    bool _ignoreArrow;
 
 public:
     finFigureObjectLine();
@@ -103,6 +104,9 @@ public:
     finErrorCode setPoint2(const QPointF &qpt);
     finErrorCode setPoint2(double ptx, double pty);
 
+    bool isArrowIgnored() const;
+    finErrorCode setIgnoreArrow(bool blval);
+
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
     virtual void dump() const;
 };
@@ -111,6 +115,7 @@ class finFigureObjectPolyline : public finFigureObject
 {
 protected:
     QList<QPointF> _ptList;
+    bool _ignoreArrow;
 
 public:
     finFigureObjectPolyline();
@@ -124,6 +129,9 @@ public:
     finErrorCode appendPoint(const QPointF &pt);
     finErrorCode appendPoint(double ptx, double pty);
     finErrorCode removePointAt(int idx);
+
+    bool isArrowIgnored() const;
+    finErrorCode setIgnoreArrow(bool blval);
 
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
     virtual void dump() const;
