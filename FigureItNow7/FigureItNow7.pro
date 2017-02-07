@@ -56,7 +56,8 @@ SOURCES += main.cpp\
     finPlotDots.cpp \
     finExecFuncPlot.cpp \
     finPlotPolar.cpp \
-    finPlotEquation2D.cpp
+    finPlotEquation2D.cpp \
+    finPlotParametric.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
@@ -94,7 +95,8 @@ HEADERS  += MainWindow.h \
     finPlotFunction.h \
     finPlotDots.h \
     finPlotPolar.h \
-    finPlotEquation2D.h
+    finPlotEquation2D.h \
+    finPlotParametric.h
 
 FORMS    += MainWindow.ui \
     finUiFigConfigDlg.ui \
