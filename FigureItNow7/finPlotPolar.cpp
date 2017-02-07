@@ -127,3 +127,54 @@ finErrorCode finPlotPolar::setFigureContainer(finFigureContainer *figcontainer)
 {
     return this->_stmPlot.setFigureContainer(figcontainer);
 }
+
+bool finPlotPolar::checkValid() const
+{
+    if ( this->_funcname.isEmpty() )
+        return false;
+    if ( this->_callArgList == NULL || this->_environment == NULL || this->_machine == NULL ||
+         this->_flowctl == NULL || this->_stmPlot.getFigureContainer() == NULL )
+        return false;
+    if ( this->_radIdx < 0 || this->_radIdx > this->_callArgList->count() )
+        return false;
+
+    return true;
+}
+
+finErrorCode finPlotPolar::calcAPoint(double rad, finExecFunction *func, QList<finExecVariable *> *varlist,
+                                      finExecVariable *radvar, QPointF *pt, bool *goon)
+{
+    if ( varlist == NULL || radvar == NULL || pt == NULL || goon == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    finErrorCode errcode;
+    radvar->setNumericValue(rad);
+
+    errcode = func->execFunction(varlist, this->_environment, this->_machine, this->_flowctl);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    errcode = this->_flowctl->checkFlowForExpress(goon, NULL, this->_machine);
+    if ( finErrorCodeKits::isErrorResult(errcode) || !(*goon) )
+        return errcode;
+
+    finExecVariable *retvar = this->_flowctl->pickReturnVariable();
+    if ( retvar == NULL || retvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+        finExecVariable::releaseNonLeftVariable(retvar);
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    }
+
+    double rlen = retvar->getNumericValue();
+    pt->setX(rlen * cos(rad));
+    pt->setY(rlen * sin(rad));
+    finExecVariable::releaseNonLeftVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotPolar::plot()
+{
+    if ( !this->checkValid() )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+}

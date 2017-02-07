@@ -50,6 +50,13 @@ public:
     finErrorCode setMachine(finExecMachine *machine);
     finErrorCode setFlowControl(finExecFlowControl *flowctl);
     finErrorCode setFigureContainer(finFigureContainer *figcontainer);
+
+    bool checkValid() const;
+    finErrorCode plot();
+
+private:
+    finErrorCode calcAPoint(double rad, finExecFunction *func, QList<finExecVariable *> *varlist,
+                            finExecVariable *radvar, QPointF *pt, bool *goon);
 };
 
 #endif // FINPLOTPOLAR_H
