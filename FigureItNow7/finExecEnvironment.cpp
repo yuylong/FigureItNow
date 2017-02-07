@@ -77,6 +77,9 @@ finExecEnvironment::setEnvironmentName(const QString &envname)
 finExecVariable *
 finExecEnvironment::getVariableHere(const QString &varname)
 {
+    if ( varname.isEmpty() )
+        return NULL;
+
     for ( int i = 0; i < this->_varList.count(); i++ ) {
         finExecVariable *var = this->_varList.at(i);
         if ( QString::compare(var->getName(), varname) == 0 )
@@ -143,6 +146,9 @@ finExecEnvironment::findVariableUntil(const QString &varname, int envlevel)
 finExecFunction *
 finExecEnvironment::getFunctionHere(const QString &funcname)
 {
+    if ( funcname.isEmpty() )
+        return NULL;
+
     for ( int i = 0; i < this->_funcList.count(); i++ ) {
         finExecFunction *func = this->_funcList.at(i);
 
@@ -236,7 +242,12 @@ bool finExecEnvironment::isFunctionInEnv(finExecFunction *func)
 finErrorCode
 finExecEnvironment::addVariable(finExecVariable *var)
 {
-    finExecVariable *oldvar = this->getVariableHere(var->getName());
+    if ( !var->isLeftValue() )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    finExecVariable *oldvar = NULL;
+    if ( !var->getName().isEmpty() )
+        this->getVariableHere(var->getName());
 
     if ( oldvar != NULL )
         return finErrorCodeKits::FIN_EC_CONTENTION;
@@ -248,7 +259,9 @@ finExecEnvironment::addVariable(finExecVariable *var)
 finErrorCode
 finExecEnvironment::addFunction(finExecFunction *func)
 {
-    finExecFunction *oldfunc = this->getFunctionHere(func->getFunctionName());
+    finExecFunction *oldfunc = NULL;
+    if ( !func->getFunctionName().isEmpty() )
+        this->getFunctionHere(func->getFunctionName());
 
     if ( oldfunc != NULL )
         return finErrorCodeKits::FIN_EC_CONTENTION;

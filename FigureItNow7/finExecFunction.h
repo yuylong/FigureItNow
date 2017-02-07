@@ -68,7 +68,7 @@ public:
     finExecFunction();
 
     finExecFunctionType getFunctionType() const;
-    QString getFunctionName() const;
+    const QString &getFunctionName() const;
     int getParameterCount() const;
     QString getParameterName(int idx) const;
     bool isParameterExist(const QString &paramname) const;

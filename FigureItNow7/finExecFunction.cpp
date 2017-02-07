@@ -33,7 +33,7 @@ finExecFunctionType finExecFunction::getFunctionType() const
     return this->_type;
 }
 
-QString finExecFunction::getFunctionName() const
+const QString &finExecFunction::getFunctionName() const
 {
     return this->_funcName;
 }

@@ -48,7 +48,7 @@ finExecVariable::~finExecVariable()
     this->dispose();
 }
 
-QString finExecVariable::getName() const
+const QString &finExecVariable::getName() const
 {
     return this->_varName;
 }

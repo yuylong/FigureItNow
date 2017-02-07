@@ -150,7 +150,7 @@ finErrorCode finPlotPolar::buildFuncArgList(QList<finExecVariable *> *varlist, f
     if ( *radvar == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
-    (*radvar)->setName("_@_fig_func_drv_arg_rad");
+    (*radvar)->setName(QString());
     (*radvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
     (*radvar)->setLeftValue();
     (*radvar)->clearWriteProtected();

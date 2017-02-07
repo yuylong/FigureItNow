@@ -89,7 +89,7 @@ public:
     finExecVariable(const QString &name);
     ~finExecVariable();
 
-    QString getName() const;
+    const QString &getName() const;
     finExecVariableType getType() const;
     bool isWriteProtected() const;
     bool isLeftValue() const;

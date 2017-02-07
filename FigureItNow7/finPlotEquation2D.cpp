@@ -216,13 +216,13 @@ finErrorCode finPlotEquation2D::buildFuncArgList(QList<finExecVariable *> *varli
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
     }
 
-    (*xvar)->setName("_@_fig_func_drv_arg_x");
+    (*xvar)->setName(QString());
     (*xvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
     (*xvar)->setLeftValue();
     (*xvar)->clearWriteProtected();
     this->_environment->addVariable(*xvar);
 
-    (*yvar)->setName("_@_fig_func_drv_arg_y");
+    (*yvar)->setName(QString());
     (*yvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
     (*yvar)->setLeftValue();
     (*yvar)->clearWriteProtected();
