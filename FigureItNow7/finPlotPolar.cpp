@@ -196,5 +196,18 @@ finErrorCode finPlotPolar::plot()
     if ( !this->checkValid() )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
+    finErrorCode errcode;
+    double basestep = M_PI / 180.0;
+
+    finExecFunction *func = this->_environment->findFunction(this->_funcname);
+    if ( func == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+
+    QList<finExecVariable *> funcarglist;
+    finExecVariable *radvar;
+    errcode = this->buildFuncArgList(&funcarglist, &radvar);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
     return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
 }
