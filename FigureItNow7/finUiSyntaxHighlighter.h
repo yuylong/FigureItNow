@@ -2,19 +2,57 @@
 #define FINUISYNTAXHIGHLIGHTER_H
 
 #include <QString>
+#include <QMap>
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
+#include <QRegExp>
+
+#include "finErrorCode.h"
 
 
 class finUiSyntaxHighlighter : public QSyntaxHighlighter
 {
 protected:
+    enum Type {
+        FIN_SH_TYPE_DUMMY,
+
+        FIN_SH_TYPE_KEYWORD,
+        FIN_SH_TYPE_KEYFUNC,
+        FIN_SH_TYPE_OPERATOR,
+        FIN_SH_TYPE_BRACKET,
+        FIN_SH_TYPE_DECIMAL,
+
+        FIN_SH_TYPE_STRING,
+        FIN_SH_TYPE_LINE_COMMENT,
+        FIN_SH_TYPE_BLOCK_COMMENT_ON,
+        FIN_SH_TYPE_BLOCK_COMMENT_OFF,
+    };
+
+    enum State {
+        FIN_SH_STAT_DUMMY = -1,
+        FIN_SH_STAT_NORMAL = 0,
+        FIN_SH_STAT_INCOMMENT,
+    };
+
     QTextCharFormat _baseFormat;
+    QMap<Type, QTextCharFormat> _formatList;
+    QMap<Type, QRegExp> _regExpList;
 
 public:
     finUiSyntaxHighlighter(QTextDocument *parent = 0);
 
+    const QTextCharFormat &getBaseFormat() const;
+    const QTextCharFormat getTypedFormat(Type type) const;
+    finErrorCode setBaseFormat(const QTextCharFormat &format);
+
 protected:
+    void installFormatList();
+    void installRegExpList();
+
+    int searchCommentOrString(Type *type, const QString &text, int startpos = 0);
+    int handleCommentAndString(const QString &text, int startpos = 0);
+
+    void handleNormalType(Type type, const QString &text);
     virtual void highlightBlock(const QString &text);
 };
 
