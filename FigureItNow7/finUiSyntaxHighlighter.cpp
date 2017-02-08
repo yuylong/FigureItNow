@@ -61,11 +61,11 @@ void finUiSyntaxHighlighter::installRegExpList()
     this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_KEYWORD, regexp);
 
     // Key functions
-    regexp = QRegExp(QString("\\b(dot|line|axis)\\b"));
+    regexp = QRegExp(QString("\\b(dot|line|polyline|rect|polygon|circle|ellipse|axis)\\b"));
     this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_KEYFUNC, regexp);
 
     // Operators
-    regexp = QRegExp(QString("(\\+|\\+\\+|\\-|\\-\\-|\\*|\\/)"));
+    regexp = QRegExp(QString("(\\+|\\-|\\-|\\*|\\/|\\^|\\=|\\!|\\&|\\||\\<|\\>|\\$)"));
     this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_OPERATOR, regexp);
 
     // Brackets
@@ -79,6 +79,14 @@ void finUiSyntaxHighlighter::installRegExpList()
     // String
     regexp = QRegExp(QString("\".*\""));
     this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_STRING, regexp);
+
+    // Comment
+    regexp = QRegExp(QString("\\/\\/"));
+    this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_LINE_COMMENT, regexp);
+    regexp = QRegExp(QString("\\/\\*"));
+    this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_ON, regexp);
+    regexp = QRegExp(QString("\\*\\/"));
+    this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_OFF, regexp);
 }
 
 const QTextCharFormat &finUiSyntaxHighlighter::getBaseFormat() const
