@@ -12,6 +12,7 @@
 #include "finFigureContainer.h"
 #include "finGraphPanelWidget.h"
 #include "finUiFigureWidget.h"
+#include "finUiSyntaxHighlighter.h"
 
 
 namespace Ui {
@@ -46,6 +47,7 @@ private:
      */
     Ui::MainWindow *ui;
     finUiFigureWidget *figui;
+    finUiSyntaxHighlighter *synhigh;
 
     void paintEvent(QPaintEvent *e);
 

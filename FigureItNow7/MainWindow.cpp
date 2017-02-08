@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     printf ("init Env (errno=%d)\n", errcode);
 
     ui->setupUi(this);
+    this->synhigh = new finUiSyntaxHighlighter(ui->plainTextEdit->document());
     this->figui = new finUiFigureWidget(this);
     this->figui->setObjectName("FigureContainer");
     this->figui->setGeometry(QRect(820, 50, 640, 480));
@@ -91,6 +92,8 @@ void MainWindow::on_pushButton_3_clicked()
     finErrorCode errcode;
 
     this->machine.setScriptCode(ui->plainTextEdit->toPlainText());
+
+    printf("BlockCounts:%d\n", ui->plainTextEdit->blockCount());
 
     errcode = this->machine.compile();
     if ( finErrorCodeKits::isErrorResult(errcode) )
