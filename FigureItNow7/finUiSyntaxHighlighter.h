@@ -49,10 +49,20 @@ protected:
     void installFormatList();
     void installRegExpList();
 
-    int searchCommentOrString(Type *type, const QString &text, int startpos = 0);
-    int handleCommentAndString(const QString &text, int startpos = 0);
+    struct IgnoreItem {
+        int _startIdx;
+        int _length;
+    };
+    bool inIgnoreRange(int startidx, int len, const QList<IgnoreItem> &ignorerange) const;
 
-    void handleNormalType(Type type, const QString &text);
+    int searchTypedIndex(Type type, const QString &text, int startpos = 0);
+    int findCommentAndString(Type *type, const QString &text, int startpos = 0);
+    int handleString(const QString &text, int startpos, QList<IgnoreItem> *ignorerange);
+    int handleLineComment(const QString &text, int startpos, QList<IgnoreItem> *ignorerange);
+    int handleBlockComment(const QString &text, int startpos, QList<IgnoreItem> *ignorerange);
+    finErrorCode handleCommentAndString(const QString &text, QList<IgnoreItem> *ignorerange);
+
+    void handleNormalType(Type type, const QString &text, const QList<IgnoreItem> &ignorerange);
     virtual void highlightBlock(const QString &text);
 };
 
