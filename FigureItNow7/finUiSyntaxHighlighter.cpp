@@ -61,7 +61,10 @@ void finUiSyntaxHighlighter::installRegExpList()
     this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_KEYWORD, regexp);
 
     // Key functions
-    regexp = QRegExp(QString("\\b(dot|line|polyline|rect|polygon|circle|ellipse|axis)\\b"));
+    regexp = QRegExp(QString("\\b(dot|line|polyline|rect|polygon|circle|ellipse|axis|"
+                                 "draw_(pinned_)?(text|image)|(read|write)_(fig|graph)_config|"
+                                 "plot_(function|polar|parametric|equation)|named_color|"
+                                 "sin|cos|tan|tg|cot|ctg|ln|log|PI|E)\\b"));
     this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_KEYFUNC, regexp);
 
     // Operators
@@ -73,7 +76,7 @@ void finUiSyntaxHighlighter::installRegExpList()
     this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_BRACKET, regexp);
 
     // Decimal
-    regexp = QRegExp(QString("\\b[0-9]+(\\.[0-9]+)?(e(\\-|\\+)?[0-9]+)?\\b"));
+    regexp = QRegExp(QString("\\b[0-9]+(\\.[0-9]+)?([e|E][\\-\\+]?[0-9]+)?\\b"));
     this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_DECIMAL, regexp);
 
     // String
@@ -132,7 +135,8 @@ int finUiSyntaxHighlighter::searchTypedIndex(finUiSyntaxHighlighter::Type type, 
     return  text.indexOf(expression, startpos);
 }
 
-int finUiSyntaxHighlighter::findCommentAndString(finUiSyntaxHighlighter::Type *type, const QString &text, int startpos)
+int finUiSyntaxHighlighter::findCommentAndString(finUiSyntaxHighlighter::Type *type,
+                                                 const QString &text, int startpos)
 {
     if ( type == NULL )
         return -1;
@@ -304,7 +308,6 @@ void finUiSyntaxHighlighter::handleNormalType(finUiSyntaxHighlighter::Type type,
 void finUiSyntaxHighlighter::highlightBlock(const QString &text)
 {
     QList<finUiSyntaxHighlighter::IgnoreItem> ignorerange;
-
     this->handleCommentAndString(text, &ignorerange);
 
     this->handleNormalType(finUiSyntaxHighlighter::FIN_SH_TYPE_KEYWORD, text, ignorerange);
@@ -312,5 +315,4 @@ void finUiSyntaxHighlighter::highlightBlock(const QString &text)
     this->handleNormalType(finUiSyntaxHighlighter::FIN_SH_TYPE_OPERATOR, text, ignorerange);
     this->handleNormalType(finUiSyntaxHighlighter::FIN_SH_TYPE_BRACKET, text, ignorerange);
     this->handleNormalType(finUiSyntaxHighlighter::FIN_SH_TYPE_DECIMAL, text, ignorerange);
-    //this->handleNormalType(finUiSyntaxHighlighter::FIN_SH_TYPE_STRING, text, ignorerange);
 }
