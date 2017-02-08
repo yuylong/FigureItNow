@@ -153,7 +153,7 @@ int finUiSyntaxHighlighter::findCommentAndString(finUiSyntaxHighlighter::Type *t
     curidx = this->searchTypedIndex(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_ON, text, startpos);
     if ( curidx >= 0 && (minidx < 0 || curidx < minidx) ) {
         minidx = curidx;
-        *type = finUiSyntaxHighlighter::FIN_SH_TYPE_LINE_COMMENT;
+        *type = finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_ON;
     }
     return minidx;
 }
@@ -195,9 +195,6 @@ int finUiSyntaxHighlighter::handleLineComment(const QString &text, int startpos,
         return -1;
 
     int length = text.length() - startpos;
-    if ( length <= 0 )
-        return -1;
-
     QTextCharFormat format = this->_formatList.value(finUiSyntaxHighlighter::FIN_SH_TYPE_LINE_COMMENT,
                                                      this->_baseFormat);
     setFormat(startpos, length, format);
@@ -223,30 +220,25 @@ int finUiSyntaxHighlighter::handleBlockComment(const QString &text, int startpos
     newitem._startIdx = startpos;
 
     int fromidx = startpos;
-    if ( this->previousBlockState() != FIN_SH_STAT_INCOMMENT )
+    if ( this->currentBlockState() != FIN_SH_STAT_INCOMMENT )
         fromidx += 2;
 
     int lastidx = text.indexOf(expression, fromidx);
     int length;
     if ( lastidx < 0 ) {
         this->setCurrentBlockState(FIN_SH_STAT_INCOMMENT);
-
         length = text.length() - startpos;
-        if ( length <= 0 )
-            return -1;
-        newitem._length = length;
     } else {
         this->setCurrentBlockState(FIN_SH_STAT_NORMAL);
-
         lastidx += expression.matchedLength();
         length = lastidx - startpos;
-
-        newitem._length = length;
     }
 \
     QTextCharFormat format = this->_formatList.value(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_ON,
                                                      this->_baseFormat);
     setFormat(startpos, length, format);
+
+    newitem._length = length;
     ignorerange->append(newitem);
     return lastidx;
 }
@@ -258,8 +250,10 @@ finErrorCode finUiSyntaxHighlighter::handleCommentAndString(const QString &text,
     int index = 0;
     if ( this->previousBlockState() == FIN_SH_STAT_INCOMMENT) {
         curtype = finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_ON;
+        this->setCurrentBlockState(FIN_SH_STAT_INCOMMENT);
     } else {
         index = this->findCommentAndString(&curtype, text);
+        this->setCurrentBlockState(FIN_SH_STAT_NORMAL);
     }
 
     while ( index >= 0 ) {
