@@ -139,19 +139,19 @@ int finUiSyntaxHighlighter::findCommentAndString(finUiSyntaxHighlighter::Type *t
     int minidx = -1, curidx;
 
     curidx = this->searchTypedIndex(finUiSyntaxHighlighter::FIN_SH_TYPE_STRING, text, startpos);
-    if ( minidx < 0 || curidx < minidx ) {
+    if ( curidx >= 0 && (minidx < 0 || curidx < minidx) ) {
         minidx = curidx;
         *type = finUiSyntaxHighlighter::FIN_SH_TYPE_STRING;
     }
 
     curidx = this->searchTypedIndex(finUiSyntaxHighlighter::FIN_SH_TYPE_LINE_COMMENT, text, startpos);
-    if ( minidx < 0 || curidx < minidx ) {
+    if ( curidx >= 0 && (minidx < 0 || curidx < minidx) ) {
         minidx = curidx;
         *type = finUiSyntaxHighlighter::FIN_SH_TYPE_LINE_COMMENT;
     }
 
     curidx = this->searchTypedIndex(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_ON, text, startpos);
-    if ( minidx < 0 || curidx < minidx ) {
+    if ( curidx >= 0 && (minidx < 0 || curidx < minidx) ) {
         minidx = curidx;
         *type = finUiSyntaxHighlighter::FIN_SH_TYPE_LINE_COMMENT;
     }
@@ -161,18 +161,20 @@ int finUiSyntaxHighlighter::findCommentAndString(finUiSyntaxHighlighter::Type *t
 int finUiSyntaxHighlighter::handleString(const QString &text, int startpos,
                                          QList<finUiSyntaxHighlighter::IgnoreItem> *ignorerange)
 {
-    if ( startpos < 0 )
+    if ( startpos < 0 || startpos >= text.length() )
         return -1;
     if ( !this->_regExpList.contains(finUiSyntaxHighlighter::FIN_SH_TYPE_STRING) )
         return startpos + 1;
 
     QRegExp expression = this->_regExpList.value(finUiSyntaxHighlighter::FIN_SH_TYPE_STRING);
     int lastidx = text.indexOf(expression, startpos + 1);
-    if ( lastidx < 0 )
-        return startpos + 1;
-
-    lastidx += expression.matchedLength();
-    int length = lastidx - startpos;
+    int length;
+    if ( lastidx < 0 ) {
+        length = text.length() - startpos;
+    } else {
+        lastidx += expression.matchedLength();
+        length = lastidx - startpos;
+    }
 
     QTextCharFormat format = this->_formatList.value(finUiSyntaxHighlighter::FIN_SH_TYPE_STRING,
                                                      this->_baseFormat);
@@ -189,7 +191,7 @@ int finUiSyntaxHighlighter::handleString(const QString &text, int startpos,
 int finUiSyntaxHighlighter::handleLineComment(const QString &text, int startpos,
                                               QList<finUiSyntaxHighlighter::IgnoreItem> *ignorerange)
 {
-    if ( startpos < 0 )
+    if ( startpos < 0 || startpos >= text.length() )
         return -1;
 
     int length = text.length() - startpos;
@@ -211,7 +213,7 @@ int finUiSyntaxHighlighter::handleLineComment(const QString &text, int startpos,
 int finUiSyntaxHighlighter::handleBlockComment(const QString &text, int startpos,
                                                QList<finUiSyntaxHighlighter::IgnoreItem> *ignorerange)
 {
-    if ( startpos < 0 )
+    if ( startpos < 0 || startpos >= text.length() )
         return -1;
     if ( !this->_regExpList.contains(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_OFF) )
         return startpos + 2;
@@ -279,6 +281,8 @@ finErrorCode finUiSyntaxHighlighter::handleCommentAndString(const QString &text,
             index = -1;
             break;
         }
+        if ( index < 0 || index >= text.length() )
+            break;
 
         index = this->findCommentAndString(&curtype, text, index);
     }
