@@ -2,15 +2,8 @@
  * GNU GENERAL PUBLIC LICENSE, version 3
  * See LICENSE file for detail.
  *
- * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yusoft. All rights reserved.
- *
- * History:
- *
- * DATE      REV  AUTHOR       COMMENTS
- * 20161226    0  Yulong Yu    Create this file.
- * 20170108    1  Yulong Yu    Add logic value manipulation.
- * 20170209    2  Yulong Yu    Implement the operators for logic manipulations.
+ * Author: Yulong Yu, Dec 26th, 2016
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
  */
 
 #include "finExecOperartorClac.h"

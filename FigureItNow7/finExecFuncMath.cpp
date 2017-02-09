@@ -2,17 +2,8 @@
  * GNU GENERAL PUBLIC LICENSE, version 3
  * See LICENSE file for detail.
  *
- * Author: Yulong Yu, Jan 11th, 2017
+ * Author: Yulong Yu
  * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
- *
- * History:
- *
- * DATE      REV  AUTHOR       COMMENTS
- * 20170111    0  Yulong Yu    Create this file.
- * 20170112    1  Yulong Yu    Add tan script function.
- * 20170115    2  Yulong Yu    Add cot script function.
- * 20170127    3  Yulong Yu    Add log and ln script functions.
- * 20170207    4  Yulong Yu    Add some widely-used equations for plotting.
  */
 
 #include "finExecFunction.h"

@@ -3,14 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2016 Yusoft. All rights reserved.
- *
- * History:
- *
- * DATE      REV  AUTHOR       COMMENTS
- * 20151101    0  Yulong Yu    Create this file.
- * 20160526    1  Yulong Yu    Add the doxygen-styled comments.
- * 20161223    2  Yulong Yu    Refine the comment styles and the copyright license.
+ * Copyright(c) 2015-2016 Yulong Yu. All rights reserved.
  */
 
 #include "finErrorCode.h"

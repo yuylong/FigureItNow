@@ -3,12 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, May 26th, 2016
- * Copyright(c) 2015-2016 Yulong Yu. All rights reserved.
- *
- * History:
- *
- * DATE      REV  AUTHOR       COMMENTS
- * 20151229    0  Yulong Yu    Create this file.
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
  */
 
 #include <QtMath>
