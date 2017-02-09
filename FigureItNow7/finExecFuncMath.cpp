@@ -54,6 +54,8 @@ static finErrorCode _sysfunc_parm_involute(finExecFunction *self, finExecEnviron
                                            finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_parm_cycloid(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_parm_hypotrochoid(finExecFunction *self, finExecEnvironment *env,
+                                               finExecMachine *machine, finExecFlowControl *flowctl);
 
 static finErrorCode _sysfunc_eq2d_circle(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl);
@@ -81,6 +83,7 @@ static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
     { QString("parm_lissajous"),         QString ("t,a,b,kx,ky"),     _sysfunc_parm_lissajous       },
     { QString("parm_involute"),          QString ("t,r"),             _sysfunc_parm_involute        },
     { QString("parm_cycloid"),           QString ("t,r"),             _sysfunc_parm_cycloid         },
+    { QString("parm_hypotrochoid"),      QString ("t,R,r,d"),         _sysfunc_parm_hypotrochoid    },
 
     { QString("eq2d_circle"),            QString ("x,y,r"),           _sysfunc_eq2d_circle          },
     { QString("eq2d_ellipse"),           QString ("x,y,a,b"),         _sysfunc_eq2d_ellipse         },
@@ -616,6 +619,57 @@ static finErrorCode _sysfunc_parm_cycloid(finExecFunction *self, finExecEnvironm
     retitemx->setNumericValue(r * (t - sin(t)));
     retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
     retitemy->setNumericValue(r * (1 - cos(t)));
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_parm_hypotrochoid(finExecFunction *self, finExecEnvironment *env,
+                                               finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *tvar, *Rvar, *rvar, *dvar, *retvar, *retitemx, *retitemy;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
+    Rvar = finExecVariable::transLinkTarget(env->findVariable("R"));
+    rvar = finExecVariable::transLinkTarget(env->findVariable("r"));
+    dvar = finExecVariable::transLinkTarget(env->findVariable("d"));
+    if ( tvar == NULL || Rvar == NULL || rvar == NULL || dvar == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    if ( tvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         Rvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         rvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         dvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    double t = tvar->getNumericValue();
+    double R = Rvar->getNumericValue();
+    double r = rvar->getNumericValue();
+    double d = dvar->getNumericValue();
+    double diff = R -r;
+    double ratio = t * (R - r) / r;
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    retvar->preallocArrayLength(2);
+    retitemx = retvar->getVariableItemAt(0);
+    retitemy = retvar->getVariableItemAt(1);
+    if ( retitemx == NULL || retitemy == NULL ) {
+        delete retvar;
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+    }
+
+    retitemx->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemx->setNumericValue(diff * cos(t) + d * cos(ratio));
+    retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemy->setNumericValue(diff * sin(t) - d * sin(ratio));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
 
