@@ -61,7 +61,7 @@ void finUiSyntaxHighlighter::installRegExpList()
     this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_KEYWORD, regexp);
 
     // Key functions
-    regexp = QRegExp(QString("\\b(dot|line|polyline|rect|polygon|circle|ellipse|axis|"
+    regexp = QRegExp(QString("\\b(dot|line|polyline|rect|polygon|circle|ellipse|axis|clear_fig|"
                                  "draw_(pinned_)?(text|image)|(read|write)_(fig|graph)_config|"
                                  "plot_(function|polar|parametric|equation)|named_color|"
                                  "sin|cos|tan|tg|cot|ctg|ln|log|PI|E)\\b"));
