@@ -26,7 +26,7 @@ void finUiSyntaxHighlighter::installFormatList()
 
     // Operators
     curfmt = this->_baseFormat;
-    curfmt.setForeground(Qt::darkCyan);
+    curfmt.setForeground(Qt::darkBlue);
     this->_formatList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_OPERATOR, curfmt);
 
     // Brackets
