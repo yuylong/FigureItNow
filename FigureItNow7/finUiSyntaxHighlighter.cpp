@@ -237,7 +237,7 @@ int finUiSyntaxHighlighter::handleBlockComment(const QString &text, int startpos
         lastidx += expression.matchedLength();
         length = lastidx - startpos;
     }
-\
+
     QTextCharFormat format = this->_formatList.value(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_ON,
                                                      this->_baseFormat);
     setFormat(startpos, length, format);
