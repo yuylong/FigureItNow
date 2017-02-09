@@ -48,6 +48,8 @@ static finErrorCode _sysfunc_parm_ellipse(finExecFunction *self, finExecEnvironm
                                           finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_parm_general_ellipse(finExecFunction *self, finExecEnvironment *env,
                                                   finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_parm_lissajous(finExecFunction *self, finExecEnvironment *env,
+                                            finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_parm_involute(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_parm_cycloid(finExecFunction *self, finExecEnvironment *env,
@@ -76,6 +78,7 @@ static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
     { QString("parm_circle"),            QString ("t,r"),             _sysfunc_parm_circle          },
     { QString("parm_ellipse"),           QString ("t,a,b"),           _sysfunc_parm_ellipse         },
     { QString("parm_general_ellipse"),   QString ("t,a,b,xc,yc,phi"), _sysfunc_parm_general_ellipse },
+    { QString("parm_lissajous"),         QString ("t,a,b,kx,ky"),     _sysfunc_parm_lissajous       },
     { QString("parm_involute"),          QString ("t,r"),             _sysfunc_parm_involute        },
     { QString("parm_cycloid"),           QString ("t,r"),             _sysfunc_parm_cycloid         },
 
@@ -475,6 +478,58 @@ static finErrorCode _sysfunc_parm_general_ellipse(finExecFunction *self, finExec
     retitemx->setNumericValue(xc + a * cost * cosphi - b * sint * sinphi);
     retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
     retitemy->setNumericValue(yc + a * cost * sinphi + b * sint * cosphi);
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_parm_lissajous(finExecFunction *self, finExecEnvironment *env,
+                                            finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *tvar, *avar, *bvar, *kxvar, *kyvar, *retvar, *retitemx, *retitemy;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
+    avar = finExecVariable::transLinkTarget(env->findVariable("a"));
+    bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
+    kxvar = finExecVariable::transLinkTarget(env->findVariable("kx"));
+    kyvar = finExecVariable::transLinkTarget(env->findVariable("ky"));
+    if ( tvar == NULL || avar == NULL || bvar == NULL || kxvar == NULL || kyvar == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    if ( tvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         avar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         bvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         kxvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         kyvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    double t = tvar->getNumericValue();
+    double a = avar->getNumericValue();
+    double b = bvar->getNumericValue();
+    double kx = kxvar->getNumericValue();
+    double ky = kyvar->getNumericValue();
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    retvar->preallocArrayLength(2);
+    retitemx = retvar->getVariableItemAt(0);
+    retitemy = retvar->getVariableItemAt(1);
+    if ( retitemx == NULL || retitemy == NULL ) {
+        delete retvar;
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+    }
+
+    retitemx->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemx->setNumericValue(a * cos(kx * t));
+    retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemy->setNumericValue(b * sin(ky * t));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
 
