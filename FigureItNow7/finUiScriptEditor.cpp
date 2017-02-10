@@ -48,6 +48,11 @@ const QString &finUiScriptEditor::getFilename() const
     return this->_filename;
 }
 
+bool finUiScriptEditor::isFileOpened() const
+{
+    return !this->_filepath.isEmpty();
+}
+
 QString finUiScriptEditor::getTabTitle() const
 {
     if ( ui->pteScriptCode->document()->isModified() )
@@ -59,13 +64,20 @@ QString finUiScriptEditor::getTabTitle() const
 QString finUiScriptEditor::getWindowTitle() const
 {
     QString titlebase = this->_filepath;
-    if ( this->_filepath.isEmpty() )
+    if ( !this->isFileOpened() )
         titlebase = this->_filename;
 
     if ( ui->pteScriptCode->document()->isModified() )
         return titlebase + QString("*");
     else
         return titlebase;
+}
+
+finErrorCode finUiScriptEditor::setFilename(const QString &filepath)
+{
+    this->_filepath = filepath;
+    this->_filename = filepath.split(QRegExp(QString("[\\\\\\/]"))).last();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finUiScriptEditor::openFile(const QString &filepath)
@@ -77,9 +89,32 @@ finErrorCode finUiScriptEditor::openFile(const QString &filepath)
     QTextStream in(&file);
     ui->pteScriptCode->setPlainText(in.readAll());
     file.close();
+    ui->pteScriptCode->document()->setModified(false);
 
-    this->_filepath = filepath;
-    this->_filename = filepath.split(QRegExp(QString("[\\\\\\/]"))).last();
+    this->setFilename(filepath);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finUiScriptEditor::saveAsFile(const QString &filepath)
+{
+    this->setFilename(filepath);
+    return this->saveFile();
+}
+
+finErrorCode finUiScriptEditor::saveFile()
+{
+    if ( !this->isFileOpened() )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    QFile file(this->_filepath);
+    if ( !file.open(QIODevice::WriteOnly|QIODevice::Text) )
+        return finErrorCodeKits::FIN_EC_FILE_NOT_OPEN;
+
+    QTextStream out(&file);
+    out << ui->pteScriptCode->toPlainText();
+    out.flush();
+    file.close();
+    ui->pteScriptCode->document()->setModified(false);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

@@ -34,16 +34,22 @@ public:
 
     const QString &getFilePath() const;
     const QString &getFilename() const;
+    bool isFileOpened() const;
+
     QString getTabTitle() const;
     QString getWindowTitle() const;
 
     finErrorCode openFile(const QString &filepath);
+    finErrorCode saveAsFile(const QString &filepath);
+    finErrorCode saveFile();
 
     finErrorCode drawOnPanel();
 
 
 private:
     Ui::finUiScriptEditor *ui;
+
+    finErrorCode setFilename(const QString &filepath);
 };
 
 #endif // FINUISCRIPTEDITOR_H
