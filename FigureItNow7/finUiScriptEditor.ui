@@ -35,7 +35,14 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QPlainTextEdit" name="pteScriptCode"/>
-     <widget class="QGraphicsView" name="gvwGraphPanel"/>
+     <widget class="QGraphicsView" name="gvwGraphPanel">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
     </widget>
    </item>
   </layout>

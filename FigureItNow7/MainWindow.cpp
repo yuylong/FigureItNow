@@ -90,6 +90,8 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_3_clicked()
 {
+    ui->tab->drawOnPanel();
+
     finErrorCode errcode;
 
     this->machine.setScriptCode(ui->plainTextEdit->toPlainText());
