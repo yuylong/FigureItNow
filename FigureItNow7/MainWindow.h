@@ -13,6 +13,7 @@
 #include "finGraphPanelWidget.h"
 #include "finUiFigureWidget.h"
 #include "finUiSyntaxHighlighter.h"
+#include "finUiScriptEditor.h"
 
 
 namespace Ui {
@@ -41,6 +42,8 @@ private slots:
 
     void on_pushButton_5_clicked();
 
+    void on_actDraw_triggered();
+
 private:
     /*!
      * \brief ui
@@ -54,6 +57,8 @@ private:
     finSyntaxReader *synreader;
     finExecMachine machine;
     QGraphicsScene scene;
+
+    finUiScriptEditor *getCurrentEditor() const;
 };
 
 #endif // MAINWINDOW_H

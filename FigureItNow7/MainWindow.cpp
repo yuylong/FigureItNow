@@ -157,3 +157,20 @@ void MainWindow::on_pushButton_5_clicked()
 
     graphcfgdlg.applyToGraphConfig(graphconfig);
 }
+
+finUiScriptEditor *MainWindow::getCurrentEditor() const
+{
+    if ( ui->tbwDocumentList->currentWidget() == NULL )
+        return NULL;
+
+    return ((finUiScriptEditor *)ui->tbwDocumentList->currentWidget());
+}
+
+void MainWindow::on_actDraw_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+
+    cureditor->drawOnPanel();
+}

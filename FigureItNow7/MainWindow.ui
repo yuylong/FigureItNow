@@ -119,7 +119,7 @@
      <string>GraphConfig</string>
     </property>
    </widget>
-   <widget class="QTabWidget" name="tabWidget">
+   <widget class="QTabWidget" name="tbwDocumentList">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -175,26 +175,21 @@
      <string>编辑(&amp;E)</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menu_V">
+   <widget class="QMenu" name="mnuActions">
     <property name="title">
-     <string>视图(&amp;V)</string>
+     <string>Actions</string>
     </property>
+    <addaction name="actDraw"/>
    </widget>
    <widget class="QMenu" name="menu_W">
     <property name="title">
      <string>窗口(&amp;W)</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menu_H">
-    <property name="title">
-     <string>帮助(&amp;H)</string>
-    </property>
-   </widget>
    <addaction name="mnuFile"/>
    <addaction name="mnuEdit"/>
-   <addaction name="menu_V"/>
+   <addaction name="mnuActions"/>
    <addaction name="menu_W"/>
-   <addaction name="menu_H"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -227,6 +222,14 @@
    </property>
    <property name="toolTip">
     <string>打开最近打开的若干文档。</string>
+   </property>
+  </action>
+  <action name="actDraw">
+   <property name="text">
+    <string>&amp;Draw</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw the current script on the panel.</string>
    </property>
   </action>
  </widget>
