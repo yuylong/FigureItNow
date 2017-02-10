@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QPainter>
 #include <QFileDialog>
+#include <QMessageBox>
 
 #include "finExecEnvironment.h"
 #include "finGraphPanelScene.h"
@@ -79,8 +80,13 @@ void MainWindow::on_actOpen_triggered()
     finUiScriptEditor *neweditor = new finUiScriptEditor();
     finErrorCode errcode = neweditor->openFile(filepaths.first());
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        qDebug() << filepaths.first() << " ERROR: cannot open! " << endl;
         delete neweditor;
+
+        QMessageBox msgbox(this);
+        msgbox.setText(QString("ERROR: cannot open the file!"));
+        msgbox.setIcon(QMessageBox::Critical);
+        msgbox.setStandardButtons(QMessageBox::Ok);
+        msgbox.exec();
         return;
     }
 
