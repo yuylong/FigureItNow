@@ -108,13 +108,20 @@ void MainWindow::on_actOpen_triggered()
 
     finErrorCode errcode = this->openScriptFile(filepaths.first());
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        QMessageBox msgbox(this);
-        msgbox.setText(QString("ERROR: cannot open the file!"));
-        msgbox.setIcon(QMessageBox::Critical);
-        msgbox.setStandardButtons(QMessageBox::Ok);
-        msgbox.exec();
+        QMessageBox::critical(this, QString("Error"),
+                              QString("The file cannot be open!"), QMessageBox::Ok);
         return;
     }
+}
+
+void MainWindow::on_actSave_triggered()
+{
+
+}
+
+void MainWindow::on_actSaveAs_triggered()
+{
+
 }
 
 void MainWindow::on_actClose_triggered()

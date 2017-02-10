@@ -36,6 +36,8 @@ public:
 
 private slots:
     void on_actOpen_triggered();
+    void on_actSave_triggered();
+    void on_actSaveAs_triggered();
     void on_actClose_triggered();
 
     void on_actDraw_triggered();
@@ -43,6 +45,7 @@ private slots:
     void on_actWiki_triggered();
 
     void on_tbwDocumentList_tabCloseRequested(int index);
+
 
 private:
     /*!
