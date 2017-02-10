@@ -34,6 +34,8 @@ public:
 private slots:
     void on_actDraw_triggered();
 
+    void on_actOpen_triggered();
+
 private:
     /*!
      * \brief ui

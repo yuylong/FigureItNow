@@ -2,6 +2,8 @@
 #include "ui_finUiScriptEditor.h"
 
 #include <QDebug>
+#include <QFile>
+#include <QTextStream>
 
 #include "finGraphPanelScene.h"
 
@@ -55,10 +57,29 @@ QString finUiScriptEditor::getTabTitle() const
 
 QString finUiScriptEditor::getWindowTitle() const
 {
+    QString titlebase = this->_filepath;
+    if ( this->_filepath.isEmpty() )
+        titlebase = this->_filename;
+
     if ( ui->pteScriptCode->document()->isModified() )
-        return this->_filepath + QString("*");
+        return titlebase + QString("*");
     else
-        return this->_filepath;
+        return titlebase;
+}
+
+finErrorCode finUiScriptEditor::openFile(const QString &filepath)
+{
+    QFile file(filepath);
+    if ( !file.open(QIODevice::ReadOnly | QIODevice::Text) )
+         return finErrorCodeKits::FIN_EC_FILE_NOT_OPEN;
+
+    QTextStream in(&file);
+    ui->pteScriptCode->setPlainText(in.readAll());
+    file.close();
+
+    this->_filepath = filepath;
+    this->_filename = filepath.split(QRegExp(QString("[\\\\\\/]"))).last();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finUiScriptEditor::drawOnPanel()

@@ -37,6 +37,8 @@ public:
     QString getTabTitle() const;
     QString getWindowTitle() const;
 
+    finErrorCode openFile(const QString &filepath);
+
     finErrorCode drawOnPanel();
 
 
