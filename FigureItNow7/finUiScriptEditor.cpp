@@ -6,7 +6,6 @@ finUiScriptEditor::finUiScriptEditor(QWidget *parent) :
     ui(new Ui::finUiScriptEditor)
 {
     ui->setupUi(this);
-
     this->_syntaxHighlighter = new finUiSyntaxHighlighter(ui->pteScriptCode->document());
 }
 

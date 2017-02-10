@@ -46,6 +46,7 @@ public:
     finErrorCode setBaseFormat(const QTextCharFormat &format);
 
 protected:
+    void buildBaseFormat();
     void installFormatList();
     void installRegExpList();
 

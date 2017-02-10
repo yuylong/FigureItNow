@@ -1,12 +1,29 @@
 #include "finUiSyntaxHighlighter.h"
 
+#include <QTextDocument>
+
 
 finUiSyntaxHighlighter::finUiSyntaxHighlighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent)
 {
+    this->buildBaseFormat();
+    parent->setDefaultFont(this->_baseFormat.font());
+
     this->installFormatList();
     this->installRegExpList();
     return;
+}
+
+void finUiSyntaxHighlighter::buildBaseFormat()
+{
+    this->_baseFormat = QTextCharFormat();
+    this->_baseFormat.setFontFamily(QString("Consolas"));
+    this->_baseFormat.setFontPointSize(10.0);
+    this->_baseFormat.setFontWeight(QFont::Normal);
+    this->_baseFormat.setFontItalic(false);
+
+    this->_baseFormat.setBackground(Qt::transparent);
+    this->_baseFormat.setForeground(Qt::black);
 }
 
 void finUiSyntaxHighlighter::installFormatList()
@@ -300,13 +317,15 @@ void finUiSyntaxHighlighter::handleNormalType(finUiSyntaxHighlighter::Type type,
     while ( index >= 0 ) {
         int length = expression.matchedLength();
         if ( !this->inIgnoreRange(index, length, ignorerange) )
-            setFormat(index, length, format);
+            this->setFormat(index, length, format);
         index = text.indexOf(expression, index + length);
     }
 }
 
 void finUiSyntaxHighlighter::highlightBlock(const QString &text)
 {
+    this->setFormat(0, text.length(), this->_baseFormat);
+
     QList<finUiSyntaxHighlighter::IgnoreItem> ignorerange;
     this->handleCommentAndString(text, &ignorerange);
 
