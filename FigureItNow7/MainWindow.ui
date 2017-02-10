@@ -106,6 +106,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actNew"/>
+   <addaction name="actOpen"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actNew">
