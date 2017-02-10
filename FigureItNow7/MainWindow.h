@@ -31,6 +31,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    finErrorCode openScriptFile(const QString &filepath);
+    finErrorCode createNewScriptFile();
+
 private slots:
     void on_actOpen_triggered();
     void on_actClose_triggered();

@@ -54,6 +54,34 @@ finErrorCode MainWindow::removeEditorAt(int idx)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode MainWindow::openScriptFile(const QString &filepath)
+{
+    finUiScriptEditor *neweditor = new finUiScriptEditor();
+    if ( neweditor == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    finErrorCode errcode = neweditor->openFile(filepath);
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        delete neweditor;
+        return errcode;
+    }
+
+    ui->tbwDocumentList->addTab(neweditor, neweditor->getTabTitle());
+    ui->tbwDocumentList->setCurrentWidget(neweditor);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode MainWindow::createNewScriptFile()
+{
+    finUiScriptEditor *neweditor = new finUiScriptEditor();
+    if ( neweditor == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    ui->tbwDocumentList->addTab(neweditor, neweditor->getTabTitle());
+    ui->tbwDocumentList->setCurrentWidget(neweditor);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 void MainWindow::on_actDraw_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
@@ -77,11 +105,8 @@ void MainWindow::on_actOpen_triggered()
     if ( filepaths.empty() )
         return;
 
-    finUiScriptEditor *neweditor = new finUiScriptEditor();
-    finErrorCode errcode = neweditor->openFile(filepaths.first());
+    finErrorCode errcode = this->openScriptFile(filepaths.first());
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        delete neweditor;
-
         QMessageBox msgbox(this);
         msgbox.setText(QString("ERROR: cannot open the file!"));
         msgbox.setIcon(QMessageBox::Critical);
@@ -89,9 +114,6 @@ void MainWindow::on_actOpen_triggered()
         msgbox.exec();
         return;
     }
-
-    ui->tbwDocumentList->addTab(neweditor, neweditor->getTabTitle());
-    ui->tbwDocumentList->setCurrentWidget(neweditor);
 }
 
 void MainWindow::on_actClose_triggered()
