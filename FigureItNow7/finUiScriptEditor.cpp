@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QTextStream>
+#include <QDesktopServices>
 
 #include "finGraphPanelScene.h"
 

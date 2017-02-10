@@ -10,7 +10,6 @@ static void _loadScriptFiles(MainWindow *mw, int argc, char *argv[])
 {
     int filecnt = 0;
     for ( int i = 1; i < argc; i++ ) {
-        //QFile file(QString(argv[i]));
         if ( QFile(QString(argv[i])).exists() ) {
             mw->openScriptFile(QString(argv[i]));
             filecnt++;

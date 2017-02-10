@@ -40,6 +40,8 @@ private slots:
 
     void on_actDraw_triggered();
 
+    void on_actWiki_triggered();
+
     void on_tbwDocumentList_tabCloseRequested(int index);
 
 private:

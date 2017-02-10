@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QDesktopServices>
 
 #include "finExecEnvironment.h"
 #include "finGraphPanelScene.h"
@@ -119,6 +120,11 @@ void MainWindow::on_actOpen_triggered()
 void MainWindow::on_actClose_triggered()
 {
     this->removeEditorAt(ui->tbwDocumentList->currentIndex());
+}
+
+void MainWindow::on_actWiki_triggered()
+{
+    QDesktopServices::openUrl(QUrl(QString("https://github.com/yuylong/FigureItNow/wiki")));
 }
 
 void MainWindow::on_tbwDocumentList_tabCloseRequested(int index)
