@@ -32,6 +32,27 @@ finUiScriptEditor *MainWindow::getCurrentEditor() const
     return ((finUiScriptEditor *)ui->tbwDocumentList->currentWidget());
 }
 
+finUiScriptEditor *MainWindow::getEditorAt(int idx) const
+{
+    if ( idx < 0 || idx >= ui->tbwDocumentList->count() )
+        return NULL;
+
+    return ((finUiScriptEditor *)ui->tbwDocumentList->widget(idx));
+}
+
+finErrorCode MainWindow::removeEditorAt(int idx)
+{
+    if ( idx < 0 || idx >= ui->tbwDocumentList->count() )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+
+    finUiScriptEditor *editor = this->getEditorAt(idx);
+    ui->tbwDocumentList->removeTab(idx);
+
+    if ( editor != NULL )
+        delete editor;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 void MainWindow::on_actDraw_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
@@ -65,4 +86,14 @@ void MainWindow::on_actOpen_triggered()
 
     ui->tbwDocumentList->addTab(neweditor, neweditor->getTabTitle());
     ui->tbwDocumentList->setCurrentWidget(neweditor);
+}
+
+void MainWindow::on_actClose_triggered()
+{
+    this->removeEditorAt(ui->tbwDocumentList->currentIndex());
+}
+
+void MainWindow::on_tbwDocumentList_tabCloseRequested(int index)
+{
+    this->removeEditorAt(index);
 }

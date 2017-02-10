@@ -78,6 +78,7 @@
     <addaction name="actNew"/>
     <addaction name="actOpen"/>
     <addaction name="actOpenRecent"/>
+    <addaction name="actClose"/>
    </widget>
    <widget class="QMenu" name="mnuEdit">
     <property name="title">
@@ -157,6 +158,14 @@
   <action name="actPaste">
    <property name="text">
     <string>&amp;Paste</string>
+   </property>
+  </action>
+  <action name="actClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="toolTip">
+    <string>Close the current script file.</string>
    </property>
   </action>
  </widget>

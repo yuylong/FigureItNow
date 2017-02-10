@@ -32,9 +32,12 @@ public:
     ~MainWindow();
 
 private slots:
+    void on_actOpen_triggered();
+    void on_actClose_triggered();
+
     void on_actDraw_triggered();
 
-    void on_actOpen_triggered();
+    void on_tbwDocumentList_tabCloseRequested(int index);
 
 private:
     /*!
@@ -43,6 +46,8 @@ private:
     Ui::MainWindow *ui;
 
     finUiScriptEditor *getCurrentEditor() const;
+    finUiScriptEditor *getEditorAt(int idx) const;
+    finErrorCode removeEditorAt(int idx);
 };
 
 #endif // MAINWINDOW_H
