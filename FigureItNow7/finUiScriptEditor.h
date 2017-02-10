@@ -25,9 +25,17 @@ protected:
     finGraphPanelScene _scenePainter;
     QGraphicsScene _figScene;
 
+    QString _filepath;
+    QString _filename;
+
 public:
     explicit finUiScriptEditor(QWidget *parent = 0);
     ~finUiScriptEditor();
+
+    const QString &getFilePath() const;
+    const QString &getFilename() const;
+    QString getTabTitle() const;
+    QString getWindowTitle() const;
 
     finErrorCode drawOnPanel();
 

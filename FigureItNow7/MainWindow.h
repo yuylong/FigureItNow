@@ -32,16 +32,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
-
-    void on_pushButton_2_clicked();
-
-    void on_pushButton_3_clicked();
-
-    void on_pushButton_4_clicked();
-
-    void on_pushButton_5_clicked();
-
     void on_actDraw_triggered();
 
 private:
@@ -49,14 +39,6 @@ private:
      * \brief ui
      */
     Ui::MainWindow *ui;
-    finUiFigureWidget *figui;
-    finUiSyntaxHighlighter *synhigh;
-
-    void paintEvent(QPaintEvent *e);
-
-    finSyntaxReader *synreader;
-    finExecMachine machine;
-    QGraphicsScene scene;
 
     finUiScriptEditor *getCurrentEditor() const;
 };

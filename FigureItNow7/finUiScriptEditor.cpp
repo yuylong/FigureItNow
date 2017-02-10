@@ -11,6 +11,9 @@ finUiScriptEditor::finUiScriptEditor(QWidget *parent) :
     ui(new Ui::finUiScriptEditor)
 {
     finErrorCode errcode;
+    this->_filepath = QString();
+    this->_filename = QString("Unnamed");
+
     errcode = this->_machine.initEnvironmentFromRoot();
     if ( finErrorCodeKits::isErrorResult(errcode) )
         qDebug() << "ERROR: Cannot init the execution machine for script code!";
@@ -20,7 +23,8 @@ finUiScriptEditor::finUiScriptEditor(QWidget *parent) :
 
     ui->setupUi(this);
     this->_syntaxHighlighter = new finUiSyntaxHighlighter(ui->pteScriptCode->document());
-    ui->gvwGraphPanel->setScene(&this->_figScene);
+    ui->pteScriptCode->setCurrentCharFormat(this->_syntaxHighlighter->getBaseFormat());
+    //ui->gvwGraphPanel->setScene(&this->_figScene);
 }
 
 finUiScriptEditor::~finUiScriptEditor()
@@ -31,8 +35,37 @@ finUiScriptEditor::~finUiScriptEditor()
     delete ui;
 }
 
+const QString &finUiScriptEditor::getFilePath() const
+{
+    return this->_filepath;
+}
+
+const QString &finUiScriptEditor::getFilename() const
+{
+    return this->_filename;
+}
+
+QString finUiScriptEditor::getTabTitle() const
+{
+    if ( ui->pteScriptCode->document()->isModified() )
+        return this->_filename + QString("*");
+    else
+        return this->_filename;
+}
+
+QString finUiScriptEditor::getWindowTitle() const
+{
+    if ( ui->pteScriptCode->document()->isModified() )
+        return this->_filepath + QString("*");
+    else
+        return this->_filepath;
+}
+
 finErrorCode finUiScriptEditor::drawOnPanel()
 {
+    if ( ui->gvwGraphPanel->scene() == NULL )
+        ui->gvwGraphPanel->setScene(&this->_figScene);
+
     finErrorCode errcode;
     this->_machine.setScriptCode(ui->pteScriptCode->toPlainText());
 
@@ -59,6 +92,5 @@ finErrorCode finUiScriptEditor::drawOnPanel()
         qDebug() << "ERROR when apply drawing! (" << errcode << ")";
         return errcode;
     }
-
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

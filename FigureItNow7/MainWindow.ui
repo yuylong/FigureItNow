@@ -11,147 +11,56 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>FigureItNow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>400</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>开始</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>350</y>
-      <width>251</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>370</y>
-      <width>251</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_2">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>400</y>
-      <width>111</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>下一个</string>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="plainTextEdit">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>250</y>
-      <width>381</width>
-      <height>91</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_3">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>350</y>
-      <width>121</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>执行</string>
-    </property>
-   </widget>
-   <widget class="QGraphicsView" name="graphicsView">
-    <property name="geometry">
-     <rect>
-      <x>400</x>
-      <y>250</y>
-      <width>411</width>
-      <height>181</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_4">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>390</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>FigConfig</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_5">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>410</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>GraphConfig</string>
-    </property>
-   </widget>
-   <widget class="QTabWidget" name="tbwDocumentList">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>771</width>
-      <height>241</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-      <horstretch>1</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="currentIndex">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
      <number>0</number>
     </property>
-    <property name="tabsClosable">
-     <bool>true</bool>
+    <property name="leftMargin">
+     <number>0</number>
     </property>
-    <widget class="finUiScriptEditor" name="tab">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>1</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <attribute name="title">
-      <string>Tab 1</string>
-     </attribute>
-    </widget>
-   </widget>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QTabWidget" name="tbwDocumentList">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>1</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <property name="documentMode">
+       <bool>true</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>true</bool>
+      </property>
+      <widget class="finUiScriptEditor" name="tab">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <attribute name="title">
+        <string>Tab 1</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -164,7 +73,7 @@
    </property>
    <widget class="QMenu" name="mnuFile">
     <property name="title">
-     <string>文件(&amp;F)</string>
+     <string>&amp;File</string>
     </property>
     <addaction name="actNew"/>
     <addaction name="actOpen"/>
@@ -172,8 +81,11 @@
    </widget>
    <widget class="QMenu" name="mnuEdit">
     <property name="title">
-     <string>编辑(&amp;E)</string>
+     <string>&amp;Edit</string>
     </property>
+    <addaction name="actCut"/>
+    <addaction name="actCopy"/>
+    <addaction name="actPaste"/>
    </widget>
    <widget class="QMenu" name="mnuActions">
     <property name="title">
@@ -202,7 +114,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actNew">
    <property name="text">
-    <string>新建(&amp;N)</string>
+    <string>&amp;New</string>
    </property>
    <property name="toolTip">
     <string>新建一个文件。</string>
@@ -210,7 +122,7 @@
   </action>
   <action name="actOpen">
    <property name="text">
-    <string>打开(&amp;O)</string>
+    <string>&amp;Open...</string>
    </property>
    <property name="toolTip">
     <string>打开一个文件</string>
@@ -218,7 +130,7 @@
   </action>
   <action name="actOpenRecent">
    <property name="text">
-    <string>打开最近(&amp;R)</string>
+    <string>Open &amp;Recent</string>
    </property>
    <property name="toolTip">
     <string>打开最近打开的若干文档。</string>
@@ -230,6 +142,21 @@
    </property>
    <property name="toolTip">
     <string>Draw the current script on the panel.</string>
+   </property>
+  </action>
+  <action name="actCut">
+   <property name="text">
+    <string>C&amp;ut</string>
+   </property>
+  </action>
+  <action name="actCopy">
+   <property name="text">
+    <string>&amp;Copy</string>
+   </property>
+  </action>
+  <action name="actPaste">
+   <property name="text">
+    <string>&amp;Paste</string>
    </property>
   </action>
  </widget>
