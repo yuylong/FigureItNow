@@ -53,6 +53,15 @@ bool finUiScriptEditor::isFileOpened() const
     return !this->_filepath.isEmpty();
 }
 
+bool finUiScriptEditor::isScriptModified() const
+{
+    QTextDocument *scriptdoc = ui->pteScriptCode->document();
+    if ( scriptdoc == NULL )
+        return false;
+
+    return scriptdoc->isModified();
+}
+
 QString finUiScriptEditor::getTabTitle() const
 {
     if ( ui->pteScriptCode->document()->isModified() )

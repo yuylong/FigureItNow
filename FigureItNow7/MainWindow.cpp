@@ -99,7 +99,7 @@ void MainWindow::on_actOpen_triggered()
     filedlg.setFileMode(QFileDialog::ExistingFile);
 
     filedlg.exec();
-    if( filedlg.result() != QDialog::Accepted )
+    if ( filedlg.result() != QDialog::Accepted )
         return;
 
     QStringList filepaths = filedlg.selectedFiles();
@@ -116,12 +116,51 @@ void MainWindow::on_actOpen_triggered()
 
 void MainWindow::on_actSave_triggered()
 {
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
 
+    if ( !cureditor->isFileOpened() )
+        return this->on_actSaveAs_triggered();
+
+    if ( !cureditor->isScriptModified() )
+        return;
+
+    finErrorCode errcode = cureditor->saveFile();
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        QMessageBox::critical(this, QString("Error"),
+                              QString("The file cannot be saved on disk!"), QMessageBox::Ok);
+        return;
+    }
 }
 
 void MainWindow::on_actSaveAs_triggered()
 {
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
 
+    QFileDialog filedlg(this, QString("Open a Script File"));
+    filedlg.setAcceptMode(QFileDialog::AcceptSave);
+    filedlg.setFileMode(QFileDialog::AnyFile);
+
+    filedlg.exec();
+    if ( filedlg.result() != QDialog::Accepted )
+        return;
+
+    QStringList filepaths = filedlg.selectedFiles();
+    if ( filepaths.empty() ) {
+        QMessageBox::warning(this, QString("Warning"),
+                             QString("You need to select a file to save."), QMessageBox::Ok);
+        return;
+    }
+
+    finErrorCode errcode = cureditor->saveAsFile(filepaths.first());
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        QMessageBox::critical(this, QString("Error"),
+                              QString("The file cannot be saved on disk!"), QMessageBox::Ok);
+        return;
+    }
 }
 
 void MainWindow::on_actClose_triggered()

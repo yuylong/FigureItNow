@@ -35,6 +35,7 @@ public:
     const QString &getFilePath() const;
     const QString &getFilename() const;
     bool isFileOpened() const;
+    bool isScriptModified() const;
 
     QString getTabTitle() const;
     QString getWindowTitle() const;
