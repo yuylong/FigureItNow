@@ -71,21 +71,36 @@
     <addaction name="actSave"/>
     <addaction name="actSaveAs"/>
     <addaction name="separator"/>
+    <addaction name="actionPrint"/>
+    <addaction name="separator"/>
     <addaction name="actClose"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="mnuEdit">
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+    <addaction name="separator"/>
     <addaction name="actCut"/>
     <addaction name="actCopy"/>
+    <addaction name="actionCopy_Figure"/>
     <addaction name="actPaste"/>
+    <addaction name="separator"/>
+    <addaction name="actDefFigConfig"/>
+    <addaction name="actionDefault_Graph_Configuration"/>
+    <addaction name="separator"/>
+    <addaction name="actionProperties"/>
    </widget>
    <widget class="QMenu" name="mnuActions">
     <property name="title">
      <string>Actions</string>
     </property>
     <addaction name="actDraw"/>
+    <addaction name="separator"/>
+    <addaction name="actionExport_Adobe_PDF"/>
    </widget>
    <widget class="QMenu" name="mnuHelp">
     <property name="title">
@@ -228,6 +243,54 @@
    </property>
    <property name="toolTip">
     <string>Save the script file as given path.</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+  </action>
+  <action name="actDefFigConfig">
+   <property name="text">
+    <string>Default Figure Configuration</string>
+   </property>
+   <property name="toolTip">
+    <string>Setup default figure configuration</string>
+   </property>
+  </action>
+  <action name="actionDefault_Graph_Configuration">
+   <property name="text">
+    <string>Default Graph Configuration</string>
+   </property>
+  </action>
+  <action name="actionProperties">
+   <property name="text">
+    <string>Script Editor Properties</string>
+   </property>
+  </action>
+  <action name="actionCopy_Figure">
+   <property name="text">
+    <string>Copy Figure</string>
+   </property>
+  </action>
+  <action name="actionExport_Adobe_PDF">
+   <property name="text">
+    <string>Export to PDF</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionPrint">
+   <property name="text">
+    <string>Print</string>
    </property>
   </action>
  </widget>
