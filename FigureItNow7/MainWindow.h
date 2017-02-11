@@ -41,6 +41,10 @@ private slots:
     void on_actSaveAs_triggered();
     void on_actClose_triggered();
 
+    void on_actCut_triggered();
+    void on_actCopy_triggered();
+    void on_actPaste_triggered();
+
     void on_actDraw_triggered();
 
     void on_actWiki_triggered();

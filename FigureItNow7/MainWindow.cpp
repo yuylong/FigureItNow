@@ -183,6 +183,33 @@ void MainWindow::on_actClose_triggered()
     this->removeEditorAt(ui->tbwDocumentList->currentIndex());
 }
 
+void MainWindow::on_actCut_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+
+    cureditor->cutScript();
+}
+
+void MainWindow::on_actCopy_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+
+    cureditor->copyScript();
+}
+
+void MainWindow::on_actPaste_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+
+    cureditor->pasteScript();
+}
+
 void MainWindow::on_actDraw_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
