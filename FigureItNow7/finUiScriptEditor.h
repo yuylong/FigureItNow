@@ -45,6 +45,10 @@ public:
     finErrorCode saveAsFile(const QString &filepath);
     finErrorCode saveFile();
 
+    void copyScript();
+    void cutScript();
+    void pasteScript();
+
     finErrorCode drawOnPanel();
 
 private:
@@ -54,9 +58,11 @@ private:
 
 private slots:
     void on_pteScriptCode_modificationChanged(bool modified);
+    void on_pteScriptCode_copyAvailable(bool yes);
 
 signals:
     void scriptModificationChanged(bool modified);
+    void scriptCopyAvailable(bool yes);
 };
 
 #endif // FINUISCRIPTEDITOR_H

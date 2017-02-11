@@ -127,6 +127,24 @@ finErrorCode finUiScriptEditor::saveFile()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+void finUiScriptEditor::copyScript()
+{
+    ui->pteScriptCode->copy();
+}
+
+void finUiScriptEditor::cutScript()
+{
+    ui->pteScriptCode->cut();
+}
+
+void finUiScriptEditor::pasteScript()
+{
+    if ( !ui->pteScriptCode->canPaste() )
+        return;
+
+    ui->pteScriptCode->paste();
+}
+
 finErrorCode finUiScriptEditor::drawOnPanel()
 {
     if ( ui->gvwGraphPanel->scene() == NULL )
@@ -164,4 +182,9 @@ finErrorCode finUiScriptEditor::drawOnPanel()
 void finUiScriptEditor::on_pteScriptCode_modificationChanged(bool modified)
 {
     emit this->scriptModificationChanged(modified);
+}
+
+void finUiScriptEditor::on_pteScriptCode_copyAvailable(bool yes)
+{
+    emit this->scriptCopyAvailable(yes);
 }
