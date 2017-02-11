@@ -44,8 +44,11 @@ private slots:
 
     void on_actWiki_triggered();
 
+    void scriptEditor_scriptModificationChanged(bool modified);
     void on_tbwDocumentList_tabCloseRequested(int index);
 
+
+    void on_tbwDocumentList_currentChanged(int index);
 
 private:
     /*!
@@ -55,6 +58,7 @@ private:
 
     finUiScriptEditor *getCurrentEditor() const;
     finUiScriptEditor *getEditorAt(int idx) const;
+    int findEditorIndex(finUiScriptEditor *editor) const;
     finErrorCode removeEditorAt(int idx);
 };
 

@@ -160,3 +160,8 @@ finErrorCode finUiScriptEditor::drawOnPanel()
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+void finUiScriptEditor::on_pteScriptCode_modificationChanged(bool modified)
+{
+    emit this->scriptModificationChanged(modified);
+}

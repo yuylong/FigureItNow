@@ -31,7 +31,7 @@ finUiScriptEditor *MainWindow::getCurrentEditor() const
     if ( ui->tbwDocumentList->currentWidget() == NULL )
         return NULL;
 
-    return ((finUiScriptEditor *)ui->tbwDocumentList->currentWidget());
+    return qobject_cast<finUiScriptEditor *>(ui->tbwDocumentList->currentWidget());
 }
 
 finUiScriptEditor *MainWindow::getEditorAt(int idx) const
@@ -39,7 +39,17 @@ finUiScriptEditor *MainWindow::getEditorAt(int idx) const
     if ( idx < 0 || idx >= ui->tbwDocumentList->count() )
         return NULL;
 
-    return ((finUiScriptEditor *)ui->tbwDocumentList->widget(idx));
+    return qobject_cast<finUiScriptEditor *>(ui->tbwDocumentList->widget(idx));
+}
+
+int MainWindow::findEditorIndex(finUiScriptEditor *editor) const
+{
+    for ( int i = 0; i < ui->tbwDocumentList->count(); i++ ) {
+        finUiScriptEditor *curedit = this->getEditorAt(i);
+        if ( curedit == editor )
+            return i;
+    }
+    return -1;
 }
 
 finErrorCode MainWindow::removeEditorAt(int idx)
@@ -67,6 +77,8 @@ finErrorCode MainWindow::openScriptFile(const QString &filepath)
         return errcode;
     }
 
+    QObject::connect(neweditor, SIGNAL(scriptModificationChanged(bool)),
+                     this, SLOT(scriptEditor_scriptModificationChanged(bool)));
     ui->tbwDocumentList->addTab(neweditor, neweditor->getTabTitle());
     ui->tbwDocumentList->setCurrentWidget(neweditor);
     return finErrorCodeKits::FIN_EC_SUCCESS;
@@ -78,18 +90,11 @@ finErrorCode MainWindow::createNewScriptFile()
     if ( neweditor == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
+    QObject::connect(neweditor, SIGNAL(scriptModificationChanged(bool)),
+                     this, SLOT(scriptEditor_scriptModificationChanged(bool)));
     ui->tbwDocumentList->addTab(neweditor, neweditor->getTabTitle());
     ui->tbwDocumentList->setCurrentWidget(neweditor);
     return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
-void MainWindow::on_actDraw_triggered()
-{
-    finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
-        return;
-
-    cureditor->drawOnPanel();
 }
 
 void MainWindow::on_actOpen_triggered()
@@ -168,12 +173,47 @@ void MainWindow::on_actClose_triggered()
     this->removeEditorAt(ui->tbwDocumentList->currentIndex());
 }
 
+void MainWindow::on_actDraw_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+
+    cureditor->drawOnPanel();
+}
+
 void MainWindow::on_actWiki_triggered()
 {
     QDesktopServices::openUrl(QUrl(QString("https://github.com/yuylong/FigureItNow/wiki")));
 }
 
+void MainWindow::scriptEditor_scriptModificationChanged(bool)
+{
+    finUiScriptEditor *cureditor = qobject_cast<finUiScriptEditor *>(sender());
+    if ( cureditor == NULL )
+        return;
+
+    int tabidx = this->findEditorIndex(cureditor);
+    if ( tabidx < 0 || tabidx >= ui->tbwDocumentList->count())
+        return;
+
+    ui->tbwDocumentList->setTabText(tabidx, cureditor->getTabTitle());
+    if ( cureditor == this->getCurrentEditor() ) {
+        this->setWindowTitle(cureditor->getWindowTitle() + QString(" - FigureItNow"));
+    }
+}
+
 void MainWindow::on_tbwDocumentList_tabCloseRequested(int index)
 {
     this->removeEditorAt(index);
+}
+
+void MainWindow::on_tbwDocumentList_currentChanged(int)
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL ) {
+        this->setWindowTitle("FigureItNow");
+    } else {
+        this->setWindowTitle(cureditor->getWindowTitle() + QString(" - FigureItNow"));
+    }
 }

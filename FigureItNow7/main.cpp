@@ -4,6 +4,7 @@
 #include <QFile>
 
 #include "finErrorCode.h"
+#include "finUiScriptEditor.h"
 
 
 static void _loadScriptFiles(MainWindow *mw, int argc, char *argv[])

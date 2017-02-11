@@ -2,6 +2,7 @@
 #define FINUISCRIPTEDITOR_H
 
 #include <QWidget>
+#include <QTabWidget>
 #include <QGraphicsScene>
 
 #include "finErrorCode.h"
@@ -46,11 +47,16 @@ public:
 
     finErrorCode drawOnPanel();
 
-
 private:
     Ui::finUiScriptEditor *ui;
 
     finErrorCode setFilename(const QString &filepath);
+
+private slots:
+    void on_pteScriptCode_modificationChanged(bool modified);
+
+signals:
+    void scriptModificationChanged(bool modified);
 };
 
 #endif // FINUISCRIPTEDITOR_H
