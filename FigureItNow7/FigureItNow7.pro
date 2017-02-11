@@ -59,7 +59,8 @@ SOURCES += main.cpp\
     finPlotEquation2D.cpp \
     finPlotParametric.cpp \
     finUiSyntaxHighlighter.cpp \
-    finUiScriptEditor.cpp
+    finUiScriptEditor.cpp \
+    finUiAboutDlg.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
@@ -100,9 +101,11 @@ HEADERS  += MainWindow.h \
     finPlotEquation2D.h \
     finPlotParametric.h \
     finUiSyntaxHighlighter.h \
-    finUiScriptEditor.h
+    finUiScriptEditor.h \
+    finUiAboutDlg.h
 
 FORMS    += MainWindow.ui \
     finUiFigConfigDlg.ui \
     finUiGraphConfigDlg.ui \
-    finUiScriptEditor.ui
+    finUiScriptEditor.ui \
+    finUiAboutDlg.ui

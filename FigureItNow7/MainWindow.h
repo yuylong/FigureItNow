@@ -48,6 +48,7 @@ private slots:
     void on_actDraw_triggered();
 
     void on_actWiki_triggered();
+    void on_actAbout_triggered();
 
     void scriptEditor_scriptModificationChanged(bool modified);
     void on_tbwDocumentList_currentChanged(int index);

@@ -12,6 +12,7 @@
 #include "finGraphPanelScene.h"
 #include "finUiFigConfigDlg.h"
 #include "finUiGraphConfigDlg.h"
+#include "finUiAboutDlg.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -224,6 +225,12 @@ void MainWindow::on_actWiki_triggered()
     QDesktopServices::openUrl(QUrl(QString("https://github.com/yuylong/FigureItNow/wiki")));
 }
 
+void MainWindow::on_actAbout_triggered()
+{
+    finUiAboutDlg aboutdlg(this);
+    aboutdlg.exec();
+}
+
 void MainWindow::scriptEditor_scriptModificationChanged(bool)
 {
     finUiScriptEditor *cureditor = qobject_cast<finUiScriptEditor *>(sender());
@@ -254,4 +261,5 @@ void MainWindow::on_tbwDocumentList_currentChanged(int)
         this->setWindowTitle(cureditor->getWindowTitle() + QString(" - FigureItNow"));
     }
 }
+
 
