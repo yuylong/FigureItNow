@@ -97,6 +97,16 @@ finErrorCode MainWindow::createNewScriptFile()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+void MainWindow::on_actNew_triggered()
+{
+    finErrorCode errcode = this->createNewScriptFile();
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        QMessageBox::critical(this, QString("Error"),
+                              QString("The file cannot be created!"), QMessageBox::Ok);
+        return;
+    }
+}
+
 void MainWindow::on_actOpen_triggered()
 {
     QFileDialog filedlg(this, QString("Open a Script File"));
@@ -217,3 +227,4 @@ void MainWindow::on_tbwDocumentList_currentChanged(int)
         this->setWindowTitle(cureditor->getWindowTitle() + QString(" - FigureItNow"));
     }
 }
+

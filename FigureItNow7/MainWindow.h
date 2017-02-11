@@ -35,6 +35,7 @@ public:
     finErrorCode createNewScriptFile();
 
 private slots:
+    void on_actNew_triggered();
     void on_actOpen_triggered();
     void on_actSave_triggered();
     void on_actSaveAs_triggered();
@@ -45,10 +46,8 @@ private slots:
     void on_actWiki_triggered();
 
     void scriptEditor_scriptModificationChanged(bool modified);
-    void on_tbwDocumentList_tabCloseRequested(int index);
-
-
     void on_tbwDocumentList_currentChanged(int index);
+    void on_tbwDocumentList_tabCloseRequested(int index);
 
 private:
     /*!
