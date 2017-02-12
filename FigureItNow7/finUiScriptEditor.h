@@ -45,6 +45,11 @@ public:
     finErrorCode saveAsFile(const QString &filepath);
     finErrorCode saveFile();
 
+    bool scriptUndoAvailable() const;
+    bool scriptRedoAvailable() const;
+    void scriptUndo();
+    void scriptRedo();
+
     void copyScript();
     void cutScript();
     void pasteScript();

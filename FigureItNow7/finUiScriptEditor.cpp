@@ -127,6 +127,26 @@ finErrorCode finUiScriptEditor::saveFile()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+bool finUiScriptEditor::scriptUndoAvailable() const
+{
+    return ui->pteScriptCode->document()->isUndoAvailable();
+}
+
+bool finUiScriptEditor::scriptRedoAvailable() const
+{
+    return ui->pteScriptCode->document()->isRedoAvailable();
+}
+
+void finUiScriptEditor::scriptUndo()
+{
+    return ui->pteScriptCode->undo();
+}
+
+void finUiScriptEditor::scriptRedo()
+{
+    return ui->pteScriptCode->redo();
+}
+
 void finUiScriptEditor::copyScript()
 {
     ui->pteScriptCode->copy();
