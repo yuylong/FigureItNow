@@ -139,11 +139,17 @@ bool finUiScriptEditor::scriptRedoAvailable() const
 
 void finUiScriptEditor::scriptUndo()
 {
+    if ( !this->scriptUndoAvailable() )
+        return;
+
     return ui->pteScriptCode->undo();
 }
 
 void finUiScriptEditor::scriptRedo()
 {
+    if ( !this->scriptRedoAvailable() )
+        return;
+
     return ui->pteScriptCode->redo();
 }
 

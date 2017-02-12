@@ -184,6 +184,24 @@ void MainWindow::on_actClose_triggered()
     this->removeEditorAt(ui->tbwDocumentList->currentIndex());
 }
 
+void MainWindow::on_actUndo_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+
+    cureditor->scriptUndo();
+}
+
+void MainWindow::on_actRedo_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+
+    cureditor->scriptRedo();
+}
+
 void MainWindow::on_actCut_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
