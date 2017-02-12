@@ -47,6 +47,7 @@ private slots:
 
     void on_actDraw_triggered();
 
+    void on_actManual_triggered();
     void on_actWiki_triggered();
     void on_actAbout_triggered();
 

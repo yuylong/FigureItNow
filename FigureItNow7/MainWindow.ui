@@ -71,28 +71,27 @@
     <addaction name="actSave"/>
     <addaction name="actSaveAs"/>
     <addaction name="separator"/>
-    <addaction name="actionPrint"/>
+    <addaction name="actPrint"/>
     <addaction name="separator"/>
     <addaction name="actClose"/>
     <addaction name="separator"/>
-    <addaction name="actionQuit"/>
+    <addaction name="actQuit"/>
    </widget>
    <widget class="QMenu" name="mnuEdit">
     <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <addaction name="actionUndo"/>
-    <addaction name="actionRedo"/>
+    <addaction name="actUndo"/>
+    <addaction name="actRedo"/>
     <addaction name="separator"/>
     <addaction name="actCut"/>
     <addaction name="actCopy"/>
-    <addaction name="actionCopy_Figure"/>
     <addaction name="actPaste"/>
     <addaction name="separator"/>
     <addaction name="actDefFigConfig"/>
-    <addaction name="actionDefault_Graph_Configuration"/>
+    <addaction name="actGraphConfig"/>
     <addaction name="separator"/>
-    <addaction name="actionProperties"/>
+    <addaction name="actEditorProperty"/>
    </widget>
    <widget class="QMenu" name="mnuActions">
     <property name="title">
@@ -100,13 +99,19 @@
     </property>
     <addaction name="actDraw"/>
     <addaction name="separator"/>
-    <addaction name="actionExport_Adobe_PDF"/>
+    <addaction name="actExportImage"/>
+    <addaction name="actExportPDF"/>
+    <addaction name="separator"/>
+    <addaction name="actCopyFig"/>
+    <addaction name="actPrintFig"/>
    </widget>
    <widget class="QMenu" name="mnuHelp">
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <addaction name="actManual"/>
     <addaction name="actWiki"/>
+    <addaction name="separator"/>
     <addaction name="actAbout"/>
    </widget>
    <addaction name="mnuFile"/>
@@ -245,14 +250,26 @@
     <string>Save the script file as given path.</string>
    </property>
   </action>
-  <action name="actionUndo">
+  <action name="actUndo">
    <property name="text">
     <string>Undo</string>
    </property>
+   <property name="toolTip">
+    <string>Undo to the last change.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
   </action>
-  <action name="actionRedo">
+  <action name="actRedo">
    <property name="text">
     <string>Redo</string>
+   </property>
+   <property name="toolTip">
+    <string>Redo the last cancelled operation.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
    </property>
   </action>
   <action name="actDefFigConfig">
@@ -263,34 +280,85 @@
     <string>Setup default figure configuration</string>
    </property>
   </action>
-  <action name="actionDefault_Graph_Configuration">
+  <action name="actGraphConfig">
    <property name="text">
     <string>Default Graph Configuration</string>
    </property>
+   <property name="toolTip">
+    <string>Setup the default graph configuration</string>
+   </property>
   </action>
-  <action name="actionProperties">
+  <action name="actEditorProperty">
    <property name="text">
     <string>Script Editor Properties</string>
    </property>
+   <property name="toolTip">
+    <string>Setup the script editor properties</string>
+   </property>
   </action>
-  <action name="actionCopy_Figure">
+  <action name="actCopyFig">
    <property name="text">
     <string>Copy Figure</string>
    </property>
+   <property name="toolTip">
+    <string>Copy the figure to clipboard as an image.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+C</string>
+   </property>
   </action>
-  <action name="actionExport_Adobe_PDF">
+  <action name="actExportPDF">
    <property name="text">
     <string>Export to PDF</string>
    </property>
+   <property name="toolTip">
+    <string>Export the figure to an Adobe PDF document.</string>
+   </property>
   </action>
-  <action name="actionQuit">
+  <action name="actQuit">
    <property name="text">
     <string>Quit</string>
    </property>
+   <property name="toolTip">
+    <string>Quit the application</string>
+   </property>
   </action>
-  <action name="actionPrint">
+  <action name="actPrint">
    <property name="text">
     <string>Print</string>
+   </property>
+   <property name="toolTip">
+    <string>Print the script code.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actExportImage">
+   <property name="text">
+    <string>Export to Image</string>
+   </property>
+   <property name="toolTip">
+    <string>Export the figure to an image file.</string>
+   </property>
+  </action>
+  <action name="actManual">
+   <property name="text">
+    <string>Script Language Manual</string>
+   </property>
+   <property name="toolTip">
+    <string>Open the FigureItNow script language manual</string>
+   </property>
+  </action>
+  <action name="actPrintFig">
+   <property name="text">
+    <string>Print Figure</string>
+   </property>
+   <property name="toolTip">
+    <string>Print the figure.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+P</string>
    </property>
   </action>
  </widget>

@@ -220,6 +220,12 @@ void MainWindow::on_actDraw_triggered()
     cureditor->drawOnPanel();
 }
 
+void MainWindow::on_actManual_triggered()
+{
+    QDesktopServices::openUrl(
+                QUrl(QString("https://github.com/yuylong/FigureItNow/wiki/FigureItNow-Script-Language")));
+}
+
 void MainWindow::on_actWiki_triggered()
 {
     QDesktopServices::openUrl(QUrl(QString("https://github.com/yuylong/FigureItNow/wiki")));
@@ -261,5 +267,3 @@ void MainWindow::on_tbwDocumentList_currentChanged(int)
         this->setWindowTitle(cureditor->getWindowTitle() + QString(" - FigureItNow"));
     }
 }
-
-
