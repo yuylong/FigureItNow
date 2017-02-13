@@ -7,8 +7,11 @@
 #include <QTextStream>
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QPageSize>
+#include <QPdfWriter>
 
 #include "finGraphPanelScene.h"
+#include "finGraphPanelWidget.h"
 
 
 finUiScriptEditor::finUiScriptEditor(QWidget *parent) :
@@ -224,6 +227,23 @@ finErrorCode finUiScriptEditor::drawOnPanel()
         qDebug() << "ERROR when apply drawing! (" << errcode << ")";
         return errcode;
     }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finUiScriptEditor::exportToPDF(const QString &filepath)
+{
+    finGraphConfig *graphcfg = this->_figContainer.getGraphConfig();
+    QPdfWriter pdfwrt(filepath);
+
+    pdfwrt.setPageSize(QPageSize(graphcfg->getPanelPixelSize(), QPageSize::Point));
+    finGraphPanelWidget graphpanel;
+    graphpanel.setWidget(&pdfwrt);
+    graphpanel.setFigureContainer(&this->_figContainer);
+
+    finErrorCode errcode = graphpanel.draw();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 

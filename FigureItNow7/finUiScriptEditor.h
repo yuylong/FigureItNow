@@ -61,6 +61,7 @@ public:
     finErrorCode applyGraphConfig(finGraphConfig *graphconfig);
 
     finErrorCode drawOnPanel();
+    finErrorCode exportToPDF(const QString &filepath);
 
 private:
     Ui::finUiScriptEditor *ui;

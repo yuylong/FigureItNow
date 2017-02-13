@@ -349,6 +349,35 @@ void MainWindow::on_actDraw_triggered()
     cureditor->drawOnPanel();
 }
 
+void MainWindow::on_actExportPDF_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+
+    QFileDialog filedlg(this, QString("Export to Adobe PDF"));
+    filedlg.setAcceptMode(QFileDialog::AcceptSave);
+    filedlg.setFileMode(QFileDialog::AnyFile);
+
+    filedlg.exec();
+    if ( filedlg.result() != QDialog::Accepted )
+        return;
+
+    QStringList filepaths = filedlg.selectedFiles();
+    if ( filepaths.empty() ) {
+        QMessageBox::warning(this, QString("Warning"),
+                             QString("You need to select a file to export."), QMessageBox::Ok);
+        return;
+    }
+
+    finErrorCode errcode = cureditor->exportToPDF(filepaths.first());
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        QMessageBox::critical(this, QString("Error"),
+                              QString("Cannot export to Adobe file."), QMessageBox::Ok);
+        return;
+    }
+}
+
 void MainWindow::on_actManual_triggered()
 {
     QDesktopServices::openUrl(
@@ -435,3 +464,4 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
     event->accept();
 }
+

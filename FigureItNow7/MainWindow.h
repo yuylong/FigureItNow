@@ -61,6 +61,8 @@ private slots:
     void on_tbwDocumentList_tabCloseRequested(int index);
 
 
+    void on_actExportPDF_triggered();
+
 protected:
     virtual void closeEvent(QCloseEvent *event);
 
