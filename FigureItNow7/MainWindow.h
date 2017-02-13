@@ -63,6 +63,8 @@ private slots:
 
     void on_actExportPDF_triggered();
 
+    void on_actExportImage_triggered();
+
 protected:
     virtual void closeEvent(QCloseEvent *event);
 
@@ -82,6 +84,8 @@ private:
     bool saveScriptFile(finUiScriptEditor *editor);
     bool saveAsScriptFile(finUiScriptEditor *editor);
     finErrorCode removeEditorAt(int idx);
+
+    bool checkExportWarning(finUiScriptEditor *editor);
 };
 
 #endif // MAINWINDOW_H

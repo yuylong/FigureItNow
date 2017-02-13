@@ -63,6 +63,7 @@ public:
     bool containsFigureObjects() const;
     finErrorCode drawOnPanel();
     finErrorCode exportToPDF(const QString &filepath);
+    finErrorCode exportToImage(const QString &filepath);
 
 private:
     Ui::finUiScriptEditor *ui;

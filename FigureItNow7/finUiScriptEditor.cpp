@@ -260,6 +260,27 @@ finErrorCode finUiScriptEditor::exportToPDF(const QString &filepath)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finUiScriptEditor::exportToImage(const QString &filepath)
+{
+    finGraphConfig *graphcfg = this->_figContainer.getGraphConfig();
+    QImage outimg(graphcfg->getPanelPixelSize().toSize(), QImage::Format_ARGB32);
+    outimg.fill(Qt::transparent);
+
+    finGraphPanelWidget graphpanel;
+    graphpanel.setWidget(&outimg);
+    graphpanel.setFigureContainer(&this->_figContainer);
+
+    finErrorCode errcode = graphpanel.draw();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    bool saveres = outimg.save(filepath);
+    if ( !saveres )
+        return finErrorCodeKits::FIN_EC_FILE_NOT_OPEN;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 void finUiScriptEditor::on_pteScriptCode_modificationChanged(bool modified)
 {
     emit this->scriptModificationChanged(modified);

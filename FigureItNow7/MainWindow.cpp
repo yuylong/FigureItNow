@@ -349,21 +349,27 @@ void MainWindow::on_actDraw_triggered()
     cureditor->drawOnPanel();
 }
 
-void MainWindow::on_actExportPDF_triggered()
+bool MainWindow::checkExportWarning(finUiScriptEditor *editor)
 {
-    finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
-        return;
-
-    if ( !cureditor->containsFigureObjects() ) {
+    if ( !editor->containsFigureObjects() ) {
         QMessageBox::StandardButton resbtn;
         resbtn = QMessageBox::warning(this, QString("Warning"),
                                       QString("No Figure on Panel. Export it anyway?"),
                                       QMessageBox::Ok | QMessageBox::Cancel,
                                       QMessageBox::Cancel);
         if ( resbtn != QMessageBox::Ok )
-            return;
+            return false;
     }
+    return true;
+}
+
+void MainWindow::on_actExportPDF_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+    if ( !checkExportWarning(cureditor) )
+        return;
 
     QFileDialog filedlg(this, QString("Export to Adobe PDF"));
     filedlg.setAcceptMode(QFileDialog::AcceptSave);
@@ -383,7 +389,38 @@ void MainWindow::on_actExportPDF_triggered()
     finErrorCode errcode = cureditor->exportToPDF(filepaths.first());
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
-                              QString("Cannot export to Adobe file."), QMessageBox::Ok);
+                              QString("Cannot write the Adobe PDF file."), QMessageBox::Ok);
+        return;
+    }
+}
+
+void MainWindow::on_actExportImage_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+    if ( !checkExportWarning(cureditor) )
+        return;
+
+    QFileDialog filedlg(this, QString("Export to Image"));
+    filedlg.setAcceptMode(QFileDialog::AcceptSave);
+    filedlg.setFileMode(QFileDialog::AnyFile);
+
+    filedlg.exec();
+    if ( filedlg.result() != QDialog::Accepted )
+        return;
+
+    QStringList filepaths = filedlg.selectedFiles();
+    if ( filepaths.empty() ) {
+        QMessageBox::warning(this, QString("Warning"),
+                             QString("You need to select a file to export."), QMessageBox::Ok);
+        return;
+    }
+
+    finErrorCode errcode = cureditor->exportToImage(filepaths.first());
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        QMessageBox::critical(this, QString("Error"),
+                              QString("Cannot write the image file."), QMessageBox::Ok);
         return;
     }
 }
