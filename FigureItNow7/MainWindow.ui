@@ -309,7 +309,7 @@
   </action>
   <action name="actExportPDF">
    <property name="text">
-    <string>Export to PDF</string>
+    <string>Export to PDF ...</string>
    </property>
    <property name="toolTip">
     <string>Export the figure to an Adobe PDF document.</string>
@@ -336,7 +336,7 @@
   </action>
   <action name="actExportImage">
    <property name="text">
-    <string>Export to Image</string>
+    <string>Export to Image ...</string>
    </property>
    <property name="toolTip">
     <string>Export the figure to an image file.</string>

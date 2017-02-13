@@ -197,6 +197,11 @@ finErrorCode finUiScriptEditor::applyGraphConfig(finGraphConfig *graphconfig)
     return mycfg->copyGraphConfig(graphconfig);
 }
 
+bool finUiScriptEditor::containsFigureObjects() const
+{
+    return (this->_figContainer.getFigureObjectCount() > 0);
+}
+
 finErrorCode finUiScriptEditor::drawOnPanel()
 {
     if ( ui->gvwGraphPanel->scene() == NULL )

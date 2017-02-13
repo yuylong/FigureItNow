@@ -60,6 +60,7 @@ public:
     finErrorCode applyFigureConfig(finFigureConfig *figconfig);
     finErrorCode applyGraphConfig(finGraphConfig *graphconfig);
 
+    bool containsFigureObjects() const;
     finErrorCode drawOnPanel();
     finErrorCode exportToPDF(const QString &filepath);
 

@@ -116,7 +116,7 @@ bool MainWindow::saveAsScriptFile(finUiScriptEditor *editor)
     if ( editor == NULL )
         return true;
 
-    QFileDialog filedlg(this, QString("Open a Script File"));
+    QFileDialog filedlg(this, QString("Save Script File"));
     filedlg.setAcceptMode(QFileDialog::AcceptSave);
     filedlg.setFileMode(QFileDialog::AnyFile);
 
@@ -355,6 +355,16 @@ void MainWindow::on_actExportPDF_triggered()
     if ( cureditor == NULL )
         return;
 
+    if ( !cureditor->containsFigureObjects() ) {
+        QMessageBox::StandardButton resbtn;
+        resbtn = QMessageBox::warning(this, QString("Warning"),
+                                      QString("No Figure on Panel. Export it anyway?"),
+                                      QMessageBox::Ok | QMessageBox::Cancel,
+                                      QMessageBox::Cancel);
+        if ( resbtn != QMessageBox::Ok )
+            return;
+    }
+
     QFileDialog filedlg(this, QString("Export to Adobe PDF"));
     filedlg.setAcceptMode(QFileDialog::AcceptSave);
     filedlg.setFileMode(QFileDialog::AnyFile);
@@ -464,4 +474,3 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
     event->accept();
 }
-
