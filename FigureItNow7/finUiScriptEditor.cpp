@@ -181,6 +181,18 @@ void finUiScriptEditor::pasteScript()
     ui->pteScriptCode->paste();
 }
 
+finErrorCode finUiScriptEditor::applyFigureConfig(finFigureConfig *figconfig)
+{
+    finFigureConfig *mycfg = this->_figContainer.getFigureConfig();
+    return figconfig->cloneFigureConfig(mycfg);
+}
+
+finErrorCode finUiScriptEditor::applyGraphConfig(finGraphConfig *graphconfig)
+{
+    finGraphConfig *mycfg = this->_figContainer.getGraphConfig();
+    return mycfg->copyGraphConfig(graphconfig);
+}
+
 finErrorCode finUiScriptEditor::drawOnPanel()
 {
     if ( ui->gvwGraphPanel->scene() == NULL )

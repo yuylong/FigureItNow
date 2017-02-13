@@ -65,8 +65,11 @@ finErrorCode MainWindow::openScriptFile(const QString &filepath)
         return errcode;
     }
 
+    neweditor->applyFigureConfig(&this->_defFigConfig);
+    neweditor->applyGraphConfig(&this->_defGraphConfig);
     QObject::connect(neweditor, SIGNAL(scriptModificationChanged(bool)),
                      this, SLOT(scriptEditor_scriptModificationChanged(bool)));
+
     ui->tbwDocumentList->addTab(neweditor, neweditor->getTabTitle());
     ui->tbwDocumentList->setCurrentWidget(neweditor);
     return finErrorCodeKits::FIN_EC_SUCCESS;
@@ -78,8 +81,11 @@ finErrorCode MainWindow::createNewScriptFile()
     if ( neweditor == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
 
+    neweditor->applyFigureConfig(&this->_defFigConfig);
+    neweditor->applyGraphConfig(&this->_defGraphConfig);
     QObject::connect(neweditor, SIGNAL(scriptModificationChanged(bool)),
                      this, SLOT(scriptEditor_scriptModificationChanged(bool)));
+
     ui->tbwDocumentList->addTab(neweditor, neweditor->getTabTitle());
     ui->tbwDocumentList->setCurrentWidget(neweditor);
     return finErrorCodeKits::FIN_EC_SUCCESS;
@@ -301,6 +307,14 @@ void MainWindow::on_actDefFigConfig_triggered()
         return;
 
     figcfgdlg.applyToFigureConfig(&this->_defFigConfig);
+
+    for ( int i = 0; i < ui->tbwDocumentList->count(); i++ ) {
+        finUiScriptEditor *editor = this->getEditorAt(i);
+        if ( editor == NULL )
+            continue;
+
+        editor->applyFigureConfig(&this->_defFigConfig);
+    }
 }
 
 void MainWindow::on_actDefGraphConfig_triggered()
@@ -313,6 +327,14 @@ void MainWindow::on_actDefGraphConfig_triggered()
         return;
 
     graphcfgdlg.applyToGraphConfig(&this->_defGraphConfig);
+
+    for ( int i = 0; i < ui->tbwDocumentList->count(); i++ ) {
+        finUiScriptEditor *editor = this->getEditorAt(i);
+        if ( editor == NULL )
+            continue;
+
+        editor->applyGraphConfig(&this->_defGraphConfig);
+    }
 }
 
 void MainWindow::on_actDraw_triggered()
@@ -320,6 +342,9 @@ void MainWindow::on_actDraw_triggered()
     finUiScriptEditor *cureditor = this->getCurrentEditor();
     if ( cureditor == NULL )
         return;
+
+    cureditor->applyFigureConfig(&this->_defFigConfig);
+    cureditor->applyGraphConfig(&this->_defGraphConfig);
 
     cureditor->drawOnPanel();
 }

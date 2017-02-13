@@ -8,7 +8,9 @@
 #include "finErrorCode.h"
 #include "finExecMachine.h"
 #include "finFigureContainer.h"
+#include "finFigureConfig.h"
 #include "finGraphPanelScene.h"
+#include "finGraphConfig.h"
 #include "finUiSyntaxHighlighter.h"
 
 namespace Ui {
@@ -54,6 +56,9 @@ public:
     void copyScript();
     void cutScript();
     void pasteScript();
+
+    finErrorCode applyFigureConfig(finFigureConfig *figconfig);
+    finErrorCode applyGraphConfig(finGraphConfig *graphconfig);
 
     finErrorCode drawOnPanel();
 
