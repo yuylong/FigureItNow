@@ -56,6 +56,7 @@ public:
     void copyScript();
     void cutScript();
     void pasteScript();
+    void copyFigure();
 
     finErrorCode applyFigureConfig(finFigureConfig *figconfig);
     finErrorCode applyGraphConfig(finGraphConfig *graphconfig);
@@ -69,6 +70,7 @@ private:
     Ui::finUiScriptEditor *ui;
 
     finErrorCode setFilename(const QString &filepath);
+    finErrorCode getFigureImage(QImage *outimg);
 
 private slots:
     void on_pteScriptCode_modificationChanged(bool modified);

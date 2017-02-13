@@ -425,6 +425,15 @@ void MainWindow::on_actExportImage_triggered()
     }
 }
 
+void MainWindow::on_actCopyFig_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+
+    cureditor->copyFigure();
+}
+
 void MainWindow::on_actManual_triggered()
 {
     QDesktopServices::openUrl(
@@ -511,3 +520,4 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
     event->accept();
 }
+

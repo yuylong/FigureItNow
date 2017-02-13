@@ -10,6 +10,8 @@
 #include <QPageSize>
 #include <QMarginsF>
 #include <QPdfWriter>
+#include <QGuiApplication>
+#include <QClipboard>
 
 #include "finGraphPanelScene.h"
 #include "finGraphPanelWidget.h"
@@ -185,6 +187,41 @@ void finUiScriptEditor::pasteScript()
     ui->pteScriptCode->paste();
 }
 
+finErrorCode finUiScriptEditor::getFigureImage(QImage *outimg)
+{
+    if ( outimg == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    finGraphConfig *graphcfg = this->_figContainer.getGraphConfig();
+    QImage img(graphcfg->getPanelPixelSize().toSize(), QImage::Format_ARGB32);
+    //outimg.fill(Qt::transparent);
+
+    finGraphPanelWidget graphpanel;
+    graphpanel.setWidget(&img);
+    graphpanel.setFigureContainer(&this->_figContainer);
+
+    finErrorCode errcode = graphpanel.draw();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    *outimg = img;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+void finUiScriptEditor::copyFigure()
+{
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    if ( clipboard == NULL )
+        return;
+
+    QImage outimg;
+    finErrorCode errcode = this->getFigureImage(&outimg);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return;
+
+    clipboard->setImage(outimg);
+}
+
 finErrorCode finUiScriptEditor::applyFigureConfig(finFigureConfig *figconfig)
 {
     finFigureConfig *mycfg = this->_figContainer.getFigureConfig();
@@ -262,15 +299,8 @@ finErrorCode finUiScriptEditor::exportToPDF(const QString &filepath)
 
 finErrorCode finUiScriptEditor::exportToImage(const QString &filepath)
 {
-    finGraphConfig *graphcfg = this->_figContainer.getGraphConfig();
-    QImage outimg(graphcfg->getPanelPixelSize().toSize(), QImage::Format_ARGB32);
-    outimg.fill(Qt::transparent);
-
-    finGraphPanelWidget graphpanel;
-    graphpanel.setWidget(&outimg);
-    graphpanel.setFigureContainer(&this->_figContainer);
-
-    finErrorCode errcode = graphpanel.draw();
+    QImage outimg;
+    finErrorCode errcode = this->getFigureImage(&outimg);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
