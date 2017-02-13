@@ -241,6 +241,11 @@ void MainWindow::on_actClose_triggered()
     this->removeEditorAt(ui->tbwDocumentList->currentIndex());
 }
 
+void MainWindow::on_actQuit_triggered()
+{
+    this->close();
+}
+
 void MainWindow::on_actUndo_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();

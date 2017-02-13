@@ -40,6 +40,7 @@ private slots:
     void on_actSave_triggered();
     void on_actSaveAs_triggered();
     void on_actClose_triggered();
+    void on_actQuit_triggered();
 
     void on_actUndo_triggered();
     void on_actRedo_triggered();
