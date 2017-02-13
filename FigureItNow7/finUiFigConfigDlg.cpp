@@ -68,7 +68,7 @@ void finUiFigConfigDlg::applyToFigureConfig(finFigureConfig *figcfg) const
 
     figcfg->setFillColor(ui->lblFillingColor->color());
 
-    figcfg->setFontName(ui->fcbFontName->font().family());
+    figcfg->setFontName(ui->fcbFontName->currentFont().family());
     figcfg->setFontPointSize(ui->dsbFontSize->value());
     figcfg->setFontBold(ui->ckbFontBold->isChecked());
     figcfg->setFontItalic(ui->ckbFontItalic->isChecked());
