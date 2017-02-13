@@ -8,6 +8,7 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QPageSize>
+#include <QMarginsF>
 #include <QPdfWriter>
 
 #include "finGraphPanelScene.h"
@@ -232,10 +233,15 @@ finErrorCode finUiScriptEditor::drawOnPanel()
 
 finErrorCode finUiScriptEditor::exportToPDF(const QString &filepath)
 {
+    static const int _defResolution = 72;
+
     finGraphConfig *graphcfg = this->_figContainer.getGraphConfig();
     QPdfWriter pdfwrt(filepath);
 
-    pdfwrt.setPageSize(QPageSize(graphcfg->getPanelPixelSize(), QPageSize::Point));
+    pdfwrt.setPageSize(QPageSize(graphcfg->getPanelPixelSize() / _defResolution, QPageSize::Inch));
+    pdfwrt.setPageMargins(QMarginsF(0.0, 0.0, 0.0, 0.0));
+    pdfwrt.setResolution(_defResolution);
+
     finGraphPanelWidget graphpanel;
     graphpanel.setWidget(&pdfwrt);
     graphpanel.setFigureContainer(&this->_figContainer);
