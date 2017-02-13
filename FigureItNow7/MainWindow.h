@@ -47,6 +47,8 @@ private slots:
     void on_actCut_triggered();
     void on_actCopy_triggered();
     void on_actPaste_triggered();
+    void on_actDefFigConfig_triggered();
+    void on_actDefGraphConfig_triggered();
 
     void on_actDraw_triggered();
 
@@ -58,6 +60,7 @@ private slots:
     void on_tbwDocumentList_currentChanged(int index);
     void on_tbwDocumentList_tabCloseRequested(int index);
 
+
 protected:
     virtual void closeEvent(QCloseEvent *event);
 
@@ -66,6 +69,8 @@ private:
      * \brief ui
      */
     Ui::MainWindow *ui;
+    finFigureConfig _defFigConfig;
+    finGraphConfig _defGraphConfig;
 
     finUiScriptEditor *getCurrentEditor() const;
     finUiScriptEditor *getEditorAt(int idx) const;

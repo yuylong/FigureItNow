@@ -291,6 +291,30 @@ void MainWindow::on_actPaste_triggered()
     cureditor->pasteScript();
 }
 
+void MainWindow::on_actDefFigConfig_triggered()
+{
+    finUiFigConfigDlg figcfgdlg(this);
+    figcfgdlg.fillFromFigureConfig(&this->_defFigConfig);
+
+    figcfgdlg.exec();
+    if ( figcfgdlg.result() != QDialog::Accepted )
+        return;
+
+    figcfgdlg.applyToFigureConfig(&this->_defFigConfig);
+}
+
+void MainWindow::on_actDefGraphConfig_triggered()
+{
+    finUiGraphConfigDlg graphcfgdlg(this);
+    graphcfgdlg.fillFromGraphConfig(&this->_defGraphConfig);
+
+    graphcfgdlg.exec();
+    if ( graphcfgdlg.result() != QDialog::Accepted )
+        return;
+
+    graphcfgdlg.applyToGraphConfig(&this->_defGraphConfig);
+}
+
 void MainWindow::on_actDraw_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();

@@ -89,7 +89,7 @@
     <addaction name="actPaste"/>
     <addaction name="separator"/>
     <addaction name="actDefFigConfig"/>
-    <addaction name="actGraphConfig"/>
+    <addaction name="actDefGraphConfig"/>
     <addaction name="separator"/>
     <addaction name="actEditorProperty"/>
    </widget>
@@ -280,7 +280,7 @@
     <string>Setup default figure configuration</string>
    </property>
   </action>
-  <action name="actGraphConfig">
+  <action name="actDefGraphConfig">
    <property name="text">
     <string>Default Graph Configuration</string>
    </property>
