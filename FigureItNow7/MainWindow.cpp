@@ -285,3 +285,8 @@ void MainWindow::on_tbwDocumentList_currentChanged(int)
         this->setWindowTitle(cureditor->getWindowTitle() + QString(" - FigureItNow"));
     }
 }
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    event->accept();
+}

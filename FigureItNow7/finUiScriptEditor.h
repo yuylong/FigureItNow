@@ -45,6 +45,11 @@ public:
     finErrorCode saveAsFile(const QString &filepath);
     finErrorCode saveFile();
 
+    finErrorCode openFileUiAction();
+    finErrorCode saveFileUiAction();
+    finErrorCode saveAsUiAction();
+    bool closeRequest();
+
     bool scriptUndoAvailable() const;
     bool scriptRedoAvailable() const;
     void scriptUndo();
@@ -59,7 +64,10 @@ public:
 private:
     Ui::finUiScriptEditor *ui;
 
+    const QString &getFileDisplayPath() const;
     finErrorCode setFilename(const QString &filepath);
+
+    QString getSaveFileQuestionString() const;
 
 private slots:
     void on_pteScriptCode_modificationChanged(bool modified);

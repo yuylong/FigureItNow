@@ -57,6 +57,9 @@ private slots:
     void on_tbwDocumentList_currentChanged(int index);
     void on_tbwDocumentList_tabCloseRequested(int index);
 
+protected:
+    virtual void closeEvent(QCloseEvent *event);
+
 private:
     /*!
      * \brief ui

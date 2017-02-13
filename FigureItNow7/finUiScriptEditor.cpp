@@ -2,9 +2,11 @@
 #include "ui_finUiScriptEditor.h"
 
 #include <QDebug>
+#include <QStringBuilder>
 #include <QFile>
 #include <QTextStream>
 #include <QDesktopServices>
+#include <QMessageBox>
 
 #include "finGraphPanelScene.h"
 
@@ -48,6 +50,21 @@ const QString &finUiScriptEditor::getFilename() const
     return this->_filename;
 }
 
+const QString &finUiScriptEditor::getFileDisplayPath() const
+{
+    if ( this->_filepath.isEmpty() )
+        return this->_filename;
+    else
+        return this->_filepath;
+}
+
+finErrorCode finUiScriptEditor::setFilename(const QString &filepath)
+{
+    this->_filepath = filepath;
+    this->_filename = filepath.split(QRegExp(QString("[\\\\\\/]"))).last();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 bool finUiScriptEditor::isFileOpened() const
 {
     return !this->_filepath.isEmpty();
@@ -80,13 +97,6 @@ QString finUiScriptEditor::getWindowTitle() const
         return titlebase + QString("*");
     else
         return titlebase;
-}
-
-finErrorCode finUiScriptEditor::setFilename(const QString &filepath)
-{
-    this->_filepath = filepath;
-    this->_filename = filepath.split(QRegExp(QString("[\\\\\\/]"))).last();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finUiScriptEditor::openFile(const QString &filepath)
@@ -125,6 +135,55 @@ finErrorCode finUiScriptEditor::saveFile()
     file.close();
     ui->pteScriptCode->document()->setModified(false);
     return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finUiScriptEditor::openFileUiAction()
+{
+
+}
+
+finErrorCode finUiScriptEditor::saveFileUiAction()
+{
+
+}
+
+finErrorCode finUiScriptEditor::saveAsUiAction()
+{
+
+}
+
+QString finUiScriptEditor::getSaveFileQuestionString() const
+{
+    QString str;
+    QTextStream out(&str, QIODevice::WriteOnly);
+
+    out << this->getFileDisplayPath() << QString(" is not saved.") << endl;
+    out << "Save it?" << endl;
+    return str;
+}
+
+bool finUiScriptEditor::closeRequest()
+{
+    if ( !this->isScriptModified() )
+        return true;
+
+    QMessageBox::StandardButton resbtn;
+    resbtn = QMessageBox::question(this, QString("Save the Modified Script"), this->getSaveFileQuestionString(),
+                                   QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
+    switch ( resbtn ) {
+      case QMessageBox::Yes:
+        return true;
+        break;
+
+      case QMessageBox::No:
+        return true;
+        break;
+
+      case QMessageBox::Cancel:
+      default:
+        return false;
+        break;
+    }
 }
 
 bool finUiScriptEditor::scriptUndoAvailable() const
