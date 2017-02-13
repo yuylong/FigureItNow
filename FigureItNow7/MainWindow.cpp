@@ -53,19 +53,6 @@ int MainWindow::findEditorIndex(finUiScriptEditor *editor) const
     return -1;
 }
 
-finErrorCode MainWindow::removeEditorAt(int idx)
-{
-    if ( idx < 0 || idx >= ui->tbwDocumentList->count() )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
-
-    finUiScriptEditor *editor = this->getEditorAt(idx);
-    ui->tbwDocumentList->removeTab(idx);
-
-    if ( editor != NULL )
-        delete editor;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
-}
-
 finErrorCode MainWindow::openScriptFile(const QString &filepath)
 {
     finUiScriptEditor *neweditor = new finUiScriptEditor();
@@ -95,6 +82,107 @@ finErrorCode MainWindow::createNewScriptFile()
                      this, SLOT(scriptEditor_scriptModificationChanged(bool)));
     ui->tbwDocumentList->addTab(neweditor, neweditor->getTabTitle());
     ui->tbwDocumentList->setCurrentWidget(neweditor);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+bool MainWindow::saveScriptFile(finUiScriptEditor *editor)
+{
+    if ( editor == NULL )
+        return true;
+
+    if ( !editor->isFileOpened() )
+        return this->saveAsScriptFile(editor);
+
+    if ( !editor->isScriptModified() )
+        return true;
+
+    finErrorCode errcode = editor->saveFile();
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        QMessageBox::critical(this, QString("Error"),
+                              QString("The file cannot be saved on disk!"), QMessageBox::Ok);
+        return true;
+    }
+    return true;
+}
+
+bool MainWindow::saveAsScriptFile(finUiScriptEditor *editor)
+{
+    if ( editor == NULL )
+        return true;
+
+    QFileDialog filedlg(this, QString("Open a Script File"));
+    filedlg.setAcceptMode(QFileDialog::AcceptSave);
+    filedlg.setFileMode(QFileDialog::AnyFile);
+
+    filedlg.exec();
+    if ( filedlg.result() != QDialog::Accepted )
+        return false;
+
+    QStringList filepaths = filedlg.selectedFiles();
+    if ( filepaths.empty() ) {
+        QMessageBox::warning(this, QString("Warning"),
+                             QString("You need to select a file to save."), QMessageBox::Ok);
+        return false;
+    }
+
+    finErrorCode errcode = editor->saveAsFile(filepaths.first());
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        QMessageBox::critical(this, QString("Error"),
+                              QString("The file cannot be saved on disk!"), QMessageBox::Ok);
+        return true;
+    }
+    return true;
+}
+
+QString MainWindow::getSaveFileQuestionString(finUiScriptEditor *editor) const
+{
+    QString str;
+    QTextStream out(&str, QIODevice::WriteOnly);
+
+    out << editor->getFileDisplayPath() << QString(" is not saved.") << endl;
+    out << "Save it?" << endl;
+    return str;
+}
+
+finErrorCode MainWindow::removeEditorAt(int idx)
+{
+    if ( idx < 0 || idx >= ui->tbwDocumentList->count() )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+
+    finUiScriptEditor *editor = this->getEditorAt(idx);
+    bool saveres = true;
+    if ( editor == NULL ) {
+        ui->tbwDocumentList->removeTab(idx);
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+    }
+
+    QMessageBox::StandardButton resbtn = QMessageBox::Cancel;
+    if ( !editor->isScriptModified() )
+        goto out;
+
+    resbtn = QMessageBox::question(this, QString("Question"), this->getSaveFileQuestionString(editor),
+                                   QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                   QMessageBox::Yes);
+    switch ( resbtn ) {
+      case QMessageBox::Yes:
+        saveres = this->saveScriptFile(editor);
+        if ( !saveres )
+            return finErrorCodeKits::FIN_EC_UNREADY_WARN;
+        break;
+
+      case QMessageBox::No:
+        goto out;
+        break;
+
+      case QMessageBox::Cancel:
+      default:
+        return finErrorCodeKits::FIN_EC_UNREADY_WARN;
+        break;
+    }
+
+out:
+    delete editor;
+    ui->tbwDocumentList->removeTab(idx);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -136,18 +224,7 @@ void MainWindow::on_actSave_triggered()
     if ( cureditor == NULL )
         return;
 
-    if ( !cureditor->isFileOpened() )
-        return this->on_actSaveAs_triggered();
-
-    if ( !cureditor->isScriptModified() )
-        return;
-
-    finErrorCode errcode = cureditor->saveFile();
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        QMessageBox::critical(this, QString("Error"),
-                              QString("The file cannot be saved on disk!"), QMessageBox::Ok);
-        return;
-    }
+    this->saveScriptFile(cureditor);
 }
 
 void MainWindow::on_actSaveAs_triggered()
@@ -156,27 +233,7 @@ void MainWindow::on_actSaveAs_triggered()
     if ( cureditor == NULL )
         return;
 
-    QFileDialog filedlg(this, QString("Open a Script File"));
-    filedlg.setAcceptMode(QFileDialog::AcceptSave);
-    filedlg.setFileMode(QFileDialog::AnyFile);
-
-    filedlg.exec();
-    if ( filedlg.result() != QDialog::Accepted )
-        return;
-
-    QStringList filepaths = filedlg.selectedFiles();
-    if ( filepaths.empty() ) {
-        QMessageBox::warning(this, QString("Warning"),
-                             QString("You need to select a file to save."), QMessageBox::Ok);
-        return;
-    }
-
-    finErrorCode errcode = cureditor->saveAsFile(filepaths.first());
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
-        QMessageBox::critical(this, QString("Error"),
-                              QString("The file cannot be saved on disk!"), QMessageBox::Ok);
-        return;
-    }
+    this->saveAsScriptFile(cureditor);
 }
 
 void MainWindow::on_actClose_triggered()

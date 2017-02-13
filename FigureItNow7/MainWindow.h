@@ -69,6 +69,10 @@ private:
     finUiScriptEditor *getCurrentEditor() const;
     finUiScriptEditor *getEditorAt(int idx) const;
     int findEditorIndex(finUiScriptEditor *editor) const;
+
+    QString getSaveFileQuestionString(finUiScriptEditor *editor) const;
+    bool saveScriptFile(finUiScriptEditor *editor);
+    bool saveAsScriptFile(finUiScriptEditor *editor);
     finErrorCode removeEditorAt(int idx);
 };
 

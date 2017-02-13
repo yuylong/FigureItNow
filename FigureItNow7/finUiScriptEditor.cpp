@@ -137,55 +137,6 @@ finErrorCode finUiScriptEditor::saveFile()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-finErrorCode finUiScriptEditor::openFileUiAction()
-{
-
-}
-
-finErrorCode finUiScriptEditor::saveFileUiAction()
-{
-
-}
-
-finErrorCode finUiScriptEditor::saveAsUiAction()
-{
-
-}
-
-QString finUiScriptEditor::getSaveFileQuestionString() const
-{
-    QString str;
-    QTextStream out(&str, QIODevice::WriteOnly);
-
-    out << this->getFileDisplayPath() << QString(" is not saved.") << endl;
-    out << "Save it?" << endl;
-    return str;
-}
-
-bool finUiScriptEditor::closeRequest()
-{
-    if ( !this->isScriptModified() )
-        return true;
-
-    QMessageBox::StandardButton resbtn;
-    resbtn = QMessageBox::question(this, QString("Save the Modified Script"), this->getSaveFileQuestionString(),
-                                   QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
-    switch ( resbtn ) {
-      case QMessageBox::Yes:
-        return true;
-        break;
-
-      case QMessageBox::No:
-        return true;
-        break;
-
-      case QMessageBox::Cancel:
-      default:
-        return false;
-        break;
-    }
-}
-
 bool finUiScriptEditor::scriptUndoAvailable() const
 {
     return ui->pteScriptCode->document()->isUndoAvailable();
