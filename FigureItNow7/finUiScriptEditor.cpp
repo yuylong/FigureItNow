@@ -243,6 +243,8 @@ finErrorCode finUiScriptEditor::exportToPDF(const QString &filepath)
     finGraphConfig *graphcfg = this->_figContainer.getGraphConfig();
     QPdfWriter pdfwrt(filepath);
 
+    pdfwrt.setTitle(this->_filename);
+    pdfwrt.setCreator(QString("FigureItNow 7"));
     pdfwrt.setPageSize(QPageSize(graphcfg->getPanelPixelSize() / _defResolution, QPageSize::Inch));
     pdfwrt.setPageMargins(QMarginsF(0.0, 0.0, 0.0, 0.0));
     pdfwrt.setResolution(_defResolution);
