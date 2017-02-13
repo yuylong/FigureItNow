@@ -181,8 +181,8 @@ finErrorCode MainWindow::removeEditorAt(int idx)
     }
 
 out:
-    delete editor;
     ui->tbwDocumentList->removeTab(idx);
+    delete editor;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
@@ -345,5 +345,39 @@ void MainWindow::on_tbwDocumentList_currentChanged(int)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    finUiScriptEditor *preveditor = NULL;
+    while ( ui->tbwDocumentList->count() > 0 ) {
+        finUiScriptEditor *cureditor = this->getEditorAt(0);
+        if ( cureditor == preveditor ) {
+            QMessageBox::StandardButton resbtn = QMessageBox::Ignore;
+            QMessageBox::critical(this, QString("Error"),  QString("Error while closing script files!"),
+                                  QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Abort,
+                                  QMessageBox::Retry);
+
+            switch ( resbtn ) {
+              case QMessageBox::Retry:
+                break;
+
+              case QMessageBox::Ignore:
+                ui->tbwDocumentList->removeTab(0);
+                delete cureditor;
+                continue;
+                break;
+
+              case QMessageBox::Abort:
+              default:
+                event->accept();
+                return;
+                break;
+            }
+        }
+
+        finErrorCode errcode = this->removeEditorAt(0);
+        if ( errcode == finErrorCodeKits::FIN_EC_UNREADY_WARN ) {
+            event->ignore();
+            return;
+        }
+        preveditor = cureditor;
+    }
     event->accept();
 }
