@@ -2,5 +2,6 @@
     <qresource prefix="/icons">
         <file>icons/draw_figure.png</file>
         <file>icons/export_pdf.png</file>
+        <file>icons/new_script.png</file>
     </qresource>
 </RCC>

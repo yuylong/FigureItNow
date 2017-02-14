@@ -137,6 +137,10 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actNew">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:/icons/icons/new_script.png</normaloff>:/icons/icons/new_script.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;New</string>
    </property>
