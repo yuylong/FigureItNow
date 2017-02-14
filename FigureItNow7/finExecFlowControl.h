@@ -2,13 +2,8 @@
  * GNU GENERAL PUBLIC LICENSE, version 3
  * See LICENSE file for detail.
  *
- * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yusoft. All rights reserved.
- *
- * History:
- *
- * DATE      REV  AUTHOR       COMMENTS
- * 20170104    0  Yulong Yu    Create this file.
+ * Author: Yulong Yu, Jan 4th, 2017
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINEXECFLOWCONTROL_H

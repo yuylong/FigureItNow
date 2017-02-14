@@ -118,22 +118,13 @@ bool MainWindow::saveAsScriptFile(finUiScriptEditor *editor)
     if ( editor == NULL )
         return true;
 
-    QFileDialog filedlg(this, QString("Save Script File"));
-    filedlg.setAcceptMode(QFileDialog::AcceptSave);
-    filedlg.setFileMode(QFileDialog::AnyFile);
-
-    filedlg.exec();
-    if ( filedlg.result() != QDialog::Accepted )
+    QString filepath = QFileDialog::getSaveFileName(this, QString("Save Script File"),
+                                                    QDir::homePath(),
+                                                    QString("FigureItNow Script (*.fsc)"));
+    if ( filepath.isEmpty() )
         return false;
 
-    QStringList filepaths = filedlg.selectedFiles();
-    if ( filepaths.empty() ) {
-        QMessageBox::warning(this, QString("Warning"),
-                             QString("You need to select a file to save."), QMessageBox::Ok);
-        return false;
-    }
-
-    finErrorCode errcode = editor->saveAsFile(filepaths.first());
+    finErrorCode errcode = editor->saveAsFile(filepath);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
                               QString("The file cannot be saved on disk!"), QMessageBox::Ok);
@@ -206,19 +197,13 @@ void MainWindow::on_actNew_triggered()
 
 void MainWindow::on_actOpen_triggered()
 {
-    QFileDialog filedlg(this, QString("Open a Script File"));
-    filedlg.setAcceptMode(QFileDialog::AcceptOpen);
-    filedlg.setFileMode(QFileDialog::ExistingFile);
-
-    filedlg.exec();
-    if ( filedlg.result() != QDialog::Accepted )
+    QString filepath = QFileDialog::getOpenFileName(this, QString("Open a Script File"),
+                                                    QDir::homePath(),
+                                                    QString("FigureItNow Script (*.fsc)"));
+    if ( filepath.isEmpty() )
         return;
 
-    QStringList filepaths = filedlg.selectedFiles();
-    if ( filepaths.empty() )
-        return;
-
-    finErrorCode errcode = this->openScriptFile(filepaths.first());
+    finErrorCode errcode = this->openScriptFile(filepath);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
                               QString("The file cannot be open!"), QMessageBox::Ok);
@@ -390,22 +375,13 @@ void MainWindow::on_actExportPDF_triggered()
     if ( !checkExportWarning(cureditor) )
         return;
 
-    QFileDialog filedlg(this, QString("Export to Adobe PDF"));
-    filedlg.setAcceptMode(QFileDialog::AcceptSave);
-    filedlg.setFileMode(QFileDialog::AnyFile);
-
-    filedlg.exec();
-    if ( filedlg.result() != QDialog::Accepted )
+    QString filepath = QFileDialog::getSaveFileName(this, QString("Export to Adobe PDF"),
+                                                    QDir::homePath(),
+                                                    QString("Adobe PDF Document (*.pdf)"));
+    if ( filepath.isEmpty() )
         return;
 
-    QStringList filepaths = filedlg.selectedFiles();
-    if ( filepaths.empty() ) {
-        QMessageBox::warning(this, QString("Warning"),
-                             QString("You need to select a file to export."), QMessageBox::Ok);
-        return;
-    }
-
-    finErrorCode errcode = cureditor->exportToPDF(filepaths.first());
+    finErrorCode errcode = cureditor->exportToPDF(filepath);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
                               QString("Cannot write the Adobe PDF file."), QMessageBox::Ok);
@@ -421,22 +397,19 @@ void MainWindow::on_actExportImage_triggered()
     if ( !checkExportWarning(cureditor) )
         return;
 
-    QFileDialog filedlg(this, QString("Export to Image"));
-    filedlg.setAcceptMode(QFileDialog::AcceptSave);
-    filedlg.setFileMode(QFileDialog::AnyFile);
-
-    filedlg.exec();
-    if ( filedlg.result() != QDialog::Accepted )
+    QString filepath = QFileDialog::getSaveFileName(this, QString("Export to Image"),
+                                                    QDir::homePath(),
+                                                    QString("Portable Network Graphics (*.png);;"
+                                                            "Joint Photographic Experts Group (*.jpg *jpeg);;"
+                                                            "Windows Bitmap (*.bmp);;"
+                                                            "Portable Pixmap (*.ppm);;"
+                                                            "Tagged Image File Format (*.tiff);;"
+                                                            "X11 Bitmap (*.xbm);;"
+                                                            "X11 Pixmap (*.xpm)"));
+    if ( filepath.isEmpty() )
         return;
 
-    QStringList filepaths = filedlg.selectedFiles();
-    if ( filepaths.empty() ) {
-        QMessageBox::warning(this, QString("Warning"),
-                             QString("You need to select a file to export."), QMessageBox::Ok);
-        return;
-    }
-
-    finErrorCode errcode = cureditor->exportToImage(filepaths.first());
+    finErrorCode errcode = cureditor->exportToImage(filepath);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
                               QString("Cannot write the image file."), QMessageBox::Ok);
@@ -452,22 +425,13 @@ void MainWindow::on_actExportSVG_triggered()
     if ( !checkExportWarning(cureditor) )
         return;
 
-    QFileDialog filedlg(this, QString("Export to SVG"));
-    filedlg.setAcceptMode(QFileDialog::AcceptSave);
-    filedlg.setFileMode(QFileDialog::AnyFile);
-
-    filedlg.exec();
-    if ( filedlg.result() != QDialog::Accepted )
+    QString filepath = QFileDialog::getSaveFileName(this, QString("Export to SVG"),
+                                                    QDir::homePath(),
+                                                    QString("Scalable Vector Graphics (*.svg)"));
+    if ( filepath.isEmpty() )
         return;
 
-    QStringList filepaths = filedlg.selectedFiles();
-    if ( filepaths.empty() ) {
-        QMessageBox::warning(this, QString("Warning"),
-                             QString("You need to select a file to export."), QMessageBox::Ok);
-        return;
-    }
-
-    finErrorCode errcode = cureditor->exportToSVG(filepaths.first());
+    finErrorCode errcode = cureditor->exportToSVG(filepath);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
                               QString("Cannot write the SVG file."), QMessageBox::Ok);

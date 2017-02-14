@@ -1,20 +1,15 @@
-/*! \file finExecVariable.h
- *  \brief The script variable declaration.
- *
- * This file declares the script runtime variable. A variable is not only the explicit user-defined in their scripts,
- * but also the temporary results of the operator calculations and the function return values.
- */
 /*-
  * GNU GENERAL PUBLIC LICENSE, version 3
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, May 26th, 2016
- * Copyright(c) 2015-2016 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ */
+/*! \file finExecVariable.h
+ *  \brief The script variable declaration.
  *
- * History:
- *
- * DATE      REV  AUTHOR       COMMENTS
- * 20151229    0  Yulong Yu    Create this file.
+ * This file declares the script runtime variable. A variable is not only the explicit user-defined in their scripts,
+ * but also the temporary results of the operator calculations and the function return values.
  */
 
 #ifndef FINEXECVARIABLE_H
