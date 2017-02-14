@@ -50,6 +50,7 @@ public:
     finErrorCode openFile(const QString &filepath);
     finErrorCode saveAsFile(const QString &filepath);
     finErrorCode saveFile();
+    finErrorCode printFile(QPrinter *printer);
 
     bool scriptUndoAvailable() const;
     bool scriptRedoAvailable() const;

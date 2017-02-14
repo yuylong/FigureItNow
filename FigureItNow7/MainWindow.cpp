@@ -563,10 +563,28 @@ void MainWindow::on_actPrintFig_triggered()
         return;
 
     QPrintDialog printdlg;
+    printdlg.setOptions(QAbstractPrintDialog::PrintToFile | QAbstractPrintDialog::PrintShowPageSize);
     printdlg.exec();
     if ( printdlg.result() != QDialog::Accepted )
         return;
 
     QPrinter *printer = printdlg.printer();
     cureditor->printFigure(printer);
+}
+
+void MainWindow::on_actPrint_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+
+    QPrintDialog printdlg;
+    printdlg.setOptions(QAbstractPrintDialog::PrintToFile | QAbstractPrintDialog::PrintPageRange |
+                        QAbstractPrintDialog::PrintShowPageSize | QAbstractPrintDialog::PrintCurrentPage);
+    printdlg.exec();
+    if ( printdlg.result() != QDialog::Accepted )
+        return;
+
+    QPrinter *printer = printdlg.printer();
+    cureditor->printFile(printer);
 }

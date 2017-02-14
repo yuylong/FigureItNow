@@ -71,6 +71,8 @@ private slots:
 
     void on_actPrintFig_triggered();
 
+    void on_actPrint_triggered();
+
 protected:
     virtual void closeEvent(QCloseEvent *event);
 

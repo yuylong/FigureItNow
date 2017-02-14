@@ -146,6 +146,12 @@ finErrorCode finUiScriptEditor::saveFile()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finUiScriptEditor::printFile(QPrinter *printer)
+{
+    ui->pteScriptCode->print(printer);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 bool finUiScriptEditor::scriptUndoAvailable() const
 {
     return ui->pteScriptCode->document()->isUndoAvailable();
