@@ -39,6 +39,7 @@ private slots:
     void on_actOpen_triggered();
     void on_actSave_triggered();
     void on_actSaveAs_triggered();
+    void on_actPrint_triggered();
     void on_actClose_triggered();
     void on_actQuit_triggered();
 
@@ -51,6 +52,11 @@ private slots:
     void on_actDefGraphConfig_triggered();
 
     void on_actDraw_triggered();
+    void on_actExportPDF_triggered();
+    void on_actExportImage_triggered();
+    void on_actExportSVG_triggered();
+    void on_actCopyFig_triggered();
+    void on_actPrintFig_triggered();
 
     void on_actManual_triggered();
     void on_actWiki_triggered();
@@ -59,19 +65,6 @@ private slots:
     void scriptEditor_scriptModificationChanged(bool modified);
     void on_tbwDocumentList_currentChanged(int index);
     void on_tbwDocumentList_tabCloseRequested(int index);
-
-
-    void on_actExportPDF_triggered();
-
-    void on_actExportImage_triggered();
-
-    void on_actCopyFig_triggered();
-
-    void on_actExportSVG_triggered();
-
-    void on_actPrintFig_triggered();
-
-    void on_actPrint_triggered();
 
 protected:
     virtual void closeEvent(QCloseEvent *event);

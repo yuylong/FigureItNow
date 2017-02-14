@@ -90,8 +90,6 @@
     <addaction name="separator"/>
     <addaction name="actDefFigConfig"/>
     <addaction name="actDefGraphConfig"/>
-    <addaction name="separator"/>
-    <addaction name="actEditorProperty"/>
    </widget>
    <widget class="QMenu" name="mnuActions">
     <property name="title">
@@ -129,6 +127,13 @@
    </attribute>
    <addaction name="actNew"/>
    <addaction name="actOpen"/>
+   <addaction name="actSave"/>
+   <addaction name="separator"/>
+   <addaction name="actDraw"/>
+   <addaction name="actExportPDF"/>
+   <addaction name="separator"/>
+   <addaction name="actDefFigConfig"/>
+   <addaction name="actDefGraphConfig"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actNew">

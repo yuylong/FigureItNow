@@ -244,6 +244,23 @@ void MainWindow::on_actSaveAs_triggered()
     this->saveAsScriptFile(cureditor);
 }
 
+void MainWindow::on_actPrint_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+
+    QPrintDialog printdlg;
+    printdlg.setOptions(QAbstractPrintDialog::PrintToFile | QAbstractPrintDialog::PrintPageRange |
+                        QAbstractPrintDialog::PrintShowPageSize | QAbstractPrintDialog::PrintCurrentPage);
+    printdlg.exec();
+    if ( printdlg.result() != QDialog::Accepted )
+        return;
+
+    QPrinter *printer = printdlg.printer();
+    cureditor->printFile(printer);
+}
+
 void MainWindow::on_actClose_triggered()
 {
     this->removeEditorAt(ui->tbwDocumentList->currentIndex());
@@ -467,6 +484,24 @@ void MainWindow::on_actCopyFig_triggered()
     cureditor->copyFigure();
 }
 
+void MainWindow::on_actPrintFig_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+    if ( !checkExportWarning(cureditor) )
+        return;
+
+    QPrintDialog printdlg;
+    printdlg.setOptions(QAbstractPrintDialog::PrintToFile | QAbstractPrintDialog::PrintShowPageSize);
+    printdlg.exec();
+    if ( printdlg.result() != QDialog::Accepted )
+        return;
+
+    QPrinter *printer = printdlg.printer();
+    cureditor->printFigure(printer);
+}
+
 void MainWindow::on_actManual_triggered()
 {
     QDesktopServices::openUrl(
@@ -552,39 +587,4 @@ void MainWindow::closeEvent(QCloseEvent *event)
         preveditor = cureditor;
     }
     event->accept();
-}
-
-void MainWindow::on_actPrintFig_triggered()
-{
-    finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
-        return;
-    if ( !checkExportWarning(cureditor) )
-        return;
-
-    QPrintDialog printdlg;
-    printdlg.setOptions(QAbstractPrintDialog::PrintToFile | QAbstractPrintDialog::PrintShowPageSize);
-    printdlg.exec();
-    if ( printdlg.result() != QDialog::Accepted )
-        return;
-
-    QPrinter *printer = printdlg.printer();
-    cureditor->printFigure(printer);
-}
-
-void MainWindow::on_actPrint_triggered()
-{
-    finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
-        return;
-
-    QPrintDialog printdlg;
-    printdlg.setOptions(QAbstractPrintDialog::PrintToFile | QAbstractPrintDialog::PrintPageRange |
-                        QAbstractPrintDialog::PrintShowPageSize | QAbstractPrintDialog::PrintCurrentPage);
-    printdlg.exec();
-    if ( printdlg.result() != QDialog::Accepted )
-        return;
-
-    QPrinter *printer = printdlg.printer();
-    cureditor->printFile(printer);
 }
