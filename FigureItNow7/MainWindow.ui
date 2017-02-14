@@ -167,6 +167,10 @@
    </property>
   </action>
   <action name="actDraw">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:icons/icons/draw_figure.png</normaloff>:icons/icons/draw_figure.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Draw</string>
    </property>
@@ -377,6 +381,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="Icons.qrc"/>
+ </resources>
  <connections/>
 </ui>
