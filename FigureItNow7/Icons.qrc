@@ -1,5 +1,6 @@
 <RCC>
-    <qresource prefix="icons">
+    <qresource prefix="/icons">
         <file>icons/draw_figure.png</file>
+        <file>icons/export_pdf.png</file>
     </qresource>
 </RCC>

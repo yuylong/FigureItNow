@@ -168,7 +168,7 @@
   </action>
   <action name="actDraw">
    <property name="icon">
-    <iconset resource="Icons.qrc">
+    <iconset>
      <normaloff>:icons/icons/draw_figure.png</normaloff>:icons/icons/draw_figure.png</iconset>
    </property>
    <property name="text">
@@ -318,6 +318,10 @@
    </property>
   </action>
   <action name="actExportPDF">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:/icons/icons/export_pdf.png</normaloff>:/icons/icons/export_pdf.png</iconset>
+   </property>
    <property name="text">
     <string>Export to PDF ...</string>
    </property>
