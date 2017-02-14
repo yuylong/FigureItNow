@@ -6,6 +6,7 @@
 #include <QGraphicsScene>
 #include <QImage>
 #include <QSvgGenerator>
+#include <QPrinter>
 
 #include "finErrorCode.h"
 #include "finExecMachine.h"
@@ -68,6 +69,8 @@ public:
     finErrorCode exportToPDF(const QString &filepath);
     finErrorCode exportToImage(const QString &filepath);
     finErrorCode exportToSVG(const QString &filepath);
+
+    finErrorCode printFigure(QPrinter *printer);
 
 private:
     Ui::finUiScriptEditor *ui;

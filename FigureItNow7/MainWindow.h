@@ -67,6 +67,10 @@ private slots:
 
     void on_actCopyFig_triggered();
 
+    void on_actExportSVG_triggered();
+
+    void on_actPrintFig_triggered();
+
 protected:
     virtual void closeEvent(QCloseEvent *event);
 

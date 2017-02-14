@@ -7,6 +7,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QPrinter>
+#include <QPrintDialog>
 
 #include "finExecEnvironment.h"
 #include "finGraphPanelScene.h"
@@ -425,6 +427,37 @@ void MainWindow::on_actExportImage_triggered()
     }
 }
 
+void MainWindow::on_actExportSVG_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+    if ( !checkExportWarning(cureditor) )
+        return;
+
+    QFileDialog filedlg(this, QString("Export to SVG"));
+    filedlg.setAcceptMode(QFileDialog::AcceptSave);
+    filedlg.setFileMode(QFileDialog::AnyFile);
+
+    filedlg.exec();
+    if ( filedlg.result() != QDialog::Accepted )
+        return;
+
+    QStringList filepaths = filedlg.selectedFiles();
+    if ( filepaths.empty() ) {
+        QMessageBox::warning(this, QString("Warning"),
+                             QString("You need to select a file to export."), QMessageBox::Ok);
+        return;
+    }
+
+    finErrorCode errcode = cureditor->exportToSVG(filepaths.first());
+    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        QMessageBox::critical(this, QString("Error"),
+                              QString("Cannot write the SVG file."), QMessageBox::Ok);
+        return;
+    }
+}
+
 void MainWindow::on_actCopyFig_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
@@ -521,3 +554,19 @@ void MainWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
+void MainWindow::on_actPrintFig_triggered()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+    if ( !checkExportWarning(cureditor) )
+        return;
+
+    QPrintDialog printdlg;
+    printdlg.exec();
+    if ( printdlg.result() != QDialog::Accepted )
+        return;
+
+    QPrinter *printer = printdlg.printer();
+    cureditor->printFigure(printer);
+}
