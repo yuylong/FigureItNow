@@ -101,6 +101,7 @@
     <addaction name="separator"/>
     <addaction name="actExportImage"/>
     <addaction name="actExportPDF"/>
+    <addaction name="actionExport_to_SVG"/>
     <addaction name="separator"/>
     <addaction name="actCopyFig"/>
     <addaction name="actPrintFig"/>
@@ -359,6 +360,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+P</string>
+   </property>
+  </action>
+  <action name="actionExport_to_SVG">
+   <property name="text">
+    <string>Export to SVG ...</string>
    </property>
   </action>
  </widget>

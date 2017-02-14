@@ -12,6 +12,9 @@
 #include <QPdfWriter>
 #include <QGuiApplication>
 #include <QClipboard>
+#include <QByteArray>
+#include <QBuffer>
+#include <QMimeData>
 
 #include "finGraphPanelScene.h"
 #include "finGraphPanelWidget.h"
@@ -208,10 +211,34 @@ finErrorCode finUiScriptEditor::getFigureImage(QImage *outimg)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finUiScriptEditor::getFigureSVGImage(QSvgGenerator *svggen)
+{
+    if ( svggen == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    finGraphConfig *graphcfg = this->_figContainer.getGraphConfig();
+    svggen->setSize(graphcfg->getPanelPixelSize().toSize());
+
+    finGraphPanelWidget graphpanel;
+    graphpanel.setWidget(svggen);
+    graphpanel.setFigureContainer(&this->_figContainer);
+
+    finErrorCode errcode = graphpanel.draw();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+
+}
+
 void finUiScriptEditor::copyFigure()
 {
     QClipboard *clipboard = QGuiApplication::clipboard();
     if ( clipboard == NULL )
+        return;
+
+    QMimeData *md = new QMimeData();
+    if ( md == NULL )
         return;
 
     QImage outimg;
@@ -219,7 +246,19 @@ void finUiScriptEditor::copyFigure()
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return;
 
-    clipboard->setImage(outimg);
+    md->setImageData(outimg);
+
+    QByteArray svgdata;
+    QBuffer svgbuf(&svgdata);
+    svgbuf.open(QIODevice::WriteOnly);
+
+    QSvgGenerator svggen;
+    svggen.setOutputDevice(&svgbuf);
+    this->getFigureSVGImage(&svggen);
+    svgbuf.close();
+
+    md->setData(QString("image/svg+xml"), svgdata);
+    clipboard->setMimeData(md);
 }
 
 finErrorCode finUiScriptEditor::applyFigureConfig(finFigureConfig *figconfig)

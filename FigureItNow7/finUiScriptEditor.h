@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QTabWidget>
 #include <QGraphicsScene>
+#include <QImage>
+#include <QSvgGenerator>
 
 #include "finErrorCode.h"
 #include "finExecMachine.h"
@@ -65,12 +67,14 @@ public:
     finErrorCode drawOnPanel();
     finErrorCode exportToPDF(const QString &filepath);
     finErrorCode exportToImage(const QString &filepath);
+    finErrorCode exportToSVG(const QString &filepath);
 
 private:
     Ui::finUiScriptEditor *ui;
 
     finErrorCode setFilename(const QString &filepath);
     finErrorCode getFigureImage(QImage *outimg);
+    finErrorCode getFigureSVGImage(QSvgGenerator *svggen);
 
 private slots:
     void on_pteScriptCode_modificationChanged(bool modified);
