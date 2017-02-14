@@ -31,7 +31,8 @@ private:
     QString parseArgumentCommand(const QString &argstr);
 
     finErrorCode compileAndRunScript(const QString &filename, finFigureContainer *outfig);
-    finErrorCode figureToPDF();
+    int figureToPDF();
+    int figureToSVG();
 
 };
 
