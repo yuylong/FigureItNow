@@ -30,7 +30,7 @@ static void _loadScriptFiles(MainWindow *mw, int argc, char *argv[])
         mw->createNewScriptFile();
 }
 
-static _guiMain(int argc, char *argv[])
+static int _guiMain(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
@@ -41,7 +41,7 @@ static _guiMain(int argc, char *argv[])
     return a.exec();
 }
 
-static _consoleMain(int argc, char *argv[])
+static int _consoleMain(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
