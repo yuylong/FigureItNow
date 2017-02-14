@@ -60,7 +60,8 @@ SOURCES += main.cpp\
     finPlotParametric.cpp \
     finUiSyntaxHighlighter.cpp \
     finUiScriptEditor.cpp \
-    finUiAboutDlg.cpp
+    finUiAboutDlg.cpp \
+    finUiCommandLine.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
@@ -102,7 +103,8 @@ HEADERS  += MainWindow.h \
     finPlotParametric.h \
     finUiSyntaxHighlighter.h \
     finUiScriptEditor.h \
-    finUiAboutDlg.h
+    finUiAboutDlg.h \
+    finUiCommandLine.h
 
 FORMS    += MainWindow.ui \
     finUiFigConfigDlg.ui \
