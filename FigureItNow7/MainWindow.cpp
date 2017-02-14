@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QPainter>
 #include <QFileDialog>
+#include <QDir>
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QPrinter>
@@ -22,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->_fileDirPath = QDir::homePath();
 }
 
 MainWindow::~MainWindow()
@@ -118,12 +120,16 @@ bool MainWindow::saveAsScriptFile(finUiScriptEditor *editor)
     if ( editor == NULL )
         return true;
 
+    QString defpath = this->_fileDirPath;
+    if ( editor->isFileOpened() )
+        defpath = editor->getFilePath();
     QString filepath = QFileDialog::getSaveFileName(this, QString("Save Script File"),
-                                                    QDir::homePath(),
+                                                    defpath,
                                                     QString("FigureItNow Script (*.fsc)"));
     if ( filepath.isEmpty() )
         return false;
 
+    this->_fileDirPath = filepath;
     finErrorCode errcode = editor->saveAsFile(filepath);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
@@ -198,11 +204,12 @@ void MainWindow::on_actNew_triggered()
 void MainWindow::on_actOpen_triggered()
 {
     QString filepath = QFileDialog::getOpenFileName(this, QString("Open a Script File"),
-                                                    QDir::homePath(),
+                                                    this->_fileDirPath,
                                                     QString("FigureItNow Script (*.fsc)"));
     if ( filepath.isEmpty() )
         return;
 
+    this->_fileDirPath = filepath;
     finErrorCode errcode = this->openScriptFile(filepath);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
@@ -375,12 +382,16 @@ void MainWindow::on_actExportPDF_triggered()
     if ( !checkExportWarning(cureditor) )
         return;
 
+    QString defpath = this->_fileDirPath;
+    if ( cureditor->isFileOpened() )
+        defpath = cureditor->getFilePath();
     QString filepath = QFileDialog::getSaveFileName(this, QString("Export to Adobe PDF"),
-                                                    QDir::homePath(),
+                                                    defpath,
                                                     QString("Adobe PDF Document (*.pdf)"));
     if ( filepath.isEmpty() )
         return;
 
+    this->_fileDirPath = filepath;
     finErrorCode errcode = cureditor->exportToPDF(filepath);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
@@ -397,8 +408,11 @@ void MainWindow::on_actExportImage_triggered()
     if ( !checkExportWarning(cureditor) )
         return;
 
+    QString defpath = this->_fileDirPath;
+    if ( cureditor->isFileOpened() )
+        defpath = cureditor->getFilePath();
     QString filepath = QFileDialog::getSaveFileName(this, QString("Export to Image"),
-                                                    QDir::homePath(),
+                                                    defpath,
                                                     QString("Portable Network Graphics (*.png);;"
                                                             "Joint Photographic Experts Group (*.jpg *jpeg);;"
                                                             "Windows Bitmap (*.bmp);;"
@@ -409,6 +423,7 @@ void MainWindow::on_actExportImage_triggered()
     if ( filepath.isEmpty() )
         return;
 
+    this->_fileDirPath = filepath;
     finErrorCode errcode = cureditor->exportToImage(filepath);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
@@ -425,12 +440,16 @@ void MainWindow::on_actExportSVG_triggered()
     if ( !checkExportWarning(cureditor) )
         return;
 
+    QString defpath = this->_fileDirPath;
+    if ( cureditor->isFileOpened() )
+        defpath = cureditor->getFilePath();
     QString filepath = QFileDialog::getSaveFileName(this, QString("Export to SVG"),
-                                                    QDir::homePath(),
+                                                    defpath,
                                                     QString("Scalable Vector Graphics (*.svg)"));
     if ( filepath.isEmpty() )
         return;
 
+    this->_fileDirPath = filepath;
     finErrorCode errcode = cureditor->exportToSVG(filepath);
     if ( finErrorCodeKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),

@@ -77,6 +77,8 @@ private:
     finFigureConfig _defFigConfig;
     finGraphConfig _defGraphConfig;
 
+    QString _fileDirPath;
+
     finUiScriptEditor *getCurrentEditor() const;
     finUiScriptEditor *getEditorAt(int idx) const;
     int findEditorIndex(finUiScriptEditor *editor) const;
