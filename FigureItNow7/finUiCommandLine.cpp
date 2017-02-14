@@ -16,7 +16,7 @@ finUiCommandLine::finUiCommandLine()
     this->_outType = QString("PDF");
 }
 
-finUiCommandLine::finUiCommandLine(int argc, const char *argv[])
+finUiCommandLine::finUiCommandLine(int argc, char *argv[])
     : _inFileList()
 {
     this->parseArgument(argc, argv);
@@ -35,7 +35,7 @@ finErrorCode finUiCommandLine::reset()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-QStringList finUiCommandLine::parseStringList(int argc, const char *argv[])
+QStringList finUiCommandLine::parseStringList(int argc, char *argv[])
 {
     QStringList retlist;
     for ( int i = 0; i < argc; i++ ) {
@@ -53,14 +53,14 @@ QString finUiCommandLine::parseArgumentCommand(const QString &argstr)
                 QString::compare(argstr, QString("--output-type")) == 0 ) {
         return QString("outtype");
     } else if ( QString::compare(argstr, QString("-c")) == 0 ||
-                QString::compare(argstr, QString("--no-gui")) == 0 ) {
+                QString::compare(argstr, QString("--console")) == 0 ) {
         return QString("ignore");
     } else {
         return QString();
     }
 }
 
-finErrorCode finUiCommandLine::parseArgument(int argc, const char *argv[])
+finErrorCode finUiCommandLine::parseArgument(int argc, char *argv[])
 {
     QStringList arglist = this->parseStringList(argc, argv);
     return this->parseArgument(arglist);
@@ -76,7 +76,7 @@ finErrorCode finUiCommandLine::parseArgument(const QStringList &arglist)
     int cmdargidx = 0;
     foreach ( curarg, inarglist ) {
         if ( cmd.isEmpty() ) {
-            QString cmd = this->parseArgumentCommand(curarg);
+            cmd = this->parseArgumentCommand(curarg);
             if ( cmd.isEmpty() ) {
                 this->_inFileList.append(curarg);
             } else if ( QString::compare(cmd, QString("ignore")) == 0 ) {
@@ -101,10 +101,20 @@ finErrorCode finUiCommandLine::parseArgument(const QStringList &arglist)
 
 finErrorCode finUiCommandLine::work()
 {
-    if ( QString::compare(this->_outType, QString("PDF")) == 0 )
+    qInfo() << "Input file count: " << this->_inFileList.count() << endl;
+    qInfo() << "Output type: " << this->_outType << endl;
+
+    if ( this->_inFileList.count() <= 0 ) {
+        qWarning() << "No file to handle!" << endl;
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+    }
+
+    if ( QString::compare(this->_outType, QString("PDF")) == 0 ) {
         return this->figureToPDF();
-    else
+    } else {
+        qWarning() << "The output type is not supported!" << endl;
         return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    }
 }
 
 finErrorCode finUiCommandLine::compileAndRunScript(const QString &filename, finFigureContainer *outfig)
@@ -121,6 +131,7 @@ finErrorCode finUiCommandLine::compileAndRunScript(const QString &filename, finF
 
     finErrorCode errcode;
     finExecMachine machine;
+    machine.initEnvironmentFromRoot();
     machine.setFigureContainer(outfig);
     machine.setScriptCode(scriptcode);
 

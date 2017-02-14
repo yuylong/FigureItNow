@@ -16,18 +16,18 @@ protected:
 
 public:
     finUiCommandLine();
-    finUiCommandLine(int argc, const char *argv[]);
+    finUiCommandLine(int argc, char *argv[]);
     finUiCommandLine(const QStringList &arglist);
 
     finErrorCode reset();
 
-    finErrorCode parseArgument(int argc, const char *argv[]);
+    finErrorCode parseArgument(int argc, char *argv[]);
     finErrorCode parseArgument(const QStringList &arglist);
 
     finErrorCode work();
 
 private:
-    QStringList parseStringList(int argc, const char *argv[]);
+    QStringList parseStringList(int argc, char *argv[]);
     QString parseArgumentCommand(const QString &argstr);
 
     finErrorCode compileAndRunScript(const QString &filename, finFigureContainer *outfig);
