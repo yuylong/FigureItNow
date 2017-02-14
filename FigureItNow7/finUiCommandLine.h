@@ -33,7 +33,7 @@ private:
     finErrorCode compileAndRunScript(const QString &filename, finFigureContainer *outfig);
     int figureToPDF();
     int figureToSVG();
-
+    int figureToImage();
 };
 
 #endif // FINUICOMMANDLINE_H

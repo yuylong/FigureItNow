@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QPdfWriter>
 #include <QSvgGenerator>
+#include <QImage>
 
 #include "finFigureContainer.h"
 #include "finExecMachine.h"
@@ -20,12 +21,14 @@ finUiCommandLine::finUiCommandLine()
 finUiCommandLine::finUiCommandLine(int argc, char *argv[])
     : _inFileList()
 {
+    this->_outType = QString("PDF");
     this->parseArgument(argc, argv);
 }
 
 finUiCommandLine::finUiCommandLine(const QStringList &arglist)
     : _inFileList()
 {
+    this->_outType = QString("PDF");
     this->parseArgument(arglist);
 }
 
@@ -115,6 +118,15 @@ finErrorCode finUiCommandLine::work()
         success = this->figureToPDF();
     } else if ( QString::compare(this->_outType, QString("SVG"), Qt::CaseInsensitive) == 0 ) {
         success = this->figureToSVG();
+    } else if ( QString::compare(this->_outType, QString("PNG"), Qt::CaseInsensitive) == 0 ||
+                QString::compare(this->_outType, QString("JPG"), Qt::CaseInsensitive) == 0 ||
+                QString::compare(this->_outType, QString("JPEG"), Qt::CaseInsensitive) == 0 ||
+                QString::compare(this->_outType, QString("BMP"), Qt::CaseInsensitive) == 0 ||
+                QString::compare(this->_outType, QString("PPM"), Qt::CaseInsensitive) == 0 ||
+                QString::compare(this->_outType, QString("TIFF"), Qt::CaseInsensitive) == 0 ||
+                QString::compare(this->_outType, QString("XBM"), Qt::CaseInsensitive) == 0 ||
+                QString::compare(this->_outType, QString("XPM"), Qt::CaseInsensitive) == 0 ) {
+        success = this->figureToImage();
     } else {
         qWarning() << "The output type is not supported!";
         return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
@@ -227,6 +239,39 @@ int finUiCommandLine::figureToSVG()
             qWarning() << "Draw on panel failed: " << filename;
             continue;
         }
+
+        qInfo() << "Figour OK: " << outfilename;
+        succ++;
+    }
+    return succ;
+}
+
+int finUiCommandLine::figureToImage()
+{
+    int succ = 0;
+    QString filename;
+    foreach ( filename, this->_inFileList ) {
+        QString outfilename = filename + QString(".") + this->_outType.toLower();
+        finFigureContainer figcontainer;
+
+        finErrorCode errcode = this->compileAndRunScript(filename, &figcontainer);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            continue;
+
+        finGraphConfig *graphcfg = figcontainer.getGraphConfig();
+        QImage img(graphcfg->getPanelPixelSize().toSize(), QImage::Format_ARGB32);
+        //outimg.fill(Qt::transparent);
+
+        finGraphPanelWidget graphpanel;
+        graphpanel.setWidget(&img);
+        graphpanel.setFigureContainer(&figcontainer);
+
+        errcode = graphpanel.draw();
+        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            qWarning() << "Draw on panel failed: " << filename;
+            continue;
+        }
+        img.save(outfilename);
 
         qInfo() << "Figour OK: " << outfilename;
         succ++;
