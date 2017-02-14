@@ -1,0 +1,29 @@
+clear_fig();
+
+write_graph_config("background_color", named_color("transparent"));
+write_graph_config("panel_width", 64);
+write_graph_config("panel_height", 64);
+write_graph_config("origin_point_x", 32);
+write_graph_config("origin_point_y", 32);
+write_graph_config("unit_size", 32);
+
+write_fig_config("dot_size", 3);
+write_fig_config("border_color", named_color("black"));
+write_fig_config("fill_color", named_color("white"));
+
+var cornerlen = 0.5;
+polygon(-0.5, 0.9, 0.9 - cornerlen, 0.9, 0.9, 0.9 - cornerlen, 
+        0.9, -0.9, -0.5, -0.9);
+polyline(0.9 - cornerlen, 0.9, 
+         0.9 - cornerlen, 0.9 - cornerlen, 
+         0.9, 0.9 - cornerlen);
+
+write_fig_config("fill_color", named_color("red"));
+write_fig_config("dot_size", 1);
+rect(-0.25, -0.25, 1.4, 0.7);
+
+write_fig_config("font_name", "Arial Black");
+write_fig_config("font_size", 12);
+write_fig_config("font_bold", "yes");
+write_fig_config("font_color", named_color("white"));
+draw_text("PDF", -0.25, -0.25);

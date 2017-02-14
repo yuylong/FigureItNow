@@ -111,3 +111,9 @@ FORMS    += MainWindow.ui \
     finUiGraphConfigDlg.ui \
     finUiScriptEditor.ui \
     finUiAboutDlg.ui
+
+DISTFILES += \
+    icons/draw_figure.png
+
+RESOURCES += \
+    Icons.qrc

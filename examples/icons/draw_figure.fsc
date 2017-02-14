@@ -1,0 +1,14 @@
+clear_fig();
+
+write_graph_config("background_color", named_color("transparent"));
+write_graph_config("panel_width", 64);
+write_graph_config("panel_height", 64);
+write_graph_config("origin_point_x", 32);
+write_graph_config("origin_point_y", 32);
+write_graph_config("unit_size", 32);
+
+write_fig_config("dot_size",5);
+write_fig_config("border_color", named_color("black"));
+write_fig_config("fill_color", named_color("green"));
+
+polygon(-0.8, 0.9, 0.8, 0.0, -0.8, -0.9);
