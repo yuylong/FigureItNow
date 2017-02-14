@@ -119,6 +119,9 @@
    <addaction name="mnuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="windowTitle">
+    <string>Main Tools</string>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -152,6 +155,10 @@
    </property>
   </action>
   <action name="actOpen">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:/icons/icons/open_script.png</normaloff>:/icons/icons/open_script.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Open ...</string>
    </property>
@@ -172,8 +179,8 @@
   </action>
   <action name="actDraw">
    <property name="icon">
-    <iconset>
-     <normaloff>:icons/icons/draw_figure.png</normaloff>:icons/icons/draw_figure.png</iconset>
+    <iconset resource="Icons.qrc">
+     <normaloff>:/icons/icons/draw_figure.png</normaloff>:/icons/icons/draw_figure.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Draw</string>
