@@ -1,6 +1,13 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ */
+
 #ifndef FINSYNTAXTREE_H
 #define FINSYNTAXTREE_H
-
 
 #include <QList>
 #include <QString>
@@ -9,6 +16,7 @@
 #include "finErrorCode.h"
 #include "finSyntaxNode.h"
 #include "finSyntaxError.h"
+
 
 class finSyntaxTree
 {

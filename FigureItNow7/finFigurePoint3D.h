@@ -1,7 +1,16 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ */
+
 #ifndef FINFIGUREPOINT3D_H
 #define FINFIGUREPOINT3D_H
 
 #include "finErrorCode.h"
+
 
 class finFigurePoint3D
 {

@@ -4,11 +4,6 @@
  *
  * Author: Yulong Yu, Dec 31st, 2016
  * Copyright(c) 2015-2016 Yulong Yu. All rights reserved.
- *
- * History:
- *
- * DATE      REV  AUTHOR       COMMENTS
- * 20161231    0  Yulong Yu    Create this file.
  */
 
 #ifndef FINFIGUREOBJECT_H
@@ -25,6 +20,7 @@
 #include "finFigurePoint3D.h"
 #include "finFigurePath.h"
 #include "finGraphConfig.h"
+
 
 class finFigureObject
 {
@@ -416,6 +412,5 @@ public:
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
     virtual void dump() const;
 };
-
 
 #endif // FINFIGUREOBJECT_H

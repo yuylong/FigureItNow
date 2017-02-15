@@ -1,3 +1,11 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ */
+
 #ifndef FINUISCRIPTEDITOR_H
 #define FINUISCRIPTEDITOR_H
 
@@ -15,6 +23,7 @@
 #include "finGraphPanelScene.h"
 #include "finGraphConfig.h"
 #include "finUiSyntaxHighlighter.h"
+
 
 namespace Ui {
 class finUiScriptEditor;

@@ -4,12 +4,6 @@
  *
  * Author: Yulong Yu, Dec 31st, 2016
  * Copyright(c) 2015-2016 Yulong Yu. All rights reserved.
- *
- * History:
- *
- * DATE      REV  AUTHOR       COMMENTS
- * 20161231    0  Yulong Yu    Create this file.
- * 20170103    1  Yulong Yu    Change to use Qt data structures.
  */
 
 #ifndef FINFIGURECONFIG_H
@@ -25,6 +19,7 @@
 
 #include "finErrorCode.h"
 #include "finFigureArrow.h"
+
 
 class finFigureConfig
 {

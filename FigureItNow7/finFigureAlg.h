@@ -1,3 +1,11 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ */
+
 #ifndef FINFIGUREALG_H
 #define FINFIGUREALG_H
 
@@ -5,6 +13,7 @@
 #include <QRectF>
 #include <QList>
 #include <QTransform>
+
 
 struct finFigAlgLine2D {
     // f(x) = ax + by + c = 0

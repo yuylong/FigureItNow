@@ -4,12 +4,6 @@
  *
  * Author: Yulong Yu, Jan 2nd, 2017
  * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
- *
- * History:
- *
- * DATE      REV  AUTHOR       COMMENTS
- * 20161230    0  Yulong Yu    Create this file.
- * 20170102    1  Yulong Yu    Add graph config into figure container.
  */
 
 #ifndef FINFIGURECONTAINER_H
@@ -21,6 +15,7 @@
 #include "finFigureConfig.h"
 #include "finGraphConfig.h"
 #include "finFigureObject.h"
+
 
 class finFigureContainer
 {
