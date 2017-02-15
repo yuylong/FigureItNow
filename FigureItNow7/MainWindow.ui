@@ -66,7 +66,6 @@
     </property>
     <addaction name="actNew"/>
     <addaction name="actOpen"/>
-    <addaction name="actOpenRecent"/>
     <addaction name="separator"/>
     <addaction name="actSave"/>
     <addaction name="actSaveAs"/>
@@ -253,6 +252,10 @@
    </property>
   </action>
   <action name="actSave">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:/icons/icons/save_script.png</normaloff>:/icons/icons/save_script.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Save</string>
    </property>
