@@ -1,0 +1,39 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ */
+
+clear_fig();
+
+write_graph_config("background_color", named_color("transparent"));
+write_graph_config("panel_width", 64);
+write_graph_config("panel_height", 64);
+write_graph_config("origin_point_x", 32);
+write_graph_config("origin_point_y", 32);
+write_graph_config("unit_size", 32);
+
+write_fig_config("dot_size", 2);
+write_fig_config("border_color", named_color("black"));
+write_fig_config("fill_color", named_color("darkBlue"));
+
+polygon(-0.95, 0.95, 0.75, 0.95, 0.95, 0.75,
+        0.95, -0.95, -0.95, -0.95);
+
+write_fig_config("dot_size", 1);
+write_fig_config("fill_color", named_color("white"));
+
+polygon(-0.5, 0.95, 0.5, 0.95, 0.5, 0.4, -0.5, 0.4);
+polygon(-0.7, -0.95, 0.7, -0.95, 0.7, 0.1, -0.7, 0.1);
+
+write_fig_config("fill_color", named_color("gray"));
+
+polygon(0.1, 0.85, 0.3, 0.85, 0.3, 0.5, 0.1, 0.5);
+
+var i;
+write_fig_config("dot_size", 3);
+for ( i = -0.15; i >= -0.8; i = i - 0.3 ) {
+    line(-0.5, i, 0.5, i);
+}
