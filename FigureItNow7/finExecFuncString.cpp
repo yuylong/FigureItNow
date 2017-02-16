@@ -20,11 +20,14 @@ static finErrorCode _sysfunc_str_left(finExecFunction *self, finExecEnvironment 
                                       finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_str_right(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *env,
+                                     finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
-    { QString("str_len"),   QString("str"),     _sysfunc_str_len   },
-    { QString("str_left"),  QString("str,len"), _sysfunc_str_left  },
-    { QString("str_right"), QString("str,len"), _sysfunc_str_right },
+    { QString("str_len"),   QString("str"),          _sysfunc_str_len   },
+    { QString("str_left"),  QString("str,len"),      _sysfunc_str_left  },
+    { QString("str_right"), QString("str,len"),      _sysfunc_str_right },
+    { QString("str_mid"),   QString("str,pos, len"), _sysfunc_str_mid   },
 
     { QString(), QString(), NULL }
 };
@@ -80,14 +83,12 @@ static finErrorCode _sysfunc_str_left(finExecFunction *self, finExecEnvironment 
          lenvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
+    QString str = strvar->getStringValue();
+    int len = (int)floor(lenvar->getNumericValue());
+
     retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-
-    QString str = strvar->getStringValue();
-    int len = (int)floor(lenvar->getNumericValue());
-    if ( len < 0 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
     retvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
     if ( len >= str.length() )
@@ -118,20 +119,57 @@ static finErrorCode _sysfunc_str_right(finExecFunction *self, finExecEnvironment
          lenvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
+    QString str = strvar->getStringValue();
+    int len = (int)floor(lenvar->getNumericValue());
+
     retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
-
-    QString str = strvar->getStringValue();
-    int len = (int)floor(lenvar->getNumericValue());
-    if ( len < 0 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
     retvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
     if ( len >= str.length() )
         retvar->setStringValue(str);
     else
         retvar->setStringValue(str.right(len));
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *env,
+                                     finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *strvar, *posvar, *lenvar, *retvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
+    posvar = finExecVariable::transLinkTarget(env->findVariable("pos"));
+    lenvar = finExecVariable::transLinkTarget(env->findVariable("len"));
+    if ( strvar == NULL || posvar == NULL || lenvar == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    if ( strvar->getType() != finExecVariable::FIN_VR_TYPE_STRING ||
+         posvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         lenvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    QString str = strvar->getStringValue();
+    int pos = (int)floor(posvar->getNumericValue());
+    int len = (int)floor(lenvar->getNumericValue());
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    retvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
+    if ( len >= str.length() )
+        retvar->setStringValue(str);
+    else
+        retvar->setStringValue(str.mid(pos, len));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
 
