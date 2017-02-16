@@ -4,12 +4,6 @@
  *
  * Author: Yulong Yu, Dec 31st, 2016
  * Copyright(c) 2015-2016 Yulong Yu. All rights reserved.
- *
- * History:
- *
- * DATE      REV  AUTHOR       COMMENTS
- * 20161231    0  Yulong Yu    Create this file.
- * 20170102    1  Yulong Yu    Add dot and line figure objects.
  */
 
 #include "finFigureObject.h"

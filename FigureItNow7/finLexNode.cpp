@@ -1,6 +1,15 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ */
+
 #include "finLexNode.h"
 
 #include <stdlib.h>
+
 
 finLexNode::finLexNode() :
     _string(), _stringValue()

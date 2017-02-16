@@ -4,11 +4,6 @@
  *
  * Author: Yulong Yu
  * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
- *
- * History:
- *
- * DATE      REV  AUTHOR       COMMENTS
- * 20170113    0  Yulong Yu    Create this file.
  */
 
 #include "finFigurePoint3D.h"

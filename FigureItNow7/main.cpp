@@ -1,10 +1,17 @@
-#include "MainWindow.h"
-#include "finUiCommandLine.h"
-#include <QApplication>
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ */
 
+#include <QApplication>
 #include <QFile>
 
 #include "finErrorCode.h"
+#include "MainWindow.h"
+#include "finUiCommandLine.h"
 #include "finUiScriptEditor.h"
 
 

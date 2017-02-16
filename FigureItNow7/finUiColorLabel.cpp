@@ -1,8 +1,17 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ */
+
 #include "finUiColorLabel.h"
 
 #include <QPalette>
 #include <QMouseEvent>
 #include <QColorDialog>
+
 
 finUiColorLabel::finUiColorLabel(QWidget *parent) :
     QLabel(parent), _color()

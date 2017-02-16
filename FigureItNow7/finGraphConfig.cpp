@@ -4,16 +4,12 @@
  *
  * Author: Yulong Yu, Jan 2nd, 2017
  * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
- *
- * History:
- *
- * DATE      REV  AUTHOR       COMMENTS
- * 20170102    0  Yulong Yu    Create this file.
  */
 
 #include "finGraphConfig.h"
 
 #include <qmath.h>
+
 
 finGraphConfig::finGraphConfig()
 {

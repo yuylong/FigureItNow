@@ -4,11 +4,6 @@
  *
  * Author: Yulong Yu
  * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
- *
- * History:
- *
- * DATE      REV  AUTHOR       COMMENTS
- * 20170206    0  Yulong Yu    Create this file.
  */
 
 #include "finPlotEquation2D.h"
@@ -16,6 +11,7 @@
 #include <qmath.h>
 
 #include "finExecFunction.h"
+
 
 finPlotEquation2D::finPlotEquation2D()
     : _posListX(), _posListY(), _scrtPlot()
