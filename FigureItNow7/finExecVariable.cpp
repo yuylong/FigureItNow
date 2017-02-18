@@ -648,15 +648,14 @@ finErrorCode finExecVariable::copyArrayVariable(const finExecVariable *srcvar)
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
+    this->preallocArrayLength(srcvar->_itemList.count());
     for ( int i = 0; i < srcvar->_itemList.count(); i++ ) {
         finExecVariable *subsrcvar = srcvar->_itemList.at(i);
-        finExecVariable *subdstvar = new finExecVariable();
+        finExecVariable *subdstvar = this->getVariableItemAt(i);
 
         errcode = subdstvar->copyVariableValueIn(subsrcvar);
         if ( finErrorCodeKits::isErrorResult(errcode) )
             return errcode;
-
-        this->_itemList.append(subdstvar);
     }
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
@@ -664,7 +663,15 @@ finErrorCode finExecVariable::copyArrayVariable(const finExecVariable *srcvar)
 
 finErrorCode finExecVariable::copyVariableValue(finExecVariable *srcvar)
 {
-    finErrorCode errcode = this->copyVariableValueIn(srcvar);
+    finErrorCode errcode;
+    errcode = this->disposeValue();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    if ( srcvar == NULL )
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+
+    errcode = this->copyVariableValueIn(srcvar);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
@@ -672,7 +679,40 @@ finErrorCode finExecVariable::copyVariableValue(finExecVariable *srcvar)
     this->setupWriteProtected(this->_writeProtect);
     this->setupLeftValue(this->_leftValue);
 
-    return finErrorCodeKits::FIN_EC_STATE_ERROR;
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecVariable::smartCopyVariableValue(finExecVariable *srcvar)
+{
+    finErrorCode errcode;
+    errcode = this->disposeValue();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    if ( srcvar == NULL )
+        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+
+    if ( srcvar->getType() == finExecVariable::FIN_VR_TYPE_ARRAY &&
+         !srcvar->isLeftValue() ) {
+        this->_itemList = srcvar->_itemList;
+        srcvar->_itemList.clear();
+
+        finExecVariable *itemvar;
+        foreach ( itemvar, this->_itemList ) {
+            itemvar->_parentVar = this;
+        }
+        this->_type = finExecVariable::FIN_VR_TYPE_ARRAY;
+    } else {
+        errcode = this->copyVariableValueIn(srcvar);
+        if ( finErrorCodeKits::isErrorResult(errcode) )
+            return errcode;
+    }
+
+    // To keep the access mode of variables in array.
+    this->setupWriteProtected(this->_writeProtect);
+    this->setupLeftValue(this->_leftValue);
+
+    return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finExecVariable::copyVariable(finExecVariable *srcvar)
@@ -786,7 +826,9 @@ finExecVariable *finExecVariable::buildCopyLeftVariable(finExecVariable *var)
     if ( realvar != NULL )
         var = realvar;
 
-    if ( !var->isLeftValue() && !var->isInArray() ) {
+    if ( !var->isLeftValue() ) {
+        if ( var->isInArray() )
+            var->removeFromArray();
         var->setLeftValue();
         var->clearWriteProtected();
         return var;

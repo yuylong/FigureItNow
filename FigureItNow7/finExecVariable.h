@@ -75,8 +75,8 @@ protected:
 
     double _numVal;
     QString _strVal;
-    QList<finExecVariable *> _itemList;
     QImage _image;
+    QList<finExecVariable *> _itemList;
     finExecVariable *_parentVar;
 
 public:
@@ -136,6 +136,7 @@ public:
     bool isSameValue(finExecVariable *var);
 
     finErrorCode copyVariableValue(finExecVariable *srcvar);
+    finErrorCode smartCopyVariableValue(finExecVariable *srcvar);
     finErrorCode copyVariable(finExecVariable *srcvar);
 
     finErrorCode disposeValue();

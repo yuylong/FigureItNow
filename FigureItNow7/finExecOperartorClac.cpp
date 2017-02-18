@@ -538,26 +538,14 @@ _letOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     if ( !oprand1->isLeftValue() || oprand1->isWriteProtected() )
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
 
-    if ( oprand1->getType() == finExecVariable::FIN_VR_TYPE_NULL &&
-         oprand2->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
-        /* Nothing to do */;
-    } else if ( (oprand1->getType() == finExecVariable::FIN_VR_TYPE_NULL ||
-                 oprand1->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC) &&
-                oprand2->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC ) {
-        oprand1->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
-        oprand1->setNumericValue(oprand2->getNumericValue());
-    } else if ( (oprand1->getType() == finExecVariable::FIN_VR_TYPE_NULL ||
-                 oprand1->getType() == finExecVariable::FIN_VR_TYPE_STRING) &&
-                oprand2->getType() == finExecVariable::FIN_VR_TYPE_STRING ) {
-        oprand1->setType(finExecVariable::FIN_VR_TYPE_STRING);
-        oprand1->setStringValue(oprand2->getStringValue());
-    } else if ( (oprand1->getType() == finExecVariable::FIN_VR_TYPE_NULL ||
-                 oprand1->getType() == finExecVariable::FIN_VR_TYPE_ARRAY) &&
-                oprand2->getType() == finExecVariable::FIN_VR_TYPE_ARRAY ) {
-        return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
-    } else {
+    // To make the value receiver has the same type with the source variable.
+    if ( oprand1->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
+         oprand1->getType() != oprand2->getType() )
         return finErrorCodeKits::FIN_EC_INVALID_PARAM;
-    }
+
+    finErrorCode errcode = oprand1->smartCopyVariableValue(oprand2);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
 
     *retval = oprand1;
     return finErrorCodeKits::FIN_EC_SUCCESS;
