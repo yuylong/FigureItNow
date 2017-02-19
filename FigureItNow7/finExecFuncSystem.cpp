@@ -235,7 +235,7 @@ static finErrorCode _sysfunc_call_print_base(_finDebugLevel dbglevel, finExecFun
     finExecVariable *var;
     int varcnt = finExecFunction::getExtendArgCount(env);
     for ( int i = 0; i < varcnt; i++ ) {
-        var = finExecFunction::getExtendArgAt(env, i);
+        var = finExecVariable::transLinkTarget(finExecFunction::getExtendArgAt(env, i));
 
         finErrorCode errcode = _sysfunc_call_print_base_printProcess(outstm, var);
         if ( finErrorCodeKits::isErrorResult(errcode) )
