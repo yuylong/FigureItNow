@@ -224,6 +224,24 @@ static inline finErrorCode _sysfunc_call_print_base_printProcess(QDebug &outstm,
         outstm << var->getStringValue();
         break;
 
+      case finExecVariable::FIN_VR_TYPE_IMAGE:
+        outstm.nospace() << "Image: " << var->getImageValue().width() << "x" << var->getImageValue().height();
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_ARRAY:
+        outstm.nospace() << "{ ";
+        for ( int i = 0; i < var->getArrayLength(); i++ ) {
+            if ( i > 0 )
+                outstm.nospace() << ", ";
+            _sysfunc_call_print_base_printProcess(outstm.nospace(), var->getVariableItemAt(i));
+        }
+        outstm.nospace() << " }";
+        break;
+
+      case finExecVariable::FIN_VR_TYPE_LINK:
+        _sysfunc_call_print_base_printProcess(outstm, finExecVariable::transLinkTarget(var));
+        break;
+
       default:
         break;
     }
