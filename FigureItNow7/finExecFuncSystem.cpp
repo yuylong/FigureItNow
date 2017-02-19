@@ -26,9 +26,12 @@ static finErrorCode _sysfunc_call_stack_count(finExecFunction *self, finExecEnvi
                                               finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_call_stack(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_call_print(finExecFunction *self, finExecEnvironment *env,
-                                        finExecMachine *machine, finExecFlowControl *flowctl);
-
+static finErrorCode _sysfunc_call_print_info(finExecFunction *self, finExecEnvironment *env,
+                                             finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_call_print_warn(finExecFunction *self, finExecEnvironment *env,
+                                             finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_call_print_err(finExecFunction *self, finExecEnvironment *env,
+                                            finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct finExecSysFuncRegItem _finSysFuncSystemList[] = {
     { QString("run_function"),     QString("funcname"), _sysfunc_run_function     },
@@ -37,7 +40,10 @@ static struct finExecSysFuncRegItem _finSysFuncSystemList[] = {
     { QString("call_stack_count"), QString(""),         _sysfunc_call_stack_count },
     { QString("call_stack"),       QString(""),         _sysfunc_call_stack       },
 
-    { QString("print"),            QString(""),         _sysfunc_call_print       },
+    { QString("print"),            QString(""),         _sysfunc_call_print_info  },
+    { QString("print_info"),       QString(""),         _sysfunc_call_print_info  },
+    { QString("print_warn"),       QString(""),         _sysfunc_call_print_warn  },
+    { QString("print_err"),        QString(""),         _sysfunc_call_print_err   },
 
     { QString(), QString(), NULL }
 };
@@ -246,8 +252,20 @@ static finErrorCode _sysfunc_call_print_base(_finDebugLevel dbglevel, finExecFun
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
-static finErrorCode _sysfunc_call_print(finExecFunction *self, finExecEnvironment *env,
-                                        finExecMachine *machine, finExecFlowControl *flowctl)
+static finErrorCode _sysfunc_call_print_info(finExecFunction *self, finExecEnvironment *env,
+                                            finExecMachine *machine, finExecFlowControl *flowctl)
 {
     return _sysfunc_call_print_base(FIN_DBGLVL_INFO, self, env, machine, flowctl);
+}
+
+static finErrorCode _sysfunc_call_print_warn(finExecFunction *self, finExecEnvironment *env,
+                                             finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    return _sysfunc_call_print_base(FIN_DBGLVL_WARNING, self, env, machine, flowctl);
+}
+
+static finErrorCode _sysfunc_call_print_err(finExecFunction *self, finExecEnvironment *env,
+                                            finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    return _sysfunc_call_print_base(FIN_DBGLVL_ERROR, self, env, machine, flowctl);
 }
