@@ -17,21 +17,27 @@
 
 
 finExecVariable::finExecVariable()
-    : _varName()
+    : _varName(), _itemList()
 {
     this->_type = FIN_VR_TYPE_NULL;
+    this->_leftValue = false;
     this->_writeProtect = false;
     this->_numVal = 0.0;
+    this->_strVal = QString();
+    this->_image = QImage();
     this->_linkTarget = NULL;
     this->_parentVar = NULL;
 }
 
 finExecVariable::finExecVariable(const QString &name)
-    : _varName(name)
+    : _varName(name), _itemList()
 {
     this->_type = FIN_VR_TYPE_NULL;
+    this->_leftValue = false;
     this->_writeProtect = false;
     this->_numVal = 0.0;
+    this->_strVal = QString();
+    this->_image = QImage();
     this->_linkTarget = NULL;
     this->_parentVar = NULL;
 }
@@ -89,7 +95,7 @@ finErrorCode finExecVariable::setupWriteProtected(bool blval)
     this->_writeProtect = blval;
 
     for ( int i = 0; i < this->_itemList.count(); i++ ) {
-        this->_itemList.at(i)->setWriteProtected();
+        this->_itemList.at(i)->setupWriteProtected(blval);
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
@@ -108,7 +114,7 @@ finErrorCode finExecVariable::setupLeftValue(bool blval)
 {
     this->_leftValue = blval;
     for ( int i = 0; i < this->_itemList.count(); i++ ) {
-        this->_itemList.at(i)->setLeftValue();
+        this->_itemList.at(i)->setupLeftValue(blval);
     }
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
