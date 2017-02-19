@@ -271,7 +271,7 @@ static finErrorCode _sysfunc_call_print_base(_finDebugLevel dbglevel, finExecFun
 }
 
 static finErrorCode _sysfunc_call_print_info(finExecFunction *self, finExecEnvironment *env,
-                                            finExecMachine *machine, finExecFlowControl *flowctl)
+                                             finExecMachine *machine, finExecFlowControl *flowctl)
 {
     return _sysfunc_call_print_base(FIN_DBGLVL_INFO, self, env, machine, flowctl);
 }
