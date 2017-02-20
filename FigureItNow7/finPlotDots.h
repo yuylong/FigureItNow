@@ -32,9 +32,12 @@ public:
 
     finErrorCode appendPoint(const QPointF &pt);
     finErrorCode appendPoint(double ptx, double pty);
+    finErrorCode appendPoints(const QList<QPointF> &ptlist);
     finErrorCode prependPoint(const QPointF &pt);
     finErrorCode prependPoint(double ptx, double pty);
+    finErrorCode prependPoints(const QList<QPointF> &ptlist);
     finErrorCode clearPoints();
+
     finErrorCode setFigureContainer(finFigureContainer *figcontainer);
 
     virtual finErrorCode plot();

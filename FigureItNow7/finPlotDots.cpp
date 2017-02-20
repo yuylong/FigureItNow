@@ -56,6 +56,12 @@ finErrorCode finPlotDots::appendPoint(double ptx, double pty)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finPlotDots::appendPoints(const QList<QPointF> &ptlist)
+{
+    this->_ptList.append(ptlist);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode finPlotDots::prependPoint(const QPointF &pt)
 {
     this->_ptList.prepend(pt);
@@ -65,6 +71,14 @@ finErrorCode finPlotDots::prependPoint(const QPointF &pt)
 finErrorCode finPlotDots::prependPoint(double ptx, double pty)
 {
     this->_ptList.prepend(QPointF(ptx, pty));
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finPlotDots::prependPoints(const QList<QPointF> &ptlist)
+{
+    QList<QPointF> tmplist = ptlist;
+    tmplist.append(this->_ptList);
+    this->_ptList = tmplist;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
