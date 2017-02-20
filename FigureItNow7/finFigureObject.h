@@ -124,6 +124,7 @@ public:
 
     finErrorCode appendPoint(const QPointF &pt);
     finErrorCode appendPoint(double ptx, double pty);
+    finErrorCode appendPoints(const QList<QPointF> &ptlist);
     finErrorCode removePointAt(int idx);
 
     bool isArrowIgnored() const;
@@ -186,6 +187,7 @@ public:
 
     finErrorCode appendPoint(const QPointF &pt);
     finErrorCode appendPoint(double ptx, double pty);
+    finErrorCode appendPoints(const QList<QPointF> &ptlist);
     finErrorCode removePointAt(int idx);
 
     QPolygonF getPolygonInstance() const;

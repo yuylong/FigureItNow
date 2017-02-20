@@ -262,6 +262,12 @@ finErrorCode finFigureObjectPolyline::appendPoint(double ptx, double pty)
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finFigureObjectPolyline::appendPoints(const QList<QPointF> &ptlist)
+{
+    this->_ptList.append(ptlist);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finErrorCode finFigureObjectPolyline::removePointAt(int idx)
 {
     this->_ptList.removeAt(idx);
@@ -528,6 +534,12 @@ finErrorCode finFigureObjectPolygon::appendPoint(const QPointF &pt)
 finErrorCode finFigureObjectPolygon::appendPoint(double ptx, double pty)
 {
     this->_ptList.append(QPointF(ptx, pty));
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finFigureObjectPolygon::appendPoints(const QList<QPointF> &ptlist)
+{
+    this->_ptList.append(ptlist);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
