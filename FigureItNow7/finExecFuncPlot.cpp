@@ -33,6 +33,8 @@ static finErrorCode _sysfunc_plot_line(finExecFunction *self, finExecEnvironment
                                        finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_plot_stream(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_plot_scatter(finExecFunction *self, finExecEnvironment *env,
+                                          finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_plot_polar(finExecFunction *self, finExecEnvironment *env,
@@ -46,6 +48,7 @@ static finExecSysFuncRegItem _finSysFuncPlotList[] = {
     { QString("plot_dots"),         QString("xary,yary"),            _sysfunc_plot_dots          },
     { QString("plot_line"),         QString("xary,yary"),            _sysfunc_plot_line          },
     { QString("plot_stream"),       QString("xary,yary"),            _sysfunc_plot_stream        },
+    { QString("plot_scatter"),      QString("dl,xary,yary"),         _sysfunc_plot_scatter       },
 
     { QString("plot_function"),     QString("x1,x2,func"),           _sysfunc_plot_function      },
     { QString("plot_polar"),        QString("rad1,rad2,func"),       _sysfunc_plot_polar         },
@@ -134,6 +137,42 @@ static finErrorCode _sysfunc_plot_stream(finExecFunction *self, finExecEnvironme
     stmplot.appendPoints(ptlist);
     stmplot.setFigureContainer(env->getFigureContainer());
     errcode = stmplot.plot();
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_plot_scatter(finExecFunction *self, finExecEnvironment *env,
+                                          finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    finExecVariable *dislmtvar = finExecVariable::transLinkTarget(env->findVariable("dl"));
+    finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
+    finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
+    if ( dislmtvar != NULL && dislmtvar->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
+                              dislmtvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    double dislmt = 0.1;
+    if ( dislmtvar != NULL && dislmtvar->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC )
+        dislmt = dislmtvar->getNumericValue();
+
+    QList<QPointF> ptlist;
+    finErrorCode errcode = finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
+
+    finPlotDotsScatter scplot;
+    scplot.setDistanceLimit(dislmt);
+    scplot.appendPoints(ptlist);
+    scplot.setFigureContainer(env->getFigureContainer());
+    errcode = scplot.plot();
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
