@@ -792,6 +792,104 @@ finErrorCode finExecVariable::clearLinkedVariables()
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
+finErrorCode finExecVariable::transToPointListArray(finExecVariable *aryvar, QList<QPointF> *ptlist)
+{
+    if ( ptlist == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    if ( aryvar == NULL || aryvar->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
+        ptlist->clear();
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+    }
+
+    int arylen = 0;
+    if ( !aryvar->isNumericArray(&arylen) )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    ptlist->clear();
+    for ( int i = 0; i + 1 < arylen; i += 2 ) {
+        finExecVariable *varx = aryvar->getVariableItemAt(i);
+        finExecVariable *vary = aryvar->getVariableItemAt(i + 1);
+
+        ptlist->append(QPoint(varx->getNumericValue(), vary->getNumericValue()));
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecVariable::transToPointListMatrix(finExecVariable *matvar, QList<QPointF> *ptlist)
+{
+    if ( ptlist == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    if ( matvar == NULL || matvar->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
+        ptlist->clear();
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+    }
+
+    int row = 0, col = 0;
+    if ( !matvar->isNumericMatrix(&row, &col) )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    if ( col < 2 )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    ptlist->clear();
+    for ( int i = 0; i < row; i++ ) {
+        finExecVariable *ptvar = matvar->getVariableItemAt(i);
+        finExecVariable *varx = ptvar->getVariableItemAt(0);
+        finExecVariable *vary = ptvar->getVariableItemAt(1);
+
+        ptlist->append(QPointF(varx->getNumericValue(), vary->getNumericValue()));
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+finErrorCode finExecVariable::transToPointList(finExecVariable *var, QList<QPointF> *ptlist)
+{
+    if ( ptlist == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    if ( var == NULL || var->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
+        ptlist->clear();
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+    }
+
+    if ( var->getType() != finExecVariable::FIN_VR_TYPE_ARRAY )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    if ( var->getArrayLength() > 0 && var->getVariableItemAt(0)->getType() == finExecVariable::FIN_VR_TYPE_ARRAY )
+        return transToPointListMatrix(var, ptlist);
+    else
+        return transToPointListArray(var, ptlist);
+}
+
+finErrorCode finExecVariable::transToPointList(
+        finExecVariable *xvar, finExecVariable *yvar, QList<QPointF> *ptlist)
+{
+    if ( ptlist == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    if ( (xvar == NULL || xvar->getType() == finExecVariable::FIN_VR_TYPE_NULL) ||
+         (yvar == NULL || yvar->getType() == finExecVariable::FIN_VR_TYPE_NULL) ) {
+        ptlist->clear();
+        return finErrorCodeKits::FIN_EC_SUCCESS;
+    }
+
+    int arylen = 0, yarylen = 0;
+    if ( !xvar->isNumericArray(&arylen) || !yvar->isNumericArray(&yarylen) )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    if ( arylen > yarylen )
+        arylen = yarylen;
+
+    ptlist->clear();
+    for ( int i = 0; i < arylen; i++ ) {
+        finExecVariable *xitem = xvar->getVariableItemAt(i);
+        finExecVariable *yitem = yvar->getVariableItemAt(i);
+
+        ptlist->append(QPointF(xitem->getNumericValue(), yitem->getNumericValue()));
+    }
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 finExecVariable *finExecVariable::buildNonLeftVariable(finExecVariable *var)
 {
     if ( var == NULL )

@@ -34,6 +34,8 @@ static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env
                                   finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_polygon_mat(finExecFunction *self, finExecEnvironment *env,
+                                         finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *env,
@@ -349,6 +351,20 @@ static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *
         delete fopolygon;
         return errcode;
     }
+    flowctl->setFlowNext();
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_polygon_mat(finExecFunction *self, finExecEnvironment *env,
+                                         finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+    if ( env->getFigureContainer() == NULL )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+
+    finExecVariable *matvar = finExecVariable::transLinkTarget(env->findVariable("mat"));
+
     flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }

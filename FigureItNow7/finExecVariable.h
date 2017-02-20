@@ -143,6 +143,9 @@ public:
     finErrorCode dispose();
     finErrorCode clearLinkedVariables();
 
+    static finErrorCode transToPointList(finExecVariable *var, QList<QPointF> *ptlist);
+    static finErrorCode transToPointList(finExecVariable *xvar, finExecVariable *yvar, QList<QPointF> *ptlist);
+
     static void releaseNonLeftVariable(finExecVariable *var);
 
     static finExecVariable *buildNonLeftVariable(finExecVariable *var);
@@ -156,6 +159,9 @@ public:
 private:
     finErrorCode copyVariableValueIn(finExecVariable *srcvar);
     finErrorCode copyArrayVariable(const finExecVariable *srcvar);
+
+    static finErrorCode transToPointListArray(finExecVariable *aryvar, QList<QPointF> *ptlist);
+    static finErrorCode transToPointListMatrix(finExecVariable *matvar, QList<QPointF> *ptlist);
 };
 
 typedef enum finExecVariable::finExecVariableType finExecVariableType;
