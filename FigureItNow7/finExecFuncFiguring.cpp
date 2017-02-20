@@ -363,7 +363,12 @@ static finErrorCode _sysfunc_polygon_mat(finExecFunction *self, finExecEnvironme
     if ( env->getFigureContainer() == NULL )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
-    finExecVariable *matvar = finExecVariable::transLinkTarget(env->findVariable("mat"));
+    finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
+    finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
+    QList<QPointF> ptlist;
+    finErrorCode errcode = finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
+    if ( finErrorCodeKits::isErrorResult(errcode) )
+        return errcode;
 
     flowctl->setFlowNext();
     return finErrorCodeKits::FIN_EC_SUCCESS;

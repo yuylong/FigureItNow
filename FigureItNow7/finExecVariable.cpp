@@ -868,10 +868,13 @@ finErrorCode finExecVariable::transToPointList(
     if ( ptlist == NULL )
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
-    if ( (xvar == NULL || xvar->getType() == finExecVariable::FIN_VR_TYPE_NULL) ||
-         (yvar == NULL || yvar->getType() == finExecVariable::FIN_VR_TYPE_NULL) ) {
-        ptlist->clear();
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+    if ( yvar == NULL || yvar->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
+        if ( xvar == NULL || xvar->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
+            ptlist->clear();
+            return finErrorCodeKits::FIN_EC_SUCCESS;
+        } else {
+             return transToPointList(xvar, ptlist);
+        }
     }
 
     int arylen = 0, yarylen = 0;
