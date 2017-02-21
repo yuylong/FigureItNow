@@ -18,6 +18,8 @@
 
 static finErrorCode _sysfunc_abs(finExecFunction *self, finExecEnvironment *env,
                                  finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_sig(finExecFunction *self, finExecEnvironment *env,
+                                 finExecMachine *machine, finExecFlowControl *flowctl);
 
 static finErrorCode _sysfunc_sin(finExecFunction *self, finExecEnvironment *env,
                                  finExecMachine *machine, finExecFlowControl *flowctl);
@@ -71,6 +73,8 @@ static finErrorCode _sysfunc_eq2d_hyperbola(finExecFunction *self, finExecEnviro
 
 static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
     { QString("abs"),                       QString("num"),              _sysfunc_abs                       },
+    { QString("sig"),                       QString("num"),              _sysfunc_sig                       },
+
     { QString("sin"),                       QString("rad"),              _sysfunc_sin                       },
     { QString("cos"),                       QString("rad"),              _sysfunc_cos                       },
     { QString("tan"),                       QString("rad"),              _sysfunc_tan                       },
@@ -128,6 +132,41 @@ static finErrorCode _sysfunc_abs(finExecFunction *self, finExecEnvironment *env,
 
     retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
     retvar->setNumericValue(fabs(num->getNumericValue()));
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_sig(finExecFunction *self, finExecEnvironment *env,
+                                 finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *numvar, *retvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    numvar = finExecVariable::transLinkTarget(env->findVariable("num"));
+    if ( numvar == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    if ( numvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    double num = numvar->getNumericValue();
+    double ret = 0.0;
+    if ( num < 0.0 )
+        ret = -1.0;
+    else if ( num > 0.0 )
+        ret = 1.0;
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setNumericValue(ret);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
 
