@@ -297,6 +297,10 @@
    </property>
   </action>
   <action name="actDefFigConfig">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:/icons/icons/fig_config.png</normaloff>:/icons/icons/fig_config.png</iconset>
+   </property>
    <property name="text">
     <string>Default Figure Configuration</string>
    </property>

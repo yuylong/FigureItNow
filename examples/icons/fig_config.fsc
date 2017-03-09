@@ -33,6 +33,22 @@ draw_teeth(R, r, teethcnt)
     polygon_mat(ptlist);
 }
 
+draw_pencil()
+{
+    write_fig_config("fill_color", named_color("white"));
+    polygon(0.5, -1.0, 0.3, -0.6, 0.7, -0.6);
+
+    write_fig_config("fill_color", named_color("lightGreen"));
+    polygon(0.3, -0.6, 0.7, -0.6, 0.7, 0.4, 0.3, 0.4);
+    line(0.5, -0.6, 0.5, 0.4);
+
+    write_fig_config("fill_color", named_color("yellow"));    
+    polygon(0.3, 0.4, 0.7, 0.4, 0.7, 0.5, 0.3, 0.5);
+
+    write_fig_config("fill_color", named_color("red"));
+    polygon(0.3, 0.5, 0.3, 0.6, 0.4, 0.7, 0.6, 0.7, 0.7, 0.6, 0.7, 0.5);
+}
+
 write_fig_config("dot_size", 2);
 write_fig_config("border_color", named_color("black"));
 write_fig_config("fill_color", named_color("lightGray"));
@@ -40,3 +56,5 @@ draw_teeth(1, 0.8, 10);
 
 write_fig_config("fill_color", named_color("white"));
 circle(0, 0, 0.4);
+
+draw_pencil();
