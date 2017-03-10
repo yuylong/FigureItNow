@@ -29,19 +29,32 @@ class finExecEnvironment;
 class finExecMachine;
 
 
+/*! \class finExecEnvironment
+ *  \brief A layer of runtime environment.
+ *
+ * This class defines all the resouces used by a stacked call layer, including variables and functions. It also
+ * includes some label information of the current layer in call stack, such as the function and the pointer to the
+ * previous stack.
+ *
+ * A static instanc referred as root is declared in this class. All the base environment for various script code is
+ * created as a child of the root environment. All the predefined functions and variables are installed in root
+ * environment, and services all script code.
+ */
 class finExecEnvironment
 {
 protected:
-    QString _envName;
+    QString _envName;                    //!< Environment name.
 
-    QList<finExecVariable *> _varList;
-    QList<finExecFunction *> _funcList;
+    QList<finExecVariable *> _varList;   //!< The variables in this layer.
+    QList<finExecFunction *> _funcList;  //!< The functions defined in this layer.
 
-    finExecFunction *_belongFunc;
-    finFigureContainer *_figContainer;
-    finExecEnvironment *_prevEnv;
+    finExecFunction *_belongFunc;        //!< The function which creates this environment. Leave NULL if this
+                                         //!< environment is not created by a function call.
+    finFigureContainer *_figContainer;   //!< The output figure container.
+    finExecEnvironment *_prevEnv;        //!< The previous or parent environment, whose running script creates this
+                                         //!< environment.
 
-    static finExecEnvironment *_rootEnv;
+    static finExecEnvironment *_rootEnv;  //!< The system-wide root environment.
 
 public:
     finExecEnvironment();
