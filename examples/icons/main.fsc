@@ -1,0 +1,48 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ */
+
+clear_fig();
+//axis();
+write_graph_config("background_color", named_color("transparent"));
+write_graph_config("panel_width", 640);
+write_graph_config("panel_height", 640);
+write_graph_config("origin_point_x", 320);
+write_graph_config("origin_point_y", 320);
+write_graph_config("unit_size", 80);
+
+write_fig_config("dot_size", 8);
+
+write_fig_config("border_color", named_color("red"));
+write_fig_config("fill_color", named_color("red"));
+rect(-1.7, 1.7, 4.4, 4.4, 0.0);
+
+write_fig_config("border_color", named_color("blue"));
+write_fig_config("fill_color", named_color("blue"));
+rect(-1.6, -2.5, 3.6, 3.6, -1.0);
+
+write_fig_config("border_color", named_color("green"));
+write_fig_config("fill_color", named_color("green"));
+rect(2.3, -2.3, 3.2, 3.2, 0.0);
+
+write_fig_config("border_color", named_color("yellow"));
+write_fig_config("fill_color", named_color("yellow"));
+circle(2.1, 1.8, 1.8);
+
+write_fig_config("dot_size", 16);
+write_fig_config("border_color", named_color("black"));
+plot_parametric(-6 * PI,6 * PI,"parm_butterfly");
+
+
+write_fig_config("font_name", "Arial");
+write_fig_config("font_bold", "yes");
+write_fig_config("font_color", named_color("black"));
+write_fig_config("font_size", 290);
+draw_text("F", -2.1, 2.0, 0.0, 1.0);
+draw_text("F", -1.7, 1.6, 0.0, 1.0);
+write_fig_config("font_color", named_color("white"));
+draw_text("F", -1.9, 1.8, 0.0, 1.0);
