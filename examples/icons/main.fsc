@@ -37,7 +37,6 @@ write_fig_config("dot_size", 16);
 write_fig_config("border_color", named_color("black"));
 plot_parametric(-6 * PI,6 * PI,"parm_butterfly");
 
-
 write_fig_config("font_name", "Arial");
 write_fig_config("font_bold", "yes");
 write_fig_config("font_color", named_color("black"));
