@@ -309,6 +309,10 @@
    </property>
   </action>
   <action name="actDefGraphConfig">
+   <property name="icon">
+    <iconset resource="Icons.qrc">
+     <normaloff>:/icons/icons/graph_config.png</normaloff>:/icons/icons/graph_config.png</iconset>
+   </property>
    <property name="text">
     <string>Default Graph Configuration</string>
    </property>

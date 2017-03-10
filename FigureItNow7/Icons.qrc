@@ -6,5 +6,6 @@
         <file>icons/open_script.png</file>
         <file>icons/save_script.png</file>
         <file>icons/fig_config.png</file>
+        <file>icons/graph_config.png</file>
     </qresource>
 </RCC>
