@@ -9,4 +9,4 @@
 clear_fig();
 axis();
 
-plot_parametric(-6*PI,6*PI,"parm_butterfly");
+plot_parametric(-6 * PI,6 * PI,"parm_butterfly");
