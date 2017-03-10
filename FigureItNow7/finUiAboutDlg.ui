@@ -6,14 +6,30 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>284</width>
-    <height>273</height>
+    <width>370</width>
+    <height>425</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>About FigureItNow</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="Icons.qrc">:/icons/icons/main-thumb.png</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QLabel" name="lblTitle">
      <property name="font">
@@ -26,7 +42,7 @@
       <string>FigureItNow 7</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      <set>Qt::AlignCenter</set>
      </property>
      <property name="margin">
       <number>16</number>
@@ -36,7 +52,7 @@
    <item>
     <widget class="QLabel" name="lblCopyrights">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Version 0.1.528 alpha&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#000000;&quot;&gt;GNU GENERAL PUBLIC LICENSE, version 3&lt;/span&gt;&lt;br/&gt;Author: Yulong Yu&lt;/p&gt;&lt;p&gt;Copyright(c) 2015 - 2017 Yulong Yu,&lt;br/&gt;All Rights Reserved.&lt;/p&gt;&lt;p&gt;GUI Support: QT 5.8.0&lt;br/&gt;Adobe PDF Support: QPdfWriter in QT.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Version 0.2.576 alpha&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#000000;&quot;&gt;GNU GENERAL PUBLIC LICENSE, version 3&lt;/span&gt;&lt;br/&gt;Author: Yulong Yu&lt;/p&gt;&lt;p&gt;Copyright(c) 2015 - 2017 Yulong Yu, All Rights Reserved.&lt;/p&gt;&lt;p&gt;GUI Support: QT 5.8.0&lt;br/&gt;Adobe PDF Support: QPdfWriter in QT.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="margin">
       <number>8</number>
@@ -55,7 +71,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="Icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

@@ -8,5 +8,6 @@
         <file>icons/fig_config.png</file>
         <file>icons/graph_config.png</file>
         <file>icons/main.png</file>
+        <file>icons/main-thumb.png</file>
     </qresource>
 </RCC>
