@@ -55,6 +55,8 @@ static finErrorCode _sysfunc_parm_hyperbola(finExecFunction *self, finExecEnviro
                                             finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_parm_hyperbola_rational(finExecFunction *self, finExecEnvironment *env,
                                                      finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_parm_astroid(finExecFunction *self, finExecEnvironment *env,
+                                          finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_parm_lissajous(finExecFunction *self, finExecEnvironment *env,
                                             finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_parm_involute(finExecFunction *self, finExecEnvironment *env,
@@ -88,24 +90,25 @@ static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
     { QString("ln"),                        QString("base"),             _sysfunc_ln                        },
     { QString("log"),                       QString("idx,base"),         _sysfunc_log                       },
 
-    { QString("linear"),                    QString ("x,a,b"),           _sysfunc_linear                    },
-    { QString("quadratic"),                 QString ("x,a,b,c"),         _sysfunc_quadratic                 },
-    { QString("frequency_curve"),           QString ("x"),               _sysfunc_frequency_curve           },
+    { QString("linear"),                    QString("x,a,b"),            _sysfunc_linear                    },
+    { QString("quadratic"),                 QString("x,a,b,c"),          _sysfunc_quadratic                 },
+    { QString("frequency_curve"),           QString("x"),                _sysfunc_frequency_curve           },
 
-    { QString("parm_circle"),               QString ("t,r"),             _sysfunc_parm_circle               },
-    { QString("parm_ellipse"),              QString ("t,a,b"),           _sysfunc_parm_ellipse              },
-    { QString("parm_general_ellipse"),      QString ("t,a,b,xc,yc,phi"), _sysfunc_parm_general_ellipse      },
-    { QString("parm_hyperbola"),            QString ("t,a,b,h,k"),       _sysfunc_parm_hyperbola            },
-    { QString("parm_hyperbola_rational"),   QString ("t,a,b,h,k"),       _sysfunc_parm_hyperbola_rational   },
-    { QString("parm_lissajous"),            QString ("t,a,b,kx,ky"),     _sysfunc_parm_lissajous            },
-    { QString("parm_involute"),             QString ("t,r"),             _sysfunc_parm_involute             },
-    { QString("parm_cycloid"),              QString ("t,r"),             _sysfunc_parm_cycloid              },
-    { QString("parm_hypotrochoid"),         QString ("t,R,r,d"),         _sysfunc_parm_hypotrochoid         },
-    { QString("parm_butterfly"),            QString ("t"),               _sysfunc_parm_butterfly            },
+    { QString("parm_circle"),               QString("t,r"),              _sysfunc_parm_circle               },
+    { QString("parm_ellipse"),              QString("t,a,b"),            _sysfunc_parm_ellipse              },
+    { QString("parm_general_ellipse"),      QString("t,a,b,xc,yc,phi"),  _sysfunc_parm_general_ellipse      },
+    { QString("parm_hyperbola"),            QString("t,a,b,h,k"),        _sysfunc_parm_hyperbola            },
+    { QString("parm_hyperbola_rational"),   QString("t,a,b,h,k"),        _sysfunc_parm_hyperbola_rational   },
+    { QString("parm_astroid"),              QString("t,a"),              _sysfunc_parm_astroid              },
+    { QString("parm_lissajous"),            QString("t,a,b,kx,ky"),      _sysfunc_parm_lissajous            },
+    { QString("parm_involute"),             QString("t,r"),              _sysfunc_parm_involute             },
+    { QString("parm_cycloid"),              QString("t,r"),              _sysfunc_parm_cycloid              },
+    { QString("parm_hypotrochoid"),         QString("t,R,r,d"),          _sysfunc_parm_hypotrochoid         },
+    { QString("parm_butterfly"),            QString("t"),                _sysfunc_parm_butterfly            },
 
-    { QString("eq2d_circle"),               QString ("x,y,r"),           _sysfunc_eq2d_circle               },
-    { QString("eq2d_ellipse"),              QString ("x,y,a,b"),         _sysfunc_eq2d_ellipse              },
-    { QString("eq2d_hyperbola"),            QString ("x,y,a,b"),         _sysfunc_eq2d_hyperbola            },
+    { QString("eq2d_circle"),               QString("x,y,r"),            _sysfunc_eq2d_circle               },
+    { QString("eq2d_ellipse"),              QString("x,y,a,b"),          _sysfunc_eq2d_ellipse              },
+    { QString("eq2d_hyperbola"),            QString("x,y,a,b"),          _sysfunc_eq2d_hyperbola            },
 
     { QString(), QString(), NULL }
 };
@@ -763,6 +766,50 @@ static finErrorCode _sysfunc_parm_hyperbola_rational(finExecFunction *self, finE
     retitemx->setNumericValue(a * (1 + t2) / ratio + h);
     retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
     retitemy->setNumericValue(b * 2.0 * t / ratio + k);
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_parm_astroid(finExecFunction *self, finExecEnvironment *env,
+                                          finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *tvar, *avar, *retvar, *retitemx, *retitemy;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
+    avar = finExecVariable::transLinkTarget(env->findVariable("a"));
+    if ( tvar == NULL || avar == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    if ( tvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
+         avar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    double t = tvar->getNumericValue();
+    double a = avar->getNumericValue();
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    retvar->preallocArrayLength(2);
+    retitemx = retvar->getVariableItemAt(0);
+    retitemy = retvar->getVariableItemAt(1);
+    if ( retitemx == NULL || retitemy == NULL ) {
+        delete retvar;
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+    }
+
+    double cost = cos(t), sint = sin(t);
+    retitemx->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemx->setNumericValue(a * cost * cost * cost);
+    retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemy->setNumericValue(a * sint * sint * sint);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
 
