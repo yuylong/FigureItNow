@@ -42,6 +42,8 @@ static finErrorCode _sysfunc_linear(finExecFunction *self, finExecEnvironment *e
                                     finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_frequency_curve(finExecFunction *self, finExecEnvironment *env,
+                                             finExecMachine *machine, finExecFlowControl *flowctl);
 
 static finErrorCode _sysfunc_parm_circle(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl);
@@ -88,6 +90,7 @@ static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
 
     { QString("linear"),                    QString ("x,a,b"),           _sysfunc_linear                    },
     { QString("quadratic"),                 QString ("x,a,b,c"),         _sysfunc_quadratic                 },
+    { QString("frequency_curve"),           QString ("x"),               _sysfunc_frequency_curve           },
 
     { QString("parm_circle"),               QString ("t,r"),             _sysfunc_parm_circle               },
     { QString("parm_ellipse"),              QString ("t,a,b"),           _sysfunc_parm_ellipse              },
@@ -475,6 +478,37 @@ static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment
     flowctl->setReturnVariable(retvar);
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
+
+static finErrorCode _sysfunc_frequency_curve(finExecFunction *self, finExecEnvironment *env,
+                                             finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *xvar, *retvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+
+    xvar = finExecVariable::transLinkTarget(env->findVariable("x"));
+    if ( xvar == NULL )
+        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+    if ( xvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+
+    double x = xvar->getNumericValue();
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+
+    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setNumericValue(sqrt(2 * M_PI * exp(-x * x / 2)));
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorCodeKits::FIN_EC_SUCCESS;
+}
+
 
 static finErrorCode _sysfunc_parm_circle(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl)
