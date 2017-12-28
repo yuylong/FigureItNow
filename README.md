@@ -1,4 +1,6 @@
 # FigureItNow
+![](FigureItNow7/icons/main-thumb.png)
+
 FigureItNow is a free application that plots mathematical figures using well-defined script language.
 
 This project tries to find a free solution to build up a general mathematical figuring platform, including a kind of 
