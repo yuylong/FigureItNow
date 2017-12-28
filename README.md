@@ -6,7 +6,7 @@ script language and a compiler to translate the script codes into figures. Figur
 designed to describe mathematical figures. It introduce many characters from C language such as variable, self-
 defined functions, mathematical expressions, and . In addition, FIN Script Language implements a lot of predefined 
 functions that performs complex data manipulations ranging from mathematical calculation, string computation, to 
-figure plotting and image processing. Using FIN Script Language, you can easily describe a complex figure into a piece 
+figure plotting and image processing. With FIN script codes, you can easily describe a complex figure into a piece 
 of neatly written code.
 
 FigureItNow supports many output formats such as PDF, SVG, PNG and so on. Additionally, it also tries to provide a 
