@@ -1,19 +1,18 @@
 # FigureItNow
-A graghical program that plot mathematic figures from a defined script language. This is a QT-based project.
+FigureItNow is a free application that plots mathematical figures using well-defined script language.
 
-FigureItNow is my personal software project, which tries to build up a general mathematic figuring platform. It employs 
-a self defined script language, and outputs mathematic figures by executing the scripts. The script language implements 
-a lot of common mathematic computation, and can perform complex data manipulations. It also allows users to define 
-their own functions to expand its functionality. FigureItNow also tries to support many output formats, and tries to 
-provide a re-implementation interface for more potental formats. Therefore the figures produced can be used in your 
-further work.
+This project tries to find a free solution to build up a general mathematical figuring platform, including a kind of 
+script language and a compiler to translate the script codes into figures. FigureItNow (FIN) Script Language is well 
+designed to describe mathematical figures. It introduce many characters from C language such as variable, self-
+defined functions, mathematical expressions, and . In addition, FIN Script Language implements a lot of predefined 
+functions that performs complex data manipulations ranging from mathematical calculation, string computation, to 
+figure plotting and image processing. Using FIN Script Language, you can easily describe a complex figure into a piece 
+of neatly written code.
 
-FigureItNow started in 2002, when I was a young teenage in high school. I needed a figuring tool for mathematic 
-functions in studying my maths textbook. In the first several years, I released 5 main releases of FigureItNow, and 
-posted them on the software downloading websites in China such as Huajun Software Park. There were tens of thousands of 
-downloads since its first release. However, in recent years, I spent all of my personal time on researching work for a
-degree from the university. The upgrade process of FigureItNow was stopped and the Version 6 was also aborted. 
+FigureItNow supports many output formats such as PDF, SVG, PNG and so on. Additionally, it also tries to provide a 
+re-implementation interface for more potental formats. Therefore you can exports your figure and paste them into your 
+work to improve the representability.
 
-Last year I resumed this project, and FigureItNow came to its 7th edition. I rewrote all the codes in QT development 
-framework in this edition. Now, I decide to open all the source codes on github.com. Although I still have not much 
-personal time on FigureItNow, I will try my best to keep the development going.
+FigureItNow is my personal software project originated a small program I wrote in 2002, when I was a young teenage in 
+high school. For my personal reason, this project stalled for several years, and finally I decided to resume it in 
+2015. Although I still have not much personal time on FigureItNow project, I will try my best to push it forward.
