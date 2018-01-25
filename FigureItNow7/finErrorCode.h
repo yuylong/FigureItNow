@@ -40,19 +40,17 @@ public:
     enum ErrorCode {
         EC_SUCCESS       =     0,  //!< Execution Success, no error happened.
 
-        EC_DUPLICATE_OP  =     1,  //!< The same operation has already done, currently invocation is an redundant
-                                       //!< call.
+        EC_DUPLICATE_OP  =     1,  //!< The same operation has already done, currently invocation is an redundant call.
 
         EC_REACH_BOTTOM  =     2,  //!< The input stream is all flushed.
 
-        EC_UNREADY_WARN  =    10,  //!< Some operation is taken on an unready object, but it will not cause an
-                                       //!< error.
+        EC_UNREADY_WARN  =    10,  //!< Some operation is taken on an unready object, but it will not cause an error.
 
         EC_PRECISE_LOSS  =    21,  //!< Execution Success, but the result is not very precise, some error is
-                                       //!< introduced into the result, but the error is accepted.
+                                   //!< introduced into the result, but the error is accepted.
 
-        EC_NORMAL_WARN   =    55,  //!< Execution Success, but some warnings are there. The warning is not a
-                                       //!< specific type.
+        EC_NORMAL_WARN   =    55,  //!< Execution Success, but some warnings are there. The warning is not a specific
+                                   //!< type.
 
         EC_NULL_POINTER  =    -1,  //!< The inputs or arguments contain null pointer.
 
@@ -61,14 +59,14 @@ public:
         EC_OUT_OF_MEMORY =    -3,  //!< There is no memory left for the given operation.
 
         EC_OVERFLOW      =    -4,  //!< The calculation results cannot be presented in current computer system,
-                                       //!< because the data structure bit width is too narrow.
+                                   //!< because the data structure bit width is too narrow.
 
         EC_NOT_FOUND     =    -7,  //!< The target object is not found.
 
         EC_READ_ERROR    =    -8,  //!< The input string is error, no more check is necessary.
 
-        EC_CONTENTION    =    -9,  //!< The insertion operation cannot taken because the position or the index key
-                                       //!< is occupied by others.
+        EC_CONTENTION    =    -9,  //!< The insertion operation cannot taken because the position or the index key is
+                                   //!< occupied by others.
 
         EC_INVALID_PARAM =   -12,  //!< The parameter is unsupported in the certain invocation.
 
@@ -77,10 +75,10 @@ public:
         EC_UNKNOWN_ERROR = -9099,  //!< Unkonwn error.
 
         EC_NON_IMPLEMENT = -9999,  //!< The function is not implemented currently, it should not appear in the
-                                       //!< released code
+                                   //!< released code.
 
-        EC_DUMMY         = 0xFFFF  //!< An invalid error code value. Some serious fetal internal error will lead
-                                       //!< this error code, and should not appear in a normal case.
+        EC_DUMMY         = 0xFFFF  //!< An invalid error code value. Some serious fetal internal error will lead this
+                                   //!< error code, and should not appear in a normal case.
     };
 
 public:
@@ -122,7 +120,7 @@ public:
 };
 
 /*! \typedef finErrorCode
- *  \brief A mirror declaration of ErrorCode for short.
+ *  \brief A mirror declaration of finErrorKits::ErrorCode for short.
  *
  * The other part of code in FIN-7 use this short type-define instead of directly use
  * finErrorKits::ErrorCode for short.
