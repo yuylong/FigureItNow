@@ -19,9 +19,9 @@ finGraphPanelWidget::finGraphPanelWidget()
 finErrorCode finGraphPanelWidget::setPainter(QPainter *painter)
 {
     if ( painter == NULL )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
-    return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+    return finErrorKits::EC_INVALID_PARAM;
 }
 
 QPaintDevice *finGraphPanelWidget::getWidget() const
@@ -32,13 +32,13 @@ QPaintDevice *finGraphPanelWidget::getWidget() const
 finErrorCode finGraphPanelWidget::setWidget(QPaintDevice *widget)
 {
     this->_widget = widget;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphPanelWidget::draw()
 {
     if ( this->_widget == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     QPainter painter(this->_widget);
     this->_painter = &painter;
@@ -51,7 +51,7 @@ finErrorCode finGraphPanelWidget::draw()
 finErrorCode finGraphPanelWidget::applyGraphConfig() const
 {
     if ( this->_widget == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     return finGraphPanelPainter::applyGraphConfig();
 }
@@ -59,7 +59,7 @@ finErrorCode finGraphPanelWidget::applyGraphConfig() const
 finErrorCode finGraphPanelWidget::drawFigurePath(const finFigurePath &path) const
 {
     if ( this->_widget == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     return finGraphPanelPainter::drawFigurePath(path);
 }

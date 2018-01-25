@@ -28,7 +28,7 @@ QString finExecCompiler::getScriptCode() const
 finErrorCode finExecCompiler::setScriptCode(const QString &script)
 {
     this->_scriptCode = script;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finSyntaxTree *finExecCompiler::compile()
@@ -43,16 +43,16 @@ finSyntaxTree *finExecCompiler::compile()
         this->_synReader.stopRead();
 
     errcode = this->_synReader.setScriptCode(this->_scriptCode);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return this->buildErrorTree(QString("Cannot setup script code."));
 
     errcode = this->_synReader.startRead();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return this->buildErrorTree(QString("Cannot start syntax reader."));
 
-    while ( errcode != finErrorCodeKits::FIN_EC_REACH_BOTTOM ) {
+    while ( errcode != finErrorKits::EC_REACH_BOTTOM ) {
         errcode = this->_synReader.readNextToken();
-        if ( finErrorCodeKits::isErrorResult(errcode) )
+        if ( finErrorKits::isErrorResult(errcode) )
             break;
     }
 

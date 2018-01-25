@@ -27,12 +27,12 @@ void finExecFlowControl::resetFlowControl()
 finErrorCode finExecFlowControl::copyFlowControl(finExecFlowControl *srcfc)
 {
     if ( this->_retVar != NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     this->_type = srcfc->getType();
     this->_label = srcfc->getGotoLabel();
     this->_retVar = srcfc->getReturnVariable();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finExecFlowControlType finExecFlowControl::getType() const
@@ -94,12 +94,12 @@ finExecFlowControl::checkFlowForExpress(bool *goon, finLexNode *lexnode, finExec
         if ( goon != NULL )
             *goon = true;
         this->directPass();
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
     } else if ( this->_type == finExecFlowControl::FIN_FC_EXIT ) {
         if ( goon != NULL )
             *goon = false;
         this->directPass();
-        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return finErrorKits::EC_NORMAL_WARN;
     } else {
         if ( goon != NULL )
             *goon = false;
@@ -107,7 +107,7 @@ finExecFlowControl::checkFlowForExpress(bool *goon, finLexNode *lexnode, finExec
             machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
 
         this->releaseReturnVariable();
-        return finErrorCodeKits::FIN_EC_READ_ERROR;
+        return finErrorKits::EC_READ_ERROR;
     }
 }
 
@@ -118,7 +118,7 @@ finExecFlowControl::checkFlowForStatement(bool *goon, finLexNode *lexnode, finEx
         if ( goon != NULL )
             *goon = true;
         this->directPass();
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
     } else if ( this->_type == finExecFlowControl::FIN_FC_EXIT ||
                 this->_type == finExecFlowControl::FIN_FC_RETURN ||
                 this->_type == finExecFlowControl::FIN_FC_GOTO ||
@@ -127,7 +127,7 @@ finExecFlowControl::checkFlowForStatement(bool *goon, finLexNode *lexnode, finEx
         if ( goon != NULL )
             *goon = false;
         this->directPass();
-        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return finErrorKits::EC_NORMAL_WARN;
     } else {
         if ( goon != NULL )
             *goon = false;
@@ -135,7 +135,7 @@ finExecFlowControl::checkFlowForStatement(bool *goon, finLexNode *lexnode, finEx
             machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
 
         this->releaseReturnVariable();
-        return finErrorCodeKits::FIN_EC_READ_ERROR;
+        return finErrorKits::EC_READ_ERROR;
     }
 }
 
@@ -146,17 +146,17 @@ finExecFlowControl::checkFlowForProgram(bool *goon, finLexNode *lexnode, finExec
         if ( goon != NULL )
             *goon = true;
         this->directPass();
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
     } else if ( this->_type == finExecFlowControl::FIN_FC_RETURN ) {
         if ( goon != NULL )
             *goon = false;
         this->setFlowNext();
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
     } else if ( this->_type == finExecFlowControl::FIN_FC_EXIT ) {
         if ( goon != NULL )
             *goon = false;
         this->directPass();
-        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return finErrorKits::EC_NORMAL_WARN;
     } else {
         if ( goon != NULL )
             *goon = false;
@@ -164,55 +164,55 @@ finExecFlowControl::checkFlowForProgram(bool *goon, finLexNode *lexnode, finExec
             machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
 
         this->releaseReturnVariable();
-        return finErrorCodeKits::FIN_EC_READ_ERROR;
+        return finErrorKits::EC_READ_ERROR;
     }
 }
 
 finErrorCode finExecFlowControl::setType(finExecFlowControlType type)
 {
     this->_type = type;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecFlowControl::setLabel(const QString &label)
 {
     this->_label = label;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecFlowControl::setFlowNext()
 {
     this->_type = finExecFlowControl::FIN_FC_NEXT;
     this->_label = QString();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecFlowControl::setGotoAndLabel(const QString &label)
 {
     this->_type = finExecFlowControl::FIN_FC_GOTO;
     this->_label = label;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecFlowControl::setReturnVariable(finExecVariable *retvar)
 {
     if ( this->_retVar != NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     this->_retVar = retvar;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecFlowControl::retVarSwitchEnv(finExecEnvironment *subenv)
 {
     this->_retVar = finExecVariable::buildFuncReturnVariable(this->_retVar, subenv);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecFlowControl::buildLinkedLeftVar()
 {
     this->_retVar = finExecVariable::buildLinkLeftVariable(this->_retVar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finExecFlowControl::releaseReturnVariable()
@@ -224,5 +224,5 @@ void finExecFlowControl::releaseReturnVariable()
 
 finErrorCode finExecFlowControl::directPass()
 {
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }

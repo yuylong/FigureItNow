@@ -44,28 +44,28 @@ unsigned long finLexReader::getCurrentPosition() const
 finErrorCode finLexReader::setString(const QString &instr)
 {
     if ( !this->_inputStr.isEmpty() && this->_posIdx != 0 )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     this->_inputStr.clear();
     this->_inputStr = instr;
     this->_posIdx = 0;
     this->_curRow = 0;
     this->_curCol = 0;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 
 finErrorCode finLexReader::resetPosition()
 {
     if ( this->_inputStr.isEmpty() )
-        return finErrorCodeKits::FIN_EC_UNREADY_WARN;
+        return finErrorKits::EC_UNREADY_WARN;
     if ( this->_posIdx == 0 )
-        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+        return finErrorKits::EC_DUPLICATE_OP;
 
     this->_posIdx = 0;
     this->_curRow = 0;
     this->_curCol = 0;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexReader::getNextLexNode(finLexNode *retnode)
@@ -76,22 +76,22 @@ finErrorCode finLexReader::getNextLexNode(finLexNode *retnode)
 
     // Check the current state of string inside the LexReader.
     if ( retnode == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( this->_inputStr.isEmpty() )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     // Move the position pointer to the next non-blank char of the string.
     ret = this->moveToNextNonblank();
-    if ( ret == finErrorCodeKits::FIN_EC_REACH_BOTTOM )
+    if ( ret == finErrorKits::EC_REACH_BOTTOM )
         return ret;
 
     ret = this->getLexTypeOrder(&typeorder, &typeordernum);
-    if ( finErrorCodeKits::isErrorResult(ret) )
+    if ( finErrorKits::isErrorResult(ret) )
         return ret;
 
     for ( int i = 0; i < typeordernum; i++ ) {
         ret = this->tryGetTypedNode(retnode, typeorder[i]);
-        if ( ret == finErrorCodeKits::FIN_EC_SUCCESS )
+        if ( ret == finErrorKits::EC_SUCCESS )
             return ret;
     }
     return ret;
@@ -104,7 +104,7 @@ finErrorCode finLexReader::moveReadPos()
     unsigned long strlength = (unsigned long)this->_inputStr.length();
     if ( this->_posIdx >= strlength ) {
         this->_posIdx = strlength;
-        return finErrorCodeKits::FIN_EC_REACH_BOTTOM;
+        return finErrorKits::EC_REACH_BOTTOM;
     }
 
     if ( this->_inputStr.at(this->_posIdx) == QChar::QChar::Separator_Line) {
@@ -113,7 +113,7 @@ finErrorCode finLexReader::moveReadPos()
     } else {
         this->_curCol++;
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexReader::moveToNextNonblank()
@@ -124,9 +124,9 @@ finErrorCode finLexReader::moveToNextNonblank()
         this->_posIdx++;
 
     if ( this->_posIdx >= strlength )
-        return finErrorCodeKits::FIN_EC_REACH_BOTTOM;
+        return finErrorKits::EC_REACH_BOTTOM;
     else
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexReader::getLexTypeOrder(const finLexNodeType **typeorder, int *typenum)
@@ -153,7 +153,7 @@ finErrorCode finLexReader::getLexTypeOrder(finLexReader::finLexReaderOrder order
     };
 
     if ( typeorder == NULL && typenum == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     switch ( order ) {
       case FIN_LR_ORD_NUMBER_FIRST:
@@ -175,10 +175,10 @@ finErrorCode finLexReader::getLexTypeOrder(finLexReader::finLexReaderOrder order
             *typeorder = _typeOrderConst[0]._typeOrder;
         if ( typenum != NULL )
             *typenum = _typeOrderConst[0]._typeNum;
-        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return finErrorKits::EC_NORMAL_WARN;
         break;
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexReader::tryGetTypedNode(finLexNode *retnode, finLexNodeType lextype)
@@ -206,10 +206,10 @@ finErrorCode finLexReader::tryGetTypedNode(finLexNode *retnode, finLexNodeType l
         break;
 
       default:
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
         break;
     }
-    //return finErrorCodeKits::FIN_EC_UNKNOWN_ERROR;
+    //return finErrorKits::EC_UNKNOWN_ERROR;
 }
 
 finErrorCode finLexReader::tryGetNote(finLexNode *retnode)
@@ -218,7 +218,7 @@ finErrorCode finLexReader::tryGetNote(finLexNode *retnode)
     unsigned long strlength = (unsigned long)this->_inputStr.length();
 
     if ( trypos + 1 >= strlength || this->_inputStr.at(trypos) != QChar('/') )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     trypos++;
     if ( this->_inputStr.at(trypos) == QChar('/') ) {
@@ -248,16 +248,16 @@ finErrorCode finLexReader::tryGetNote(finLexNode *retnode)
             prechar = curchar;
         }
         if ( !hasendmark )
-            return finErrorCodeKits::FIN_EC_NOT_FOUND;
+            return finErrorKits::EC_NOT_FOUND;
     } else {
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     }
 
     retnode->setType(finLexNode::FIN_LN_TYPE_NOTE);
     retnode->setString(this->_inputStr.mid(this->_posIdx, trypos - this->_posIdx));
     this->_posIdx = trypos;
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finLexReader::isVariableStartChar(const QChar &ch)
@@ -283,7 +283,7 @@ finErrorCode finLexReader::tryGetVariable(finLexNode *retnode)
 
     // Check the first char in the string, it must be a letter.
     if ( trypos >= strlength || !this->isVariableStartChar(this->_inputStr.at(trypos)) )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     trypos++;
 
     // Check the rest char in the variable, it must be a letter or a digital.
@@ -302,7 +302,7 @@ finErrorCode finLexReader::tryGetVariable(finLexNode *retnode)
 
     this->_lastNodeType = retnode->getType();
     this->_nextReadOrder = FIN_LR_ORD_OPERATOR_FIRST;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexReader::tryRecogKeyword(finLexNode *retnode)
@@ -319,10 +319,10 @@ finErrorCode finLexReader::tryRecogKeyword(finLexNode *retnode)
     for ( int i = 0; i < kwlistcnt; i++ ) {
         if ( QString::compare(retnode->getString(), kwlist[i]) == 0 ) {
             retnode->setType(finLexNode::FIN_LN_TYPE_KEYWORD);
-            return finErrorCodeKits::FIN_EC_SUCCESS;
+            return finErrorKits::EC_SUCCESS;
         }
     }
-    return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+    return finErrorKits::EC_NORMAL_WARN;
 }
 
 finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
@@ -362,7 +362,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
                 basenum = (double)curchar.digitValue();
                 curstate = FIN_LEX_IN_NUM_INTEG;
             } else {
-                return finErrorCodeKits::FIN_EC_NOT_FOUND;
+                return finErrorKits::EC_NOT_FOUND;
             }
             break;
 
@@ -371,7 +371,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
                 basenum = (double)curchar.digitValue();
                 curstate = FIN_LEX_IN_NUM_INTEG;
             } else {
-                return finErrorCodeKits::FIN_EC_NOT_FOUND;
+                return finErrorKits::EC_NOT_FOUND;
             }
             break;
 
@@ -383,7 +383,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
             else if ( curchar.isDigit() )
                 basenum = basenum * 10.0 + (double)curchar.digitValue();
             else if ( curchar.isLetter() )
-                return finErrorCodeKits::FIN_EC_NOT_FOUND;
+                return finErrorKits::EC_NOT_FOUND;
             else
                 isfinish = true;
             break;
@@ -394,7 +394,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
                 basenum += basestep * (double)curchar.digitValue();
                 curstate = FIN_LEX_IN_NUM_FLOAT;
             } else {
-                return finErrorCodeKits::FIN_EC_NOT_FOUND;
+                return finErrorKits::EC_NOT_FOUND;
             }
             break;
 
@@ -404,7 +404,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
             else if ( curchar.isDigit() )
                 basenum += (basestep /= 10.0) * (double)curchar.digitValue();
             else if ( curchar.isLetter() )
-                return finErrorCodeKits::FIN_EC_NOT_FOUND;
+                return finErrorKits::EC_NOT_FOUND;
             else
                 isfinish = true;
 
@@ -421,7 +421,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
                 expnum = curchar.digitValue();
                 curstate = FIN_LEX_IN_NUM_EX_INTEG;
             } else {
-                return finErrorCodeKits::FIN_EC_NOT_FOUND;
+                return finErrorKits::EC_NOT_FOUND;
             }
             break;
 
@@ -430,7 +430,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
                 expnum = curchar.digitValue();
                 curstate = FIN_LEX_IN_NUM_EX_INTEG;
             } else {
-                return finErrorCodeKits::FIN_EC_NOT_FOUND;
+                return finErrorKits::EC_NOT_FOUND;
             }
             break;
 
@@ -438,7 +438,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
             if ( curchar.isDigit() )
                 expnum = expnum * 10 + curchar.digitValue();
             else if ( curchar.isLetter() || curchar == QChar('.') )
-                return finErrorCodeKits::FIN_EC_NOT_FOUND;
+                return finErrorKits::EC_NOT_FOUND;
             else
                 isfinish = true;
             break;
@@ -452,7 +452,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
     if ( curstate == FIN_LEX_IN_NUM_INIT ||
          curstate == FIN_LEX_IN_NUM_INTEG1 || curstate == FIN_LEX_IN_NUM_FLOAT1 ||
          curstate == FIN_LEX_IN_NUM_EX_INIT || curstate == FIN_LEX_IN_NUM_EX_INTEG1 )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     retnode->setType(finLexNode::FIN_LN_TYPE_DECIMAL);
     retnode->setString(this->_inputStr.mid(this->_posIdx, trypos - this->_posIdx));
@@ -467,7 +467,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
 
     this->_lastNodeType = finLexNode::FIN_LN_TYPE_DECIMAL;
     this->_nextReadOrder = FIN_LR_ORD_OPERATOR_FIRST;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexReader::tryGetString(finLexNode *retnode)
@@ -476,7 +476,7 @@ finErrorCode finLexReader::tryGetString(finLexNode *retnode)
     unsigned long strlength = (unsigned long)this->_inputStr.length();
 
     if ( trypos >= strlength || this->_inputStr.at(trypos) != QChar('\"'))
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     QString retstr("");  // Create an empty (not null) string to store the result string.
     unsigned long grabstart = ++trypos;
@@ -508,7 +508,7 @@ finErrorCode finLexReader::tryGetString(finLexNode *retnode)
             } else if ( curch == QChar('\\') || curch == QChar('\"') ) {
                 retstr += curch;
             } else {
-                return finErrorCodeKits::FIN_EC_READ_ERROR;
+                return finErrorKits::EC_READ_ERROR;
             }
 
             grabstart = trypos + 1;
@@ -524,7 +524,7 @@ finErrorCode finLexReader::tryGetString(finLexNode *retnode)
 
     this->_lastNodeType = finLexNode::FIN_LN_TYPE_STRING;
     this->_nextReadOrder = FIN_LR_ORD_OPERATOR_FIRST;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexReader::tryGetOperator(finLexNode *retnode)
@@ -533,7 +533,7 @@ finErrorCode finLexReader::tryGetOperator(finLexNode *retnode)
     unsigned long strlength = (unsigned long)this->_inputStr.length();
 
     if ( trypos >= strlength )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     QChar curchar = this->_inputStr.at(trypos);
     finLexOperatorType optype = finLexNode::FIN_LN_OPTYPE_DUMMY;
@@ -683,12 +683,12 @@ finErrorCode finLexReader::tryGetOperator(finLexNode *retnode)
         optype = finLexNode::FIN_LN_OPTYPE_COLON;
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else {
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     }
 #undef READ_NEXT_CHAR
 
     if ( optype == finLexNode::FIN_LN_OPTYPE_DUMMY )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     retnode->setType(finLexNode::FIN_LN_TYPE_OPERATOR);
     retnode->setString(this->_inputStr.mid(this->_posIdx, trypos - this->_posIdx));
@@ -696,5 +696,5 @@ finErrorCode finLexReader::tryGetOperator(finLexNode *retnode)
     this->_posIdx = trypos;
 
     this->_lastNodeType = finLexNode::FIN_LN_TYPE_OPERATOR;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }

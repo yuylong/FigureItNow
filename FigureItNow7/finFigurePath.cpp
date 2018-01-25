@@ -55,37 +55,37 @@ QImage finFigurePath::getImage() const
 finErrorCode finFigurePath::setPen(const QPen &pen)
 {
     this->_pen = pen;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigurePath::setBrush(const QBrush &brush)
 {
     this->_brush = brush;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigurePath::setPath(const QPainterPath &path)
 {
     this->_path = path;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigurePath::setImagePosition(const QPointF &imgpos)
 {
     this->_imgPos = imgpos;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigurePath::setPixmap(const QPixmap &pixmap)
 {
     this->_pixmap = pixmap;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigurePath::setImage(const QImage &image)
 {
     this->_pixmap = QPixmap::fromImage(image);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finFigurePath &finFigurePath::operator = (const finFigurePath &figpath)

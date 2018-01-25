@@ -41,12 +41,12 @@ finGraphTransType finGraphTrans::parseTransformType(const QString &name)
 finErrorCode finGraphTrans::fillTypesInComboBox(QComboBox *cmbox)
 {
     if ( cmbox == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     cmbox->addItem(QString("None"), QVariant(QString("none")));
     cmbox->addItem(QString("Rectangle"), QVariant(QString("rect")));
     cmbox->addItem(QString("Affine"), QVariant(QString("affine")));
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 int finGraphTrans::getComboBoxIndexForType(QComboBox *cmbox, finGraphTransType type)
@@ -67,10 +67,10 @@ finErrorCode finGraphTrans::setComboBoxCurrentItemToType(QComboBox *cmbox, finGr
 {
     int idx = finGraphTrans::getComboBoxIndexForType(cmbox, type);
     if ( idx < 0 )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     cmbox->setCurrentIndex(idx);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finGraphTrans::finGraphTrans()
@@ -86,9 +86,9 @@ finGraphTrans::~finGraphTrans()
 finErrorCode finGraphTrans::cloneTransform(const finGraphTrans *trans)
 {
     if ( trans == NULL || trans->getTransformType() != this->_type )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finGraphTransType finGraphTrans::getTransformType() const
@@ -126,13 +126,13 @@ finGraphTransRect::~finGraphTransRect()
 finErrorCode finGraphTransRect::cloneTransform(const finGraphTrans *trans)
 {
     finErrorCode errcode = finGraphTrans::cloneTransform(trans);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     const finGraphTransRect *srctrans = (const finGraphTransRect *)trans;
     this->_axisZoomX = srctrans->_axisZoomX;
     this->_axisZoomY = srctrans->_axisZoomY;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finGraphTransRect::isLinear() const
@@ -153,19 +153,19 @@ double finGraphTransRect::getAxisZoomY() const
 finErrorCode finGraphTransRect::setAxisZoomX(double zoomx)
 {
     if ( zoomx <= 0.0 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     this->_axisZoomX = zoomx;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphTransRect::setAxisZoomY(double zoomy)
 {
     if ( zoomy <= 0.0 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     this->_axisZoomY = zoomy;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QPointF finGraphTransRect::transPoint(const QPointF &ptr)
@@ -221,12 +221,12 @@ finGraphTransAffine::ActionType finGraphTransAffine::parseAffineTransAction(cons
 finErrorCode finGraphTransAffine::fillAffineTransActionsInComboBox(QComboBox *cmbox)
 {
     if ( cmbox == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     cmbox->addItem(QString("Rotate"), QVariant(QString("rotate")));
     cmbox->addItem(QString("Scale"), QVariant(QString("scale")));
     cmbox->addItem(QString("Translate"), QVariant(QString("translate")));
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 int finGraphTransAffine::getAffineTransActionArgCnt(finGraphTransAffine::ActionType type)
@@ -280,7 +280,7 @@ finGraphTransAffine::~finGraphTransAffine()
 finErrorCode finGraphTransAffine::cloneTransform(const finGraphTrans *trans)
 {
     finErrorCode errcode = finGraphTrans::cloneTransform(trans);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     const finGraphTransAffine *srctrans = (const finGraphTransAffine *)trans;
@@ -288,7 +288,7 @@ finErrorCode finGraphTransAffine::cloneTransform(const finGraphTrans *trans)
     this->_actList = srctrans->_actList;
     this->_matrix = srctrans->_matrix;
     this->_invMatrix = srctrans->_invMatrix;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finGraphTransAffine::isLinear() const
@@ -326,18 +326,18 @@ finErrorCode finGraphTransAffine::reset()
     this->_actList.clear();
     this->_matrix.reset();
     this->_invMatrix.reset();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphTransAffine::calcInvertedMatrix()
 {
     if ( !this->_matrix.isInvertible() ) {
         this->_invMatrix.reset();
-        return finErrorCodeKits::FIN_EC_PRECISE_LOSS;
+        return finErrorKits::EC_PRECISE_LOSS;
     }
 
     this->_invMatrix = this->_matrix.inverted();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphTransAffine::appendRotate(double rad)
@@ -352,7 +352,7 @@ finErrorCode finGraphTransAffine::appendRotate(double rad)
     act._arg1 = act._arg2 = rad;
     this->_actList.append(act);
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphTransAffine::appendScale(double sx, double sy)
@@ -368,7 +368,7 @@ finErrorCode finGraphTransAffine::appendScale(double sx, double sy)
     act._arg2 = sy;
     this->_actList.append(act);
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphTransAffine::appendTranslate(double tx, double ty)
@@ -384,7 +384,7 @@ finErrorCode finGraphTransAffine::appendTranslate(double tx, double ty)
     act._arg2 = ty;
     this->_actList.append(act);
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QPointF finGraphTransAffine::transPoint(const QPointF &ptr)

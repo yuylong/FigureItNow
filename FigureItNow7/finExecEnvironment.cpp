@@ -42,18 +42,18 @@ finErrorCode
 finExecEnvironment::buildChildEnvironment(finExecEnvironment **chdenv)
 {
     if ( chdenv == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     finExecEnvironment *newchdenv = new finExecEnvironment();
     if ( newchdenv == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     newchdenv->_belongFunc = NULL;
     newchdenv->_figContainer = this->_figContainer;
     newchdenv->_prevEnv = this;
 
     *chdenv = newchdenv;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QString
@@ -66,7 +66,7 @@ finErrorCode
 finExecEnvironment::setEnvironmentName(const QString &envname)
 {
     this->_envName = envname;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finExecVariable *
@@ -238,17 +238,17 @@ finErrorCode
 finExecEnvironment::addVariable(finExecVariable *var)
 {
     if ( !var->isLeftValue() )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *oldvar = NULL;
     if ( !var->getName().isEmpty() )
         this->getVariableHere(var->getName());
 
     if ( oldvar != NULL )
-        return finErrorCodeKits::FIN_EC_CONTENTION;
+        return finErrorKits::EC_CONTENTION;
 
     this->_varList.append(var);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode
@@ -259,10 +259,10 @@ finExecEnvironment::addFunction(finExecFunction *func)
         this->getFunctionHere(func->getFunctionName());
 
     if ( oldfunc != NULL )
-        return finErrorCodeKits::FIN_EC_CONTENTION;
+        return finErrorKits::EC_CONTENTION;
 
     this->_funcList.append(func);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecEnvironment::removeVariable(finExecVariable *var)
@@ -271,7 +271,7 @@ finErrorCode finExecEnvironment::removeVariable(finExecVariable *var)
         if ( this->_varList.at(i) == var )
             this->_varList.removeAt(i);
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecEnvironment::removeFunction(finExecFunction *func)
@@ -280,7 +280,7 @@ finErrorCode finExecEnvironment::removeFunction(finExecFunction *func)
         if ( this->_funcList.at(i) == func )
             this->_funcList.removeAt(i);
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finExecFunction *finExecEnvironment::getBelongFunctionHere() const
@@ -384,7 +384,7 @@ finErrorCode finExecEnvironment::getBelongFunctionList(QStringList *funcnamelist
         funcnamelist->append(this->_belongFunc->getFunctionName());
 
     if ( this->_prevEnv == NULL )
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
 
     return this->_prevEnv->getBelongFunctionList(funcnamelist);
 }
@@ -418,7 +418,7 @@ finExecEnvironment::getParentEnvironment(int envlevel)
 finErrorCode finExecEnvironment::setBelongFunction(finExecFunction *func)
 {
     this->_belongFunc = func;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 int finExecEnvironment::getTotalEnvLevelCountIn(int curlevel)
@@ -438,14 +438,14 @@ finErrorCode
 finExecEnvironment::setFigureContainer(finFigureContainer *figcontainer)
 {
     this->_figContainer = figcontainer;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode
 finExecEnvironment::setParentEnvironment(finExecEnvironment *prevenv)
 {
     this->_prevEnv = prevenv;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finExecEnvironment *finExecEnvironment::_rootEnv = NULL;
@@ -454,11 +454,11 @@ finErrorCode
 finExecEnvironment::setupRootEnvironment()
 {
     if ( _rootEnv != NULL )
-        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+        return finErrorKits::EC_DUPLICATE_OP;
 
     _rootEnv = new finExecEnvironment();
     if ( _rootEnv == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     _rootEnv->setEnvironmentName(QString("root"));
     finExecVariable::installSystemVariables(_rootEnv);
@@ -466,18 +466,18 @@ finExecEnvironment::setupRootEnvironment()
     _rootEnv->setFigureContainer(NULL);
     _rootEnv->setParentEnvironment(NULL);
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode
 finExecEnvironment::disposeRootEnvironment()
 {
     if ( _rootEnv == NULL )
-        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+        return finErrorKits::EC_DUPLICATE_OP;
 
     delete _rootEnv;
     _rootEnv = NULL;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finExecEnvironment *

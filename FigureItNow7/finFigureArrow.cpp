@@ -42,13 +42,13 @@ finFigureArrowType finFigureArrow::parseTypeString(const QString &str)
 finErrorCode finFigureArrow::fillTypesInComboBox(QComboBox *cmbox)
 {
     if ( cmbox == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     cmbox->setEditable(false);
     cmbox->addItem("none", QVariant("none"));
     cmbox->addItem("triangle", QVariant("triangle"));
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finFigureArrow::finFigureArrow()
@@ -89,23 +89,23 @@ double finFigureArrow::getLength() const
 finErrorCode finFigureArrow::setType(finFigureArrowType type)
 {
     this->_type = type;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureArrow::setRadian(double rad)
 {
     rad = rad - floor(rad / M_PI) * M_PI;
     this->_rad = rad;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureArrow::setLength(double length)
 {
     if ( length < 0.0 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     this->_length = length;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finFigureArrow &finFigureArrow::operator = (const finFigureArrow &arrow)
@@ -169,11 +169,11 @@ finErrorCode finFigureArrow::getPixelPath(QList<finFigurePath> *pathlist,
                                           const finFigureConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     switch ( this->_type ) {
       case finFigureArrow::TP_NONE:
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
         break;
 
       case finFigureArrow::TP_TRIANGLE:
@@ -181,7 +181,7 @@ finErrorCode finFigureArrow::getPixelPath(QList<finFigurePath> *pathlist,
         break;
 
       default:
-        return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+        return finErrorKits::EC_NON_IMPLEMENT;
         break;
     }
 }
@@ -230,5 +230,5 @@ finErrorCode finFigureArrow::getPixelPathTriangle(QList<finFigurePath> *pathlist
     figpath.setPath(path);
     pathlist->append(figpath);
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }

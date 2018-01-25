@@ -25,13 +25,13 @@ QGraphicsScene *finGraphPanelScene::getScene() const
 finErrorCode finGraphPanelScene::setScene(QGraphicsScene *scene)
 {
     this->_scene = scene;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphPanelScene::draw()
 {
     if ( this->_scene == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     return finGraphPanelBase::draw();
 }
@@ -53,7 +53,7 @@ void finGraphPanelScene::clearScene() const
 finErrorCode finGraphPanelScene::applyGraphConfig() const
 {
     if ( this->_scene == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     this->clearScene();
     this->_scene->setBackgroundBrush(this->_config.getBackgroundBrush());
@@ -64,13 +64,13 @@ finErrorCode finGraphPanelScene::applyGraphConfig() const
         QGraphicsView *view = views.at(i);
         view->setRenderHints(this->_config.getRenderHints());
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphPanelScene::drawFigurePath(const finFigurePath &path) const
 {
     if ( this->_scene == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     this->_scene->addPath(path.getPath(), path.getPen(), path.getBrush());
 
@@ -78,5 +78,5 @@ finErrorCode finGraphPanelScene::drawFigurePath(const finFigurePath &path) const
         QGraphicsPixmapItem *item = this->_scene->addPixmap(path.getPixmap());
         item->setPos(path.getImagePosition());
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }

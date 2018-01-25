@@ -54,18 +54,18 @@ static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *en
     int arylen = -1, aryidx = 0;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     cntvar = finExecVariable::transLinkTarget(env->findVariable("n"));
     if ( cntvar != NULL && cntvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC &&
                            cntvar->getType() != finExecVariable::FIN_VR_TYPE_NULL )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     else if ( cntvar != NULL && cntvar->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC )
         arylen = cntvar->getNumericValue();
 
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::FIN_VR_TYPE_ARRAY);
     if ( arylen == 0 )
@@ -83,11 +83,11 @@ static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *en
         finExecVariable *retitemvar = retvar->getVariableItemAt(aryidx);
         if ( retitemvar == NULL ) {
             delete retvar;
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         }
 
         errcode = retitemvar->copyVariableValue(itemvar);
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             delete retvar;
             return errcode;
         }
@@ -98,7 +98,7 @@ out:
     retvar->setWriteProtected();
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *env,
@@ -110,24 +110,24 @@ static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *e
     int extcnt;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     rowvar = finExecVariable::transLinkTarget(env->findVariable("row"));
     colvar = finExecVariable::transLinkTarget(env->findVariable("col"));
     if ( rowvar == NULL || colvar == NULL )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     if ( rowvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          colvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     matrow = (int)floor(rowvar->getNumericValue());
     matcol = (int)floor(colvar->getNumericValue());
     if ( matrow < 0 || matcol < 0 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::FIN_VR_TYPE_ARRAY);
     if ( matrow == 0 )
@@ -145,7 +145,7 @@ static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *e
         finExecVariable *rowvar = retvar->getVariableItemAt(rowidx);
         if ( rowvar == NULL ) {
             delete retvar;
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         }
 
         rowvar->preallocArrayLength(matcol);
@@ -159,11 +159,11 @@ static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *e
             finExecVariable *itemvar = rowvar->getVariableItemAt(colidx);
             if ( itemvar == NULL ) {
                 delete retvar;
-                return finErrorCodeKits::FIN_EC_STATE_ERROR;
+                return finErrorKits::EC_STATE_ERROR;
             }
 
             errcode = itemvar->copyVariableValue(srcvar);
-            if ( finErrorCodeKits::isErrorResult(errcode) ) {
+            if ( finErrorKits::isErrorResult(errcode) ) {
                 delete retvar;
                 return errcode;
             }
@@ -175,7 +175,7 @@ out:
     retvar->setWriteProtected();
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnvironment *env,
@@ -185,22 +185,22 @@ static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnviron
     finExecVariable *matvar;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     matvar = finExecVariable::transLinkTarget(env->findVariable("mat"));
     if ( matvar == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     int matrow = 0, matcol = 0;
     if ( !matvar->isNumericMatrix(&matrow, &matcol) )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     errcode = retvar->preallocArrayLength(matcol);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete retvar;
         return errcode;
     }
@@ -208,11 +208,11 @@ static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnviron
         finExecVariable *retrowvar = retvar->getVariableItemAt(rowidx);
         if ( retrowvar == NULL ) {
             delete retvar;
-            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+            return finErrorKits::EC_OUT_OF_MEMORY;
         }
 
         errcode = retrowvar->preallocArrayLength(matrow);
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             delete retvar;
             return errcode;
         }
@@ -221,7 +221,7 @@ static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnviron
             finExecVariable *retcolvar = retrowvar->getVariableItemAt(colidx);
             if ( srcvar == NULL || retcolvar == NULL ) {
                 delete retvar;
-                return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+                return finErrorKits::EC_OUT_OF_MEMORY;
             }
 
             retcolvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
@@ -233,7 +233,7 @@ static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnviron
     retvar->setWriteProtected();
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *env,
@@ -243,25 +243,25 @@ static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *
     finExecVariable *mat1var, *mat2var;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     mat1var = finExecVariable::transLinkTarget(env->findVariable("mat1"));
     mat2var = finExecVariable::transLinkTarget(env->findVariable("mat2"));
     if ( mat1var == NULL || mat2var == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     int mat1row = 0, mat1col = 0, mat2row = 0, mat2col = 0;
     if ( !mat1var->isNumericMatrix(&mat1row, &mat1col) || !mat2var->isNumericMatrix(&mat2row, &mat2col) )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     if ( mat1row != mat2row || mat1col != mat2col )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     errcode = retvar->preallocArrayLength(mat1row);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete retvar;
         return errcode;
     }
@@ -271,11 +271,11 @@ static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *
         finExecVariable *retrowvar = retvar->getVariableItemAt(rowidx);
         if ( rowvar1 == NULL || rowvar2 == NULL || retrowvar == NULL ) {
             delete retvar;
-            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+            return finErrorKits::EC_OUT_OF_MEMORY;
         }
 
         errcode = retrowvar->preallocArrayLength(mat1col);
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             delete retvar;
             return errcode;
         }
@@ -285,7 +285,7 @@ static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *
             finExecVariable *retcolvar = retrowvar->getVariableItemAt(colidx);
             if ( colvar1 == NULL || colvar2 == NULL || retcolvar == NULL ) {
                 delete retvar;
-                return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+                return finErrorKits::EC_OUT_OF_MEMORY;
             }
 
             retcolvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
@@ -297,7 +297,7 @@ static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *
     retvar->setWriteProtected();
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_mat_sub(finExecFunction *self, finExecEnvironment *env,
@@ -307,25 +307,25 @@ static finErrorCode _sysfunc_mat_sub(finExecFunction *self, finExecEnvironment *
     finExecVariable *mat1var, *mat2var;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     mat1var = finExecVariable::transLinkTarget(env->findVariable("mat1"));
     mat2var = finExecVariable::transLinkTarget(env->findVariable("mat2"));
     if ( mat1var == NULL || mat2var == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     int mat1row = 0, mat1col = 0, mat2row = 0, mat2col = 0;
     if ( !mat1var->isNumericMatrix(&mat1row, &mat1col) || !mat2var->isNumericMatrix(&mat2row, &mat2col) )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     if ( mat1row != mat2row || mat1col != mat2col )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     errcode = retvar->preallocArrayLength(mat1row);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete retvar;
         return errcode;
     }
@@ -335,11 +335,11 @@ static finErrorCode _sysfunc_mat_sub(finExecFunction *self, finExecEnvironment *
         finExecVariable *retrowvar = retvar->getVariableItemAt(rowidx);
         if ( rowvar1 == NULL || rowvar2 == NULL || retrowvar == NULL ) {
             delete retvar;
-            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+            return finErrorKits::EC_OUT_OF_MEMORY;
         }
 
         errcode = retrowvar->preallocArrayLength(mat1col);
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             delete retvar;
             return errcode;
         }
@@ -349,7 +349,7 @@ static finErrorCode _sysfunc_mat_sub(finExecFunction *self, finExecEnvironment *
             finExecVariable *retcolvar = retrowvar->getVariableItemAt(colidx);
             if ( colvar1 == NULL || colvar2 == NULL || retcolvar == NULL ) {
                 delete retvar;
-                return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+                return finErrorKits::EC_OUT_OF_MEMORY;
             }
 
             retcolvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
@@ -361,7 +361,7 @@ static finErrorCode _sysfunc_mat_sub(finExecFunction *self, finExecEnvironment *
     retvar->setWriteProtected();
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *env,
@@ -371,25 +371,25 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
     finExecVariable *mat1var, *mat2var;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     mat1var = finExecVariable::transLinkTarget(env->findVariable("mat1"));
     mat2var = finExecVariable::transLinkTarget(env->findVariable("mat2"));
     if ( mat1var == NULL || mat2var == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     int mat1row = 0, mat1col = 0, mat2row = 0, mat2col = 0;
     if ( !mat1var->isNumericMatrix(&mat1row, &mat1col) || !mat2var->isNumericMatrix(&mat2row, &mat2col) )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     if ( mat1col != mat2row )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     errcode = retvar->preallocArrayLength(mat1row);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete retvar;
         return errcode;
     }
@@ -398,11 +398,11 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
         finExecVariable *retrowvar = retvar->getVariableItemAt(rowidx);
         if ( rowvar1 == NULL || retrowvar == NULL ) {
             delete retvar;
-            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+            return finErrorKits::EC_OUT_OF_MEMORY;
         }
 
         errcode = retrowvar->preallocArrayLength(mat2col);
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             delete retvar;
             return errcode;
         }
@@ -413,7 +413,7 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
                 finExecVariable *colvar2 = mat2var->getVariableItemAt(i)->getVariableItemAt(colidx);
                 if ( colvar1 == NULL || colvar2 == NULL ) {
                     delete retvar;
-                    return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+                    return finErrorKits::EC_OUT_OF_MEMORY;
                 }
 
                 itemval += colvar1->getNumericValue() * colvar2->getNumericValue();
@@ -422,7 +422,7 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
             finExecVariable *retcolvar = retrowvar->getVariableItemAt(colidx);
             if ( retcolvar == NULL ) {
                 delete retvar;
-                return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+                return finErrorKits::EC_OUT_OF_MEMORY;
             }
 
             retcolvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
@@ -434,5 +434,5 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
     retvar->setWriteProtected();
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }

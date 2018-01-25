@@ -67,97 +67,97 @@ static finErrorCode _sysfunc_plot_dots(finExecFunction *self, finExecEnvironment
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
     finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
 
     QList<QPointF> ptlist;
     finErrorCode errcode = finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     finPlotDots dotplot;
     dotplot.appendPoints(ptlist);
     dotplot.setFigureContainer(env->getFigureContainer());
     errcode = dotplot.plot();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_plot_line(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
     finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
 
     QList<QPointF> ptlist;
     finErrorCode errcode = finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     finPlotDotsLine lnplot;
     lnplot.appendPoints(ptlist);
     lnplot.setFigureContainer(env->getFigureContainer());
     errcode = lnplot.plot();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_plot_stream(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
     finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
 
     QList<QPointF> ptlist;
     finErrorCode errcode = finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     finPlotDotsStream stmplot;
     stmplot.appendPoints(ptlist);
     stmplot.setFigureContainer(env->getFigureContainer());
     errcode = stmplot.plot();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_plot_scatter(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *dislmtvar = finExecVariable::transLinkTarget(env->findVariable("dl"));
     finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
     finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
     if ( dislmtvar != NULL && dislmtvar->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
                               dislmtvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     double dislmt = 0.1;
     if ( dislmtvar != NULL && dislmtvar->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC )
@@ -165,7 +165,7 @@ static finErrorCode _sysfunc_plot_scatter(finExecFunction *self, finExecEnvironm
 
     QList<QPointF> ptlist;
     finErrorCode errcode = finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     finPlotDotsScatter scplot;
@@ -173,25 +173,25 @@ static finErrorCode _sysfunc_plot_scatter(finExecFunction *self, finExecEnvironm
     scplot.appendPoints(ptlist);
     scplot.setFigureContainer(env->getFigureContainer());
     errcode = scplot.plot();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *funcvar;
     funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
     if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *x1var, *x2var;
     x1var = finExecVariable::transLinkTarget(env->findVariable("x1"));
@@ -199,7 +199,7 @@ static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnviron
     if ( x1var == NULL || x2var == NULL ||
          x1var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
          x2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     QString funcname = funcvar->getStringValue();
     double x1 = x1var->getNumericValue();
@@ -218,28 +218,28 @@ static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnviron
     plotfunc.setFigureContainer(env->getFigureContainer());
 
     finErrorCode errcode = plotfunc.plot();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
     if ( !flowctl->isFlowNext() )
         return errcode;
 
     // Because all extended arguments are left values, we do not release the memory for arglist.
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_plot_polar(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *funcvar;
     funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
     if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *rad1var, *rad2var;
     rad1var = finExecVariable::transLinkTarget(env->findVariable("rad1"));
@@ -247,7 +247,7 @@ static finErrorCode _sysfunc_plot_polar(finExecFunction *self, finExecEnvironmen
     if ( rad1var == NULL || rad2var == NULL ||
          rad1var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
          rad2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     QString funcname = funcvar->getStringValue();
     double rad1 = rad1var->getNumericValue();
@@ -266,28 +266,28 @@ static finErrorCode _sysfunc_plot_polar(finExecFunction *self, finExecEnvironmen
     plotpolar.setFigureContainer(env->getFigureContainer());
 
     finErrorCode errcode = plotpolar.plot();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
     if ( !flowctl->isFlowNext() )
         return errcode;
 
     // Because all extended arguments are left values, we do not release the memory for arglist.
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_plot_parametric(finExecFunction *self, finExecEnvironment *env,
                                              finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *funcvar;
     funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
     if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *t1var, *t2var;
     t1var = finExecVariable::transLinkTarget(env->findVariable("t1"));
@@ -295,7 +295,7 @@ static finErrorCode _sysfunc_plot_parametric(finExecFunction *self, finExecEnvir
     if ( t1var == NULL || t2var == NULL ||
          t1var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
          t2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     QString funcname = funcvar->getStringValue();
     double t1 = t1var->getNumericValue();
@@ -314,28 +314,28 @@ static finErrorCode _sysfunc_plot_parametric(finExecFunction *self, finExecEnvir
     plotpar.setFigureContainer(env->getFigureContainer());
 
     finErrorCode errcode = plotpar.plot();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
     if ( !flowctl->isFlowNext() )
         return errcode;
 
     // Because all extended arguments are left values, we do not release the memory for arglist.
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_plot_equation(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *funcvar;
     funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
     if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *x1var, *x2var, *y1var, *y2var;
     x1var = finExecVariable::transLinkTarget(env->findVariable("x1"));
@@ -347,7 +347,7 @@ static finErrorCode _sysfunc_plot_equation(finExecFunction *self, finExecEnviron
          x2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
          y1var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
          y2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC)
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     QString funcname = funcvar->getStringValue();
     double x1 = x1var->getNumericValue();
@@ -370,12 +370,12 @@ static finErrorCode _sysfunc_plot_equation(finExecFunction *self, finExecEnviron
     ploteq.setFigureContainer(env->getFigureContainer());
 
     finErrorCode errcode = ploteq.plot();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
     if ( !flowctl->isFlowNext() )
         return errcode;
 
     // Because all extended arguments are left values, we do not release the memory for arglist.
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }

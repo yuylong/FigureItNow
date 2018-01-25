@@ -45,7 +45,7 @@ finErrorCode finGraphConfig::copyGraphConfig(const finGraphConfig *srccfg)
     this->cloneTransform(srccfg);
     this->_renderHints = srccfg->_renderHints;
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 const QSizeF &finGraphConfig::getPanelPixelSize() const
@@ -153,94 +153,94 @@ QPainter::RenderHints finGraphConfig::getRenderHints() const
 finErrorCode finGraphConfig::setPanelPixelSize(const QSizeF &size)
 {
     this->_panelSize = size;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::setPanelPixelWidth(double width)
 {
     this->_panelSize.setWidth(width);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::setPanelPixelHeight(double height)
 {
     this->_panelSize.setHeight(height);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::setPanelPixelSize(double sizex, double sizey)
 {
     this->_panelSize.setWidth(sizex);
     this->_panelSize.setHeight(sizey);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::setBackgroundColor(const QColor &color)
 {
     this->_bgColor = color;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::setOriginPixelPoint(const QPointF &pt)
 {
     this->_originPoint = pt;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::setOriginPixelPointX(double ptx)
 {
     this->_originPoint.setX(ptx);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::setOriginPixelPointY(double pty)
 {
     this->_originPoint.setY(pty);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::setOriginPixelPoint(double ptx, double pty)
 {
     this->_originPoint.setX(ptx);
     this->_originPoint.setY(pty);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::setAxisUnitPixelSize(double size)
 {
     this->_axisUnitSize = size;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::setAxisRadZ(double rad)
 {
     this->_axisRadZ = rad;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::setAxisScaleZ(double scale)
 {
     this->_axisScaleZ = scale;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::setTransformType(finGraphTransType type)
 {
     if ( this->getTransformType() == type )
-        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+        return finErrorKits::EC_DUPLICATE_OP;
 
     finGraphTrans *newtrans = NULL;
     switch ( type ) {
       case finGraphTrans::FIN_GT_TYPE_RECT:
         newtrans = new finGraphTransRect();
         if ( newtrans == NULL )
-            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+            return finErrorKits::EC_OUT_OF_MEMORY;
         break;
 
       case finGraphTrans::FIN_GT_TYPE_AFFINE:
         newtrans = new finGraphTransAffine();
         if ( newtrans == NULL )
-            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+            return finErrorKits::EC_OUT_OF_MEMORY;
         break;
 
       default:
@@ -251,7 +251,7 @@ finErrorCode finGraphConfig::setTransformType(finGraphTransType type)
     this->_transform = newtrans;
     if ( oldtrans != NULL )
         delete oldtrans;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::cloneTransform(const finGraphTrans *srctrans)
@@ -260,18 +260,18 @@ finErrorCode finGraphConfig::cloneTransform(const finGraphTrans *srctrans)
         return this->setTransformType(finGraphTrans::FIN_GT_TYPE_NONE);
 
     finErrorCode errcode = this->setTransformType(srctrans->getTransformType());
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     finGraphTrans *mytrans = this->getTransform();
     if ( mytrans == NULL )
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
 
     errcode = mytrans->cloneTransform(srctrans);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::cloneTransform(const finGraphConfig *srccfg)
@@ -290,7 +290,7 @@ QTransform finGraphConfig::getNakePixelTransformMatrix() const
 finErrorCode finGraphConfig::setRenderHints(QPainter::RenderHints hints)
 {
     this->_renderHints = hints;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QPointF finGraphConfig::transformPixelPoint3D(double x, double y, double z) const

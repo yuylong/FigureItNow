@@ -43,17 +43,17 @@ static finErrorCode _sysfunc_str_len(finExecFunction *self, finExecEnvironment *
     finExecVariable *strvar, *retvar;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
     if ( strvar == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     if ( strvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     QString str = strvar->getStringValue();
 
@@ -64,7 +64,7 @@ static finErrorCode _sysfunc_str_len(finExecFunction *self, finExecEnvironment *
 
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_str_left(finExecFunction *self, finExecEnvironment *env,
@@ -73,22 +73,22 @@ static finErrorCode _sysfunc_str_left(finExecFunction *self, finExecEnvironment 
     finExecVariable *strvar, *lenvar, *retvar;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
     lenvar = finExecVariable::transLinkTarget(env->findVariable("len"));
     if ( strvar == NULL || lenvar == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     if ( strvar->getType() != finExecVariable::FIN_VR_TYPE_STRING ||
          lenvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     QString str = strvar->getStringValue();
     int len = (int)floor(lenvar->getNumericValue());
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
     if ( len >= str.length() )
@@ -100,7 +100,7 @@ static finErrorCode _sysfunc_str_left(finExecFunction *self, finExecEnvironment 
 
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_str_right(finExecFunction *self, finExecEnvironment *env,
@@ -109,22 +109,22 @@ static finErrorCode _sysfunc_str_right(finExecFunction *self, finExecEnvironment
     finExecVariable *strvar, *lenvar, *retvar;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
     lenvar = finExecVariable::transLinkTarget(env->findVariable("len"));
     if ( strvar == NULL || lenvar == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     if ( strvar->getType() != finExecVariable::FIN_VR_TYPE_STRING ||
          lenvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     QString str = strvar->getStringValue();
     int len = (int)floor(lenvar->getNumericValue());
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
     if ( len >= str.length() )
@@ -136,7 +136,7 @@ static finErrorCode _sysfunc_str_right(finExecFunction *self, finExecEnvironment
 
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *env,
@@ -145,17 +145,17 @@ static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *
     finExecVariable *strvar, *posvar, *lenvar, *retvar;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
     posvar = finExecVariable::transLinkTarget(env->findVariable("pos"));
     lenvar = finExecVariable::transLinkTarget(env->findVariable("len"));
     if ( strvar == NULL || posvar == NULL || lenvar == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     if ( strvar->getType() != finExecVariable::FIN_VR_TYPE_STRING ||
          posvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          lenvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     QString str = strvar->getStringValue();
     int pos = (int)floor(posvar->getNumericValue());
@@ -163,7 +163,7 @@ static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
     if ( len >= str.length() )
@@ -175,5 +175,5 @@ static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *
 
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }

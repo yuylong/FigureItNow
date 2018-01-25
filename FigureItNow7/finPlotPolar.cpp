@@ -58,7 +58,7 @@ int finPlotPolar::getRadianVarIndex() const
 finErrorCode finPlotPolar::setFunctionName(const QString &funcname)
 {
     this->_funcname = funcname;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotPolar::setFigureRange(double rad1, double rad2)
@@ -70,16 +70,16 @@ finErrorCode finPlotPolar::setFigureRange(double rad1, double rad2)
         this->_fromRad = rad2;
         this->_toRad = rad1;
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotPolar::setRadianVarIndex(int idx)
 {
     if ( idx < 0 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     this->_radIdx = idx;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QList<finExecVariable *> *finPlotPolar::getCallArgList() const
@@ -110,25 +110,25 @@ finFigureContainer *finPlotPolar::getFigureContainer() const
 finErrorCode finPlotPolar::setCallArgList(QList<finExecVariable *> *arglist)
 {
     this->_callArgList = arglist;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotPolar::setEnvironment(finExecEnvironment *env)
 {
     this->_environment = env;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotPolar::setMachine(finExecMachine *machine)
 {
     this->_machine = machine;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotPolar::setFlowControl(finExecFlowControl *flowctl)
 {
     this->_flowctl = flowctl;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotPolar::setFigureContainer(finFigureContainer *figcontainer)
@@ -173,11 +173,11 @@ double finPlotPolar::getBaseStep() const
 finErrorCode finPlotPolar::buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **radvar)
 {
     if ( varlist == NULL || radvar == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     *radvar = new finExecVariable();
     if ( *radvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     (*radvar)->setName(QString());
     (*radvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
@@ -187,30 +187,30 @@ finErrorCode finPlotPolar::buildFuncArgList(QList<finExecVariable *> *varlist, f
 
     *varlist = *this->_callArgList;
     varlist->insert(this->_radIdx, *radvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotPolar::calcAPoint(double rad, finExecFunction *func, QList<finExecVariable *> *varlist,
                                       finExecVariable *radvar, double *retrlen, QPointF *pt, bool *goon)
 {
     if ( varlist == NULL || radvar == NULL || pt == NULL || goon == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     finErrorCode errcode;
     radvar->setNumericValue(rad);
 
     errcode = func->execFunction(varlist, this->_environment, this->_machine, this->_flowctl);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     errcode = this->_flowctl->checkFlowForExpress(goon, NULL, this->_machine);
-    if ( finErrorCodeKits::isErrorResult(errcode) || !(*goon) )
+    if ( finErrorKits::isErrorResult(errcode) || !(*goon) )
         return errcode;
 
     finExecVariable *retvar = this->_flowctl->pickReturnVariable();
     if ( retvar == NULL || retvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
         finExecVariable::releaseNonLeftVariable(retvar);
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     }
 
     double rlen = retvar->getNumericValue();
@@ -219,7 +219,7 @@ finErrorCode finPlotPolar::calcAPoint(double rad, finExecFunction *func, QList<f
     if ( retrlen != NULL )
         *retrlen = rlen;
     finExecVariable::releaseNonLeftVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 double finPlotPolar::getRadianStep(double basestep, double rlen) const
@@ -231,7 +231,7 @@ double finPlotPolar::getRadianStep(double basestep, double rlen) const
 finErrorCode finPlotPolar::plot()
 {
     if ( !this->checkValid() )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     this->_stmPlot.clearBreakPoints();
     this->_stmPlot.clearPoints();
@@ -241,12 +241,12 @@ finErrorCode finPlotPolar::plot()
 
     finExecFunction *func = this->_environment->findFunction(this->_funcname);
     if ( func == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     QList<finExecVariable *> funcarglist;
     finExecVariable *radvar;
     errcode = this->buildFuncArgList(&funcarglist, &radvar);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     bool goon = true, loopit = true;
@@ -261,7 +261,7 @@ finErrorCode finPlotPolar::plot()
         }
 
         errcode = this->calcAPoint(rad, func, &funcarglist, radvar, &rlen, &curpt, &goon);
-        if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+        if ( finErrorKits::isErrorResult(errcode) || !goon )
             return errcode;
 
         this->_stmPlot.appendPoint(curpt);

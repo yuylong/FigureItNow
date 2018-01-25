@@ -105,14 +105,14 @@ static finErrorCode _sysfunc_clear_fig(finExecFunction *self, finExecEnvironment
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     env->getFigureContainer()->clearFigureObjects();
 
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_draw_dot(finExecFunction *self, finExecEnvironment *env,
@@ -122,32 +122,32 @@ static finErrorCode _sysfunc_draw_dot(finExecFunction *self, finExecEnvironment 
     finExecVariable *cx, *cy;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     cx = finExecVariable::transLinkTarget(env->findVariable("cx"));
     cy = finExecVariable::transLinkTarget(env->findVariable("cy"));
     if ( cx == NULL || cy == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     if ( cx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          cy->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finFigureObjectDot *fodot = new finFigureObjectDot();
     if ( fodot == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     fodot->setPoint(cx->getNumericValue(), cy->getNumericValue());
 
     errcode = env->getFigureContainer()->appendFigureObject(fodot);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete fodot;
         return errcode;
     }
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode
@@ -157,9 +157,9 @@ _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *ma
     finExecVariable *x1, *y1, *x2, *y2;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     x1 = finExecVariable::transLinkTarget(env->findVariable("x1"));
     y1 = finExecVariable::transLinkTarget(env->findVariable("y1"));
@@ -167,28 +167,28 @@ _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *ma
     y2 = finExecVariable::transLinkTarget(env->findVariable("y2"));
 
     if ( x1 == NULL || y1 == NULL || x2 == NULL || y2 == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     if ( x1->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          y1->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          x2->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          y2->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finFigureObjectLine *foline = new finFigureObjectLine();
     if ( foline == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     foline->setPoint1(x1->getNumericValue(), y1->getNumericValue());
     foline->setPoint2(x2->getNumericValue(), y2->getNumericValue());
 
     errcode = env->getFigureContainer()->appendFigureObject(foline);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete foline;
         return errcode;
     }
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment *env,
@@ -198,13 +198,13 @@ static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment 
     finExecVariable *ptx, *pty;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finFigureObjectPolyline *fopolyline = new finFigureObjectPolyline();
     if ( fopolyline == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     ptx = finExecVariable::transLinkTarget(env->findVariable("x1"));
     pty = finExecVariable::transLinkTarget(env->findVariable("y1"));
@@ -212,7 +212,7 @@ static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment 
          ptx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          pty->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) {
         delete fopolyline;
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     }
     fopolyline->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
 
@@ -222,7 +222,7 @@ static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment 
          ptx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          pty->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) {
         delete fopolyline;
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     }
     fopolyline->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
 
@@ -235,7 +235,7 @@ static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment 
         if ( ptx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
              pty->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) {
             delete fopolyline;
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         }
 
         fopolyline->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
@@ -243,42 +243,42 @@ static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment 
     }
 
     errcode = env->getFigureContainer()->appendFigureObject(fopolyline);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete fopolyline;
         return errcode;
     }
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_polyline_mat(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
     finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
     QList<QPointF> ptlist;
     finErrorCode errcode = finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     finFigureObjectPolyline *fopolyline = new finFigureObjectPolyline();
     if ( fopolyline == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     fopolyline->appendPoints(ptlist);
     errcode = env->getFigureContainer()->appendFigureObject(fopolyline);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete fopolyline;
         return errcode;
     }
 
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env,
@@ -288,9 +288,9 @@ static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env
     finExecVariable *cx, *cy, *w, *h, *rad;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     cx = finExecVariable::transLinkTarget(env->findVariable("cx"));
     cy = finExecVariable::transLinkTarget(env->findVariable("cy"));
@@ -299,7 +299,7 @@ static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
 
     if ( cx == NULL || cy == NULL || w == NULL || h == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     if ( cx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          cy->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
@@ -307,11 +307,11 @@ static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env
          h->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          (rad != NULL && rad->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
                          rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finFigureObjectRect *forect = new finFigureObjectRect();
     if ( forect == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     forect->setCenterPoint(cx->getNumericValue(), cy->getNumericValue());
     forect->setSize(w->getNumericValue(), h->getNumericValue());
@@ -321,12 +321,12 @@ static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env
         forect->setRadian(0.0);
 
     errcode = env->getFigureContainer()->appendFigureObject(forect);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete forect;
         return errcode;
     }
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *env,
@@ -336,13 +336,13 @@ static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *
     finExecVariable *ptx, *pty;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finFigureObjectPolygon *fopolygon = new finFigureObjectPolygon();
     if ( fopolygon == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     ptx = finExecVariable::transLinkTarget(env->findVariable("x1"));
     pty = finExecVariable::transLinkTarget(env->findVariable("y1"));
@@ -350,7 +350,7 @@ static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *
          ptx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          pty->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) {
         delete fopolygon;
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     }
     fopolygon->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
 
@@ -360,7 +360,7 @@ static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *
          ptx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          pty->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) {
         delete fopolygon;
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     }
     fopolygon->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
 
@@ -373,7 +373,7 @@ static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *
         if ( ptx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
              pty->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) {
             delete fopolygon;
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         }
 
         fopolygon->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
@@ -381,42 +381,42 @@ static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *
     }
 
     errcode = env->getFigureContainer()->appendFigureObject(fopolygon);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete fopolygon;
         return errcode;
     }
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_polygon_mat(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
     finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
     QList<QPointF> ptlist;
     finErrorCode errcode = finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     finFigureObjectPolygon *fopolygon = new finFigureObjectPolygon();
     if ( fopolygon == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     fopolygon->appendPoints(ptlist);
     errcode = env->getFigureContainer()->appendFigureObject(fopolygon);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete fopolygon;
         return errcode;
     }
 
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *env,
@@ -426,25 +426,25 @@ static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *e
     finExecVariable *cx, *cy, *r;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     cx = finExecVariable::transLinkTarget(env->findVariable("cx"));
     cy = finExecVariable::transLinkTarget(env->findVariable("cy"));
     r = finExecVariable::transLinkTarget(env->findVariable("r"));
 
     if ( cx == NULL || cy == NULL || r == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     if ( cx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          cy->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          r->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finFigureObjectEllipse *circle = new finFigureObjectEllipse();
     if ( circle == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     circle->setCenterPoint(cx->getNumericValue(), cy->getNumericValue());
     circle->setLongRadius(r->getNumericValue());
@@ -452,12 +452,12 @@ static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *e
     circle->setRadian(0.0);
 
     errcode = env->getFigureContainer()->appendFigureObject(circle);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete circle;
         return errcode;
     }
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *env,
@@ -467,9 +467,9 @@ static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *
     finExecVariable *cx, *cy, *lr, *sr, *rad;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     cx = finExecVariable::transLinkTarget(env->findVariable("cx"));
     cy = finExecVariable::transLinkTarget(env->findVariable("cy"));
@@ -478,7 +478,7 @@ static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
 
     if ( cx == NULL || cy == NULL || lr == NULL || sr == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     if ( cx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          cy->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
@@ -486,11 +486,11 @@ static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *
          sr->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          (rad != NULL && rad->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
                          rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finFigureObjectEllipse *foellipse = new finFigureObjectEllipse();
     if ( foellipse == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     foellipse->setCenterPoint(cx->getNumericValue(), cy->getNumericValue());
     foellipse->setLongRadius(lr->getNumericValue());
@@ -501,12 +501,12 @@ static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *
         foellipse->setRadian(0.0);
 
     errcode = env->getFigureContainer()->appendFigureObject(foellipse);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete foellipse;
         return errcode;
     }
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_draw_text_base(finExecFunction *self, finExecEnvironment *env,
@@ -516,9 +516,9 @@ static finErrorCode _sysfunc_draw_text_base(finExecFunction *self, finExecEnviro
     finExecVariable *text, *cx, *cy, *rad, *scale;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     text = finExecVariable::transLinkTarget(env->findVariable("text"));
     cx = finExecVariable::transLinkTarget(env->findVariable("cx"));
@@ -527,7 +527,7 @@ static finErrorCode _sysfunc_draw_text_base(finExecFunction *self, finExecEnviro
     scale = finExecVariable::transLinkTarget(env->findVariable("sc"));
 
     if ( text == NULL || cx == NULL || cy == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     if ( text->getType() != finExecVariable::FIN_VR_TYPE_STRING ||
          cx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
@@ -536,11 +536,11 @@ static finErrorCode _sysfunc_draw_text_base(finExecFunction *self, finExecEnviro
                          rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) ||
          (scale != NULL && scale->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
                            scale->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC))
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finFigureObjectText *fotext = new finFigureObjectText();
     if ( fotext == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
     fotext->setIsPinned(pinned);
 
     fotext->setText(text->getStringValue());
@@ -555,12 +555,12 @@ static finErrorCode _sysfunc_draw_text_base(finExecFunction *self, finExecEnviro
         fotext->setScale(1.0);
 
     errcode = env->getFigureContainer()->appendFigureObject(fotext);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete fotext;
         return errcode;
     }
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_draw_text(finExecFunction *self, finExecEnvironment *env,
@@ -582,9 +582,9 @@ static finErrorCode _sysfunc_draw_image_base(finExecFunction *self, finExecEnvir
     finExecVariable *image, *cx, *cy, *rad, *sx, *sy;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     image = finExecVariable::transLinkTarget(env->findVariable("image"));
     cx = finExecVariable::transLinkTarget(env->findVariable("cx"));
@@ -594,7 +594,7 @@ static finErrorCode _sysfunc_draw_image_base(finExecFunction *self, finExecEnvir
     sy = finExecVariable::transLinkTarget(env->findVariable("sy"));
 
     if ( image == NULL || cx == NULL || cy == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     if ( (image->getType() != finExecVariable::FIN_VR_TYPE_STRING &&
           image->getType() != finExecVariable::FIN_VR_TYPE_IMAGE) ||
@@ -606,11 +606,11 @@ static finErrorCode _sysfunc_draw_image_base(finExecFunction *self, finExecEnvir
                         sx->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) ||
          (sy != NULL && sy->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
                         sy->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC))
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finFigureObjectImage *foimg = new finFigureObjectImage();
     if ( foimg == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
     foimg->setIsPinned(pinned);
 
     if ( image->getType() == finExecVariable::FIN_VR_TYPE_STRING ) {
@@ -634,12 +634,12 @@ static finErrorCode _sysfunc_draw_image_base(finExecFunction *self, finExecEnvir
         foimg->setScaleY(1.0);
 
     errcode = env->getFigureContainer()->appendFigureObject(foimg);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete foimg;
         return errcode;
     }
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_draw_image(finExecFunction *self, finExecEnvironment *env,
@@ -658,13 +658,13 @@ static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env
                                   finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finFigureObjectAxis *foaxis = new finFigureObjectAxis();
     if ( foaxis == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     finExecVariable *stepxvar = finExecVariable::transLinkTarget(env->findVariable("sx"));
     if ( stepxvar == NULL || stepxvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
@@ -707,12 +707,12 @@ static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env
         foaxis->setRangeY(minyvar->getNumericValue(), maxyvar->getNumericValue());
 
     finErrorCode errcode = env->getFigureContainer()->appendFigureObject(foaxis);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete foaxis;
         return errcode;
     }
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode
@@ -722,9 +722,9 @@ _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env, finExecMachine *
     finExecVariable *x1, *y1, *z1, *x2, *y2, *z2;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     x1 = finExecVariable::transLinkTarget(env->findVariable("x1"));
     y1 = finExecVariable::transLinkTarget(env->findVariable("y1"));
@@ -734,7 +734,7 @@ _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env, finExecMachine *
     z2 = finExecVariable::transLinkTarget(env->findVariable("z2"));
 
     if ( x1 == NULL || y1 == NULL || z1 == NULL || x2 == NULL || y2 == NULL || z2 == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     if ( x1->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          y1->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
@@ -742,57 +742,57 @@ _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env, finExecMachine *
          x2->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          y2->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
          z2->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finFigureObjectLine3D *foline3d = new finFigureObjectLine3D();
     if ( foline3d == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     foline3d->setPoint1(x1->getNumericValue(), y1->getNumericValue(), z1->getNumericValue());
     foline3d->setPoint2(x2->getNumericValue(), y2->getNumericValue(), z2->getNumericValue());
 
     errcode = env->getFigureContainer()->appendFigureObject(foline3d);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete foline3d;
         return errcode;
     }
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_named_color(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     finExecVariable *colornamevar = finExecVariable::transLinkTarget(env->findVariable("colorname"));
     if ( colornamevar == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     if ( colornamevar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     QString colorname = colornamevar->getStringValue();
     if ( !QColor::isValidColor(colorname) )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     QColor color = QColor(colorname);
     if ( !color.isValid() )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *retvar = new finExecVariable();
     if (retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     finErrorCode errcode = retvar->setupColorValue(color);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     retvar->setWriteProtected();
     retvar->clearLeftValue();
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvironment *env,
@@ -803,23 +803,23 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
     finFigureConfig *figconfig;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     figconfig = env->getFigureContainer()->getFigureConfig();
     if ( figconfig == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     cfgnamevar = finExecVariable::transLinkTarget(env->findVariable("cfgname"));
     if ( cfgnamevar == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     if ( cfgnamevar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     cfgvalue = new finExecVariable();
     if ( cfgvalue == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     QString cfgname = cfgnamevar->getStringValue();
     if ( QString::compare(cfgname, "dot_size") == 0 ) {
@@ -827,13 +827,13 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
         cfgvalue->setNumericValue(figconfig->getDotSize());
     } else if ( QString::compare(cfgname, "border_color") == 0 ) {
         errcode = cfgvalue->setupColorValue(figconfig->getBorderColor());
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             delete cfgvalue;
             return errcode;
         }
     } else if ( QString::compare(cfgname, "fill_color") == 0 ) {
         errcode = cfgvalue->setupColorValue(figconfig->getFillColor());
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             delete cfgvalue;
             return errcode;
         }
@@ -865,32 +865,32 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
         cfgvalue->setNumericValue(figconfig->getFontPointSize());
     } else if ( QString::compare(cfgname, "font_bold") == 0 ) {
         errcode = cfgvalue->setupBoolValue(figconfig->getFontBold());
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             delete cfgvalue;
             return errcode;
         }
     } else if ( QString::compare(cfgname, "font_italic") == 0 ) {
         errcode = cfgvalue->setupBoolValue(figconfig->getFontItalic());
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             delete cfgvalue;
             return errcode;
         }
     } else if ( QString::compare(cfgname, "font_color") == 0 ) {
         errcode = cfgvalue->setupColorValue(figconfig->getFontColor());
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             delete cfgvalue;
             return errcode;
         }
     } else {
         delete cfgvalue;
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     }
 
     cfgvalue->setWriteProtected();
     cfgvalue->clearLeftValue();
     flowctl->setFlowNext();
     flowctl->setReturnVariable(cfgvalue);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvironment *env,
@@ -901,96 +901,96 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
     finFigureConfig *figconfig;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     figconfig = env->getFigureContainer()->getFigureConfig();
     if ( figconfig == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     cfgnamevar = finExecVariable::transLinkTarget(env->findVariable("cfgname"));
     cfgvalue = finExecVariable::transLinkTarget(env->findVariable("value"));
     if ( cfgnamevar == NULL || cfgvalue == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     if ( cfgnamevar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     QString cfgname = cfgnamevar->getStringValue();
     if ( QString::compare(cfgname, "dot_size") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         figconfig->setDotSize(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "border_color") == 0 ) {
         QColor color;
         errcode = cfgvalue->readColorValue(&color);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
+        if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
         figconfig->setBorderColor(color);
     } else if ( QString::compare(cfgname, "fill_color") == 0 ) {
         QColor color;
         errcode = cfgvalue->readColorValue(&color);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
+        if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
         figconfig->setFillColor(color);
     } else if ( QString::compare(cfgname, "start_arrow_type") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         finFigureArrowType arwtype = finFigureArrow::parseTypeString(cfgvalue->getStringValue());
         figconfig->setStartArrowType(arwtype);
     } else if ( QString::compare(cfgname, "start_arrow_size") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         figconfig->setStartArrowSize(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "start_arrow_rad") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         figconfig->setStartArrowRadian(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "end_arrow_type") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         finFigureArrowType arwtype = finFigureArrow::parseTypeString(cfgvalue->getStringValue());
         figconfig->setEndArrowType(arwtype);
     } else if ( QString::compare(cfgname, "end_arrow_size") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         figconfig->setEndArrowSize(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "end_arrow_rad") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         figconfig->setEndArrowRadian(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "font_name") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         figconfig->setFontName(cfgvalue->getStringValue());
     } else if ( QString::compare(cfgname, "font_size") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         figconfig->setFontPointSize(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "font_bold") == 0 ) {
         bool blval;
         errcode = cfgvalue->readBoolValue(&blval);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
+        if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
         figconfig->setFontBold(blval);
     } else if ( QString::compare(cfgname, "font_italic") == 0 ) {
         bool blval;
         errcode = cfgvalue->readBoolValue(&blval);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
+        if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
         figconfig->setFontItalic(blval);
     } else if ( QString::compare(cfgname, "font_color") == 0 ) {
         QColor color;
         errcode = cfgvalue->readColorValue(&color);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
+        if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
         figconfig->setFontColor(color);
     } else {
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     }
 
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnvironment *env,
@@ -1001,23 +1001,23 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
     finGraphConfig *graphconfig;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     graphconfig = env->getFigureContainer()->getGraphConfig();
     if ( graphconfig == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     cfgnamevar = finExecVariable::transLinkTarget(env->findVariable("cfgname"));
     if ( cfgnamevar == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     if ( cfgnamevar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     cfgvalue = new finExecVariable();
     if ( cfgvalue == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     QString cfgname = cfgnamevar->getStringValue();
     if ( QString::compare(cfgname, "unit_size") == 0 ) {
@@ -1025,7 +1025,7 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
         cfgvalue->setNumericValue(graphconfig->getAxisUnitPixelSize());
     } else if ( QString::compare(cfgname, "background_color") == 0 ) {
         errcode = cfgvalue->setupColorValue(graphconfig->getBackgroundColor());
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             delete cfgvalue;
             return errcode;
         }
@@ -1078,48 +1078,48 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
     } else if ( QString::compare(cfgname, "rect_trans_zoom_x") == 0 ) {
         if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_RECT ) {
             delete cfgvalue;
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         }
         finGraphTransRect *recttrans = (finGraphTransRect *)graphconfig->getTransform();
         if ( recttrans == NULL ) {
             delete cfgvalue;
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         }
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
         cfgvalue->setNumericValue(recttrans->getAxisZoomX());
     } else if ( QString::compare(cfgname, "rect_trans_zoom_y") == 0 ) {
         if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_RECT ) {
             delete cfgvalue;
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         }
         finGraphTransRect *recttrans = (finGraphTransRect *)graphconfig->getTransform();
         if ( recttrans == NULL ) {
             delete cfgvalue;
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         }
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
         cfgvalue->setNumericValue(recttrans->getAxisZoomY());
     } else if ( QString::compare(cfgname, "affine_trans_act_cnt") == 0 ) {
         if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE ) {
             delete cfgvalue;
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         }
         finGraphTransAffine *affinetrans = (finGraphTransAffine *)graphconfig->getTransform();
         if ( affinetrans == NULL ) {
             delete cfgvalue;
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         }
         cfgvalue->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
         cfgvalue->setNumericValue(affinetrans->getActionCount());
     } else if ( QString::compare(cfgname, "affine_trans_act_type") == 0 ) {
         if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE ) {
             delete cfgvalue;
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         }
         finGraphTransAffine *affinetrans = (finGraphTransAffine *)graphconfig->getTransform();
         if ( affinetrans == NULL ) {
             delete cfgvalue;
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         }
         int extargcnt = finExecFunction::getExtendArgCount(env);
         if ( extargcnt <= 0 ) {
@@ -1136,12 +1136,12 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
             finExecVariable *extarg = finExecFunction::getExtendArgAt(env, 0);
             if ( extarg->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
                 delete cfgvalue;
-                return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+                return finErrorKits::EC_INVALID_PARAM;
             }
             int idx = (int)floor(extarg->getNumericValue());
             if ( idx < 0 || idx >= affinetrans->getActionCount() ) {
                 delete cfgvalue;
-                return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+                return finErrorKits::EC_INVALID_PARAM;
             }
             finGraphTransAffine::ActionType action = affinetrans->getActionAt(idx)._type;
             QString actname = finGraphTransAffine::getAffineTransActionName(action);
@@ -1153,12 +1153,12 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
     } else if ( QString::compare(cfgname, "affine_trans_act_arg") == 0 ) {
         if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE ) {
             delete cfgvalue;
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         }
         finGraphTransAffine *affinetrans = (finGraphTransAffine *)graphconfig->getTransform();
         if ( affinetrans == NULL ) {
             delete cfgvalue;
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         }
         int extargcnt = finExecFunction::getExtendArgCount(env);
         if ( extargcnt <= 0 ) {
@@ -1182,12 +1182,12 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
             finExecVariable *extarg = finExecVariable::transLinkTarget(finExecFunction::getExtendArgAt(env, 0));
             if ( extarg->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
                 delete cfgvalue;
-                return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+                return finErrorKits::EC_INVALID_PARAM;
             }
             int idx = (int)floor(extarg->getNumericValue());
             if ( idx < 0 || idx >= affinetrans->getActionCount() ) {
                 delete cfgvalue;
-                return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+                return finErrorKits::EC_INVALID_PARAM;
             }
             finGraphTransAffine::ActionType action = affinetrans->getActionAt(idx)._type;
             finExecVariable *subitem = cfgvalue->getVariableItemAt(idx);
@@ -1206,14 +1206,14 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
         cfgvalue->setNumericValue(affinetrans->getActionCount());
     } else {
         delete cfgvalue;
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     }
 
     cfgvalue->setWriteProtected();
     cfgvalue->clearLeftValue();
     flowctl->setFlowNext();
     flowctl->setReturnVariable(cfgvalue);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEnvironment *env,
@@ -1224,142 +1224,142 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
     finGraphConfig *graphconfig;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( env->getFigureContainer() == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     graphconfig = env->getFigureContainer()->getGraphConfig();
     if ( graphconfig == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     cfgnamevar = finExecVariable::transLinkTarget(env->findVariable("cfgname"));
     cfgvalue = finExecVariable::transLinkTarget(env->findVariable("value"));
     if ( cfgnamevar == NULL || cfgvalue == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     if ( cfgnamevar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     QString cfgname = cfgnamevar->getStringValue();
     if ( QString::compare(cfgname, "unit_size") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         graphconfig->setAxisUnitPixelSize(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "background_color") == 0 ) {
         QColor color;
         errcode = cfgvalue->readColorValue(&color);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
+        if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
         graphconfig->setBackgroundColor(color);
     } else if ( QString::compare(cfgname, "panel_width") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         graphconfig->setPanelPixelWidth(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "panel_height") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         graphconfig->setPanelPixelHeight(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "panel_size") == 0 ) {
         int arylen = 0;
         if ( !cfgvalue->isNumericArray(&arylen) )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         graphconfig->setPanelPixelSize(cfgvalue->getVariableItemAt(0)->getNumericValue(),
                                        cfgvalue->getVariableItemAt(1)->getNumericValue());
     } else if ( QString::compare(cfgname, "origin_point_x") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         graphconfig->setOriginPixelPointX(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "origin_point_y") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         graphconfig->setOriginPixelPointY(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "origin_point") == 0 ) {
         int arylen = 0;
         if ( !cfgvalue->isNumericArray(&arylen) )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         graphconfig->setOriginPixelPoint(cfgvalue->getVariableItemAt(0)->getNumericValue(),
                                          cfgvalue->getVariableItemAt(1)->getNumericValue());
     } else if ( QString::compare(cfgname, "axis_rad_z") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         graphconfig->setAxisRadZ(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "axis_scale_z") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         graphconfig->setAxisScaleZ(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "render_level") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         QPainter::RenderHints hints = finGraphConfig::parseRenderHints(cfgvalue->getStringValue());
         graphconfig->setRenderHints(hints);
     } else if ( QString::compare(cfgname, "transform") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         finGraphTransType type = finGraphTrans::parseTransformType(cfgvalue->getStringValue());
         graphconfig->setTransformType(type);
     } else if ( QString::compare(cfgname, "rect_trans_zoom_x") == 0 ) {
         if ( cfgvalue->getType() !=  finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_RECT )
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         finGraphTransRect *recttrans = (finGraphTransRect *)graphconfig->getTransform();
         if ( recttrans == NULL )
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         recttrans->setAxisZoomX(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "rect_trans_zoom_y") == 0 ) {
         if ( cfgvalue->getType() !=  finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_RECT )
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         finGraphTransRect *recttrans = (finGraphTransRect *)graphconfig->getTransform();
         if ( recttrans == NULL )
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         recttrans->setAxisZoomY(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "affine_trans_clear_act") == 0 ) {
         if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE )
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         finGraphTransAffine *affine = (finGraphTransAffine *)graphconfig->getTransform();
         if ( affine == NULL )
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         affine->reset();
     } else if ( QString::compare(cfgname, "affine_trans_append_rotate") == 0 ) {
         if ( cfgvalue->getType() !=  finExecVariable::FIN_VR_TYPE_NUMERIC )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE )
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         finGraphTransAffine *affine = (finGraphTransAffine *)graphconfig->getTransform();
         if ( affine == NULL )
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         affine->appendRotate(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "affine_trans_append_scale") == 0 ) {
         int arylen = 0;
         if ( !cfgvalue->isNumericArray(&arylen) )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         if ( arylen < 2 )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE )
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         finGraphTransAffine *affine = (finGraphTransAffine *)graphconfig->getTransform();
         if ( affine == NULL )
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         affine->appendScale(cfgvalue->getVariableItemAt(0)->getNumericValue(),
                             cfgvalue->getVariableItemAt(1)->getNumericValue());
     } else if ( QString::compare(cfgname, "affine_trans_append_translate") == 0 ) {
         int arylen = 0;
         if ( !cfgvalue->isNumericArray(&arylen) )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         if ( arylen < 2 )
-            return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+            return finErrorKits::EC_INVALID_PARAM;
         if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE )
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         finGraphTransAffine *affine = (finGraphTransAffine *)graphconfig->getTransform();
         if ( affine == NULL )
-            return finErrorCodeKits::FIN_EC_STATE_ERROR;
+            return finErrorKits::EC_STATE_ERROR;
         affine->appendTranslate(cfgvalue->getVariableItemAt(0)->getNumericValue(),
                                 cfgvalue->getVariableItemAt(1)->getNumericValue());
     } else {
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     }
 
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }

@@ -131,7 +131,7 @@ finErrorCode finUiSyntaxHighlighter::setBaseFormat(const QTextCharFormat &format
 {
     this->_baseFormat = format;
     this->installFormatList();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finUiSyntaxHighlighter::inIgnoreRange(int startidx, int len,
@@ -309,7 +309,7 @@ finErrorCode finUiSyntaxHighlighter::handleCommentAndString(const QString &text,
 
         index = this->findCommentAndString(&curtype, text, index);
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finUiSyntaxHighlighter::handleNormalType(finUiSyntaxHighlighter::Type type, const QString &text,

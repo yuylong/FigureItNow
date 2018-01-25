@@ -57,19 +57,19 @@ static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironm
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     finExecVariable *fnvar = finExecVariable::transLinkTarget(env->findVariable("funcname"));
     if ( fnvar == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     if ( fnvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     QString funcname = fnvar->getStringValue();
 
     finExecFunction *func = env->findFunction(funcname);
     if ( func == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     QList<finExecVariable *> arglist = finExecFunction::getExtendArgList(env);
 
@@ -81,33 +81,33 @@ static finErrorCode _sysfunc_ext_arg(finExecFunction *self, finExecEnvironment *
                                      finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     finExecVariable *idxvar = finExecVariable::transLinkTarget(env->findVariable("idx"));
     if ( idxvar == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     if ( idxvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     int idx = (int)idxvar->getNumericValue();
     if ( idx < 0 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *retvar = finExecFunction::getPreviousExtendArgAt(env, idx);
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_ext_arg_count(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     int extargcnt = finExecFunction::getPreviousExtendArgCount(env);
     retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
@@ -117,18 +117,18 @@ static finErrorCode _sysfunc_ext_arg_count(finExecFunction *self, finExecEnviron
 
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_call_stack_count(finExecFunction *self, finExecEnvironment *env,
                                               finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     int funclevelcnt = env->getTotalBelongFunctionLevelCount() - 1;
     retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
@@ -138,33 +138,33 @@ static finErrorCode _sysfunc_call_stack_count(finExecFunction *self, finExecEnvi
 
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_call_stack(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
     retvar->setType(finExecVariable::FIN_VR_TYPE_ARRAY);
 
     QStringList funcnamelist;
     finErrorCode errcode = env->getBelongFunctionList(&funcnamelist);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         goto err;
 
     errcode = retvar->preallocArrayLength(funcnamelist.count());
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         goto err;
 
     for ( int i = 0; i < funcnamelist.count(); i++ ) {
         finExecVariable *subvar = retvar->getVariableItemAt(i);
         if ( subvar == NULL ) {
-            errcode = finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+            errcode = finErrorKits::EC_OUT_OF_MEMORY;
             goto err;
         }
 
@@ -176,7 +176,7 @@ static finErrorCode _sysfunc_call_stack(finExecFunction *self, finExecEnvironmen
 
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 
 err:
     delete retvar;
@@ -213,7 +213,7 @@ static inline QDebug _sysfunc_call_print_base_getOutStream(_finDebugLevel dbglev
 static inline finErrorCode _sysfunc_call_print_base_printProcess(QDebug &outstm, finExecVariable *var)
 {
     if ( var == NULL )
-        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return finErrorKits::EC_NORMAL_WARN;
 
     switch ( var->getType() ) {
       case finExecVariable::FIN_VR_TYPE_NUMERIC:
@@ -245,14 +245,14 @@ static inline finErrorCode _sysfunc_call_print_base_printProcess(QDebug &outstm,
       default:
         break;
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_call_print_base(_finDebugLevel dbglevel, finExecFunction *self, finExecEnvironment *env,
                                              finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     QDebug outstm = _sysfunc_call_print_base_getOutStream(dbglevel);
 
@@ -262,12 +262,12 @@ static finErrorCode _sysfunc_call_print_base(_finDebugLevel dbglevel, finExecFun
         var = finExecVariable::transLinkTarget(finExecFunction::getExtendArgAt(env, i));
 
         finErrorCode errcode = _sysfunc_call_print_base_printProcess(outstm, var);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
+        if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
     }
 
     flowctl->setFlowNext();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 static finErrorCode _sysfunc_call_print_info(finExecFunction *self, finExecEnvironment *env,

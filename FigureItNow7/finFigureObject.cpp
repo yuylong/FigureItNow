@@ -48,9 +48,9 @@ finFigureConfig *finFigureObject::getFigureConfig()
 finErrorCode finFigureObject::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    return finErrorKits::EC_NON_IMPLEMENT;
 }
 
 void finFigureObject::dump() const
@@ -82,20 +82,20 @@ QPointF finFigureObjectDot::getPoint() const
 finErrorCode finFigureObjectDot::setPoint(const QPointF &qpt)
 {
     this->_point = qpt;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectDot::setPoint(double ptx, double pty)
 {
     this->_point.setX(ptx);
     this->_point.setY(pty);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectDot::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     QPointF pixpt = cfg->transformPixelPoint(this->_point);
     double dotsize = this->_figCfg.getDotSize();
@@ -113,7 +113,7 @@ finErrorCode finFigureObjectDot::getPixelFigurePath(QList<finFigurePath> *pathli
     figpath.setPath(path);
     pathlist->append(figpath);
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finFigureObjectDot::dump() const
@@ -152,27 +152,27 @@ QPointF finFigureObjectLine::getPoint2() const
 finErrorCode finFigureObjectLine::setPoint1(const QPointF &qpt)
 {
     this->_pt1 = qpt;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectLine::setPoint1(double ptx, double pty)
 {
     this->_pt1.setX(ptx);
     this->_pt1.setY(pty);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectLine::setPoint2(const QPointF &qpt)
 {
     this->_pt2 = qpt;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectLine::setPoint2(double ptx, double pty)
 {
     this->_pt2.setX(ptx);
     this->_pt2.setY(pty);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finFigureObjectLine::isArrowIgnored() const
@@ -183,13 +183,13 @@ bool finFigureObjectLine::isArrowIgnored() const
 finErrorCode finFigureObjectLine::setIgnoreArrow(bool blval)
 {
     this->_ignoreArrow = blval;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectLine::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     QPointF pt1 = cfg->transformPixelPoint(this->_pt1);
     QPointF pt2 = cfg->transformPixelPoint(this->_pt2);
@@ -214,7 +214,7 @@ finErrorCode finFigureObjectLine::getPixelFigurePath(QList<finFigurePath> *pathl
         this->_figCfg.getStartArrow().getPixelPath(pathlist, pt1, pt2, &this->_figCfg);
         this->_figCfg.getEndArrow().getPixelPath(pathlist, pt2, pt1, &this->_figCfg);
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finFigureObjectLine::dump() const
@@ -253,25 +253,25 @@ QPointF finFigureObjectPolyline::getPointAt(int idx) const
 finErrorCode finFigureObjectPolyline::appendPoint(const QPointF &pt)
 {
     this->_ptList.append(pt);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectPolyline::appendPoint(double ptx, double pty)
 {
     this->_ptList.append(QPointF(ptx, pty));
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectPolyline::appendPoints(const QList<QPointF> &ptlist)
 {
     this->_ptList.append(ptlist);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectPolyline::removePointAt(int idx)
 {
     this->_ptList.removeAt(idx);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finFigureObjectPolyline::isArrowIgnored() const
@@ -282,7 +282,7 @@ bool finFigureObjectPolyline::isArrowIgnored() const
 finErrorCode finFigureObjectPolyline::setIgnoreArrow(bool blval)
 {
     this->_ignoreArrow = blval;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QList<QPointF> finFigureObjectPolyline::getTransformedPointList(finGraphConfig *cfg) const
@@ -297,11 +297,11 @@ QList<QPointF> finFigureObjectPolyline::getTransformedPointList(finGraphConfig *
 finErrorCode finFigureObjectPolyline::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     int ptcnt = this->_ptList.count();
     if ( ptcnt < 2 )
-        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return finErrorKits::EC_NORMAL_WARN;
 
     QList<QPointF> ptlist = this->getTransformedPointList(cfg);
     QPainterPath path;
@@ -340,7 +340,7 @@ finErrorCode finFigureObjectPolyline::getPixelFigurePath(QList<finFigurePath> *p
         this->_figCfg.getEndArrow().getPixelPath(
                     pathlist, ptlist.at(ptcnt - 1), ptlist.at(ptcnt - 2), &this->_figCfg);
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finFigureObjectPolyline::dump() const
@@ -426,27 +426,27 @@ QPointF finFigureObjectRect::getLowerRightPoint() const
 finErrorCode finFigureObjectRect::setCenterPoint(const QPointF &ctrpt)
 {
     this->_center = ctrpt;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectRect::setCenterPoint(double cx, double cy)
 {
     this->_center.setX(cx);
     this->_center.setY(cy);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectRect::setSize(const QSizeF &size)
 {
     this->_size = size;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectRect::setSize(double width, double height)
 {
     this->_size.setWidth(width);
     this->_size.setHeight(height);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectRect::setRadian(double rad)
@@ -459,7 +459,7 @@ finErrorCode finFigureObjectRect::setRadian(double rad)
     this->_radian = rad;
     this->_sinrad = sin(rad);
     this->_cosrad = cos(rad);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QPolygonF finFigureObjectRect::getPolygonInstance() const
@@ -477,7 +477,7 @@ QPolygonF finFigureObjectRect::getPolygonInstance() const
 finErrorCode finFigureObjectRect::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     QPolygonF polygon = this->getPolygonInstance();
     QPainterPath path;
@@ -489,7 +489,7 @@ finErrorCode finFigureObjectRect::getPixelFigurePath(QList<finFigurePath> *pathl
     figpath.setPath(path);
     pathlist->append(figpath);
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finFigureObjectRect::dump() const
@@ -528,25 +528,25 @@ QPointF finFigureObjectPolygon::getPointAt(int idx) const
 finErrorCode finFigureObjectPolygon::appendPoint(const QPointF &pt)
 {
     this->_ptList.append(pt);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectPolygon::appendPoint(double ptx, double pty)
 {
     this->_ptList.append(QPointF(ptx, pty));
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectPolygon::appendPoints(const QList<QPointF> &ptlist)
 {
     this->_ptList.append(ptlist);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectPolygon::removePointAt(int idx)
 {
     this->_ptList.removeAt(idx);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QPolygonF finFigureObjectPolygon::getPolygonInstance() const
@@ -562,9 +562,9 @@ finErrorCode
 finFigureObjectPolygon::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( this->_ptList.count() < 2 )
-        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return finErrorKits::EC_NORMAL_WARN;
 
     QPolygonF polygon = this->getPolygonInstance();
     QPainterPath path;
@@ -576,7 +576,7 @@ finFigureObjectPolygon::getPixelFigurePath(QList<finFigurePath> *pathlist, finGr
     figpath.setPath(path);
     pathlist->append(figpath);
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finFigureObjectPolygon::dump() const
@@ -636,26 +636,26 @@ double finFigureObjectEllipse::getRadian() const
 finErrorCode finFigureObjectEllipse::setCenterPoint(const QPointF &ctrpt)
 {
     this->_center = ctrpt;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectEllipse::setCenterPoint(double cx, double cy)
 {
     this->_center.setX(cx);
     this->_center.setY(cy);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectEllipse::setLongRadius(double lr)
 {
     this->_longR = lr;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectEllipse::setShortRadius(double sr)
 {
     this->_shortR = sr;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectEllipse::setRadian(double rad)
@@ -668,7 +668,7 @@ finErrorCode finFigureObjectEllipse::setRadian(double rad)
     this->_radian = rad;
     this->_sinrad = sin(rad);
     this->_cosrad = cos(rad);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QPointF finFigureObjectEllipse::getEllipsePointAtRad(double rad) const
@@ -682,7 +682,7 @@ QPointF finFigureObjectEllipse::getEllipsePointAtRad(double rad) const
 finErrorCode finFigureObjectEllipse::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     QPainterPath path;
     path.addEllipse(QPointF(0.0, 0.0), this->_longR, this->_shortR);
@@ -701,7 +701,7 @@ finErrorCode finFigureObjectEllipse::getPixelFigurePath(QList<finFigurePath> *pa
     figpath.setPath(path);
     pathlist->append(figpath);
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finFigureObjectEllipse::dump() const
@@ -765,26 +765,26 @@ bool finFigureObjectText::isPinned() const
 finErrorCode finFigureObjectText::setBasePoint(const QPointF &pt)
 {
     this->_basePtr = pt;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectText::setBasePoint(double ptx, double pty)
 {
     this->_basePtr.setX(ptx);
     this->_basePtr.setY(pty);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectText::setFontMetricFlags(int flag)
 {
     this->_flag = flag;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectText::setScale(double scale)
 {
     this->_scale = scale;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectText::setRadian(double rad)
@@ -797,19 +797,19 @@ finErrorCode finFigureObjectText::setRadian(double rad)
     this->_rad = rad;
     this->_sinrad = sin(rad);
     this->_cosrad = cos(rad);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectText::setText(const QString &text)
 {
     this->_text = text;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectText::setIsPinned(bool pinned)
 {
     this->_isPinned = pinned;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QRectF finFigureObjectText::getBoundingRect() const
@@ -907,9 +907,9 @@ finErrorCode
 finFigureObjectText::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( this->_text.isEmpty() )
-        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return finErrorKits::EC_NORMAL_WARN;
 
     QPainterPath path = this->getPixelTextPath(cfg);
 
@@ -919,7 +919,7 @@ finFigureObjectText::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraph
     figpath.setPath(path);
     pathlist->append(figpath);
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finFigureObjectText::dump() const
@@ -989,32 +989,32 @@ bool finFigureObjectImage::isPinned() const
 finErrorCode finFigureObjectImage::setBasePoint(const QPointF &pt)
 {
     this->_basePtr = pt;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectImage::setBasePoint(double ptx, double pty)
 {
     this->_basePtr.setX(ptx);
     this->_basePtr.setY(pty);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectImage::setAlignFlags(int flag)
 {
     this->_flag = flag;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectImage::setScaleX(double scale)
 {
     this->_scaleX = scale;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectImage::setScaleY(double scale)
 {
     this->_scaleY = scale;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectImage::setRadian(double rad)
@@ -1027,19 +1027,19 @@ finErrorCode finFigureObjectImage::setRadian(double rad)
     this->_rad = rad;
     this->_sinrad = sin(rad);
     this->_cosrad = cos(rad);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectImage::setImage(const QImage &image)
 {
     this->_img = image;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectImage::setIsPinned(bool pinned)
 {
     this->_isPinned = pinned;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QRectF finFigureObjectImage::getBoundingRect() const
@@ -1089,7 +1089,7 @@ finErrorCode finFigureObjectImage::getUnpinnedPixelFigurePath(QList<finFigurePat
     figpath.setImage(outimg);
     pathlist->append(figpath);
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QTransform finFigureObjectImage::getParameterTransformMatrix() const
@@ -1161,16 +1161,16 @@ finErrorCode finFigureObjectImage::getPinnedPixelFigurePath(QList<finFigurePath>
     figpath.setImage(outimg);
     pathlist->append(figpath);
 
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    return finErrorKits::EC_NON_IMPLEMENT;
 }
 
 finErrorCode
 finFigureObjectImage::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( this->_img.isNull() )
-        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return finErrorKits::EC_NORMAL_WARN;
 
     if ( this->_isPinned )
         return this->getPinnedPixelFigurePath(pathlist, cfg);
@@ -1272,64 +1272,64 @@ finErrorCode finFigureObjectAxis::setAutoRangeX()
 {
     this->_minX = 1.0;
     this->_maxX = -1.0;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectAxis::setRangeX(double minx, double maxx)
 {
     this->_minX = minx;
     this->_maxX = maxx;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectAxis::setAutoRangeY()
 {
     this->_minY = 1.0;
     this->_maxY = -1.0;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectAxis::setRangeY(double miny, double maxy)
 {
     this->_minY = miny;
     this->_maxY = maxy;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectAxis::setAutoStepX()
 {
     this->_stepX = -1.0;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectAxis::setStepX(double step)
 {
     this->_stepX = step;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectAxis::setAutoStepY()
 {
     this->_stepY = -1.0;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectAxis::setStepY(double step)
 {
     this->_stepY = step;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectAxis::setTitleX(const QString &title)
 {
     this->_titleX = title;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectAxis::setTitleY(const QString &title)
 {
     this->_titleY = title;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 double finFigureObjectAxis::_defMinX = -10.0;
@@ -1498,16 +1498,16 @@ finErrorCode finFigureObjectAxis::getLinesPath(QList<finFigurePath> *pathlist, f
     foline.setPoint1(drawrange.left(), crosspt.y());
     foline.setPoint2(drawrange.right(), crosspt.y());
     errcode = foline.getPixelFigurePath(pathlist, cfg);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     foline.setPoint1(crosspt.x(), drawrange.top());
     foline.setPoint2(crosspt.x(), drawrange.bottom());
     errcode = foline.getPixelFigurePath(pathlist, cfg);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 double finFigureObjectAxis::getTickStep(bool isx, const QPointF &crosspt, finGraphConfig *cfg) const
@@ -1642,7 +1642,7 @@ finErrorCode finFigureObjectAxis::setupTickLabel(const QPointF &steppixvec, finF
         fotext->setFontMetricFlags(Qt::AlignHCenter | Qt::AlignTop);
         fotext->setRadian(xrad + M_PI);
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, finGraphConfig *cfg,
@@ -1723,7 +1723,7 @@ finErrorCode finFigureObjectAxis::getTickPath(QList<finFigurePath> *pathlist, fi
     textfigpath.setPath(textpath);
     pathlist->append(textfigpath);
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QPainterPath finFigureObjectAxis::getAxisTitlePath(const QPointF &axisstartpt, const QPointF &axisendpt,
@@ -1847,32 +1847,32 @@ finErrorCode finFigureObjectAxis::getTitlePath(QList<finFigurePath> *pathlist, f
     figpath.setBrush(this->_figCfg.getTextBrush());
     figpath.setPath(path);
     pathlist->append(figpath);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectAxis::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     finErrorCode errcode;
     if ( pathlist == NULL || cfg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     QList<QPointF> polygon = cfg->getCornerAxisPoints();
     QPointF xpt = this->getAxisCrossPoint(polygon);
     QRectF drawrect = this->getAxisDrawRange(polygon, xpt);
 
     errcode = this->getLinesPath(pathlist, cfg, xpt, drawrect);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     errcode = this->getTickPath(pathlist, cfg, xpt, drawrect);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     errcode = this->getTitlePath(pathlist, cfg, xpt, drawrect);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finFigureObjectAxis::dump() const
@@ -1930,7 +1930,7 @@ finFigurePoint3D finFigureObjectLine3D::getPoint2() const
 finErrorCode finFigureObjectLine3D::setPoint1(const finFigurePoint3D &qpt)
 {
     this->_pt1 = qpt;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectLine3D::setPoint1(double ptx, double pty, double ptz)
@@ -1938,13 +1938,13 @@ finErrorCode finFigureObjectLine3D::setPoint1(double ptx, double pty, double ptz
     this->_pt1.setX(ptx);
     this->_pt1.setY(pty);
     this->_pt1.setZ(ptz);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectLine3D::setPoint2(const finFigurePoint3D &qpt)
 {
     this->_pt2 = qpt;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectLine3D::setPoint2(double ptx, double pty, double ptz)
@@ -1952,14 +1952,14 @@ finErrorCode finFigureObjectLine3D::setPoint2(double ptx, double pty, double ptz
     this->_pt2.setX(ptx);
     this->_pt2.setY(pty);
     this->_pt2.setZ(ptz);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode
 finFigureObjectLine3D::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     if ( pathlist == NULL || cfg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     QPainterPath path;
     path.moveTo(cfg->transformPixelPoint3D(this->_pt1));
@@ -1970,7 +1970,7 @@ finFigureObjectLine3D::getPixelFigurePath(QList<finFigurePath> *pathlist, finGra
     figpath.setPath(path);
     pathlist->append(figpath);
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finFigureObjectLine3D::dump() const

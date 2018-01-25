@@ -44,7 +44,7 @@ finErrorCode finUiCommandLine::reset()
 {
     this->_inFileList.clear();
     this->_outType = QString("PDF");
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QStringList finUiCommandLine::parseStringList(int argc, char *argv[])
@@ -108,7 +108,7 @@ finErrorCode finUiCommandLine::parseArgument(const QStringList &arglist)
         }
         cmdargidx++;
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finUiCommandLine::work()
@@ -118,7 +118,7 @@ finErrorCode finUiCommandLine::work()
 
     if ( this->_inFileList.count() <= 0 ) {
         qWarning() << "No file to handle!";
-        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return finErrorKits::EC_NORMAL_WARN;
     }
 
     int success = 0;
@@ -137,14 +137,14 @@ finErrorCode finUiCommandLine::work()
         success = this->figureToImage();
     } else {
         qWarning() << "The output type is not supported!";
-        return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+        return finErrorKits::EC_NON_IMPLEMENT;
     }
 
     qInfo() << "Successful Count: " << success;
     if ( success <= 0 )
-        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return finErrorKits::EC_NORMAL_WARN;
     else
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finUiCommandLine::compileAndRunScript(const QString &filename, finFigureContainer *outfig)
@@ -153,7 +153,7 @@ finErrorCode finUiCommandLine::compileAndRunScript(const QString &filename, finF
     bool openok = infile.open(QIODevice::ReadOnly);
     if ( !openok ) {
         qWarning() << "Cannot open file: " << filename << endl;
-        return finErrorCodeKits::FIN_EC_FILE_NOT_OPEN;
+        return finErrorKits::EC_FILE_NOT_OPEN;
     }
 
     QString scriptcode = infile.readAll();
@@ -166,17 +166,17 @@ finErrorCode finUiCommandLine::compileAndRunScript(const QString &filename, finF
     machine.setScriptCode(scriptcode);
 
     errcode = machine.compile();
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         qWarning() << "Compile script failed: " << filename;
         return errcode;
     }
 
     errcode = machine.execute();
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         qWarning() << "Execute script failed: " << filename;
         return errcode;
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 int finUiCommandLine::figureToPDF()
@@ -188,7 +188,7 @@ int finUiCommandLine::figureToPDF()
         finFigureContainer figcontainer;
 
         finErrorCode errcode = this->compileAndRunScript(filename, &figcontainer);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
+        if ( finErrorKits::isErrorResult(errcode) )
             continue;
 
         static const int _defResolution = 72;
@@ -207,7 +207,7 @@ int finUiCommandLine::figureToPDF()
         graphpanel.setFigureContainer(&figcontainer);
 
         errcode = graphpanel.draw();
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             qWarning() << "Draw on panel failed: " << filename;
             continue;
         }
@@ -227,7 +227,7 @@ int finUiCommandLine::figureToSVG()
         finFigureContainer figcontainer;
 
         finErrorCode errcode = this->compileAndRunScript(filename, &figcontainer);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
+        if ( finErrorKits::isErrorResult(errcode) )
             continue;
 
         finGraphConfig *graphcfg = figcontainer.getGraphConfig();
@@ -243,7 +243,7 @@ int finUiCommandLine::figureToSVG()
         graphpanel.setFigureContainer(&figcontainer);
 
         errcode = graphpanel.draw();
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             qWarning() << "Draw on panel failed: " << filename;
             continue;
         }
@@ -263,7 +263,7 @@ int finUiCommandLine::figureToImage()
         finFigureContainer figcontainer;
 
         finErrorCode errcode = this->compileAndRunScript(filename, &figcontainer);
-        if ( finErrorCodeKits::isErrorResult(errcode) )
+        if ( finErrorKits::isErrorResult(errcode) )
             continue;
 
         finGraphConfig *graphcfg = figcontainer.getGraphConfig();
@@ -275,7 +275,7 @@ int finUiCommandLine::figureToImage()
         graphpanel.setFigureContainer(&figcontainer);
 
         errcode = graphpanel.draw();
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             qWarning() << "Draw on panel failed: " << filename;
             continue;
         }

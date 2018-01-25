@@ -26,34 +26,34 @@ finErrorCode finSyntaxNode::copyNode(const finSyntaxNode *srcnode)
     this->disposeAll();
 
     if ( srcnode == NULL )
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
 
     this->_type = srcnode->getType();
 
     errcode = this->_cmdLexNode.copyNode(srcnode->getCommandLexNode());
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     for ( int i = 0; i < srcnode->getSubListCount(); i++ ) {
         finSyntaxNode *synnode = new finSyntaxNode();
         if ( synnode == NULL )
-            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+            return finErrorKits::EC_OUT_OF_MEMORY;
 
         errcode = synnode->copyNode(srcnode->getSubSyntaxNode(i));
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             synnode->disposeAll();
             delete synnode;
             return errcode;
         }
 
         errcode = this->appendSubSyntaxNode(synnode);
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             synnode->disposeAll();
             delete synnode;
             return errcode;
         }
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finSyntaxNodeType finSyntaxNode::getType() const
@@ -90,32 +90,32 @@ finSyntaxNode *finSyntaxNode::getSubSyntaxNode(int idx) const
 finErrorCode finSyntaxNode::setType(finSyntaxNodeType type)
 {
     if ( this->_type == type )
-        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+        return finErrorKits::EC_DUPLICATE_OP;
 
     this->_type = type;
 
     if ( type == FIN_SN_TYPE_DUMMY || type == FIN_SN_TYPE_MAX )
-        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return finErrorKits::EC_NORMAL_WARN;
     else
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finSyntaxNode::setCommandLexNode(const finLexNode *lexnode)
 {
     this->_cmdLexNode.copyNode(lexnode);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finSyntaxNode::appendSubSyntaxNode(finSyntaxNode *synnode)
 {
     this->_subSyntaxList.append(synnode);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finSyntaxNode::prependSubSyntaxNode(finSyntaxNode *synnode)
 {
     this->_subSyntaxList.prepend(synnode);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finSyntaxNode *finSyntaxNode::pickSubSyntaxNode(int idx)
@@ -143,20 +143,20 @@ bool finSyntaxNode::isExpressLevelType(finSyntaxNodeType type)
 finErrorCode finSyntaxNode::disposeCommandLexNode()
 {
     this->_cmdLexNode.setType(finLexNode::FIN_LN_TYPE_DUMMY);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finSyntaxNode::disposeSubSyntaxNodes()
 {
     if ( this->_subSyntaxList.count() == 0 )
-        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+        return finErrorKits::EC_DUPLICATE_OP;
 
     while ( this->_subSyntaxList.count() > 0 ) {
         finSyntaxNode *subtk = this->_subSyntaxList.at(0);
         this->_subSyntaxList.removeFirst();
         delete subtk;
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finSyntaxNode::disposeAll()
@@ -166,12 +166,12 @@ finErrorCode finSyntaxNode::disposeAll()
     errcode1 = this->disposeCommandLexNode();
     errcode2 = this->disposeSubSyntaxNodes();
 
-    if ( finErrorCodeKits::isErrorResult(errcode1) )
+    if ( finErrorKits::isErrorResult(errcode1) )
         return errcode1;
-    else if ( finErrorCodeKits::isErrorResult(errcode2) )
+    else if ( finErrorKits::isErrorResult(errcode2) )
         return errcode2;
     else
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
 }
 
 bool finSyntaxNode::isStatementLevelType(finSyntaxNodeType type)

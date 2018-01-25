@@ -58,11 +58,11 @@ finErrorCode finFigureContainer::appendFigureObject(finFigureObject *figobj)
     finErrorCode errcode;
 
     errcode = this->setFigureConfigForObject(figobj);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     this->_figList.append(figobj);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finFigureContainer::clearFigureObjects()

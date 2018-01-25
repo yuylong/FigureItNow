@@ -33,7 +33,7 @@ finErrorCode finLexNode::reset()
     memset(this->_u._rawData, 0, sizeof (this->_u));
     this->_row = 0;
     this->_column = 0;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexNode::copyNode(const finLexNode *srcnode)
@@ -60,7 +60,7 @@ finErrorCode finLexNode::copyNode(const finLexNode *srcnode)
         memset(this->_u._rawData, 0, sizeof (this->_u));
         break;
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finLexNodeType finLexNode::getType() const
@@ -110,50 +110,50 @@ unsigned int finLexNode::getColumn() const
 finErrorCode finLexNode::setType(finLexNodeType type)
 {
     this->_type = type;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexNode::setString(const QString &str)
 {
     this->_string = str;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexNode::setFloatValue(double val)
 {
     if ( this->_type != FIN_LN_TYPE_DECIMAL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     this->_u._floatValue = val;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexNode::setOperator(finLexNodeOperatorType optype)
 {
     if ( this->_type != FIN_LN_TYPE_OPERATOR )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     this->_u._operator = optype;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexNode::setStringValue(const QString &strval)
 {
     if ( this->_type != FIN_LN_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     this->_stringValue = strval;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexNode::setRow(unsigned int row)
 {
     this->_row = row;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexNode::setColumn(unsigned int column)
 {
     this->_column = column;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }

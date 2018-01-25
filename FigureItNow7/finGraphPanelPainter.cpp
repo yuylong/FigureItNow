@@ -26,13 +26,13 @@ QPainter *finGraphPanelPainter::getPainter() const
 finErrorCode finGraphPanelPainter::setPainter(QPainter *painter)
 {
     this->_painter = painter;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphPanelPainter::draw()
 {
     if ( this->_painter == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     return finGraphPanelBase::draw();
 }
@@ -43,7 +43,7 @@ finErrorCode finGraphPanelPainter::applyGraphConfig() const
     this->_painter->eraseRect(this->_config.getWholePanelPixelRect());
     this->_painter->setRenderHints(this->_config.getRenderHints());
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphPanelPainter::drawFigurePath(const finFigurePath &path) const
@@ -52,6 +52,6 @@ finErrorCode finGraphPanelPainter::drawFigurePath(const finFigurePath &path) con
     this->_painter->setBrush(path.getBrush());
     this->_painter->drawPath(path.getPath());
     this->_painter->drawPixmap(path.getImagePosition(), path.getPixmap());
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 

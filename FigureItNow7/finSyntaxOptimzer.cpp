@@ -17,8 +17,8 @@ finSyntaxOptimzer::finSyntaxOptimzer()
 finErrorCode finSyntaxOptimzer::checkAndOptimize(finSyntaxTree *syntree)
 {
     if ( syntree == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
-    return finErrorCodeKits::FIN_EC_NON_IMPLEMENT;
+    return finErrorKits::EC_NON_IMPLEMENT;
 }
 

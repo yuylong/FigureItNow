@@ -37,7 +37,7 @@ finUiScriptEditor::finUiScriptEditor(QWidget *parent) :
     this->_filename = QString("Unnamed");
 
     errcode = this->_machine.initEnvironmentFromRoot();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         qDebug() << "ERROR: Cannot init the execution machine for script code!";
 
     this->_machine.setFigureContainer(&this->_figContainer);
@@ -79,7 +79,7 @@ finErrorCode finUiScriptEditor::setFilename(const QString &filepath)
 {
     this->_filepath = filepath;
     this->_filename = filepath.split(QRegExp(QString("[\\\\\\/]"))).last();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finUiScriptEditor::isFileOpened() const
@@ -120,7 +120,7 @@ finErrorCode finUiScriptEditor::openFile(const QString &filepath)
 {
     QFile file(filepath);
     if ( !file.open(QIODevice::ReadOnly | QIODevice::Text) )
-         return finErrorCodeKits::FIN_EC_FILE_NOT_OPEN;
+         return finErrorKits::EC_FILE_NOT_OPEN;
 
     QTextStream in(&file);
     ui->pteScriptCode->setPlainText(in.readAll());
@@ -128,7 +128,7 @@ finErrorCode finUiScriptEditor::openFile(const QString &filepath)
     ui->pteScriptCode->document()->setModified(false);
 
     this->setFilename(filepath);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finUiScriptEditor::saveAsFile(const QString &filepath)
@@ -140,24 +140,24 @@ finErrorCode finUiScriptEditor::saveAsFile(const QString &filepath)
 finErrorCode finUiScriptEditor::saveFile()
 {
     if ( !this->isFileOpened() )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     QFile file(this->_filepath);
     if ( !file.open(QIODevice::WriteOnly|QIODevice::Text) )
-        return finErrorCodeKits::FIN_EC_FILE_NOT_OPEN;
+        return finErrorKits::EC_FILE_NOT_OPEN;
 
     QTextStream out(&file);
     out << ui->pteScriptCode->toPlainText();
     out.flush();
     file.close();
     ui->pteScriptCode->document()->setModified(false);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finUiScriptEditor::printFile(QPrinter *printer)
 {
     ui->pteScriptCode->print(printer);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finUiScriptEditor::scriptUndoAvailable() const
@@ -207,7 +207,7 @@ void finUiScriptEditor::pasteScript()
 finErrorCode finUiScriptEditor::getFigureImage(QImage *outimg)
 {
     if ( outimg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     finGraphConfig *graphcfg = this->_figContainer.getGraphConfig();
     QImage img(graphcfg->getPanelPixelSize().toSize(), QImage::Format_ARGB32);
@@ -218,17 +218,17 @@ finErrorCode finUiScriptEditor::getFigureImage(QImage *outimg)
     graphpanel.setFigureContainer(&this->_figContainer);
 
     finErrorCode errcode = graphpanel.draw();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     *outimg = img;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finUiScriptEditor::getFigureSVGImage(QSvgGenerator *svggen)
 {
     if ( svggen == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     finGraphConfig *graphcfg = this->_figContainer.getGraphConfig();
     svggen->setTitle(this->_filename);
@@ -241,10 +241,10 @@ finErrorCode finUiScriptEditor::getFigureSVGImage(QSvgGenerator *svggen)
     graphpanel.setFigureContainer(&this->_figContainer);
 
     finErrorCode errcode = graphpanel.draw();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finUiScriptEditor::copyFigure()
@@ -259,7 +259,7 @@ void finUiScriptEditor::copyFigure()
 
     QImage outimg;
     finErrorCode errcode = this->getFigureImage(&outimg);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return;
 
     md->setImageData(outimg);
@@ -303,29 +303,29 @@ finErrorCode finUiScriptEditor::drawOnPanel()
     this->_machine.setScriptCode(ui->pteScriptCode->toPlainText());
 
     errcode = this->_machine.compile();
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         qDebug() << "ERROR when compile! (" << errcode << ")";
         return errcode;
     }
 
     errcode = this->_machine.execute();
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         qDebug() << "ERROR when execute! (" << errcode << ")";
         return errcode;
     }
 
     errcode = this->_scenePainter.setFigureContainer(&this->_figContainer);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         qDebug() << "ERROR when draw! (" << errcode << ")";
         return errcode;
     }
 
     errcode = this->_scenePainter.draw();
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         qDebug() << "ERROR when apply drawing! (" << errcode << ")";
         return errcode;
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finUiScriptEditor::exportToPDF(const QString &filepath)
@@ -346,24 +346,24 @@ finErrorCode finUiScriptEditor::exportToPDF(const QString &filepath)
     graphpanel.setFigureContainer(&this->_figContainer);
 
     finErrorCode errcode = graphpanel.draw();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finUiScriptEditor::exportToImage(const QString &filepath)
 {
     QImage outimg;
     finErrorCode errcode = this->getFigureImage(&outimg);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     bool saveres = outimg.save(filepath);
     if ( !saveres )
-        return finErrorCodeKits::FIN_EC_FILE_NOT_OPEN;
+        return finErrorKits::EC_FILE_NOT_OPEN;
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finUiScriptEditor::exportToSVG(const QString &filepath)
@@ -372,10 +372,10 @@ finErrorCode finUiScriptEditor::exportToSVG(const QString &filepath)
     svggen.setFileName(filepath);
 
     finErrorCode errcode = this->getFigureSVGImage(&svggen);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finUiScriptEditor::printFigure(QPrinter *printer)
@@ -391,10 +391,10 @@ finErrorCode finUiScriptEditor::printFigure(QPrinter *printer)
     graphpanel.setFigureContainer(&this->_figContainer);
 
     finErrorCode errcode = graphpanel.draw();
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finUiScriptEditor::on_pteScriptCode_modificationChanged(bool modified)

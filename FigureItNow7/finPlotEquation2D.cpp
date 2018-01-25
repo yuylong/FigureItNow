@@ -69,7 +69,7 @@ int finPlotEquation2D::getVariableYIndex() const
 finErrorCode finPlotEquation2D::setFunctionName(const QString &funcname)
 {
     this->_funcname = funcname;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::setFiguringRangeX(double x1, double x2)
@@ -81,7 +81,7 @@ finErrorCode finPlotEquation2D::setFiguringRangeX(double x1, double x2)
         this->_fromX = x2;
         this->_toX = x1;
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::setFiguringRangeY(double y1, double y2)
@@ -93,25 +93,25 @@ finErrorCode finPlotEquation2D::setFiguringRangeY(double y1, double y2)
         this->_fromY = y2;
         this->_toY = y1;
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::setVariableXIndex(int idx)
 {
     if ( idx < 0 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     this->_xidx = idx;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::setVariableYIndex(int idx)
 {
     if ( idx < 0 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     this->_yidx = idx;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QList<finExecVariable *> *finPlotEquation2D::getCallArgList() const
@@ -142,25 +142,25 @@ finFigureContainer *finPlotEquation2D::getFigureContainer() const
 finErrorCode finPlotEquation2D::setCallArgList(QList<finExecVariable *> *arglist)
 {
     this->_callArgList = arglist;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::setEnvironment(finExecEnvironment *env)
 {
     this->_environment = env;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::setMachine(finExecMachine *machine)
 {
     this->_machine = machine;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::setFlowControl(finExecFlowControl *flowctl)
 {
     this->_flowctl = flowctl;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::setFigureContainer(finFigureContainer *figcontainer)
@@ -199,17 +199,17 @@ finErrorCode finPlotEquation2D::buildFuncArgList(QList<finExecVariable *> *varli
                                                  finExecVariable **xvar, finExecVariable **yvar)
 {
     if ( varlist == NULL || xvar == NULL || yvar == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( this->_environment == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     *xvar = new finExecVariable();
     if ( *xvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
     *yvar = new finExecVariable();
     if ( *yvar == NULL ) {
         delete *xvar;
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
     }
 
     (*xvar)->setName(QString());
@@ -232,44 +232,44 @@ finErrorCode finPlotEquation2D::buildFuncArgList(QList<finExecVariable *> *varli
         varlist->insert(this->_yidx, *yvar);
         varlist->insert(this->_xidx, *xvar);
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 
 finErrorCode finPlotEquation2D::buildSearchPositions(double from, double to, double step, QList<double> *poslist)
 {
     if ( poslist == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
     if ( step <= 0.0 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     poslist->clear();
     for ( double pos = from; pos < to; pos += step ) {
         poslist->append(pos);
     }
     poslist->append(to);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::buildSearchRangeList(double step)
 {
     finErrorCode errcode;
     errcode = this->buildSearchPositions(this->_fromX, this->_toX, step, &this->_posListX);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     errcode = this->buildSearchPositions(this->_fromY, this->_toY, step, &this->_posListY);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::disposeSearchRangeList()
 {
     this->_posListX.clear();
     this->_posListY.clear();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::calcAPoint(
@@ -277,29 +277,29 @@ finErrorCode finPlotEquation2D::calcAPoint(
         finExecVariable *xvar, finExecVariable *yvar, double *retval, bool *goon)
 {
     if ( varlist == NULL || xvar == NULL || xvar == NULL || retval == NULL || goon == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     finErrorCode errcode;
     xvar->setNumericValue(x);
     yvar->setNumericValue(y);
 
     errcode = func->execFunction(varlist, this->_environment, this->_machine, this->_flowctl);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     errcode = this->_flowctl->checkFlowForExpress(goon, NULL, this->_machine);
-    if ( finErrorCodeKits::isErrorResult(errcode) || !(*goon) )
+    if ( finErrorKits::isErrorResult(errcode) || !(*goon) )
         return errcode;
 
     finExecVariable *retvar = this->_flowctl->pickReturnVariable();
     if ( retvar == NULL || retvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
         finExecVariable::releaseNonLeftVariable(retvar);
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     }
 
     *retval = retvar->getNumericValue();
     finExecVariable::releaseNonLeftVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 enum finPlotEquation2DSearchResFlag {
@@ -312,9 +312,9 @@ finErrorCode finPlotEquation2D::checkOnePosition(int xidx, int yidx, double curr
                                                  unsigned long *srchflags)
 {
     if ( xidx < 0 || yidx < 0 || (xidx > 0 && yidx >= prevretval->count()) )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     if ( prevretval == NULL || srchflags == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     *srchflags = 0x00;
     if ( curretval > -1.0e-8 && curretval < 1.0e-8 ) {
@@ -331,7 +331,7 @@ finErrorCode finPlotEquation2D::checkOnePosition(int xidx, int yidx, double curr
                 *srchflags |= FIN_PE_SRF_SRCH_X;
         }
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::updateRetValList(int xidx, int yidx, double curretval, QList<double> *prevretval)
@@ -343,7 +343,7 @@ finErrorCode finPlotEquation2D::updateRetValList(int xidx, int yidx, double curr
     } else {
         prevretval->replace(yidx, curretval);
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::searchBinary(
@@ -353,32 +353,32 @@ finErrorCode finPlotEquation2D::searchBinary(
 {
     if ( func == NULL || varlist == NULL || xvar == NULL || yvar == NULL ||
          xret == NULL || yret == NULL || goon == NULL)
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     *goon = true;
     if ( retval1 > -1.0e-8 && retval1 < 1.0e-8) {
         *xret = x1;
         *yret = y1;
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
     } else if ( retval2 > -1.0e-8 && retval2 < 1.0e-8 ) {
         *xret = x1;
         *yret = y2;
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
     } else if ( retval1 * retval2 > 0.0 ) {
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     }
 
     if ( level > 5 ) {
         double absrv1 = fabs(retval1), absrv2 = fabs(retval2);
         *xret = (absrv1 * x1 + absrv2 * x2) / (absrv1 + absrv2);
         *yret = (absrv1 * y1 + absrv2 * y2) / (absrv1 + absrv2);
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
     }
 
     double xmid = (x1 + x2) / 2.0, ymid = (y1 + y2) / 2.0;
     double retvalmid = 0.0;
     finErrorCode errcode = this->calcAPoint(xmid, ymid, func, varlist, xvar, yvar, &retvalmid, goon);
-    if ( finErrorCodeKits::isErrorResult(errcode) || !(*goon) )
+    if ( finErrorKits::isErrorResult(errcode) || !(*goon) )
         return errcode;
 
     if ( retvalmid * retval1 < 0 ) {
@@ -390,30 +390,30 @@ finErrorCode finPlotEquation2D::searchBinary(
     }
     *xret = xmid;
     *yret = ymid;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotEquation2D::plot()
 {
     if ( !this->checkValid() )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finExecFunction *func = this->_environment->findFunction(this->_funcname);
     if ( func == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     finErrorCode errcode;
     double basestep = this->getBaseStep();
     this->_scrtPlot.setDistanceLimit(basestep * 3.0);
 
     errcode = this->buildSearchRangeList(basestep);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     QList<finExecVariable *> funcarglist;
     finExecVariable *xvar, *yvar;
     errcode = this->buildFuncArgList(&funcarglist, &xvar, &yvar);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     int xposcnt = this->_posListX.count(), yposcnt = this->_posListY.count();
@@ -430,11 +430,11 @@ finErrorCode finPlotEquation2D::plot()
             const double &yval = this->_posListY.at(yidx);
 
             errcode = this->calcAPoint(xval, yval, func, &funcarglist, xvar, yvar, &curretval, &goon);
-            if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+            if ( finErrorKits::isErrorResult(errcode) || !goon )
                 return errcode;
 
             errcode = this->checkOnePosition(xidx, yidx, curretval, &retvallist, &srchflags);
-            if ( finErrorCodeKits::isErrorResult(errcode) )
+            if ( finErrorKits::isErrorResult(errcode) )
                 return errcode;
 
             double realx = xval, realy = yval;
@@ -445,7 +445,7 @@ finErrorCode finPlotEquation2D::plot()
                 errcode = this->searchBinary(this->_posListX.at(xidx - 1), yval, retvallist.at(yidx),
                                              xval, yval, curretval, func, &funcarglist, xvar, yvar,
                                              &realx, &realy, &goon);
-                if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+                if ( finErrorKits::isErrorResult(errcode) || !goon )
                     return errcode;
 
                 this->_scrtPlot.appendPoint(realx, realy);
@@ -454,14 +454,14 @@ finErrorCode finPlotEquation2D::plot()
                 errcode = this->searchBinary(xval, this->_posListY.at(yidx - 1), retvallist.at(yidx - 1),
                                              xval, yval, curretval, func, &funcarglist, xvar, yvar,
                                              &realx, &realy, &goon);
-                if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+                if ( finErrorKits::isErrorResult(errcode) || !goon )
                     return errcode;
 
                 this->_scrtPlot.appendPoint(realx, realy);
             }
 
             errcode = this->updateRetValList(xidx, yidx, curretval, &retvallist);
-            if ( finErrorCodeKits::isErrorResult(errcode) )
+            if ( finErrorKits::isErrorResult(errcode) )
                 return errcode;
         }
     }

@@ -26,7 +26,7 @@ finErrorCode finSyntaxError::copySyntaxError(const finSyntaxError *src)
     this->_row = src->getRow();
     this->_column = src->getColumn();
     this->_errString = src->getErrorString();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 unsigned int finSyntaxError::getRow() const
@@ -47,26 +47,26 @@ QString finSyntaxError::getErrorString() const
 finErrorCode finSyntaxError::setRow(unsigned int row)
 {
     this->_row = row;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finSyntaxError::setColumn(unsigned int col)
 {
     this->_column = col;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finSyntaxError::setErrorString(const QString &errstr)
 {
     this->_errString = errstr;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finSyntaxError::appendExecutionError(const finLexNode *lexnode, QList<finSyntaxError> *errlist,
                                                   const QString &errinfo)
 {
     if ( lexnode == NULL || errlist == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     finSyntaxError synerr;
     synerr.setRow(lexnode->getRow());
@@ -74,5 +74,5 @@ finErrorCode finSyntaxError::appendExecutionError(const finLexNode *lexnode, QLi
     synerr.setErrorString(errinfo);
 
     errlist->append(synerr);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }

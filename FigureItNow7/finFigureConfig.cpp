@@ -131,142 +131,142 @@ QColor finFigureConfig::getFontColor() const
 finErrorCode finFigureConfig::setBorderPen(const QPen &pen)
 {
     this->_borderPen = pen;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setFillBrush(const QBrush &brush)
 {
     this->_fillBrush = brush;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setStartArrow(const finFigureArrow &arrow)
 {
     this->_startArrow = arrow;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setEndArrow(const finFigureArrow &arrow)
 {
     this->_endArrow = arrow;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setTextPen(const QPen &pen)
 {
     this->_textPen = pen;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setTextBrush(const QBrush &brush)
 {
     this->_textBrush = brush;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setFont(const QFont &font)
 {
     this->_font = font;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setTextMargins(const QMarginsF &margins)
 {
     this->_textMargins = margins;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setDotSize(double size)
 {
     if ( size <= 0.0 )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     this->_borderPen.setWidthF(size);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setBorderColor(const QColor &color)
 {
     this->_borderPen.setColor(color);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setFillColor(const QColor &color)
 {
     this->_fillBrush.setColor(color);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setStartArrowType(finFigureArrowType type)
 {
     this->_startArrow.setType(type);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setStartArrowSize(double size)
 {
     this->_startArrow.setLength(size);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setStartArrowRadian(double rad)
 {
     this->_endArrow.setRadian(rad);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setEndArrowType(finFigureArrowType type)
 {
     this->_endArrow.setType(type);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setEndArrowSize(double size)
 {
     this->_endArrow.setLength(size);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setEndArrowRadian(double rad)
 {
     this->_endArrow.setRadian(rad);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setFontName(const QString &ftname)
 {
     this->_font.setFamily(ftname);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setFontPointSize(double size)
 {
     this->_font.setPointSizeF(size);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setFontBold(bool bold)
 {
     this->_font.setBold(bold);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setFontItalic(bool italic)
 {
     this->_font.setItalic(italic);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::setFontColor(const QColor &color)
 {
     this->_textBrush.setColor(color);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::cloneFigureConfig(finFigureConfig *outcfg) const
 {
     if ( outcfg == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     outcfg->_borderPen = this->_borderPen;
     outcfg->_fillBrush = this->_fillBrush;
@@ -275,7 +275,7 @@ finErrorCode finFigureConfig::cloneFigureConfig(finFigureConfig *outcfg) const
     outcfg->_textPen = this->_textPen;
     outcfg->_textBrush = this->_textBrush;
     outcfg->_font = this->_font;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finFigureConfig *finFigureConfig::getDefaultFigureConfig()
@@ -289,9 +289,9 @@ finFigureConfig *finFigureConfig::getDefaultFigureConfig()
 finErrorCode finFigureConfig::releaseDefaultFigureConfig()
 {
     if ( finFigureConfig::_defFigCfg == NULL )
-        return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
+        return finErrorKits::EC_DUPLICATE_OP;
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::cloneFromDefaultFigureConfig(finFigureConfig *outfig)

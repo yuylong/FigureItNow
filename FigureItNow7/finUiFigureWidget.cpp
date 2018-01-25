@@ -45,7 +45,7 @@ finErrorCode finUiFigureWidget::applyFigure()
 
     this->_graphpanel.setFigureContainer(&this->_figcontainer);
     this->repaint();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void finUiFigureWidget::paintEvent(QPaintEvent *e)

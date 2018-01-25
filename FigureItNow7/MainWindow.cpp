@@ -69,10 +69,10 @@ finErrorCode MainWindow::openScriptFile(const QString &filepath)
 {
     finUiScriptEditor *neweditor = new finUiScriptEditor();
     if ( neweditor == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     finErrorCode errcode = neweditor->openFile(filepath);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete neweditor;
         return errcode;
     }
@@ -84,14 +84,14 @@ finErrorCode MainWindow::openScriptFile(const QString &filepath)
 
     ui->tbwDocumentList->addTab(neweditor, neweditor->getTabTitle());
     ui->tbwDocumentList->setCurrentWidget(neweditor);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode MainWindow::createNewScriptFile()
 {
     finUiScriptEditor *neweditor = new finUiScriptEditor();
     if ( neweditor == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     neweditor->applyFigureConfig(&this->_defFigConfig);
     neweditor->applyGraphConfig(&this->_defGraphConfig);
@@ -100,7 +100,7 @@ finErrorCode MainWindow::createNewScriptFile()
 
     ui->tbwDocumentList->addTab(neweditor, neweditor->getTabTitle());
     ui->tbwDocumentList->setCurrentWidget(neweditor);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool MainWindow::saveScriptFile(finUiScriptEditor *editor)
@@ -115,7 +115,7 @@ bool MainWindow::saveScriptFile(finUiScriptEditor *editor)
         return true;
 
     finErrorCode errcode = editor->saveFile();
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
                               QString("The file cannot be saved on disk!"), QMessageBox::Ok);
         return true;
@@ -139,7 +139,7 @@ bool MainWindow::saveAsScriptFile(finUiScriptEditor *editor)
 
     this->_fileDirPath = filepath;
     finErrorCode errcode = editor->saveAsFile(filepath);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
                               QString("The file cannot be saved on disk!"), QMessageBox::Ok);
         return true;
@@ -160,13 +160,13 @@ QString MainWindow::getSaveFileQuestionString(finUiScriptEditor *editor) const
 finErrorCode MainWindow::removeEditorAt(int idx)
 {
     if ( idx < 0 || idx >= ui->tbwDocumentList->count() )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     finUiScriptEditor *editor = this->getEditorAt(idx);
     bool saveres = true;
     if ( editor == NULL ) {
         ui->tbwDocumentList->removeTab(idx);
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
     }
 
     QMessageBox::StandardButton resbtn = QMessageBox::Cancel;
@@ -180,7 +180,7 @@ finErrorCode MainWindow::removeEditorAt(int idx)
       case QMessageBox::Yes:
         saveres = this->saveScriptFile(editor);
         if ( !saveres )
-            return finErrorCodeKits::FIN_EC_UNREADY_WARN;
+            return finErrorKits::EC_UNREADY_WARN;
         break;
 
       case QMessageBox::No:
@@ -189,20 +189,20 @@ finErrorCode MainWindow::removeEditorAt(int idx)
 
       case QMessageBox::Cancel:
       default:
-        return finErrorCodeKits::FIN_EC_UNREADY_WARN;
+        return finErrorKits::EC_UNREADY_WARN;
         break;
     }
 
 out:
     ui->tbwDocumentList->removeTab(idx);
     delete editor;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 void MainWindow::on_actNew_triggered()
 {
     finErrorCode errcode = this->createNewScriptFile();
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
                               QString("The file cannot be created!"), QMessageBox::Ok);
         return;
@@ -219,7 +219,7 @@ void MainWindow::on_actOpen_triggered()
 
     this->_fileDirPath = filepath;
     finErrorCode errcode = this->openScriptFile(filepath);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
                               QString("The file cannot be open!"), QMessageBox::Ok);
         return;
@@ -401,7 +401,7 @@ void MainWindow::on_actExportPDF_triggered()
 
     this->_fileDirPath = filepath;
     finErrorCode errcode = cureditor->exportToPDF(filepath);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
                               QString("Cannot write the Adobe PDF file."), QMessageBox::Ok);
         return;
@@ -433,7 +433,7 @@ void MainWindow::on_actExportImage_triggered()
 
     this->_fileDirPath = filepath;
     finErrorCode errcode = cureditor->exportToImage(filepath);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
                               QString("Cannot write the image file."), QMessageBox::Ok);
         return;
@@ -459,7 +459,7 @@ void MainWindow::on_actExportSVG_triggered()
 
     this->_fileDirPath = filepath;
     finErrorCode errcode = cureditor->exportToSVG(filepath);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         QMessageBox::critical(this, QString("Error"),
                               QString("Cannot write the SVG file."), QMessageBox::Ok);
         return;
@@ -571,7 +571,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
         }
 
         finErrorCode errcode = this->removeEditorAt(0);
-        if ( errcode == finErrorCodeKits::FIN_EC_UNREADY_WARN ) {
+        if ( errcode == finErrorKits::EC_UNREADY_WARN ) {
             event->ignore();
             return;
         }

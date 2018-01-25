@@ -56,7 +56,7 @@ int finPlotParametric::getParameterVarIndex() const
 finErrorCode finPlotParametric::setFunctionName(const QString &funcname)
 {
     this->_funcname = funcname;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotParametric::setParameterValueRange(double t1, double t2)
@@ -68,13 +68,13 @@ finErrorCode finPlotParametric::setParameterValueRange(double t1, double t2)
         this->_fromT = t2;
         this->_toT = t1;
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotParametric::setParameterVarIndex(int idx)
 {
     this->_tIdx = idx;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 QList<finExecVariable *> *finPlotParametric::getCallArgList() const
@@ -105,25 +105,25 @@ finFigureContainer *finPlotParametric::getFigureContainer() const
 finErrorCode finPlotParametric::setCallArgList(QList<finExecVariable *> *arglist)
 {
     this->_callArgList = arglist;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotParametric::setEnvironment(finExecEnvironment *env)
 {
     this->_environment = env;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotParametric::setMachine(finExecMachine *machine)
 {
     this->_machine = machine;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotParametric::setFlowControl(finExecFlowControl *flowctl)
 {
     this->_flowctl = flowctl;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotParametric::setFigureContainer(finFigureContainer *figcontainer)
@@ -159,11 +159,11 @@ double finPlotParametric::getBaseStep() const
 finErrorCode finPlotParametric::buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **tvar)
 {
     if ( varlist == NULL || tvar == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     *tvar = new finExecVariable();
     if ( *tvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     (*tvar)->setName(QString());
     (*tvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
@@ -173,7 +173,7 @@ finErrorCode finPlotParametric::buildFuncArgList(QList<finExecVariable *> *varli
 
     *varlist = *this->_callArgList;
     varlist->insert(this->_tIdx, *tvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 double finPlotParametric::getCurrentStep(double basestep, double detlen, double prevstep)
@@ -193,34 +193,34 @@ finErrorCode finPlotParametric::calcAPoint(double t, finExecFunction *func, QLis
                                            finExecVariable *tvar, QPointF *pt, bool *goon)
 {
     if ( varlist == NULL || tvar == NULL || pt == NULL || goon == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     finErrorCode errcode;
     tvar->setNumericValue(t);
 
     errcode = func->execFunction(varlist, this->_environment, this->_machine, this->_flowctl);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     errcode = this->_flowctl->checkFlowForExpress(goon, NULL, this->_machine);
-    if ( finErrorCodeKits::isErrorResult(errcode) || !(*goon) )
+    if ( finErrorKits::isErrorResult(errcode) || !(*goon) )
         return errcode;
 
     finExecVariable *retvar = this->_flowctl->pickReturnVariable();
     int retvararylen = 0;
     if ( retvar == NULL || !retvar->isNumericArray(&retvararylen) ) {
         finExecVariable::releaseNonLeftVariable(retvar);
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     }
     if ( retvararylen < 2 ) {
         finExecVariable::releaseNonLeftVariable(retvar);
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
     }
 
     pt->setX(retvar->getVariableItemAt(0)->getNumericValue());
     pt->setY(retvar->getVariableItemAt(1)->getNumericValue());
     finExecVariable::releaseNonLeftVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finPlotParametric::isDuplicatedNaN(double t, const QPointF &prevpt, const QPointF &curpt)
@@ -249,7 +249,7 @@ double finPlotParametric::calcDetLength(double t, const QPointF &prevpt, const Q
 finErrorCode finPlotParametric::plot()
 {
     if ( !this->checkValid() )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     this->_stmPlot.clearBreakPoints();
     this->_stmPlot.clearPoints();
@@ -259,12 +259,12 @@ finErrorCode finPlotParametric::plot()
 
     finExecFunction *func = this->_environment->findFunction(this->_funcname);
     if ( func == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
 
     QList<finExecVariable *> funcarglist;
     finExecVariable *tvar;
     errcode = this->buildFuncArgList(&funcarglist, &tvar);
-    if ( finErrorCodeKits::isErrorResult(errcode) )
+    if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
     bool goon = true, loopit = true;
@@ -279,7 +279,7 @@ finErrorCode finPlotParametric::plot()
         }
 
         errcode = this->calcAPoint(t, func, &funcarglist, tvar, &curpt, &goon);
-        if ( finErrorCodeKits::isErrorResult(errcode) || !goon )
+        if ( finErrorKits::isErrorResult(errcode) || !goon )
             return errcode;
 
         if ( !this->isDuplicatedNaN(t, prevpt, curpt) )

@@ -139,7 +139,7 @@ void finUiGraphConfigDlg::fillAffineTransArgs(const finGraphTransAffine *affinet
 void finUiGraphConfigDlg::applyToGraphConfig(finGraphConfig *graphcfg) const
 {
     if ( graphcfg == NULL )
-        return /*finErrorCodeKits::FIN_EC_NULL_POINTER*/;
+        return /*finErrorKits::EC_NULL_POINTER*/;
 
     graphcfg->setBackgroundColor(ui->lblBgColor->color());
     graphcfg->setPanelPixelWidth((double)ui->spbPanelWidth->value());
@@ -165,7 +165,7 @@ void finUiGraphConfigDlg::applyToGraphConfig(finGraphConfig *graphcfg) const
 void finUiGraphConfigDlg::applyRectTransArgs(finGraphTransRect *recttrans) const
 {
     if ( recttrans == NULL )
-        return /*finErrorCodeKits::FIN_EC_NULL_POINTER*/;
+        return /*finErrorKits::EC_NULL_POINTER*/;
 
     double zoomx = ui->dsbTransRectZoomX->value();
     double zoomy = ui->dsbTransRectZoomY->value();
@@ -184,7 +184,7 @@ void finUiGraphConfigDlg::applyRectTransArgs(finGraphTransRect *recttrans) const
 void finUiGraphConfigDlg::applyAffineTransArgs(finGraphTransAffine *affinetrans) const
 {
     if ( affinetrans == NULL )
-        return /*finErrorCodeKits::FIN_EC_NULL_POINTER*/;
+        return /*finErrorKits::EC_NULL_POINTER*/;
 
     affinetrans->reset();
     for ( int rowidx = 0; rowidx < ui->tbwTransAffineActList->rowCount(); rowidx++ ) {

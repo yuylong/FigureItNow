@@ -47,31 +47,31 @@ finFigureContainer *finPlotDots::getFigureContainer() const
 finErrorCode finPlotDots::appendPoint(const QPointF &pt)
 {
     this->_ptList.append(pt);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotDots::appendPoint(double ptx, double pty)
 {
     this->_ptList.append(QPointF(ptx, pty));
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotDots::appendPoints(const QList<QPointF> &ptlist)
 {
     this->_ptList.append(ptlist);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotDots::prependPoint(const QPointF &pt)
 {
     this->_ptList.prepend(pt);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotDots::prependPoint(double ptx, double pty)
 {
     this->_ptList.prepend(QPointF(ptx, pty));
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotDots::prependPoints(const QList<QPointF> &ptlist)
@@ -79,39 +79,39 @@ finErrorCode finPlotDots::prependPoints(const QList<QPointF> &ptlist)
     QList<QPointF> tmplist = ptlist;
     tmplist.append(this->_ptList);
     this->_ptList = tmplist;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotDots::clearPoints()
 {
     this->_ptList.clear();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotDots::setFigureContainer(finFigureContainer *figcontainer)
 {
     this->_figcontainer = figcontainer;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotDots::plot()
 {
     if ( this->_figcontainer == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     for ( int i = 0; i < this->_ptList.count(); i++ ) {
         finFigureObjectDot *fodot = new finFigureObjectDot();
         if ( fodot == NULL )
-            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+            return finErrorKits::EC_OUT_OF_MEMORY;
 
         fodot->setPoint(this->_ptList.at(i));
         finErrorCode errcode = this->_figcontainer->appendFigureObject(fodot);
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             delete fodot;
             return errcode;
         }
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finPlotDotsLine::finPlotDotsLine()
@@ -127,39 +127,39 @@ finPlotDotsLine::~finPlotDotsLine()
 finErrorCode finPlotDotsLine::plot()
 {
     if ( this->_figcontainer == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     finErrorCode errcode;
     if ( this->_ptList.count() == 0 ) {
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
     } else if ( this->_ptList.count() == 1 ) {
         finFigureObjectDot *fodot = new finFigureObjectDot();
         if ( fodot == NULL )
-            return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+            return finErrorKits::EC_OUT_OF_MEMORY;
 
         fodot->setPoint(this->_ptList.first());
         errcode = this->_figcontainer->appendFigureObject(fodot);
-        if ( finErrorCodeKits::isErrorResult(errcode) ) {
+        if ( finErrorKits::isErrorResult(errcode) ) {
             delete fodot;
             return errcode;
         }
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
     }
 
     finFigureObjectPolyline *fopln = new finFigureObjectPolyline();
     if ( fopln == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     fopln->setIgnoreArrow(true);
     for ( int i = 0; i < this->_ptList.count(); i++ )
         fopln->appendPoint(this->_ptList.at(i));
 
     errcode = this->_figcontainer->appendFigureObject(fopln);
-    if ( finErrorCodeKits::isErrorResult(errcode) ) {
+    if ( finErrorKits::isErrorResult(errcode) ) {
         delete fopln;
         return errcode;
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finPlotDotsStream::finPlotDotsStream()
@@ -218,19 +218,19 @@ bool finPlotDotsStream::checkBreakPoint(const QPointF &pt) const
 finErrorCode finPlotDotsStream::appendBreakPoint(const QPointF &pt)
 {
     this->_breakPtList.append(pt);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotDotsStream::appendBreakPoint(double ptx, double pty)
 {
     this->_breakPtList.append(QPointF(ptx, pty));
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotDotsStream::clearBreakPoints()
 {
     this->_breakPtList.clear();
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finPlotDotsStream::checkNaNOrInfPoint(QPointF *pt)
@@ -258,10 +258,10 @@ bool finPlotDotsStream::isNanPoint(const QPointF &pt)
 finErrorCode finPlotDotsStream::plot()
 {
     if ( this->_figcontainer == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     if ( this->_ptList.count() == 0 )
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
 
     finPlotDotsLine lnplot;
     lnplot.setFigureContainer(this->_figcontainer);
@@ -300,7 +300,7 @@ finErrorCode finPlotDotsStream::plot()
         lnplot.appendPoint(this->_ptList.last());
     lnplot.plot();
 
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finPlotDotsScatter::finPlotDotsScatter()
@@ -324,7 +324,7 @@ finErrorCode finPlotDotsScatter::setDistanceLimit(double limit)
         limit = 1.0e-8;
 
     this->_distLimit = limit;
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finPlotDotsScatter::isNaNOrInfPoint(const QPointF &pt) const
@@ -406,7 +406,7 @@ finErrorCode finPlotDotsScatter::handleEnclosePoint(
         const QList<QPointF> &curptlist, const QList<QPointF> &pstptlist, finPlotDotsLine *lnplot)
 {
     if ( curptlist.empty() )
-        return finErrorCodeKits::FIN_EC_NORMAL_WARN;
+        return finErrorKits::EC_NORMAL_WARN;
 
     const QPointF &lastpt = curptlist.last();
     const QPointF &firstpt = curptlist.first();
@@ -426,7 +426,7 @@ finErrorCode finPlotDotsScatter::handleEnclosePoint(
         }
     }
     if ( curptlist.count() <= 1 )
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
 
     if ( lastnidx < 0 ) {
         const QPointF &prevpt = curptlist.at(curptlist.count() - 2);
@@ -435,7 +435,7 @@ finErrorCode finPlotDotsScatter::handleEnclosePoint(
             lnplot->appendPoint(curptlist.at(lastnidx));
     }
     if ( lastnidx == 0 )
-        return finErrorCodeKits::FIN_EC_SUCCESS;
+        return finErrorKits::EC_SUCCESS;
 
     if ( firstnidx < 0 ) {
         const QPointF &prevpt = curptlist.at(1);
@@ -443,13 +443,13 @@ finErrorCode finPlotDotsScatter::handleEnclosePoint(
         if ( firstnidx >= 0 )
             lnplot->prependPoint(curptlist.at(firstnidx));
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotDotsScatter::plot()
 {
     if ( this->_figcontainer == NULL )
-        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+        return finErrorKits::EC_STATE_ERROR;
 
     QList<QPointF> pendpt = this->_ptList;
     QList<QPointF> curptlist;
@@ -482,6 +482,6 @@ finErrorCode finPlotDotsScatter::plot()
         postpt.append(curptlist);
         curptlist.clear();
     }
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
 

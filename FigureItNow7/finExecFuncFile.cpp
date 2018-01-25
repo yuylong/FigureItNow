@@ -32,22 +32,22 @@ static finErrorCode _sysfunc_load_image(finExecFunction *self, finExecEnvironmen
     finExecVariable *fnvar, *retvar;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
-        return finErrorCodeKits::FIN_EC_NULL_POINTER;
+        return finErrorKits::EC_NULL_POINTER;
 
     fnvar = finExecVariable::transLinkTarget(env->findVariable("fn"));
     if ( fnvar == NULL )
-        return finErrorCodeKits::FIN_EC_NOT_FOUND;
+        return finErrorKits::EC_NOT_FOUND;
     if ( fnvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
-        return finErrorCodeKits::FIN_EC_INVALID_PARAM;
+        return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
-        return finErrorCodeKits::FIN_EC_OUT_OF_MEMORY;
+        return finErrorKits::EC_OUT_OF_MEMORY;
 
     QString filename = fnvar->getStringValue();
     QImage image = QImage(filename);
     if ( image.isNull() )
-        return finErrorCodeKits::FIN_EC_FILE_NOT_OPEN;
+        return finErrorKits::EC_FILE_NOT_OPEN;
 
     retvar->setType(finExecVariable::FIN_VR_TYPE_IMAGE);
     retvar->setImageValue(image.convertToFormat(QImage::Format_ARGB32));
@@ -56,5 +56,5 @@ static finErrorCode _sysfunc_load_image(finExecFunction *self, finExecEnvironmen
 
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
-    return finErrorCodeKits::FIN_EC_SUCCESS;
+    return finErrorKits::EC_SUCCESS;
 }
