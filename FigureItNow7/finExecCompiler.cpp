@@ -18,7 +18,6 @@ finExecCompiler::~finExecCompiler()
 {
     if ( this->_synReader.isReading() )
         this->_synReader.stopRead();
-    this->_synReader.disposeAllRead();
 }
 
 QString finExecCompiler::getScriptCode() const

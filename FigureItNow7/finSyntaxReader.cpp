@@ -12,7 +12,7 @@
 finSyntaxReader::finSyntaxReader()
     : _lexReader(), _syntaxStack()
 {
-    this->_isReading = false;
+    this->_state = ST_DUMMY;
 }
 
 const finLexReader *finSyntaxReader::getLexReader() const
@@ -32,7 +32,7 @@ QString finSyntaxReader::getScriptCode() const
 
 finErrorCode finSyntaxReader::setScriptCode(const QString &scriptcode)
 {
-    if ( this->_isReading )
+    if ( this->isReading() )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     this->_lexReader.resetPosition();
@@ -40,17 +40,24 @@ finErrorCode finSyntaxReader::setScriptCode(const QString &scriptcode)
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
+    if ( this->_state == ST_DUMMY)
+        this->_state = ST_READY;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 bool finSyntaxReader::isReading() const
 {
-    return this->_isReading;
+    return this->_state == ST_READING || this->_state == ST_DONE;
+}
+
+finSyntaxReader::State finSyntaxReader::getState() const
+{
+    return this->_state;
 }
 
 finErrorCode finSyntaxReader::startRead()
 {
-    if ( this->_isReading )
+    if ( this->_state != ST_READY )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     this->disposeAllRead();
@@ -59,16 +66,18 @@ finErrorCode finSyntaxReader::startRead()
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
 
-    this->_isReading = true;
+    this->_state = ST_READING;
     return finErrorCodeKits::FIN_EC_SUCCESS;
 }
 
 finErrorCode finSyntaxReader::stopRead()
 {
-    if ( !this->_isReading )
+    if ( this->_state == ST_DUMMY )
+        return finErrorCodeKits::FIN_EC_STATE_ERROR;
+    else if ( !this->isReading() )
         return finErrorCodeKits::FIN_EC_DUPLICATE_OP;
 
-    this->_isReading = false;
+    this->_state = ST_READY;
     this->disposeAllRead();
 
     return finErrorCodeKits::FIN_EC_SUCCESS;
@@ -76,15 +85,19 @@ finErrorCode finSyntaxReader::stopRead()
 
 finErrorCode finSyntaxReader::readNextToken()
 {
-    if ( !this->_isReading )
+    if ( this->_state == ST_DONE )
+        return finErrorCodeKits::FIN_EC_REACH_BOTTOM;
+    if ( this->_state != ST_READING )
         return finErrorCodeKits::FIN_EC_STATE_ERROR;
 
     finLexNode lexnode;
     finErrorCode errcode = this->_lexReader.getNextLexNode(&lexnode);
     if ( finErrorCodeKits::isErrorResult(errcode) )
         return errcode;
-    if ( errcode == finErrorCodeKits::FIN_EC_REACH_BOTTOM )
+    if ( errcode == finErrorCodeKits::FIN_EC_REACH_BOTTOM ) {
+        this->_state = ST_DONE;
         return errcode;
+    }
     if ( lexnode.getType() == finLexNode::FIN_LN_TYPE_DUMMY )
         return finErrorCodeKits::FIN_EC_NORMAL_WARN;
 
@@ -93,7 +106,7 @@ finErrorCode finSyntaxReader::readNextToken()
 
 finSyntaxTree *finSyntaxReader::getSyntaxTree()
 {
-    if ( !this->_isReading )
+    if ( !this->isReading() )
         return NULL;
 
     finSyntaxTree *syntree = new finSyntaxTree();

@@ -11,14 +11,6 @@
  * This file gives a machine class that transforming from the lex node to a
  * syntax tree. The syntax tree whose type is finSyntaxNode is a final format
  * from a script code used by FIN-7 for executing the figure drawing task.
- *
- * Yulong Yu, May 31st, 2016
- * Yusoft (c) All rights reserved, 2016.
- *
- * This file is protected by International Copyright Law. You have no right to
- * distribute, copy, and modify it without the authority by the author, the
- * copyright holders, and Yusoft. Any citations need the hard-copy permit by
- * the author.
  */
 
 #ifndef FINSYNTAXREADER_H
@@ -36,10 +28,18 @@
 
 class finSyntaxReader
 {
+public:
+    enum State {
+        ST_DUMMY,
+        ST_READY,
+        ST_READING,
+        ST_DONE,
+    };
+
 protected:
     finLexReader _lexReader;
 
-    bool _isReading;
+    State _state;
     QList<finSyntaxNode *> _syntaxStack;
     QList<finSyntaxError> _errList;
 
@@ -53,16 +53,17 @@ public:
     finErrorCode setScriptCode(const QString &scriptcode);
 
     bool isReading() const;
+    State getState() const;
+
     finErrorCode startRead();
     finErrorCode stopRead();
-    finErrorCode readNextToken();
 
-    QList<finSyntaxNode *> *getSyntaxStack() { return &this->_syntaxStack; }
+    finErrorCode readNextToken();
     finSyntaxTree *getSyntaxTree();
 
+private:
     finErrorCode disposeAllRead();
 
-private:
     finErrorCode processTypedNextToken(finLexNode *lexnode, finLexNodeType lextype);
 
     finErrorCode processInstanceToken(finLexNode *lexnode);
