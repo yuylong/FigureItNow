@@ -18,11 +18,11 @@
 QString finFigureArrow::getTypeName(finFigureArrowType type)
 {
     switch ( type ) {
-      case finFigureArrow::FIN_FA_TYPE_NONE:
+      case finFigureArrow::TP_NONE:
         return QString("none");
         break;
 
-      case finFigureArrow::FIN_FA_TYPE_TRIANGLE:
+      case finFigureArrow::TP_TRIANGLE:
         return QString("triangle");
         break;
     }
@@ -32,11 +32,11 @@ QString finFigureArrow::getTypeName(finFigureArrowType type)
 finFigureArrowType finFigureArrow::parseTypeString(const QString &str)
 {
     if ( QString::compare(str, QString("none")) == 0 )
-        return finFigureArrow::FIN_FA_TYPE_NONE;
+        return finFigureArrow::TP_NONE;
     else if ( QString::compare(str, QString("triangle")) == 0 )
-        return finFigureArrow::FIN_FA_TYPE_TRIANGLE;
+        return finFigureArrow::TP_TRIANGLE;
     else
-        return finFigureArrow::FIN_FA_TYPE_NONE;
+        return finFigureArrow::TP_NONE;
 }
 
 finErrorCode finFigureArrow::fillTypesInComboBox(QComboBox *cmbox)
@@ -53,7 +53,7 @@ finErrorCode finFigureArrow::fillTypesInComboBox(QComboBox *cmbox)
 
 finFigureArrow::finFigureArrow()
 {
-    this->_type = finFigureArrow::FIN_FA_TYPE_NONE;
+    this->_type = finFigureArrow::TP_NONE;
     this->_rad = M_PI / 4.0;
     this->_length = 12.0;
 }
@@ -72,7 +72,7 @@ finFigureArrowType finFigureArrow::getType() const
 
 double finFigureArrow::getRadian() const
 {
-    if ( this->_type == finFigureArrow::FIN_FA_TYPE_NONE )
+    if ( this->_type == finFigureArrow::TP_NONE )
         return 0.0;
 
     return this->_rad;
@@ -80,7 +80,7 @@ double finFigureArrow::getRadian() const
 
 double finFigureArrow::getLength() const
 {
-    if ( this->_type == finFigureArrow::FIN_FA_TYPE_NONE )
+    if ( this->_type == finFigureArrow::TP_NONE )
         return 0.0;
 
     return this->_length;
@@ -150,11 +150,11 @@ finFigureArrow::lineShrinkPoint(const QPointF &arwpt, const QPointF &prevpt, con
         return arwpt;
 
     switch ( this->_type ) {
-      case finFigureArrow::FIN_FA_TYPE_NONE:
+      case finFigureArrow::TP_NONE:
         return arwpt;
         break;
 
-      case finFigureArrow::FIN_FA_TYPE_TRIANGLE:
+      case finFigureArrow::TP_TRIANGLE:
         return this->lineShrinkPtTriangle(prevpt, arwpt, cfg);
         break;
 
@@ -172,11 +172,11 @@ finErrorCode finFigureArrow::getPixelPath(QList<finFigurePath> *pathlist,
         return finErrorCodeKits::FIN_EC_NULL_POINTER;
 
     switch ( this->_type ) {
-      case finFigureArrow::FIN_FA_TYPE_NONE:
+      case finFigureArrow::TP_NONE:
         return finErrorCodeKits::FIN_EC_SUCCESS;
         break;
 
-      case finFigureArrow::FIN_FA_TYPE_TRIANGLE:
+      case finFigureArrow::TP_TRIANGLE:
         return this->getPixelPathTriangle(pathlist, arwpt, prevpt, cfg);
         break;
 

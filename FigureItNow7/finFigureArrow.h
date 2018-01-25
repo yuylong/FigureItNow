@@ -28,8 +28,8 @@ class finFigureArrow
 {
 public:
     enum Type {
-        FIN_FA_TYPE_NONE,
-        FIN_FA_TYPE_TRIANGLE,
+        TP_NONE,
+        TP_TRIANGLE,
     };
 
     static QString getTypeName(finFigureArrow::Type type);
