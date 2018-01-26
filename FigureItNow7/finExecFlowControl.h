@@ -20,18 +20,18 @@ class finExecMachine;
 class finExecFlowControl
 {
 public:
-    enum finExecFlowControlType {
-        FIN_FC_NEXT,
-        FIN_FC_RETURN,
-        FIN_FC_CONTINUE,
-        FIN_FC_BREAK,
-        FIN_FC_GOTO,
-        FIN_FC_EXIT,
-        FIN_FC_ERROR
+    enum Type {
+        TP_NEXT,
+        TP_RETURN,
+        TP_CONTINUE,
+        TP_BREAK,
+        TP_GOTO,
+        TP_EXIT,
+        TP_ERROR
     };
 
 protected:
-    finExecFlowControlType _type;
+    Type _type;
     QString _label;
     finExecVariable *_retVar;
 
@@ -41,7 +41,7 @@ public:
     void resetFlowControl();
     finErrorCode copyFlowControl(finExecFlowControl *srcfc);
 
-    finExecFlowControlType getType() const;
+    Type getType() const;
     bool isFlowNext() const;
     bool isFlowGoto() const;
     QString getGotoLabel() const;
@@ -55,7 +55,7 @@ public:
     finErrorCode checkFlowForStatement(bool *goon, finLexNode *lexnode, finExecMachine *machine);
     finErrorCode checkFlowForProgram(bool *goon, finLexNode *lexnode, finExecMachine *machine);
 
-    finErrorCode setType(finExecFlowControlType type);
+    finErrorCode setType(Type type);
     finErrorCode setLabel(const QString &label);
     finErrorCode setFlowNext();
     finErrorCode setGotoAndLabel(const QString &label);
@@ -68,6 +68,6 @@ public:
     finErrorCode directPass();
 };
 
-typedef finExecFlowControl::finExecFlowControlType finExecFlowControlType;
+typedef finExecFlowControl::Type finExecFlowControlType;
 
 #endif // FINEXECFLOWCONTROL_H

@@ -12,14 +12,14 @@
 
 finExecFlowControl::finExecFlowControl()
 {
-    this->_type = finExecFlowControl::FIN_FC_NEXT;
+    this->_type = finExecFlowControl::TP_NEXT;
     this->_label = QString();
     this->_retVar = NULL;
 }
 
 void finExecFlowControl::resetFlowControl()
 {
-    this->_type = finExecFlowControl::FIN_FC_NEXT;
+    this->_type = finExecFlowControl::TP_NEXT;
     this->_label = QString();
     this->releaseReturnVariable();
 }
@@ -42,17 +42,17 @@ finExecFlowControlType finExecFlowControl::getType() const
 
 bool finExecFlowControl::isFlowNext() const
 {
-    return (this->_type == finExecFlowControl::FIN_FC_NEXT);
+    return (this->_type == finExecFlowControl::TP_NEXT);
 }
 
 bool finExecFlowControl::isFlowGoto() const
 {
-    return (this->_type == finExecFlowControl::FIN_FC_GOTO);
+    return (this->_type == finExecFlowControl::TP_GOTO);
 }
 
 QString finExecFlowControl::getGotoLabel() const
 {
-    if ( this->_type == finExecFlowControl::FIN_FC_GOTO )
+    if ( this->_type == finExecFlowControl::TP_GOTO )
         return this->_label;
     else
         return QString();
@@ -72,30 +72,30 @@ finExecVariable *finExecFlowControl::pickReturnVariable()
 
 bool finExecFlowControl::isFlowExit() const
 {
-    return this->_type == finExecFlowControl::FIN_FC_EXIT;
+    return this->_type == finExecFlowControl::TP_EXIT;
 }
 
 bool finExecFlowControl::isFlowExpressOk() const
 {
-    return (this->_type == finExecFlowControl::FIN_FC_NEXT ||
-            this->_type == finExecFlowControl::FIN_FC_EXIT);
+    return (this->_type == finExecFlowControl::TP_NEXT ||
+            this->_type == finExecFlowControl::TP_EXIT);
 }
 bool finExecFlowControl::isFlowProgramOk() const
 {
-    return (this->_type == finExecFlowControl::FIN_FC_NEXT ||
-            this->_type == finExecFlowControl::FIN_FC_RETURN ||
-            this->_type == finExecFlowControl::FIN_FC_EXIT);
+    return (this->_type == finExecFlowControl::TP_NEXT ||
+            this->_type == finExecFlowControl::TP_RETURN ||
+            this->_type == finExecFlowControl::TP_EXIT);
 }
 
 finErrorCode
 finExecFlowControl::checkFlowForExpress(bool *goon, finLexNode *lexnode, finExecMachine *machine)
 {
-    if ( this->_type == finExecFlowControl::FIN_FC_NEXT ) {
+    if ( this->_type == finExecFlowControl::TP_NEXT ) {
         if ( goon != NULL )
             *goon = true;
         this->directPass();
         return finErrorKits::EC_SUCCESS;
-    } else if ( this->_type == finExecFlowControl::FIN_FC_EXIT ) {
+    } else if ( this->_type == finExecFlowControl::TP_EXIT ) {
         if ( goon != NULL )
             *goon = false;
         this->directPass();
@@ -114,16 +114,16 @@ finExecFlowControl::checkFlowForExpress(bool *goon, finLexNode *lexnode, finExec
 finErrorCode
 finExecFlowControl::checkFlowForStatement(bool *goon, finLexNode *lexnode, finExecMachine *machine)
 {
-    if ( this->_type == finExecFlowControl::FIN_FC_NEXT ) {
+    if ( this->_type == finExecFlowControl::TP_NEXT ) {
         if ( goon != NULL )
             *goon = true;
         this->directPass();
         return finErrorKits::EC_SUCCESS;
-    } else if ( this->_type == finExecFlowControl::FIN_FC_EXIT ||
-                this->_type == finExecFlowControl::FIN_FC_RETURN ||
-                this->_type == finExecFlowControl::FIN_FC_GOTO ||
-                this->_type == finExecFlowControl::FIN_FC_BREAK ||
-                this->_type == finExecFlowControl::FIN_FC_CONTINUE ) {
+    } else if ( this->_type == finExecFlowControl::TP_EXIT ||
+                this->_type == finExecFlowControl::TP_RETURN ||
+                this->_type == finExecFlowControl::TP_GOTO ||
+                this->_type == finExecFlowControl::TP_BREAK ||
+                this->_type == finExecFlowControl::TP_CONTINUE ) {
         if ( goon != NULL )
             *goon = false;
         this->directPass();
@@ -142,17 +142,17 @@ finExecFlowControl::checkFlowForStatement(bool *goon, finLexNode *lexnode, finEx
 finErrorCode
 finExecFlowControl::checkFlowForProgram(bool *goon, finLexNode *lexnode, finExecMachine *machine)
 {
-    if ( this->_type == finExecFlowControl::FIN_FC_NEXT ) {
+    if ( this->_type == finExecFlowControl::TP_NEXT ) {
         if ( goon != NULL )
             *goon = true;
         this->directPass();
         return finErrorKits::EC_SUCCESS;
-    } else if ( this->_type == finExecFlowControl::FIN_FC_RETURN ) {
+    } else if ( this->_type == finExecFlowControl::TP_RETURN ) {
         if ( goon != NULL )
             *goon = false;
         this->setFlowNext();
         return finErrorKits::EC_SUCCESS;
-    } else if ( this->_type == finExecFlowControl::FIN_FC_EXIT ) {
+    } else if ( this->_type == finExecFlowControl::TP_EXIT ) {
         if ( goon != NULL )
             *goon = false;
         this->directPass();
@@ -182,14 +182,14 @@ finErrorCode finExecFlowControl::setLabel(const QString &label)
 
 finErrorCode finExecFlowControl::setFlowNext()
 {
-    this->_type = finExecFlowControl::FIN_FC_NEXT;
+    this->_type = finExecFlowControl::TP_NEXT;
     this->_label = QString();
     return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecFlowControl::setGotoAndLabel(const QString &label)
 {
-    this->_type = finExecFlowControl::FIN_FC_GOTO;
+    this->_type = finExecFlowControl::TP_GOTO;
     this->_label = label;
     return finErrorKits::EC_SUCCESS;
 }

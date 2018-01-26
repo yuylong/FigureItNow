@@ -945,10 +945,10 @@ finExecMachine::instExecLoopWhile(finSyntaxNode *synnode, finExecEnvironment *en
         if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
 
-        if ( flowctl->getType() == finExecFlowControl::FIN_FC_CONTINUE ) {
+        if ( flowctl->getType() == finExecFlowControl::TP_CONTINUE ) {
             flowctl->setFlowNext();
             continue;
-        } else if ( flowctl->getType() == finExecFlowControl::FIN_FC_BREAK ) {
+        } else if ( flowctl->getType() == finExecFlowControl::TP_BREAK ) {
             flowctl->setFlowNext();
             break;
         }
@@ -1071,10 +1071,10 @@ finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env,
         if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
 
-        if ( flowctl->getType() == finExecFlowControl::FIN_FC_CONTINUE ) {
+        if ( flowctl->getType() == finExecFlowControl::TP_CONTINUE ) {
             flowctl->setFlowNext();
             goto loopstep;
-        } else if ( flowctl->getType() == finExecFlowControl::FIN_FC_BREAK ) {
+        } else if ( flowctl->getType() == finExecFlowControl::TP_BREAK ) {
             flowctl->setFlowNext();
             break;
         }
@@ -1153,7 +1153,7 @@ finErrorCode finExecMachine::instExecJumpGoto(finSyntaxNode *synnode, finExecFlo
 
 finErrorCode finExecMachine::instExecJumpRetVoid(finExecFlowControl *flowctl)
 {
-    flowctl->setType(finExecFlowControl::FIN_FC_RETURN);
+    flowctl->setType(finExecFlowControl::TP_RETURN);
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -1172,7 +1172,7 @@ finExecMachine::instExecJumpRetVal(finSyntaxNode *synnode, finExecEnvironment *e
     if ( finErrorKits::isErrorResult(errcode) || !goon )
          return errcode;
 
-    flowctl->setType(finExecFlowControl::FIN_FC_RETURN);
+    flowctl->setType(finExecFlowControl::TP_RETURN);
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -1209,7 +1209,7 @@ finErrorCode finExecMachine::instExecJumpExitVoid(finSyntaxNode *synnode, finExe
     finLexNode *lexnode = synnode->getCommandLexNode();
 
     this->appendExecutionError(lexnode, QString("INFO: Exit requested with void value."));
-    flowctl->setType(finExecFlowControl::FIN_FC_EXIT);
+    flowctl->setType(finExecFlowControl::TP_EXIT);
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -1229,7 +1229,7 @@ finExecMachine::instExecJumpExitVal(finSyntaxNode *synnode, finExecEnvironment *
          return errcode;
 
     this->appendExecutionError(lexnode, QString("INFO: Exit requested with a value."));
-    flowctl->setType(finExecFlowControl::FIN_FC_EXIT);
+    flowctl->setType(finExecFlowControl::TP_EXIT);
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -1267,7 +1267,7 @@ finErrorCode finExecMachine::instExecJumpConti(finSyntaxNode *synnode, finExecFl
     if ( synnode == NULL || flowctl == NULL)
         return finErrorKits::EC_NULL_POINTER;
 
-    flowctl->setType(finExecFlowControl::FIN_FC_CONTINUE);
+    flowctl->setType(finExecFlowControl::TP_CONTINUE);
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -1276,7 +1276,7 @@ finErrorCode finExecMachine::instExecJumpBreak(finSyntaxNode *synnode, finExecFl
     if ( synnode == NULL || flowctl == NULL)
         return finErrorKits::EC_NULL_POINTER;
 
-    flowctl->setType(finExecFlowControl::FIN_FC_BREAK);
+    flowctl->setType(finExecFlowControl::TP_BREAK);
     return finErrorKits::EC_SUCCESS;
 }
 
