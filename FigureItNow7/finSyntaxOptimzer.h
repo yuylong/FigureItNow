@@ -16,15 +16,19 @@
 
 class finSyntaxOptimzer
 {
-
+protected:
+    finSyntaxTree *_synTree;
 
 public:
     finSyntaxOptimzer();
 
-    finErrorCode checkAndOptimize(finSyntaxTree *syntree);
+    finSyntaxTree *getSyntaxTree();
+    finErrorCode setSyntaxTree(finSyntaxTree *syntree);
+
+    finErrorCode optimize();
 
 private:
-    finErrorCode optimizeSyntaxNode(finSyntaxNode *synnode);
+    static finErrorCode optimizeSyntaxNode(finSyntaxNode *synnode);
 };
 
 #endif // FINSYNTAXOPTIMZER_H
