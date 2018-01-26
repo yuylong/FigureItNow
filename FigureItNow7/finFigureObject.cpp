@@ -17,7 +17,7 @@
 
 finFigureObject::finFigureObject()
 {
-    this->_type = finFigureObject::FIN_FO_TYPE_DUMMY;
+    this->_type = finFigureObject::TP_DUMMY;
 }
 
 finFigureObject::~finFigureObject()
@@ -60,7 +60,7 @@ void finFigureObject::dump() const
 
 finFigureObjectDot::finFigureObjectDot()
 {
-    this->_type = finFigureObject::FIN_FO_TYPE_DOT;
+    this->_type = finFigureObject::TP_DOT;
     this->_point = QPointF(0.0, 0.0);
 }
 
@@ -123,7 +123,7 @@ void finFigureObjectDot::dump() const
 
 finFigureObjectLine::finFigureObjectLine()
 {
-    this->_type = finFigureObject::FIN_FO_TYPE_LINE;
+    this->_type = finFigureObject::TP_LINE;
     this->_pt1 = QPointF(0.0, 0.0);
     this->_pt2 = QPointF(0.0, 0.0);
     this->_ignoreArrow = false;
@@ -226,7 +226,7 @@ void finFigureObjectLine::dump() const
 finFigureObjectPolyline::finFigureObjectPolyline()
     : _ptList()
 {
-    this->_type = finFigureObject::FIN_FO_TYPE_POLYLINE;
+    this->_type = finFigureObject::TP_POLYLINE;
     this->_ignoreArrow = false;
 }
 
@@ -360,7 +360,7 @@ void finFigureObjectPolyline::dump() const
 
 finFigureObjectRect::finFigureObjectRect()
 {
-    this->_type = finFigureObject::FIN_FO_TYPE_RECT;
+    this->_type = finFigureObject::TP_RECT;
     this->_center = QPointF(0.0, 0.0);
     this->_size = QSizeF(0.0, 0.0);
     this->_radian = 0.0;
@@ -502,7 +502,7 @@ void finFigureObjectRect::dump() const
 finFigureObjectPolygon::finFigureObjectPolygon()
     : _ptList()
 {
-    this->_type = finFigureObject::FIN_FO_TYPE_POLYGON;
+    this->_type = finFigureObject::TP_POLYGON;
 }
 
 finFigureObjectPolygon::~finFigureObjectPolygon()
@@ -596,7 +596,7 @@ void finFigureObjectPolygon::dump() const
 
 finFigureObjectEllipse::finFigureObjectEllipse()
 {
-    this->_type = finFigureObject::FIN_FO_TYPE_ELLIPSE;
+    this->_type = finFigureObject::TP_ELLIPSE;
     this->_center = QPointF(0.0, 0.0);
     this->_longR = 0.0;
     this->_shortR = 0.0;
@@ -713,7 +713,7 @@ void finFigureObjectEllipse::dump() const
 
 finFigureObjectText::finFigureObjectText()
 {
-    this->_type = finFigureObject::FIN_FO_TYPE_TEXT;
+    this->_type = finFigureObject::TP_TEXT;
     this->_basePtr = QPointF(0.0, 0.0);
     this->_flag = Qt::AlignCenter;
     this->_scale = 1.0;
@@ -931,7 +931,7 @@ void finFigureObjectText::dump() const
 
 finFigureObjectImage::finFigureObjectImage()
 {
-    this->_type = finFigureObject::FIN_FO_TYPE_TEXT;
+    this->_type = finFigureObject::TP_TEXT;
     this->_basePtr = QPointF(0.0, 0.0);
     this->_flag = Qt::AlignCenter;
     this->_scaleX = 1.0;
@@ -1902,7 +1902,7 @@ void finFigureObjectAxis::dump() const
 
 finFigureObjectLine3D::finFigureObjectLine3D()
 {
-    this->_type = finFigureObject::FIN_FO_TYPE_LINE3D;
+    this->_type = finFigureObject::TP_LINE3D;
     this->_pt1 = finFigurePoint3D(0.0, 0.0, 0.0);
     this->_pt2 = finFigurePoint3D(0.0, 0.0, 0.0);
 }

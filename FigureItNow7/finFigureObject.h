@@ -25,23 +25,23 @@
 class finFigureObject
 {
 public:
-    enum finFigureObjectType {
-        FIN_FO_TYPE_DUMMY,
-        FIN_FO_TYPE_DOT,
-        FIN_FO_TYPE_LINE,
-        FIN_FO_TYPE_POLYLINE,
-        FIN_FO_TYPE_RECT,
-        FIN_FO_TYPE_POLYGON,
-        FIN_FO_TYPE_ELLIPSE,
-        FIN_FO_TYPE_TEXT,
-        FIN_FO_TYPE_IMAGE,
-        FIN_FO_TYPE_AXIS,
-        FIN_FO_TYPE_LINE3D,
-        FIN_FO_TYPE_MAX
+    enum Type {
+        TP_DUMMY,
+        TP_DOT,
+        TP_LINE,
+        TP_POLYLINE,
+        TP_RECT,
+        TP_POLYGON,
+        TP_ELLIPSE,
+        TP_TEXT,
+        TP_IMAGE,
+        TP_AXIS,
+        TP_LINE3D,
+        TP_MAX
     };
 
 protected:
-    finFigureObjectType _type;
+    Type _type;
     finFigureConfig _figCfg;
 
 public:
@@ -50,7 +50,7 @@ public:
 
     virtual bool is3DFigure() const;
 
-    finFigureObjectType getFigureType() const;
+    Type getFigureType() const;
     const finFigureConfig *getFigureConfig() const;
     finFigureConfig *getFigureConfig();
 
@@ -58,7 +58,7 @@ public:
     virtual void dump() const;
 };
 
-typedef finFigureObject::finFigureObjectType finFigureObjectType;
+typedef finFigureObject::Type finFigureObjectType;
 
 class finFigureObjectDot : public finFigureObject
 {
