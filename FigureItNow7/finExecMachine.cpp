@@ -273,7 +273,7 @@ finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     newvar->setName(lexnode->getString());
-    newvar->setType(finExecVariable::FIN_VR_TYPE_NULL);
+    newvar->setType(finExecVariable::TP_NULL);
     newvar->setLeftValue();
     newvar->clearWriteProtected();
 
@@ -510,7 +510,7 @@ finExecMachine::instExecExprNum(finSyntaxNode *synnode, finExecFlowControl *flow
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     finLexNode *lexnode = synnode->getCommandLexNode();
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(lexnode->getFloatValue());
     retvar->clearLeftValue();
     retvar->setWriteProtected();
@@ -528,7 +528,7 @@ finExecMachine::instExecExprStr(finSyntaxNode *synnode, finExecFlowControl *flow
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     finLexNode *lexnode = synnode->getCommandLexNode();
-    retvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
+    retvar->setType(finExecVariable::TP_STRING);
     retvar->setStringValue(lexnode->getStringValue());
     retvar->clearLeftValue();
     retvar->setWriteProtected();

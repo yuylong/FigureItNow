@@ -166,7 +166,7 @@ finErrorCode finPlotParametric::buildFuncArgList(QList<finExecVariable *> *varli
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     (*tvar)->setName(QString());
-    (*tvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    (*tvar)->setType(finExecVariable::TP_NUMERIC);
     (*tvar)->setLeftValue();
     (*tvar)->clearWriteProtected();
     this->_environment->addVariable(*tvar);

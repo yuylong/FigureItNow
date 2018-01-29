@@ -169,7 +169,7 @@ finErrorCode finPlotFunction::buildFuncArgList(QList<finExecVariable *> *varlist
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     (*xvar)->setName(QString());
-    (*xvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    (*xvar)->setType(finExecVariable::TP_NUMERIC);
     (*xvar)->setLeftValue();
     (*xvar)->clearWriteProtected();
     this->_environment->addVariable(*xvar);
@@ -212,7 +212,7 @@ finErrorCode finPlotFunction::calcAPoint(double x, finExecFunction *func, QList<
         return errcode;
 
     finExecVariable *retvar = this->_flowctl->pickReturnVariable();
-    if ( retvar == NULL || retvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+    if ( retvar == NULL || retvar->getType() != finExecVariable::TP_NUMERIC ) {
         finExecVariable::releaseNonLeftVariable(retvar);
         return finErrorKits::EC_INVALID_PARAM;
     }

@@ -37,7 +37,7 @@ static finErrorCode _sysfunc_load_image(finExecFunction *self, finExecEnvironmen
     fnvar = finExecVariable::transLinkTarget(env->findVariable("fn"));
     if ( fnvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( fnvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+    if ( fnvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
@@ -49,7 +49,7 @@ static finErrorCode _sysfunc_load_image(finExecFunction *self, finExecEnvironmen
     if ( image.isNull() )
         return finErrorKits::EC_FILE_NOT_OPEN;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_IMAGE);
+    retvar->setType(finExecVariable::TP_IMAGE);
     retvar->setImageValue(image.convertToFormat(QImage::Format_ARGB32));
     retvar->setWriteProtected();
     retvar->clearLeftValue();

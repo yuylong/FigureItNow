@@ -48,7 +48,7 @@ static finErrorCode _sysfunc_str_len(finExecFunction *self, finExecEnvironment *
     strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
     if ( strvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( strvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+    if ( strvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
@@ -57,7 +57,7 @@ static finErrorCode _sysfunc_str_len(finExecFunction *self, finExecEnvironment *
 
     QString str = strvar->getStringValue();
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue((double)str.length());
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -79,8 +79,8 @@ static finErrorCode _sysfunc_str_left(finExecFunction *self, finExecEnvironment 
     lenvar = finExecVariable::transLinkTarget(env->findVariable("len"));
     if ( strvar == NULL || lenvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( strvar->getType() != finExecVariable::FIN_VR_TYPE_STRING ||
-         lenvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( strvar->getType() != finExecVariable::TP_STRING ||
+         lenvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     QString str = strvar->getStringValue();
@@ -90,7 +90,7 @@ static finErrorCode _sysfunc_str_left(finExecFunction *self, finExecEnvironment 
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
+    retvar->setType(finExecVariable::TP_STRING);
     if ( len >= str.length() )
         retvar->setStringValue(str);
     else
@@ -115,8 +115,8 @@ static finErrorCode _sysfunc_str_right(finExecFunction *self, finExecEnvironment
     lenvar = finExecVariable::transLinkTarget(env->findVariable("len"));
     if ( strvar == NULL || lenvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( strvar->getType() != finExecVariable::FIN_VR_TYPE_STRING ||
-         lenvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( strvar->getType() != finExecVariable::TP_STRING ||
+         lenvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     QString str = strvar->getStringValue();
@@ -126,7 +126,7 @@ static finErrorCode _sysfunc_str_right(finExecFunction *self, finExecEnvironment
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
+    retvar->setType(finExecVariable::TP_STRING);
     if ( len >= str.length() )
         retvar->setStringValue(str);
     else
@@ -152,9 +152,9 @@ static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *
     lenvar = finExecVariable::transLinkTarget(env->findVariable("len"));
     if ( strvar == NULL || posvar == NULL || lenvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( strvar->getType() != finExecVariable::FIN_VR_TYPE_STRING ||
-         posvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         lenvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( strvar->getType() != finExecVariable::TP_STRING ||
+         posvar->getType() != finExecVariable::TP_NUMERIC ||
+         lenvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     QString str = strvar->getStringValue();
@@ -165,7 +165,7 @@ static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
+    retvar->setType(finExecVariable::TP_STRING);
     if ( len >= str.length() )
         retvar->setStringValue(str);
     else

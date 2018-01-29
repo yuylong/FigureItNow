@@ -57,17 +57,17 @@ static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *en
         return finErrorKits::EC_NULL_POINTER;
 
     cntvar = finExecVariable::transLinkTarget(env->findVariable("n"));
-    if ( cntvar != NULL && cntvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC &&
-                           cntvar->getType() != finExecVariable::FIN_VR_TYPE_NULL )
+    if ( cntvar != NULL && cntvar->getType() != finExecVariable::TP_NUMERIC &&
+                           cntvar->getType() != finExecVariable::TP_NULL )
         return finErrorKits::EC_INVALID_PARAM;
-    else if ( cntvar != NULL && cntvar->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC )
+    else if ( cntvar != NULL && cntvar->getType() == finExecVariable::TP_NUMERIC )
         arylen = cntvar->getNumericValue();
 
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_ARRAY);
+    retvar->setType(finExecVariable::TP_ARRAY);
     if ( arylen == 0 )
         goto out;
     else if ( arylen > 0 )
@@ -116,8 +116,8 @@ static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *e
     colvar = finExecVariable::transLinkTarget(env->findVariable("col"));
     if ( rowvar == NULL || colvar == NULL )
         return finErrorKits::EC_INVALID_PARAM;
-    if ( rowvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         colvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( rowvar->getType() != finExecVariable::TP_NUMERIC ||
+         colvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     matrow = (int)floor(rowvar->getNumericValue());
@@ -129,7 +129,7 @@ static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *e
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_ARRAY);
+    retvar->setType(finExecVariable::TP_ARRAY);
     if ( matrow == 0 )
         goto out;
 
@@ -224,7 +224,7 @@ static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnviron
                 return finErrorKits::EC_OUT_OF_MEMORY;
             }
 
-            retcolvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+            retcolvar->setType(finExecVariable::TP_NUMERIC);
             retcolvar->setNumericValue(srcvar->getNumericValue());
         }
     }
@@ -288,7 +288,7 @@ static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *
                 return finErrorKits::EC_OUT_OF_MEMORY;
             }
 
-            retcolvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+            retcolvar->setType(finExecVariable::TP_NUMERIC);
             retcolvar->setNumericValue(colvar1->getNumericValue() + colvar2->getNumericValue());
         }
     }
@@ -352,7 +352,7 @@ static finErrorCode _sysfunc_mat_sub(finExecFunction *self, finExecEnvironment *
                 return finErrorKits::EC_OUT_OF_MEMORY;
             }
 
-            retcolvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+            retcolvar->setType(finExecVariable::TP_NUMERIC);
             retcolvar->setNumericValue(colvar1->getNumericValue() - colvar2->getNumericValue());
         }
     }
@@ -425,7 +425,7 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
                 return finErrorKits::EC_OUT_OF_MEMORY;
             }
 
-            retcolvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+            retcolvar->setType(finExecVariable::TP_NUMERIC);
             retcolvar->setNumericValue(itemval);
         }
     }

@@ -19,7 +19,7 @@
 finExecVariable::finExecVariable()
     : _varName(), _itemList()
 {
-    this->_type = FIN_VR_TYPE_NULL;
+    this->_type = TP_NULL;
     this->_leftValue = false;
     this->_writeProtect = false;
     this->_numVal = 0.0;
@@ -32,7 +32,7 @@ finExecVariable::finExecVariable()
 finExecVariable::finExecVariable(const QString &name)
     : _varName(name), _itemList()
 {
-    this->_type = FIN_VR_TYPE_NULL;
+    this->_type = TP_NULL;
     this->_leftValue = false;
     this->_writeProtect = false;
     this->_numVal = 0.0;
@@ -83,7 +83,7 @@ finErrorCode finExecVariable::setName(const QString &name)
 
 finErrorCode finExecVariable::setType(finExecVariableType type)
 {
-    if ( this->_type != finExecVariable::FIN_VR_TYPE_NULL )
+    if ( this->_type != finExecVariable::TP_NULL )
         return finErrorKits::EC_STATE_ERROR;
 
     this->_type = type;
@@ -131,7 +131,7 @@ finErrorCode finExecVariable::clearLeftValue()
 
 double finExecVariable::getNumericValue() const
 {
-    if ( this->_type != FIN_VR_TYPE_NUMERIC )
+    if ( this->_type != TP_NUMERIC )
         return 0.0;
 
     return this->_numVal;
@@ -139,7 +139,7 @@ double finExecVariable::getNumericValue() const
 
 QString finExecVariable::getStringValue() const
 {
-    if ( this->_type != FIN_VR_TYPE_STRING )
+    if ( this->_type != TP_STRING )
         return QString();
 
     return this->_strVal;
@@ -147,7 +147,7 @@ QString finExecVariable::getStringValue() const
 
 QImage finExecVariable::getImageValue() const
 {
-    if ( this->_type != FIN_VR_TYPE_IMAGE )
+    if ( this->_type != TP_IMAGE )
         return QImage();
 
     return this->_image;
@@ -155,11 +155,11 @@ QImage finExecVariable::getImageValue() const
 
 finErrorCode finExecVariable::setNumericValue(double val)
 {
-    if ( this->_type != FIN_VR_TYPE_NUMERIC && this->_type != FIN_VR_TYPE_NULL )
+    if ( this->_type != TP_NUMERIC && this->_type != TP_NULL )
         return finErrorKits::EC_STATE_ERROR;
 
-    if ( this->_type == FIN_VR_TYPE_NULL )
-        this->_type = FIN_VR_TYPE_NUMERIC;
+    if ( this->_type == TP_NULL )
+        this->_type = TP_NUMERIC;
 
     this->_numVal = val;
     return finErrorKits::EC_SUCCESS;
@@ -167,11 +167,11 @@ finErrorCode finExecVariable::setNumericValue(double val)
 
 finErrorCode finExecVariable::setStringValue(const QString &strval)
 {
-    if ( this->_type != FIN_VR_TYPE_STRING && this->_type != FIN_VR_TYPE_NULL )
+    if ( this->_type != TP_STRING && this->_type != TP_NULL )
         return finErrorKits::EC_STATE_ERROR;
 
-    if ( this->_type == FIN_VR_TYPE_NULL )
-        this->_type = FIN_VR_TYPE_STRING;
+    if ( this->_type == TP_NULL )
+        this->_type = TP_STRING;
 
     this->_strVal = strval;
     return finErrorKits::EC_SUCCESS;
@@ -179,11 +179,11 @@ finErrorCode finExecVariable::setStringValue(const QString &strval)
 
 finErrorCode finExecVariable::setImageValue(const QImage &img)
 {
-    if ( this->_type != FIN_VR_TYPE_IMAGE && this->_type != FIN_VR_TYPE_NULL )
+    if ( this->_type != TP_IMAGE && this->_type != TP_NULL )
         return finErrorKits::EC_STATE_ERROR;
 
-    if ( this->_type == FIN_VR_TYPE_NULL )
-        this->_type = FIN_VR_TYPE_IMAGE;
+    if ( this->_type == TP_NULL )
+        this->_type = TP_IMAGE;
 
     this->_image = img;
     return finErrorKits::EC_SUCCESS;
@@ -191,7 +191,7 @@ finErrorCode finExecVariable::setImageValue(const QImage &img)
 
 int finExecVariable::getArrayLength() const
 {
-    if ( this->_type != FIN_VR_TYPE_ARRAY )
+    if ( this->_type != TP_ARRAY )
         return 0;
 
     return this->_itemList.count();
@@ -199,11 +199,11 @@ int finExecVariable::getArrayLength() const
 
 finErrorCode finExecVariable::preallocArrayLength(int len)
 {
-    if ( this->_type != FIN_VR_TYPE_ARRAY && this->_type != FIN_VR_TYPE_NULL )
+    if ( this->_type != TP_ARRAY && this->_type != TP_NULL )
         return finErrorKits::EC_STATE_ERROR;
 
-    if ( this->_type == FIN_VR_TYPE_NULL )
-        this->_type = FIN_VR_TYPE_ARRAY;
+    if ( this->_type == TP_NULL )
+        this->_type = TP_ARRAY;
 
     if ( this->_itemList.count() >= len )
         return finErrorKits::EC_DUPLICATE_OP;
@@ -223,7 +223,7 @@ finErrorCode finExecVariable::preallocArrayLength(int len)
 
 finExecVariable *finExecVariable::getVariableItemAt(int idx) const
 {
-    if ( this->_type != FIN_VR_TYPE_ARRAY )
+    if ( this->_type != TP_ARRAY )
         return NULL;
 
     if ( idx < 0 || idx >= this->_itemList.count() )
@@ -234,11 +234,11 @@ finExecVariable *finExecVariable::getVariableItemAt(int idx) const
 
 finExecVariable *finExecVariable::getVariableItemAt(int idx)
 {
-    if ( this->_type != FIN_VR_TYPE_ARRAY && this->_type != FIN_VR_TYPE_NULL )
+    if ( this->_type != TP_ARRAY && this->_type != TP_NULL )
         return NULL;
 
-    if ( this->_type == FIN_VR_TYPE_NULL )
-        this->_type = FIN_VR_TYPE_ARRAY;
+    if ( this->_type == TP_NULL )
+        this->_type = TP_ARRAY;
     if ( idx < 0 )
         return NULL;
 
@@ -268,11 +268,11 @@ bool finExecVariable::isVariableInside(const finExecVariable *var) const
 
 finErrorCode finExecVariable::clearArrayItems()
 {
-    if ( this->_type != FIN_VR_TYPE_ARRAY && this->_type != FIN_VR_TYPE_NULL )
+    if ( this->_type != TP_ARRAY && this->_type != TP_NULL )
         return finErrorKits::EC_STATE_ERROR;
 
-    if ( this->_type == FIN_VR_TYPE_NULL )
-        this->_type = FIN_VR_TYPE_ARRAY;
+    if ( this->_type == TP_NULL )
+        this->_type = TP_ARRAY;
 
     if ( this->_itemList.count() <= 0 )
         return finErrorKits::EC_DUPLICATE_OP;
@@ -314,14 +314,14 @@ finErrorCode finExecVariable::removeFromArray()
 
 bool finExecVariable::isNumericMatrix(int *rowcnt, int *colcnt) const
 {
-    if ( this->_type != FIN_VR_TYPE_ARRAY )
+    if ( this->_type != TP_ARRAY )
         return false;
 
     int pcolcnt = 0;
     for ( int i = 0; i < this->_itemList.count(); i++ ) {
         finExecVariable *curitem = this->_itemList.at(i);
 
-        if ( curitem->_type != FIN_VR_TYPE_ARRAY )
+        if ( curitem->_type != TP_ARRAY )
             return false;
 
         if ( i == 0 )
@@ -331,7 +331,7 @@ bool finExecVariable::isNumericMatrix(int *rowcnt, int *colcnt) const
 
         for ( int j = 0; j < pcolcnt; j++) {
             finExecVariable *chditem = curitem->_itemList.at(j);
-            if ( chditem->_type != FIN_VR_TYPE_NUMERIC )
+            if ( chditem->_type != TP_NUMERIC )
                 return false;
         }
     }
@@ -345,12 +345,12 @@ bool finExecVariable::isNumericMatrix(int *rowcnt, int *colcnt) const
 
 bool finExecVariable::isNumericArray(int *cnt) const
 {
-    if ( this->_type != FIN_VR_TYPE_ARRAY )
+    if ( this->_type != TP_ARRAY )
         return false;
 
     for ( int i = 0; i < this->_itemList.count(); i++ ) {
         finExecVariable *curitem = this->_itemList.at(i);
-        if ( curitem->_type != FIN_VR_TYPE_NUMERIC )
+        if ( curitem->_type != TP_NUMERIC )
             return false;
     }
 
@@ -361,12 +361,12 @@ bool finExecVariable::isNumericArray(int *cnt) const
 
 bool finExecVariable::isStringArray(int *cnt) const
 {
-    if ( this->_type != FIN_VR_TYPE_ARRAY )
+    if ( this->_type != TP_ARRAY )
         return false;
 
     for ( int i = 0; i < this->_itemList.count(); i++ ) {
         finExecVariable *curitem = this->_itemList.at(i);
-        if ( curitem->_type != FIN_VR_TYPE_STRING )
+        if ( curitem->_type != TP_STRING )
             return false;
     }
 
@@ -377,11 +377,11 @@ bool finExecVariable::isStringArray(int *cnt) const
 
 const finExecVariable *finExecVariable::getLinkTarget() const
 {
-    if ( this->_type != finExecVariable::FIN_VR_TYPE_LINK )
+    if ( this->_type != finExecVariable::TP_LINK )
         return this;
 
     finExecVariable *target = this->_linkTarget;
-    while ( target != NULL && target->getType() == finExecVariable::FIN_VR_TYPE_LINK ) {
+    while ( target != NULL && target->getType() == finExecVariable::TP_LINK ) {
         target = target->_linkTarget;
     }
     return target;
@@ -389,11 +389,11 @@ const finExecVariable *finExecVariable::getLinkTarget() const
 
 finExecVariable *finExecVariable::getLinkTarget()
 {
-    if ( this->_type != finExecVariable::FIN_VR_TYPE_LINK )
+    if ( this->_type != finExecVariable::TP_LINK )
         return this;
 
     finExecVariable *target = this->_linkTarget;
-    while ( target != NULL && target->getType() == finExecVariable::FIN_VR_TYPE_LINK ) {
+    while ( target != NULL && target->getType() == finExecVariable::TP_LINK ) {
         target = target->_linkTarget;
     }
     return target;
@@ -409,7 +409,7 @@ finExecVariable *finExecVariable::transLinkTarget(finExecVariable *var)
 
 finErrorCode finExecVariable::setLinkTarget(finExecVariable *target)
 {
-    if ( this->_type == finExecVariable::FIN_VR_TYPE_LINK && this->_linkTarget == target )
+    if ( this->_type == finExecVariable::TP_LINK && this->_linkTarget == target )
         return finErrorKits::EC_DUPLICATE_OP;
 
     finErrorCode errcode = this->unsetLinkTarget();
@@ -424,11 +424,11 @@ finErrorCode finExecVariable::setLinkTarget(finExecVariable *target)
 
 finErrorCode finExecVariable::unsetLinkTarget()
 {
-    if ( this->_type != finExecVariable::FIN_VR_TYPE_LINK && this->_type != finExecVariable::FIN_VR_TYPE_NULL )
+    if ( this->_type != finExecVariable::TP_LINK && this->_type != finExecVariable::TP_NULL )
         return finErrorKits::EC_STATE_ERROR;
 
-    if ( this->_type == finExecVariable::FIN_VR_TYPE_NULL ) {
-        this->_type = finExecVariable::FIN_VR_TYPE_LINK;
+    if ( this->_type == finExecVariable::TP_NULL ) {
+        this->_type = finExecVariable::TP_LINK;
         this->_linkTarget = NULL;
         return finErrorKits::EC_SUCCESS;
     }
@@ -450,24 +450,24 @@ finErrorCode finExecVariable::readBoolValue(bool *blval) const
         return finErrorKits::EC_NULL_POINTER;
 
     switch ( this->getType() ) {
-      case finExecVariable::FIN_VR_TYPE_NULL:
+      case finExecVariable::TP_NULL:
         *blval = false;
         break;
 
-      case finExecVariable::FIN_VR_TYPE_NUMERIC:
+      case finExecVariable::TP_NUMERIC:
         *blval = !(this->getNumericValue() < 1.0e-8 && this->getNumericValue() > -1.0e-8);
         break;
 
-      case finExecVariable::FIN_VR_TYPE_STRING:
+      case finExecVariable::TP_STRING:
         *blval = (QString::compare(this->getStringValue(), "yes", Qt::CaseInsensitive) == 0 ||
                   QString::compare(this->getStringValue(), "true", Qt::CaseInsensitive) == 0);
         break;
 
-      case finExecVariable::FIN_VR_TYPE_IMAGE:
+      case finExecVariable::TP_IMAGE:
         *blval = !this->getImageValue().isNull();
         break;
 
-      case finExecVariable::FIN_VR_TYPE_ARRAY:
+      case finExecVariable::TP_ARRAY:
         *blval = (this->getArrayLength() > 0);
         break;
 
@@ -480,11 +480,11 @@ finErrorCode finExecVariable::readBoolValue(bool *blval) const
 
 finErrorCode finExecVariable::setupBoolValue(bool blval)
 {
-    if ( this->_type != finExecVariable::FIN_VR_TYPE_NULL &&
-         this->_type != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( this->_type != finExecVariable::TP_NULL &&
+         this->_type != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_STATE_ERROR;
 
-    this->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    this->setType(finExecVariable::TP_NUMERIC);
     if ( blval ) {
         this->setNumericValue(1.0);
     } else {
@@ -524,7 +524,7 @@ finErrorCode finExecVariable::readColorValue(QColor *color) const
 
 finErrorCode finExecVariable::setupColorValue(const QColor &color)
 {
-    if ( this->_type != finExecVariable::FIN_VR_TYPE_NULL )
+    if ( this->_type != finExecVariable::TP_NULL )
         return finErrorKits::EC_STATE_ERROR;
 
     finErrorCode errcode = this->preallocArrayLength(4);
@@ -532,19 +532,19 @@ finErrorCode finExecVariable::setupColorValue(const QColor &color)
         return errcode;
 
     finExecVariable *subvar = this->getVariableItemAt(0);
-    subvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    subvar->setType(finExecVariable::TP_NUMERIC);
     subvar->setNumericValue(color.redF());
 
     subvar = this->getVariableItemAt(1);
-    subvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    subvar->setType(finExecVariable::TP_NUMERIC);
     subvar->setNumericValue(color.greenF());
 
     subvar = this->getVariableItemAt(2);
-    subvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    subvar->setType(finExecVariable::TP_NUMERIC);
     subvar->setNumericValue(color.blueF());
 
     subvar = this->getVariableItemAt(3);
-    subvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    subvar->setType(finExecVariable::TP_NUMERIC);
     subvar->setNumericValue(color.alphaF());
 
     return finErrorKits::EC_SUCCESS;
@@ -555,32 +555,32 @@ finErrorCode finExecVariable::copyVariableValueIn(finExecVariable *srcvar)
     if ( srcvar == NULL )
         return finErrorKits::EC_NULL_POINTER;
 
-    if ( this->_type != FIN_VR_TYPE_NULL && this->_type != srcvar->getType() )
+    if ( this->_type != TP_NULL && this->_type != srcvar->getType() )
         return finErrorKits::EC_STATE_ERROR;
 
     finErrorCode errcode;
     this->_type = srcvar->getType();
 
     switch ( srcvar->_type ) {
-      case FIN_VR_TYPE_NUMERIC:
+      case TP_NUMERIC:
         this->_numVal = srcvar->getNumericValue();
         break;
 
-      case FIN_VR_TYPE_STRING:
+      case TP_STRING:
         this->_strVal = srcvar->getStringValue();
         break;
 
-      case FIN_VR_TYPE_IMAGE:
+      case TP_IMAGE:
         this->_image = srcvar->getImageValue();
         break;
 
-      case FIN_VR_TYPE_ARRAY:
+      case TP_ARRAY:
         errcode = this->copyArrayVariable(srcvar);
         if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
         break;
 
-      case FIN_VR_TYPE_LINK:
+      case TP_LINK:
         errcode = this->setLinkTarget(srcvar->getLinkTarget());
         if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
@@ -614,22 +614,22 @@ bool finExecVariable::isSameValue(finExecVariable *var)
         return false;
 
     switch ( var1->getType() ) {
-      case finExecVariable::FIN_VR_TYPE_NULL:
+      case finExecVariable::TP_NULL:
         return true;
 
-      case finExecVariable::FIN_VR_TYPE_NUMERIC:
+      case finExecVariable::TP_NUMERIC:
         return (var1->getNumericValue() == var2->getNumericValue());
         break;
 
-      case finExecVariable::FIN_VR_TYPE_STRING:
+      case finExecVariable::TP_STRING:
         return (QString::compare(var1->getStringValue(), var2->getStringValue()) == 0);
         break;
 
-      case finExecVariable::FIN_VR_TYPE_IMAGE:
+      case finExecVariable::TP_IMAGE:
         return false;
         break;
 
-      case finExecVariable::FIN_VR_TYPE_ARRAY:
+      case finExecVariable::TP_ARRAY:
         if ( var1->getArrayLength() != var2->getArrayLength() )
             return false;
 
@@ -698,7 +698,7 @@ finErrorCode finExecVariable::smartCopyVariableValue(finExecVariable *srcvar)
     if ( srcvar == NULL )
         return finErrorKits::EC_NORMAL_WARN;
 
-    if ( srcvar->getType() == finExecVariable::FIN_VR_TYPE_ARRAY &&
+    if ( srcvar->getType() == finExecVariable::TP_ARRAY &&
          !srcvar->isLeftValue() ) {
         this->_itemList = srcvar->_itemList;
         srcvar->_itemList.clear();
@@ -707,7 +707,7 @@ finErrorCode finExecVariable::smartCopyVariableValue(finExecVariable *srcvar)
         foreach ( itemvar, this->_itemList ) {
             itemvar->_parentVar = this;
         }
-        this->_type = finExecVariable::FIN_VR_TYPE_ARRAY;
+        this->_type = finExecVariable::TP_ARRAY;
     } else {
         errcode = this->copyVariableValueIn(srcvar);
         if ( finErrorKits::isErrorResult(errcode) )
@@ -736,27 +736,27 @@ finErrorCode finExecVariable::copyVariable(finExecVariable *srcvar)
 
 finErrorCode finExecVariable::disposeValue()
 {
-    if ( this->_type == FIN_VR_TYPE_NULL )
+    if ( this->_type == TP_NULL )
         return finErrorKits::EC_DUPLICATE_OP;
 
     switch ( this->_type ) {
-      case finExecVariable::FIN_VR_TYPE_NUMERIC:
+      case finExecVariable::TP_NUMERIC:
         this->_numVal = 0.0;
         break;
 
-      case finExecVariable::FIN_VR_TYPE_STRING:
+      case finExecVariable::TP_STRING:
         this->_strVal.clear();
         break;
 
-      case finExecVariable::FIN_VR_TYPE_IMAGE:
+      case finExecVariable::TP_IMAGE:
         this->_image = QImage();
         break;
 
-      case finExecVariable::FIN_VR_TYPE_ARRAY:
+      case finExecVariable::TP_ARRAY:
         this->clearArrayItems();
         break;
 
-      case finExecVariable::FIN_VR_TYPE_LINK:
+      case finExecVariable::TP_LINK:
         this->unsetLinkTarget();
         break;
 
@@ -764,7 +764,7 @@ finErrorCode finExecVariable::disposeValue()
         break;
     }
 
-    this->_type = FIN_VR_TYPE_NULL;
+    this->_type = TP_NULL;
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -797,7 +797,7 @@ finErrorCode finExecVariable::transToPointListArray(finExecVariable *aryvar, QLi
     if ( ptlist == NULL )
         return finErrorKits::EC_NULL_POINTER;
 
-    if ( aryvar == NULL || aryvar->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
+    if ( aryvar == NULL || aryvar->getType() == finExecVariable::TP_NULL ) {
         ptlist->clear();
         return finErrorKits::EC_SUCCESS;
     }
@@ -821,7 +821,7 @@ finErrorCode finExecVariable::transToPointListMatrix(finExecVariable *matvar, QL
     if ( ptlist == NULL )
         return finErrorKits::EC_NULL_POINTER;
 
-    if ( matvar == NULL || matvar->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
+    if ( matvar == NULL || matvar->getType() == finExecVariable::TP_NULL ) {
         ptlist->clear();
         return finErrorKits::EC_SUCCESS;
     }
@@ -848,15 +848,15 @@ finErrorCode finExecVariable::transToPointList(finExecVariable *var, QList<QPoin
     if ( ptlist == NULL )
         return finErrorKits::EC_NULL_POINTER;
 
-    if ( var == NULL || var->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
+    if ( var == NULL || var->getType() == finExecVariable::TP_NULL ) {
         ptlist->clear();
         return finErrorKits::EC_SUCCESS;
     }
 
-    if ( var->getType() != finExecVariable::FIN_VR_TYPE_ARRAY )
+    if ( var->getType() != finExecVariable::TP_ARRAY )
         return finErrorKits::EC_INVALID_PARAM;
 
-    if ( var->getArrayLength() > 0 && var->getVariableItemAt(0)->getType() == finExecVariable::FIN_VR_TYPE_ARRAY )
+    if ( var->getArrayLength() > 0 && var->getVariableItemAt(0)->getType() == finExecVariable::TP_ARRAY )
         return transToPointListMatrix(var, ptlist);
     else
         return transToPointListArray(var, ptlist);
@@ -868,8 +868,8 @@ finErrorCode finExecVariable::transToPointList(
     if ( ptlist == NULL )
         return finErrorKits::EC_NULL_POINTER;
 
-    if ( yvar == NULL || yvar->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
-        if ( xvar == NULL || xvar->getType() == finExecVariable::FIN_VR_TYPE_NULL ) {
+    if ( yvar == NULL || yvar->getType() == finExecVariable::TP_NULL ) {
+        if ( xvar == NULL || xvar->getType() == finExecVariable::TP_NULL ) {
             ptlist->clear();
             return finErrorKits::EC_SUCCESS;
         } else {
@@ -1093,7 +1093,7 @@ static finExecVariable *_sysvar_nil()
     if ( retvar == NULL )
         return NULL;
 
-    errcode = retvar->setType(finExecVariable::FIN_VR_TYPE_NULL);
+    errcode = retvar->setType(finExecVariable::TP_NULL);
     if ( finErrorKits::isErrorResult(errcode) )
         goto err;
 
@@ -1124,7 +1124,7 @@ _sysvar_gen_num_var(const QString &name, double val)
     if ( finErrorKits::isErrorResult(errcode) )
         goto err;
 
-    errcode = retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    errcode = retvar->setType(finExecVariable::TP_NUMERIC);
     if ( finErrorKits::isErrorResult(errcode) )
         goto err;
 

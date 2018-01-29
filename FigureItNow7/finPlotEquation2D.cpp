@@ -213,13 +213,13 @@ finErrorCode finPlotEquation2D::buildFuncArgList(QList<finExecVariable *> *varli
     }
 
     (*xvar)->setName(QString());
-    (*xvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    (*xvar)->setType(finExecVariable::TP_NUMERIC);
     (*xvar)->setLeftValue();
     (*xvar)->clearWriteProtected();
     this->_environment->addVariable(*xvar);
 
     (*yvar)->setName(QString());
-    (*yvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    (*yvar)->setType(finExecVariable::TP_NUMERIC);
     (*yvar)->setLeftValue();
     (*yvar)->clearWriteProtected();
     this->_environment->addVariable(*yvar);
@@ -292,7 +292,7 @@ finErrorCode finPlotEquation2D::calcAPoint(
         return errcode;
 
     finExecVariable *retvar = this->_flowctl->pickReturnVariable();
-    if ( retvar == NULL || retvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+    if ( retvar == NULL || retvar->getType() != finExecVariable::TP_NUMERIC ) {
         finExecVariable::releaseNonLeftVariable(retvar);
         return finErrorKits::EC_INVALID_PARAM;
     }

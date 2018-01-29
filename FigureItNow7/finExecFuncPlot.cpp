@@ -155,12 +155,12 @@ static finErrorCode _sysfunc_plot_scatter(finExecFunction *self, finExecEnvironm
     finExecVariable *dislmtvar = finExecVariable::transLinkTarget(env->findVariable("dl"));
     finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
     finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
-    if ( dislmtvar != NULL && dislmtvar->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
-                              dislmtvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( dislmtvar != NULL && dislmtvar->getType() != finExecVariable::TP_NULL &&
+                              dislmtvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double dislmt = 0.1;
-    if ( dislmtvar != NULL && dislmtvar->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( dislmtvar != NULL && dislmtvar->getType() == finExecVariable::TP_NUMERIC )
         dislmt = dislmtvar->getNumericValue();
 
     QList<QPointF> ptlist;
@@ -190,15 +190,15 @@ static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnviron
 
     finExecVariable *funcvar;
     funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
-    if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+    if ( funcvar == NULL || funcvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *x1var, *x2var;
     x1var = finExecVariable::transLinkTarget(env->findVariable("x1"));
     x2var = finExecVariable::transLinkTarget(env->findVariable("x2"));
     if ( x1var == NULL || x2var == NULL ||
-         x1var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
-         x2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC )
+         x1var->getType() != finExecVariable::TP_NUMERIC ||
+         x2var->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     QString funcname = funcvar->getStringValue();
@@ -238,15 +238,15 @@ static finErrorCode _sysfunc_plot_polar(finExecFunction *self, finExecEnvironmen
 
     finExecVariable *funcvar;
     funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
-    if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+    if ( funcvar == NULL || funcvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *rad1var, *rad2var;
     rad1var = finExecVariable::transLinkTarget(env->findVariable("rad1"));
     rad2var = finExecVariable::transLinkTarget(env->findVariable("rad2"));
     if ( rad1var == NULL || rad2var == NULL ||
-         rad1var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
-         rad2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC )
+         rad1var->getType() != finExecVariable::TP_NUMERIC ||
+         rad2var->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     QString funcname = funcvar->getStringValue();
@@ -286,15 +286,15 @@ static finErrorCode _sysfunc_plot_parametric(finExecFunction *self, finExecEnvir
 
     finExecVariable *funcvar;
     funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
-    if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+    if ( funcvar == NULL || funcvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *t1var, *t2var;
     t1var = finExecVariable::transLinkTarget(env->findVariable("t1"));
     t2var = finExecVariable::transLinkTarget(env->findVariable("t2"));
     if ( t1var == NULL || t2var == NULL ||
-         t1var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
-         t2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC )
+         t1var->getType() != finExecVariable::TP_NUMERIC ||
+         t2var->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     QString funcname = funcvar->getStringValue();
@@ -334,7 +334,7 @@ static finErrorCode _sysfunc_plot_equation(finExecFunction *self, finExecEnviron
 
     finExecVariable *funcvar;
     funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
-    if ( funcvar == NULL || funcvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+    if ( funcvar == NULL || funcvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *x1var, *x2var, *y1var, *y2var;
@@ -343,10 +343,10 @@ static finErrorCode _sysfunc_plot_equation(finExecFunction *self, finExecEnviron
     y1var = finExecVariable::transLinkTarget(env->findVariable("y1"));
     y2var = finExecVariable::transLinkTarget(env->findVariable("y2"));
     if ( x1var == NULL || x2var == NULL || y1var == NULL || y2var == NULL ||
-         x1var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
-         x2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
-         y1var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC ||
-         y2var->getType() != finExecVariableType::FIN_VR_TYPE_NUMERIC)
+         x1var->getType() != finExecVariable::TP_NUMERIC ||
+         x2var->getType() != finExecVariable::TP_NUMERIC ||
+         y1var->getType() != finExecVariable::TP_NUMERIC ||
+         y2var->getType() != finExecVariable::TP_NUMERIC)
         return finErrorKits::EC_INVALID_PARAM;
 
     QString funcname = funcvar->getStringValue();

@@ -129,14 +129,14 @@ static finErrorCode _sysfunc_abs(finExecFunction *self, finExecEnvironment *env,
     num = finExecVariable::transLinkTarget(env->findVariable("num"));
     if ( num == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( num->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( num->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(fabs(num->getNumericValue()));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -157,7 +157,7 @@ static finErrorCode _sysfunc_sig(finExecFunction *self, finExecEnvironment *env,
     numvar = finExecVariable::transLinkTarget(env->findVariable("num"));
     if ( numvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( numvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( numvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double num = numvar->getNumericValue();
@@ -171,7 +171,7 @@ static finErrorCode _sysfunc_sig(finExecFunction *self, finExecEnvironment *env,
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(ret);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -192,14 +192,14 @@ static finErrorCode _sysfunc_sin(finExecFunction *self, finExecEnvironment *env,
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
     if ( rad == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( rad->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(sin(rad->getNumericValue()));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -220,14 +220,14 @@ static finErrorCode _sysfunc_cos(finExecFunction *self, finExecEnvironment *env,
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
     if ( rad == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( rad->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(cos(rad->getNumericValue()));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -248,14 +248,14 @@ static finErrorCode _sysfunc_tan(finExecFunction *self, finExecEnvironment *env,
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
     if ( rad == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( rad->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(tan(rad->getNumericValue()));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -276,14 +276,14 @@ static finErrorCode _sysfunc_cot(finExecFunction *self, finExecEnvironment *env,
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
     if ( rad == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( rad->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(1.0 / tan(rad->getNumericValue()));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -304,14 +304,14 @@ static finErrorCode _sysfunc_sec(finExecFunction *self, finExecEnvironment *env,
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
     if ( rad == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( rad->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(1.0 / cos(rad->getNumericValue()));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -332,14 +332,14 @@ static finErrorCode _sysfunc_csc(finExecFunction *self, finExecEnvironment *env,
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
     if ( rad == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( rad->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( rad->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(1.0 / sin(rad->getNumericValue()));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -360,14 +360,14 @@ static finErrorCode _sysfunc_ln(finExecFunction *self, finExecEnvironment *env,
     base = finExecVariable::transLinkTarget(env->findVariable("base"));
     if ( base == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( base->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( base->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(log(base->getNumericValue()));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -389,15 +389,15 @@ static finErrorCode _sysfunc_log(finExecFunction *self, finExecEnvironment *env,
     base = finExecVariable::transLinkTarget(env->findVariable("base"));
     if ( index == NULL || base == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( index->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         base->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( index->getType() != finExecVariable::TP_NUMERIC ||
+         base->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(log(base->getNumericValue()) / log(index->getNumericValue()));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -420,9 +420,9 @@ static finErrorCode _sysfunc_linear(finExecFunction *self, finExecEnvironment *e
     bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
     if ( xvar == NULL || avar == NULL || bvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( xvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         avar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         bvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( xvar->getType() != finExecVariable::TP_NUMERIC ||
+         avar->getType() != finExecVariable::TP_NUMERIC ||
+         bvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double x = xvar->getNumericValue();
@@ -433,7 +433,7 @@ static finErrorCode _sysfunc_linear(finExecFunction *self, finExecEnvironment *e
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(a * x + b);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -457,10 +457,10 @@ static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment
     cvar = finExecVariable::transLinkTarget(env->findVariable("c"));
     if ( xvar == NULL || avar == NULL || bvar == NULL || cvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( xvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         avar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         bvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         cvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( xvar->getType() != finExecVariable::TP_NUMERIC ||
+         avar->getType() != finExecVariable::TP_NUMERIC ||
+         bvar->getType() != finExecVariable::TP_NUMERIC ||
+         cvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double x = xvar->getNumericValue();
@@ -472,7 +472,7 @@ static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue((a * x + b) * x + c);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -493,7 +493,7 @@ static finErrorCode _sysfunc_frequency_curve(finExecFunction *self, finExecEnvir
     xvar = finExecVariable::transLinkTarget(env->findVariable("x"));
     if ( xvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( xvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( xvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double x = xvar->getNumericValue();
@@ -502,7 +502,7 @@ static finErrorCode _sysfunc_frequency_curve(finExecFunction *self, finExecEnvir
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(sqrt(2 * M_PI * exp(-x * x / 2)));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -525,8 +525,8 @@ static finErrorCode _sysfunc_parm_circle(finExecFunction *self, finExecEnvironme
     rvar = finExecVariable::transLinkTarget(env->findVariable("r"));
     if ( tvar == NULL || rvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( tvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         rvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
+         rvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double t = tvar->getNumericValue();
@@ -544,9 +544,9 @@ static finErrorCode _sysfunc_parm_circle(finExecFunction *self, finExecEnvironme
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
 
-    retitemx->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemx->setType(finExecVariable::TP_NUMERIC);
     retitemx->setNumericValue(r * cos(t));
-    retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemy->setType(finExecVariable::TP_NUMERIC);
     retitemy->setNumericValue(r * sin(t));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -569,9 +569,9 @@ static finErrorCode _sysfunc_parm_ellipse(finExecFunction *self, finExecEnvironm
     bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
     if ( tvar == NULL || avar == NULL || bvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( tvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         avar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         bvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
+         avar->getType() != finExecVariable::TP_NUMERIC ||
+         bvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double t = tvar->getNumericValue();
@@ -590,9 +590,9 @@ static finErrorCode _sysfunc_parm_ellipse(finExecFunction *self, finExecEnvironm
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
 
-    retitemx->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemx->setType(finExecVariable::TP_NUMERIC);
     retitemx->setNumericValue(a * cos(t));
-    retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemy->setType(finExecVariable::TP_NUMERIC);
     retitemy->setNumericValue(b * sin(t));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -618,12 +618,12 @@ static finErrorCode _sysfunc_parm_general_ellipse(finExecFunction *self, finExec
     phivar = finExecVariable::transLinkTarget(env->findVariable("phi"));
     if ( tvar == NULL || avar == NULL || bvar == NULL || xcvar == NULL || ycvar == NULL || phivar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( tvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         avar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         bvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         xcvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         ycvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         phivar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
+         avar->getType() != finExecVariable::TP_NUMERIC ||
+         bvar->getType() != finExecVariable::TP_NUMERIC ||
+         xcvar->getType() != finExecVariable::TP_NUMERIC ||
+         ycvar->getType() != finExecVariable::TP_NUMERIC ||
+         phivar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double t = tvar->getNumericValue();
@@ -648,9 +648,9 @@ static finErrorCode _sysfunc_parm_general_ellipse(finExecFunction *self, finExec
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
 
-    retitemx->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemx->setType(finExecVariable::TP_NUMERIC);
     retitemx->setNumericValue(xc + a * cost * cosphi - b * sint * sinphi);
-    retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemy->setType(finExecVariable::TP_NUMERIC);
     retitemy->setNumericValue(yc + a * cost * sinphi + b * sint * cosphi);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -675,21 +675,21 @@ static finErrorCode _sysfunc_parm_hyperbola(finExecFunction *self, finExecEnviro
     kvar = finExecVariable::transLinkTarget(env->findVariable("k"));
     if ( tvar == NULL || avar == NULL || bvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( tvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         avar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         bvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         (hvar != NULL && hvar->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
-                          hvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) ||
-         (kvar != NULL && kvar->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
-                          kvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) )
+    if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
+         avar->getType() != finExecVariable::TP_NUMERIC ||
+         bvar->getType() != finExecVariable::TP_NUMERIC ||
+         (hvar != NULL && hvar->getType() != finExecVariable::TP_NULL &&
+                          hvar->getType() != finExecVariable::TP_NUMERIC) ||
+         (kvar != NULL && kvar->getType() != finExecVariable::TP_NULL &&
+                          kvar->getType() != finExecVariable::TP_NUMERIC) )
         return finErrorKits::EC_INVALID_PARAM;
 
     double t = tvar->getNumericValue();
     double a = avar->getNumericValue();
     double b = bvar->getNumericValue();
-    double h = ((hvar != NULL && hvar->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC) ?
+    double h = ((hvar != NULL && hvar->getType() == finExecVariable::TP_NUMERIC) ?
                 hvar->getNumericValue() : 0.0);
-    double k = ((kvar != NULL && kvar->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC) ?
+    double k = ((kvar != NULL && kvar->getType() == finExecVariable::TP_NUMERIC) ?
                 kvar->getNumericValue() : 0.0);
 
     retvar = new finExecVariable();
@@ -704,9 +704,9 @@ static finErrorCode _sysfunc_parm_hyperbola(finExecFunction *self, finExecEnviro
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
 
-    retitemx->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemx->setType(finExecVariable::TP_NUMERIC);
     retitemx->setNumericValue(a / cos(t) + h);
-    retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemy->setType(finExecVariable::TP_NUMERIC);
     retitemy->setNumericValue(b * tan(t) + k);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -731,21 +731,21 @@ static finErrorCode _sysfunc_parm_hyperbola_rational(finExecFunction *self, finE
     kvar = finExecVariable::transLinkTarget(env->findVariable("k"));
     if ( tvar == NULL || avar == NULL || bvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( tvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         avar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         bvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         (hvar != NULL && hvar->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
-                          hvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) ||
-         (kvar != NULL && kvar->getType() != finExecVariable::FIN_VR_TYPE_NULL &&
-                          kvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC) )
+    if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
+         avar->getType() != finExecVariable::TP_NUMERIC ||
+         bvar->getType() != finExecVariable::TP_NUMERIC ||
+         (hvar != NULL && hvar->getType() != finExecVariable::TP_NULL &&
+                          hvar->getType() != finExecVariable::TP_NUMERIC) ||
+         (kvar != NULL && kvar->getType() != finExecVariable::TP_NULL &&
+                          kvar->getType() != finExecVariable::TP_NUMERIC) )
         return finErrorKits::EC_INVALID_PARAM;
 
     double t = tvar->getNumericValue();
     double a = avar->getNumericValue();
     double b = bvar->getNumericValue();
-    double h = ((hvar != NULL && hvar->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC) ?
+    double h = ((hvar != NULL && hvar->getType() == finExecVariable::TP_NUMERIC) ?
                 hvar->getNumericValue() : 0.0);
-    double k = ((kvar != NULL && kvar->getType() == finExecVariable::FIN_VR_TYPE_NUMERIC) ?
+    double k = ((kvar != NULL && kvar->getType() == finExecVariable::TP_NUMERIC) ?
                 kvar->getNumericValue() : 0.0);
     double t2 = t * t;
     double ratio = 1.0 - t2;
@@ -762,9 +762,9 @@ static finErrorCode _sysfunc_parm_hyperbola_rational(finExecFunction *self, finE
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
 
-    retitemx->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemx->setType(finExecVariable::TP_NUMERIC);
     retitemx->setNumericValue(a * (1 + t2) / ratio + h);
-    retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemy->setType(finExecVariable::TP_NUMERIC);
     retitemy->setNumericValue(b * 2.0 * t / ratio + k);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -786,8 +786,8 @@ static finErrorCode _sysfunc_parm_astroid(finExecFunction *self, finExecEnvironm
     avar = finExecVariable::transLinkTarget(env->findVariable("a"));
     if ( tvar == NULL || avar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( tvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         avar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
+         avar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double t = tvar->getNumericValue();
@@ -806,9 +806,9 @@ static finErrorCode _sysfunc_parm_astroid(finExecFunction *self, finExecEnvironm
     }
 
     double cost = cos(t), sint = sin(t);
-    retitemx->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemx->setType(finExecVariable::TP_NUMERIC);
     retitemx->setNumericValue(a * cost * cost * cost);
-    retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemy->setType(finExecVariable::TP_NUMERIC);
     retitemy->setNumericValue(a * sint * sint * sint);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -833,11 +833,11 @@ static finErrorCode _sysfunc_parm_lissajous(finExecFunction *self, finExecEnviro
     kyvar = finExecVariable::transLinkTarget(env->findVariable("ky"));
     if ( tvar == NULL || avar == NULL || bvar == NULL || kxvar == NULL || kyvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( tvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         avar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         bvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         kxvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         kyvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
+         avar->getType() != finExecVariable::TP_NUMERIC ||
+         bvar->getType() != finExecVariable::TP_NUMERIC ||
+         kxvar->getType() != finExecVariable::TP_NUMERIC ||
+         kyvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double t = tvar->getNumericValue();
@@ -858,9 +858,9 @@ static finErrorCode _sysfunc_parm_lissajous(finExecFunction *self, finExecEnviro
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
 
-    retitemx->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemx->setType(finExecVariable::TP_NUMERIC);
     retitemx->setNumericValue(a * cos(kx * t));
-    retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemy->setType(finExecVariable::TP_NUMERIC);
     retitemy->setNumericValue(b * sin(ky * t));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -882,8 +882,8 @@ static finErrorCode _sysfunc_parm_involute(finExecFunction *self, finExecEnviron
     rvar = finExecVariable::transLinkTarget(env->findVariable("r"));
     if ( tvar == NULL || rvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( tvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         rvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
+         rvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double t = tvar->getNumericValue();
@@ -901,9 +901,9 @@ static finErrorCode _sysfunc_parm_involute(finExecFunction *self, finExecEnviron
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
 
-    retitemx->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemx->setType(finExecVariable::TP_NUMERIC);
     retitemx->setNumericValue(r * (cos(t) + t * sin(t)));
-    retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemy->setType(finExecVariable::TP_NUMERIC);
     retitemy->setNumericValue(r * (sin(t) - t * cos(t)));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -925,8 +925,8 @@ static finErrorCode _sysfunc_parm_cycloid(finExecFunction *self, finExecEnvironm
     rvar = finExecVariable::transLinkTarget(env->findVariable("r"));
     if ( tvar == NULL || rvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( tvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         rvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
+         rvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double t = tvar->getNumericValue();
@@ -944,9 +944,9 @@ static finErrorCode _sysfunc_parm_cycloid(finExecFunction *self, finExecEnvironm
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
 
-    retitemx->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemx->setType(finExecVariable::TP_NUMERIC);
     retitemx->setNumericValue(r * (t - sin(t)));
-    retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemy->setType(finExecVariable::TP_NUMERIC);
     retitemy->setNumericValue(r * (1 - cos(t)));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -970,10 +970,10 @@ static finErrorCode _sysfunc_parm_hypotrochoid(finExecFunction *self, finExecEnv
     dvar = finExecVariable::transLinkTarget(env->findVariable("d"));
     if ( tvar == NULL || Rvar == NULL || rvar == NULL || dvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( tvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         Rvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         rvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         dvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
+         Rvar->getType() != finExecVariable::TP_NUMERIC ||
+         rvar->getType() != finExecVariable::TP_NUMERIC ||
+         dvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double t = tvar->getNumericValue();
@@ -995,9 +995,9 @@ static finErrorCode _sysfunc_parm_hypotrochoid(finExecFunction *self, finExecEnv
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
 
-    retitemx->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemx->setType(finExecVariable::TP_NUMERIC);
     retitemx->setNumericValue(diff * cos(t) + d * cos(ratio));
-    retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemy->setType(finExecVariable::TP_NUMERIC);
     retitemy->setNumericValue(diff * sin(t) - d * sin(ratio));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -1018,7 +1018,7 @@ static finErrorCode _sysfunc_parm_butterfly(finExecFunction *self, finExecEnviro
     tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
     if ( tvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( tvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( tvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double t = tvar->getNumericValue();
@@ -1039,9 +1039,9 @@ static finErrorCode _sysfunc_parm_butterfly(finExecFunction *self, finExecEnviro
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
 
-    retitemx->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemx->setType(finExecVariable::TP_NUMERIC);
     retitemx->setNumericValue(sint * ratio);
-    retitemy->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retitemy->setType(finExecVariable::TP_NUMERIC);
     retitemy->setNumericValue(cost * ratio);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -1064,9 +1064,9 @@ static finErrorCode _sysfunc_eq2d_circle(finExecFunction *self, finExecEnvironme
     rvar = finExecVariable::transLinkTarget(env->findVariable("r"));
     if ( xvar == NULL || yvar == NULL || rvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( xvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         yvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         rvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( xvar->getType() != finExecVariable::TP_NUMERIC ||
+         yvar->getType() != finExecVariable::TP_NUMERIC ||
+         rvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double x = xvar->getNumericValue();
@@ -1077,7 +1077,7 @@ static finErrorCode _sysfunc_eq2d_circle(finExecFunction *self, finExecEnvironme
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(x * x + y * y - r * r);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -1101,10 +1101,10 @@ static finErrorCode _sysfunc_eq2d_ellipse(finExecFunction *self, finExecEnvironm
     bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
     if ( xvar == NULL || yvar == NULL || avar == NULL || bvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( xvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         yvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         avar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         bvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( xvar->getType() != finExecVariable::TP_NUMERIC ||
+         yvar->getType() != finExecVariable::TP_NUMERIC ||
+         avar->getType() != finExecVariable::TP_NUMERIC ||
+         bvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double x = xvar->getNumericValue();
@@ -1117,7 +1117,7 @@ static finErrorCode _sysfunc_eq2d_ellipse(finExecFunction *self, finExecEnvironm
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(b2 * x * x + a2 * y * y - a2 * b2);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -1141,10 +1141,10 @@ static finErrorCode _sysfunc_eq2d_hyperbola(finExecFunction *self, finExecEnviro
     bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
     if ( xvar == NULL || yvar == NULL || avar == NULL || bvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( xvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         yvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         avar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ||
-         bvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( xvar->getType() != finExecVariable::TP_NUMERIC ||
+         yvar->getType() != finExecVariable::TP_NUMERIC ||
+         avar->getType() != finExecVariable::TP_NUMERIC ||
+         bvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double x = xvar->getNumericValue();
@@ -1157,7 +1157,7 @@ static finErrorCode _sysfunc_eq2d_hyperbola(finExecFunction *self, finExecEnviro
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(b2 * x * x - a2 * y * y - a2 * b2);
     retvar->setWriteProtected();
     retvar->clearLeftValue();

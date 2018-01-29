@@ -43,29 +43,29 @@ public:
      *
      * This enum declares the types of variable.
      */
-    enum finExecVariableType {
-        FIN_VR_TYPE_DUMMY = 0,  //!< The dummy variable type. This type is an initialized type of each variable
-                                //!< instances when it is created. No variable in script execution procedure is allowed
-                                //!< in this type, and an error will report when it happens.
+    enum Type {
+        TP_DUMMY = 0,  //!< The dummy variable type. This type is an initialized type of each variable instances when
+                       //!< it is created. No variable in script execution procedure is allowed in this type, and an
+                       //!< error will report when it happens.
 
-        FIN_VR_TYPE_NULL,       //!< The variable is null, and containes no data.
+        TP_NULL,       //!< The variable is null, and containes no data.
 
-        FIN_VR_TYPE_NUMERIC,    //!< The variable is a real number.
+        TP_NUMERIC,    //!< The variable is a real number.
 
-        FIN_VR_TYPE_STRING,     //!< The variable is a character-based string.
+        TP_STRING,     //!< The variable is a character-based string.
 
-        FIN_VR_TYPE_IMAGE,      //!< The variable is an pixel-map-based image.
+        TP_IMAGE,      //!< The variable is an pixel-map-based image.
 
-        FIN_VR_TYPE_ARRAY,      //!< The variable is a one-dimensioned list of another variable.
+        TP_ARRAY,      //!< The variable is a one-dimensioned list of another variable.
 
-        FIN_VR_TYPE_LINK,       //!< The variable is a symbol link to another variable.
+        TP_LINK,       //!< The variable is a symbol link to another variable.
 
-        FIN_VR_TYPE_MAX         //!< An invalid type which only indicates the number of types. It is usually used as a
-                                //!< upper bound in allocating a memory space.
+        TP_MAX         //!< An invalid type which only indicates the number of types. It is usually used as a upper
+                       //!< bound in allocating a memory space.
     };
 
 protected:
-    finExecVariableType _type;
+    Type _type;
     QString _varName;
     bool _writeProtect;
     bool _leftValue;
@@ -85,12 +85,12 @@ public:
     ~finExecVariable();
 
     const QString &getName() const;
-    finExecVariableType getType() const;
+    Type getType() const;
     bool isWriteProtected() const;
     bool isLeftValue() const;
 
     finErrorCode setName(const QString &name);
-    finErrorCode setType(finExecVariableType type);
+    finErrorCode setType(Type type);
     finErrorCode setupWriteProtected(bool blval);
     finErrorCode setWriteProtected();
     finErrorCode clearWriteProtected();
@@ -164,6 +164,6 @@ private:
     static finErrorCode transToPointListMatrix(finExecVariable *matvar, QList<QPointF> *ptlist);
 };
 
-typedef enum finExecVariable::finExecVariableType finExecVariableType;
+typedef enum finExecVariable::Type finExecVariableType;
 
 #endif // FINEXECVARIABLE_H

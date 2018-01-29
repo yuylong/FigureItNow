@@ -180,7 +180,7 @@ finErrorCode finPlotPolar::buildFuncArgList(QList<finExecVariable *> *varlist, f
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     (*radvar)->setName(QString());
-    (*radvar)->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    (*radvar)->setType(finExecVariable::TP_NUMERIC);
     (*radvar)->setLeftValue();
     (*radvar)->clearWriteProtected();
     this->_environment->addVariable(*radvar);
@@ -208,7 +208,7 @@ finErrorCode finPlotPolar::calcAPoint(double rad, finExecFunction *func, QList<f
         return errcode;
 
     finExecVariable *retvar = this->_flowctl->pickReturnVariable();
-    if ( retvar == NULL || retvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC ) {
+    if ( retvar == NULL || retvar->getType() != finExecVariable::TP_NUMERIC ) {
         finExecVariable::releaseNonLeftVariable(retvar);
         return finErrorKits::EC_INVALID_PARAM;
     }

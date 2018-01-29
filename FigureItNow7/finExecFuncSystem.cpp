@@ -62,7 +62,7 @@ static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironm
     finExecVariable *fnvar = finExecVariable::transLinkTarget(env->findVariable("funcname"));
     if ( fnvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( fnvar->getType() != finExecVariable::FIN_VR_TYPE_STRING )
+    if ( fnvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     QString funcname = fnvar->getStringValue();
@@ -86,7 +86,7 @@ static finErrorCode _sysfunc_ext_arg(finExecFunction *self, finExecEnvironment *
     finExecVariable *idxvar = finExecVariable::transLinkTarget(env->findVariable("idx"));
     if ( idxvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
-    if ( idxvar->getType() != finExecVariable::FIN_VR_TYPE_NUMERIC )
+    if ( idxvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     int idx = (int)idxvar->getNumericValue();
@@ -110,7 +110,7 @@ static finErrorCode _sysfunc_ext_arg_count(finExecFunction *self, finExecEnviron
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     int extargcnt = finExecFunction::getPreviousExtendArgCount(env);
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(extargcnt);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -131,7 +131,7 @@ static finErrorCode _sysfunc_call_stack_count(finExecFunction *self, finExecEnvi
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     int funclevelcnt = env->getTotalBelongFunctionLevelCount() - 1;
-    retvar->setType(finExecVariable::FIN_VR_TYPE_NUMERIC);
+    retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(funclevelcnt);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -150,7 +150,7 @@ static finErrorCode _sysfunc_call_stack(finExecFunction *self, finExecEnvironmen
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
-    retvar->setType(finExecVariable::FIN_VR_TYPE_ARRAY);
+    retvar->setType(finExecVariable::TP_ARRAY);
 
     QStringList funcnamelist;
     finErrorCode errcode = env->getBelongFunctionList(&funcnamelist);
@@ -168,7 +168,7 @@ static finErrorCode _sysfunc_call_stack(finExecFunction *self, finExecEnvironmen
             goto err;
         }
 
-        subvar->setType(finExecVariable::FIN_VR_TYPE_STRING);
+        subvar->setType(finExecVariable::TP_STRING);
         subvar->setStringValue(funcnamelist.at(i));
     }
     retvar->setWriteProtected();
@@ -216,19 +216,19 @@ static inline finErrorCode _sysfunc_call_print_base_printProcess(QDebug &outstm,
         return finErrorKits::EC_NORMAL_WARN;
 
     switch ( var->getType() ) {
-      case finExecVariable::FIN_VR_TYPE_NUMERIC:
+      case finExecVariable::TP_NUMERIC:
         outstm << var->getNumericValue();
         break;
 
-      case finExecVariable::FIN_VR_TYPE_STRING:
+      case finExecVariable::TP_STRING:
         outstm << var->getStringValue();
         break;
 
-      case finExecVariable::FIN_VR_TYPE_IMAGE:
+      case finExecVariable::TP_IMAGE:
         outstm.nospace() << "Image: " << var->getImageValue().width() << "x" << var->getImageValue().height();
         break;
 
-      case finExecVariable::FIN_VR_TYPE_ARRAY:
+      case finExecVariable::TP_ARRAY:
         outstm.nospace() << "{ ";
         for ( int i = 0; i < var->getArrayLength(); i++ ) {
             if ( i > 0 )
@@ -238,7 +238,7 @@ static inline finErrorCode _sysfunc_call_print_base_printProcess(QDebug &outstm,
         outstm.nospace() << " }";
         break;
 
-      case finExecVariable::FIN_VR_TYPE_LINK:
+      case finExecVariable::TP_LINK:
         _sysfunc_call_print_base_printProcess(outstm, finExecVariable::transLinkTarget(var));
         break;
 
