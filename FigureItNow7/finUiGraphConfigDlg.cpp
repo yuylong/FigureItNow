@@ -80,9 +80,9 @@ void finUiGraphConfigDlg::fillFromGraphConfig(const finGraphConfig *graphcfg)
 
     finGraphTrans *trans = graphcfg->getTransform();
     this->resetAllTransArgs();
-    if ( transtype == finGraphTrans::FIN_GT_TYPE_RECT )
+    if ( transtype == finGraphTrans::TP_RECT )
         this->fillRectTransArgs((finGraphTransRect *)trans);
-    else if ( transtype == finGraphTrans::FIN_GT_TYPE_AFFINE )
+    else if ( transtype == finGraphTrans::TP_AFFINE )
         this->fillAffineTransArgs((finGraphTransAffine *)trans);
 
     this->_inFilling = false;
@@ -156,9 +156,9 @@ void finUiGraphConfigDlg::applyToGraphConfig(finGraphConfig *graphcfg) const
     graphcfg->setTransformType(transtype);
 
     finGraphTrans *trans = graphcfg->getTransform();
-    if ( transtype == finGraphTrans::FIN_GT_TYPE_RECT )
+    if ( transtype == finGraphTrans::TP_RECT )
         this->applyRectTransArgs((finGraphTransRect *)trans);
-    else if ( transtype == finGraphTrans::FIN_GT_TYPE_AFFINE )
+    else if ( transtype == finGraphTrans::TP_AFFINE )
         this->applyAffineTransArgs((finGraphTransAffine *)trans);
 }
 

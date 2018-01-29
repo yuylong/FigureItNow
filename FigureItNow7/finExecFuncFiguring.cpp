@@ -1076,7 +1076,7 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
         cfgvalue->setType(finExecVariable::TP_STRING);
         cfgvalue->setStringValue(finGraphTrans::getTransformTypeName(graphconfig->getTransformType()));
     } else if ( QString::compare(cfgname, "rect_trans_zoom_x") == 0 ) {
-        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_RECT ) {
+        if ( graphconfig->getTransformType() != finGraphTrans::TP_RECT ) {
             delete cfgvalue;
             return finErrorKits::EC_STATE_ERROR;
         }
@@ -1088,7 +1088,7 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
         cfgvalue->setType(finExecVariable::TP_NUMERIC);
         cfgvalue->setNumericValue(recttrans->getAxisZoomX());
     } else if ( QString::compare(cfgname, "rect_trans_zoom_y") == 0 ) {
-        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_RECT ) {
+        if ( graphconfig->getTransformType() != finGraphTrans::TP_RECT ) {
             delete cfgvalue;
             return finErrorKits::EC_STATE_ERROR;
         }
@@ -1100,7 +1100,7 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
         cfgvalue->setType(finExecVariable::TP_NUMERIC);
         cfgvalue->setNumericValue(recttrans->getAxisZoomY());
     } else if ( QString::compare(cfgname, "affine_trans_act_cnt") == 0 ) {
-        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE ) {
+        if ( graphconfig->getTransformType() != finGraphTrans::TP_AFFINE ) {
             delete cfgvalue;
             return finErrorKits::EC_STATE_ERROR;
         }
@@ -1112,7 +1112,7 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
         cfgvalue->setType(finExecVariable::TP_NUMERIC);
         cfgvalue->setNumericValue(affinetrans->getActionCount());
     } else if ( QString::compare(cfgname, "affine_trans_act_type") == 0 ) {
-        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE ) {
+        if ( graphconfig->getTransformType() != finGraphTrans::TP_AFFINE ) {
             delete cfgvalue;
             return finErrorKits::EC_STATE_ERROR;
         }
@@ -1151,7 +1151,7 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
         cfgvalue->setType(finExecVariable::TP_NUMERIC);
         cfgvalue->setNumericValue(affinetrans->getActionCount());
     } else if ( QString::compare(cfgname, "affine_trans_act_arg") == 0 ) {
-        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE ) {
+        if ( graphconfig->getTransformType() != finGraphTrans::TP_AFFINE ) {
             delete cfgvalue;
             return finErrorKits::EC_STATE_ERROR;
         }
@@ -1299,7 +1299,7 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
     } else if ( QString::compare(cfgname, "rect_trans_zoom_x") == 0 ) {
         if ( cfgvalue->getType() !=  finExecVariable::TP_NUMERIC )
             return finErrorKits::EC_INVALID_PARAM;
-        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_RECT )
+        if ( graphconfig->getTransformType() != finGraphTrans::TP_RECT )
             return finErrorKits::EC_STATE_ERROR;
         finGraphTransRect *recttrans = (finGraphTransRect *)graphconfig->getTransform();
         if ( recttrans == NULL )
@@ -1308,14 +1308,14 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
     } else if ( QString::compare(cfgname, "rect_trans_zoom_y") == 0 ) {
         if ( cfgvalue->getType() !=  finExecVariable::TP_NUMERIC )
             return finErrorKits::EC_INVALID_PARAM;
-        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_RECT )
+        if ( graphconfig->getTransformType() != finGraphTrans::TP_RECT )
             return finErrorKits::EC_STATE_ERROR;
         finGraphTransRect *recttrans = (finGraphTransRect *)graphconfig->getTransform();
         if ( recttrans == NULL )
             return finErrorKits::EC_STATE_ERROR;
         recttrans->setAxisZoomY(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "affine_trans_clear_act") == 0 ) {
-        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE )
+        if ( graphconfig->getTransformType() != finGraphTrans::TP_AFFINE )
             return finErrorKits::EC_STATE_ERROR;
         finGraphTransAffine *affine = (finGraphTransAffine *)graphconfig->getTransform();
         if ( affine == NULL )
@@ -1324,7 +1324,7 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
     } else if ( QString::compare(cfgname, "affine_trans_append_rotate") == 0 ) {
         if ( cfgvalue->getType() !=  finExecVariable::TP_NUMERIC )
             return finErrorKits::EC_INVALID_PARAM;
-        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE )
+        if ( graphconfig->getTransformType() != finGraphTrans::TP_AFFINE )
             return finErrorKits::EC_STATE_ERROR;
         finGraphTransAffine *affine = (finGraphTransAffine *)graphconfig->getTransform();
         if ( affine == NULL )
@@ -1336,7 +1336,7 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
             return finErrorKits::EC_INVALID_PARAM;
         if ( arylen < 2 )
             return finErrorKits::EC_INVALID_PARAM;
-        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE )
+        if ( graphconfig->getTransformType() != finGraphTrans::TP_AFFINE )
             return finErrorKits::EC_STATE_ERROR;
         finGraphTransAffine *affine = (finGraphTransAffine *)graphconfig->getTransform();
         if ( affine == NULL )
@@ -1349,7 +1349,7 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
             return finErrorKits::EC_INVALID_PARAM;
         if ( arylen < 2 )
             return finErrorKits::EC_INVALID_PARAM;
-        if ( graphconfig->getTransformType() != finGraphTrans::FIN_GT_TYPE_AFFINE )
+        if ( graphconfig->getTransformType() != finGraphTrans::TP_AFFINE )
             return finErrorKits::EC_STATE_ERROR;
         finGraphTransAffine *affine = (finGraphTransAffine *)graphconfig->getTransform();
         if ( affine == NULL )

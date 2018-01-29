@@ -12,11 +12,11 @@
 QString finGraphTrans::getTransformTypeName(finGraphTransType type)
 {
     switch ( type ) {
-      case finGraphTrans::FIN_GT_TYPE_RECT:
+      case finGraphTrans::TP_RECT:
         return QString("rect");
         break;
 
-      case finGraphTrans::FIN_GT_TYPE_AFFINE:
+      case finGraphTrans::TP_AFFINE:
         return QString("affine");
         break;
 
@@ -29,13 +29,13 @@ QString finGraphTrans::getTransformTypeName(finGraphTransType type)
 finGraphTransType finGraphTrans::parseTransformType(const QString &name)
 {
     if ( QString::compare(name, QString("none"), Qt::CaseInsensitive) == 0 )
-        return finGraphTrans::FIN_GT_TYPE_NONE;
+        return finGraphTrans::TP_NONE;
     else if ( QString::compare(name, QString("rect"), Qt::CaseInsensitive) == 0 )
-        return finGraphTrans::FIN_GT_TYPE_RECT;
+        return finGraphTrans::TP_RECT;
     else if ( QString::compare(name, QString("affine"), Qt::CaseInsensitive) == 0 )
-        return finGraphTrans::FIN_GT_TYPE_AFFINE;
+        return finGraphTrans::TP_AFFINE;
     else
-        return finGraphTrans::FIN_GT_TYPE_NONE;
+        return finGraphTrans::TP_NONE;
 }
 
 finErrorCode finGraphTrans::fillTypesInComboBox(QComboBox *cmbox)
@@ -75,7 +75,7 @@ finErrorCode finGraphTrans::setComboBoxCurrentItemToType(QComboBox *cmbox, finGr
 
 finGraphTrans::finGraphTrans()
 {
-    this->_type = finGraphTrans::FIN_GT_TYPE_NONE;
+    this->_type = finGraphTrans::TP_NONE;
 }
 
 finGraphTrans::~finGraphTrans()
@@ -113,7 +113,7 @@ QPointF finGraphTrans::arcTransPoint(const QPointF &ptr)
 
 finGraphTransRect::finGraphTransRect()
 {
-    this->_type = finGraphTrans::FIN_GT_TYPE_RECT;
+    this->_type = finGraphTrans::TP_RECT;
     this->_axisZoomX = 1.0;
     this->_axisZoomY = 1.0;
 }
@@ -269,7 +269,7 @@ finGraphTransAffine::getAffineTransActionArgType(finGraphTransAffine::ActionType
 finGraphTransAffine::finGraphTransAffine()
     : _matrix(), _invMatrix()
 {
-    this->_type = finGraphTrans::FIN_GT_TYPE_AFFINE;
+    this->_type = finGraphTrans::TP_AFFINE;
 }
 
 finGraphTransAffine::~finGraphTransAffine()

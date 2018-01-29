@@ -19,34 +19,34 @@
 class finGraphTrans
 {
 public:
-    enum finGraphTransType {
-        FIN_GT_TYPE_NONE,
-        FIN_GT_TYPE_RECT,
-        FIN_GT_TYPE_AFFINE,
+    enum Type {
+        TP_NONE,
+        TP_RECT,
+        TP_AFFINE,
     };
 
-    static QString getTransformTypeName(finGraphTransType type);
-    static finGraphTransType parseTransformType(const QString &name);
+    static QString getTransformTypeName(Type type);
+    static Type parseTransformType(const QString &name);
     static finErrorCode fillTypesInComboBox(QComboBox *cmbox);
-    static int getComboBoxIndexForType(QComboBox *cmbox, finGraphTransType type);
-    static finErrorCode setComboBoxCurrentItemToType(QComboBox *cmbox, finGraphTransType type);
+    static int getComboBoxIndexForType(QComboBox *cmbox, Type type);
+    static finErrorCode setComboBoxCurrentItemToType(QComboBox *cmbox, Type type);
 
 protected:
-    finGraphTransType _type;
+    Type _type;
 
 public:
     finGraphTrans();
     virtual ~finGraphTrans();
 
     virtual finErrorCode cloneTransform(const finGraphTrans *trans);
-    finGraphTransType getTransformType() const;
+    Type getTransformType() const;
     virtual bool isLinear() const;
 
     virtual QPointF transPoint(const QPointF &ptr);
     virtual QPointF arcTransPoint(const QPointF &ptr);
 };
 
-typedef finGraphTrans::finGraphTransType finGraphTransType;
+typedef finGraphTrans::Type finGraphTransType;
 
 class finGraphTransRect : public finGraphTrans
 {
