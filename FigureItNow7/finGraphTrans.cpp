@@ -187,15 +187,15 @@ QPointF finGraphTransRect::arcTransPoint(const QPointF &ptr)
 QString finGraphTransAffine::getAffineTransActionName(finGraphTransAffine::ActionType type)
 {
     switch ( type ) {
-      case finGraphTransAffine::FIN_GTA_TYPE_ROTATE:
+      case finGraphTransAffine::AT_ROTATE:
         return QString("rotate");
         break;
 
-      case finGraphTransAffine::FIN_GTA_TYPE_SCALE:
+      case finGraphTransAffine::AT_SCALE:
         return QString("scale");
         break;
 
-      case finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE:
+      case finGraphTransAffine::AT_TRANSLATE:
         return QString("translate");
         break;
 
@@ -208,14 +208,14 @@ QString finGraphTransAffine::getAffineTransActionName(finGraphTransAffine::Actio
 finGraphTransAffine::ActionType finGraphTransAffine::parseAffineTransAction(const QString &name)
 {
     if ( QString::compare(name, QString("rotate"), Qt::CaseInsensitive) == 0 ) {
-        return finGraphTransAffine::FIN_GTA_TYPE_ROTATE;
+        return finGraphTransAffine::AT_ROTATE;
     } else if ( QString::compare(name, QString("scale"), Qt::CaseInsensitive) == 0 ) {
-        return finGraphTransAffine::FIN_GTA_TYPE_SCALE;
+        return finGraphTransAffine::AT_SCALE;
     } else if ( QString::compare(name, QString("translate"), Qt::CaseInsensitive) == 0 ) {
-        return finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE;
+        return finGraphTransAffine::AT_TRANSLATE;
     }
     // We have no dummy value here, and just return a safest one.
-    return finGraphTransAffine::FIN_GTA_TYPE_DUMMY;
+    return finGraphTransAffine::AT_DUMMY;
 }
 
 finErrorCode finGraphTransAffine::fillAffineTransActionsInComboBox(QComboBox *cmbox)
@@ -232,12 +232,12 @@ finErrorCode finGraphTransAffine::fillAffineTransActionsInComboBox(QComboBox *cm
 int finGraphTransAffine::getAffineTransActionArgCnt(finGraphTransAffine::ActionType type)
 {
     switch ( type ) {
-      case finGraphTransAffine::FIN_GTA_TYPE_ROTATE:
+      case finGraphTransAffine::AT_ROTATE:
         return 1;
         break;
 
-      case finGraphTransAffine::FIN_GTA_TYPE_SCALE:
-      case finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE:
+      case finGraphTransAffine::AT_SCALE:
+      case finGraphTransAffine::AT_TRANSLATE:
         return 2;
         break;
 
@@ -251,17 +251,17 @@ finGraphTransAffine::ActArgType
 finGraphTransAffine::getAffineTransActionArgType(finGraphTransAffine::ActionType type)
 {
     switch ( type ) {
-      case finGraphTransAffine::FIN_GTA_TYPE_ROTATE:
-        return finGraphTransAffine::FIN_GTA_AAT_RADIAN;
+      case finGraphTransAffine::AT_ROTATE:
+        return finGraphTransAffine::AAT_RADIAN;
         break;
 
-      case finGraphTransAffine::FIN_GTA_TYPE_SCALE:
-      case finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE:
-        return finGraphTransAffine::FIN_GTA_AAT_XY;
+      case finGraphTransAffine::AT_SCALE:
+      case finGraphTransAffine::AT_TRANSLATE:
+        return finGraphTransAffine::AAT_XY;
         break;
 
       default:
-        return finGraphTransAffine::FIN_GTA_AAT_NONE;
+        return finGraphTransAffine::AAT_NONE;
         break;
     }
 }
@@ -313,7 +313,7 @@ int finGraphTransAffine::getActionCount() const
 
 finGraphTransAffine::Action finGraphTransAffine::getActionAt(int idx) const
 {
-    static const finGraphTransAffine::Action defact = { finGraphTransAffine::FIN_GTA_TYPE_ROTATE, 0.0, 0.0 };
+    static const finGraphTransAffine::Action defact = { finGraphTransAffine::AT_ROTATE, 0.0, 0.0 };
 
     if ( idx < 0 || idx >= this->_actList.count() )
         return defact;
@@ -348,7 +348,7 @@ finErrorCode finGraphTransAffine::appendRotate(double rad)
     this->calcInvertedMatrix();
 
     finGraphTransAffine::Action act;
-    act._type = finGraphTransAffine::FIN_GTA_TYPE_ROTATE;
+    act._type = finGraphTransAffine::AT_ROTATE;
     act._arg1 = act._arg2 = rad;
     this->_actList.append(act);
 
@@ -363,7 +363,7 @@ finErrorCode finGraphTransAffine::appendScale(double sx, double sy)
     this->calcInvertedMatrix();
 
     finGraphTransAffine::Action act;
-    act._type = finGraphTransAffine::FIN_GTA_TYPE_SCALE;
+    act._type = finGraphTransAffine::AT_SCALE;
     act._arg1 = sx;
     act._arg2 = sy;
     this->_actList.append(act);
@@ -379,7 +379,7 @@ finErrorCode finGraphTransAffine::appendTranslate(double tx, double ty)
     this->calcInvertedMatrix();
 
     finGraphTransAffine::Action act;
-    act._type = finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE;
+    act._type = finGraphTransAffine::AT_TRANSLATE;
     act._arg1 = tx;
     act._arg2 = ty;
     this->_actList.append(act);

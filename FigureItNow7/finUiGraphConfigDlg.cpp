@@ -121,7 +121,7 @@ void finUiGraphConfigDlg::fillAffineTransArgs(const finGraphTransAffine *affinet
         ui->tbwTransAffineActList->setItem(i, 0, tblitem);
 
         double arg1 = curact._arg1;
-        if ( curact._type == finGraphTransAffine::FIN_GTA_TYPE_ROTATE )
+        if ( curact._type == finGraphTransAffine::AT_ROTATE )
             arg1 = _rad_to_lf_deg(arg1);
         tblitem = new QTableWidgetItem(QString::number(arg1));
         tblitem->setTextAlignment(Qt::AlignCenter);
@@ -189,7 +189,7 @@ void finUiGraphConfigDlg::applyAffineTransArgs(finGraphTransAffine *affinetrans)
     affinetrans->reset();
     for ( int rowidx = 0; rowidx < ui->tbwTransAffineActList->rowCount(); rowidx++ ) {
         QTableWidgetItem *tblitem;
-        finGraphTransAffine::ActionType acttype = finGraphTransAffine::FIN_GTA_TYPE_DUMMY;
+        finGraphTransAffine::ActionType acttype = finGraphTransAffine::AT_DUMMY;
         double arg1 = 0.0, arg2 = 0.0;
 
         tblitem = ui->tbwTransAffineActList->item(rowidx, 0);
@@ -205,11 +205,11 @@ void finUiGraphConfigDlg::applyAffineTransArgs(finGraphTransAffine *affinetrans)
             arg2 = tblitem->text().toDouble();
 
         switch ( acttype ) {
-          case finGraphTransAffine::FIN_GTA_TYPE_ROTATE:
+          case finGraphTransAffine::AT_ROTATE:
             affinetrans->appendRotate(_deg_to_rad((int)floor(arg1)));
             break;
 
-          case finGraphTransAffine::FIN_GTA_TYPE_SCALE:
+          case finGraphTransAffine::AT_SCALE:
             if ( arg1 > -1.0e-8 && arg1 < 1.0e-8 )
                 arg1 = 1.0;
             if ( arg2 > -1.0e-8 && arg2 < 1.0e-8 )
@@ -217,7 +217,7 @@ void finUiGraphConfigDlg::applyAffineTransArgs(finGraphTransAffine *affinetrans)
             affinetrans->appendScale(arg1, arg2);
             break;
 
-          case finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE:
+          case finGraphTransAffine::AT_TRANSLATE:
             affinetrans->appendTranslate(arg1, arg2);
             break;
 
@@ -247,7 +247,7 @@ void finUiGraphConfigDlg::syncTransStackView(int idx)
 
 void finUiGraphConfigDlg::syncTransAffineActionArg(int idx)
 {
-    finGraphTransAffine::ActionType acttype = finGraphTransAffine::FIN_GTA_TYPE_DUMMY;
+    finGraphTransAffine::ActionType acttype = finGraphTransAffine::AT_DUMMY;
 
     if ( ui->cmbTransAffineNewAct->count() > 0 ) {
         QString actstr = ui->cmbTransAffineNewAct->itemData(idx).toString();
@@ -255,7 +255,7 @@ void finUiGraphConfigDlg::syncTransAffineActionArg(int idx)
     }
 
     switch ( acttype ) {
-      case finGraphTransAffine::FIN_GTA_TYPE_ROTATE:
+      case finGraphTransAffine::AT_ROTATE:
         ui->lblTransAffineArgXTitle->setEnabled(true);
         ui->dsbTransAffineArgX->setEnabled(true);
         ui->dsbTransAffineArgX->setRange(-179.0, 180.0);
@@ -267,14 +267,14 @@ void finUiGraphConfigDlg::syncTransAffineActionArg(int idx)
         ui->dsbTransAffineArgY->setEnabled(false);
         break;
 
-      case finGraphTransAffine::FIN_GTA_TYPE_SCALE:
-      case finGraphTransAffine::FIN_GTA_TYPE_TRANSLATE:
+      case finGraphTransAffine::AT_SCALE:
+      case finGraphTransAffine::AT_TRANSLATE:
         ui->lblTransAffineArgXTitle->setEnabled(true);
         ui->dsbTransAffineArgX->setEnabled(true);
         ui->dsbTransAffineArgX->setRange(-65535.0, 65535.0);
         ui->dsbTransAffineArgX->setSingleStep(1.0);
         ui->dsbTransAffineArgX->setDecimals(1);
-        if ( acttype == finGraphTransAffine::FIN_GTA_TYPE_SCALE )
+        if ( acttype == finGraphTransAffine::AT_SCALE )
             ui->dsbTransAffineArgX->setValue(1.0);
         else
             ui->dsbTransAffineArgX->setValue(0.0);
@@ -284,7 +284,7 @@ void finUiGraphConfigDlg::syncTransAffineActionArg(int idx)
         ui->dsbTransAffineArgY->setRange(-65535.0, 65535.0);
         ui->dsbTransAffineArgY->setSingleStep(1.0);
         ui->dsbTransAffineArgY->setDecimals(1);
-        if ( acttype == finGraphTransAffine::FIN_GTA_TYPE_SCALE )
+        if ( acttype == finGraphTransAffine::AT_SCALE )
             ui->dsbTransAffineArgY->setValue(1.0);
         else
             ui->dsbTransAffineArgY->setValue(0.0);

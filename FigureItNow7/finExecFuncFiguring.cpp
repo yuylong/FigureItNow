@@ -1167,7 +1167,7 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
             for ( int i = 0; i < actcnt; i++ ) {
                 finGraphTransAffine::ActionType action = affinetrans->getActionAt(i)._type;
                 finExecVariable *subitem = cfgvalue->getVariableItemAt(i);
-                if ( action == finGraphTransAffine::FIN_GTA_TYPE_ROTATE ) {
+                if ( action == finGraphTransAffine::AT_ROTATE ) {
                     subitem->setType(finExecVariable::TP_NUMERIC);
                     subitem->setNumericValue(affinetrans->getActionAt(i)._arg1);
                 } else {
@@ -1191,7 +1191,7 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
             }
             finGraphTransAffine::ActionType action = affinetrans->getActionAt(idx)._type;
             finExecVariable *subitem = cfgvalue->getVariableItemAt(idx);
-            if ( action == finGraphTransAffine::FIN_GTA_TYPE_ROTATE ) {
+            if ( action == finGraphTransAffine::AT_ROTATE ) {
                 subitem->setType(finExecVariable::TP_NUMERIC);
                 subitem->setNumericValue(affinetrans->getActionAt(idx)._arg1);
             } else {

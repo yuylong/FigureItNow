@@ -74,16 +74,16 @@ class finGraphTransAffine : public finGraphTrans
 {
 public:
     enum ActionType {
-        FIN_GTA_TYPE_DUMMY,
-        FIN_GTA_TYPE_ROTATE,
-        FIN_GTA_TYPE_SCALE,
-        FIN_GTA_TYPE_TRANSLATE
+        AT_DUMMY,
+        AT_ROTATE,
+        AT_SCALE,
+        AT_TRANSLATE
     };
 
     enum ActArgType {
-        FIN_GTA_AAT_NONE,
-        FIN_GTA_AAT_RADIAN,
-        FIN_GTA_AAT_XY,
+        AAT_NONE,
+        AAT_RADIAN,
+        AAT_XY,
     };
 
     static QString getAffineTransActionName(ActionType type);
