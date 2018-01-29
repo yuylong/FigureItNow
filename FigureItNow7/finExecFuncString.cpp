@@ -24,13 +24,16 @@ static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *
                                      finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_str_find(finExecFunction *self, finExecEnvironment *env,
                                       finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_str_bk_find(finExecFunction *self, finExecEnvironment *env,
+                                         finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
-    { QString("str_len"),   QString("str"),             _sysfunc_str_len   },
-    { QString("str_left"),  QString("str,len"),         _sysfunc_str_left  },
-    { QString("str_right"), QString("str,len"),         _sysfunc_str_right },
-    { QString("str_mid"),   QString("str,pos,len"),     _sysfunc_str_mid   },
-    { QString("str_find"),  QString("str,substr,from"), _sysfunc_str_find  },
+    { QString("str_len"),     QString("str"),                  _sysfunc_str_len     },
+    { QString("str_left"),    QString("str,len"),              _sysfunc_str_left    },
+    { QString("str_right"),   QString("str,len"),              _sysfunc_str_right   },
+    { QString("str_mid"),     QString("str,pos,len"),          _sysfunc_str_mid     },
+    { QString("str_find"),    QString("str,substr,from,case"), _sysfunc_str_find    },
+    { QString("str_bk_find"), QString("str,substr,from,case"), _sysfunc_str_bk_find },
 
     { QString(), QString(), NULL }
 };
@@ -184,7 +187,8 @@ static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *
 static finErrorCode _sysfunc_str_find(finExecFunction *self, finExecEnvironment *env,
                                       finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finExecVariable *strvar, *substrvar, *fromvar, *retvar;
+    finExecVariable *strvar, *substrvar, *fromvar, *casevar, *retvar;
+    finErrorCode errcode;
 
     if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
         return finErrorKits::EC_NULL_POINTER;
@@ -192,6 +196,7 @@ static finErrorCode _sysfunc_str_find(finExecFunction *self, finExecEnvironment 
     strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
     substrvar = finExecVariable::transLinkTarget(env->findVariable("substr"));
     fromvar = finExecVariable::transLinkTarget(env->findVariable("from"));
+    casevar = finExecVariable::transLinkTarget(env->findVariable("case"));
     if ( strvar == NULL || substrvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
     if ( strvar->getType() != finExecVariable::TP_STRING ||
@@ -202,15 +207,69 @@ static finErrorCode _sysfunc_str_find(finExecFunction *self, finExecEnvironment 
     QString str = strvar->getStringValue();
     QString substr = substrvar->getStringValue();
     int from = 0;
+    bool casecare = true;
     if ( fromvar != NULL )
         from = (int)floor(fromvar->getNumericValue());
+    if ( casevar != NULL ) {
+        errcode = casevar->readBoolValue(&casecare);
+        if ( finErrorKits::isErrorResult(errcode) )
+            return errcode;
+    }
 
     retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
+    int retidx = str.indexOf(substr, from, casecare ? Qt::CaseSensitive : Qt::CaseInsensitive);
     retvar->setType(finExecVariable::TP_NUMERIC);
-    retvar->setNumericValue(str.indexOf(substr, from));
+    retvar->setNumericValue(retidx);
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_str_bk_find(finExecFunction *self, finExecEnvironment *env,
+                                         finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *strvar, *substrvar, *fromvar, *casevar, *retvar;
+    finErrorCode errcode;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
+    substrvar = finExecVariable::transLinkTarget(env->findVariable("substr"));
+    fromvar = finExecVariable::transLinkTarget(env->findVariable("from"));
+    casevar = finExecVariable::transLinkTarget(env->findVariable("case"));
+    if ( strvar == NULL || substrvar == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+    if ( strvar->getType() != finExecVariable::TP_STRING ||
+         substrvar->getType() != finExecVariable::TP_STRING ||
+         (fromvar != NULL && fromvar->getType() != finExecVariable::TP_NUMERIC) )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    QString str = strvar->getStringValue();
+    QString substr = substrvar->getStringValue();
+    int from = 0;
+    bool casecare = true;
+    if ( fromvar != NULL )
+        from = (int)floor(fromvar->getNumericValue());
+    if ( casevar != NULL ) {
+        errcode = casevar->readBoolValue(&casecare);
+        if ( finErrorKits::isErrorResult(errcode) )
+            return errcode;
+    }
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorKits::EC_OUT_OF_MEMORY;
+
+    int retidx = str.lastIndexOf(substr, from, casecare ? Qt::CaseSensitive : Qt::CaseInsensitive);
+    retvar->setType(finExecVariable::TP_NUMERIC);
+    retvar->setNumericValue(retidx);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
 
