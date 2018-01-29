@@ -22,12 +22,15 @@ static finErrorCode _sysfunc_str_right(finExecFunction *self, finExecEnvironment
                                        finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_str_find(finExecFunction *self, finExecEnvironment *env,
+                                      finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
-    { QString("str_len"),   QString("str"),          _sysfunc_str_len   },
-    { QString("str_left"),  QString("str,len"),      _sysfunc_str_left  },
-    { QString("str_right"), QString("str,len"),      _sysfunc_str_right },
-    { QString("str_mid"),   QString("str,pos, len"), _sysfunc_str_mid   },
+    { QString("str_len"),   QString("str"),             _sysfunc_str_len   },
+    { QString("str_left"),  QString("str,len"),         _sysfunc_str_left  },
+    { QString("str_right"), QString("str,len"),         _sysfunc_str_right },
+    { QString("str_mid"),   QString("str,pos,len"),     _sysfunc_str_mid   },
+    { QString("str_find"),  QString("str,substr,from"), _sysfunc_str_find  },
 
     { QString(), QString(), NULL }
 };
@@ -170,6 +173,44 @@ static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *
         retvar->setStringValue(str);
     else
         retvar->setStringValue(str.mid(pos, len));
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_str_find(finExecFunction *self, finExecEnvironment *env,
+                                      finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *strvar, *substrvar, *fromvar, *retvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
+    substrvar = finExecVariable::transLinkTarget(env->findVariable("substr"));
+    fromvar = finExecVariable::transLinkTarget(env->findVariable("from"));
+    if ( strvar == NULL || substrvar == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+    if ( strvar->getType() != finExecVariable::TP_STRING ||
+         substrvar->getType() != finExecVariable::TP_STRING ||
+         (fromvar != NULL && fromvar->getType() != finExecVariable::TP_NUMERIC) )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    QString str = strvar->getStringValue();
+    QString substr = substrvar->getStringValue();
+    int from = 0;
+    if ( fromvar != NULL )
+        from = (int)floor(fromvar->getNumericValue());
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorKits::EC_OUT_OF_MEMORY;
+
+    retvar->setType(finExecVariable::TP_NUMERIC);
+    retvar->setNumericValue(str.indexOf(substr, from));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
 
