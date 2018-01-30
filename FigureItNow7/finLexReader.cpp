@@ -536,7 +536,7 @@ finErrorCode finLexReader::tryGetOperator(finLexNode *retnode)
         return finErrorKits::EC_NOT_FOUND;
 
     QChar curchar = this->_inputStr.at(trypos);
-    finLexOperatorType optype = finLexNode::FIN_LN_OPTYPE_DUMMY;
+    finLexOperatorType optype = finLexNode::OP_DUMMY;
     trypos++;
 
     QChar nxtchar;
@@ -549,145 +549,145 @@ finErrorCode finLexReader::tryGetOperator(finLexNode *retnode)
     if ( curchar == QChar('+') ) {
         READ_NEXT_CHAR;
         if ( nxtchar == QChar('+') ) {
-            optype = finLexNode::FIN_LN_OPTYPE_ACCUMLT;
+            optype = finLexNode::OP_ACCUMLT;
             this->_nextReadOrder = FIN_LR_ORD_OPERATOR_FIRST;
             trypos++;
         } else {
-            optype = finLexNode::FIN_LN_OPTYPE_ADD;
+            optype = finLexNode::OP_ADD;
             this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
         }
     } else if ( curchar == QChar('-') ) {
         READ_NEXT_CHAR;
         if ( nxtchar == QChar('-') ) {
-            optype = finLexNode::FIN_LN_OPTYPE_DESCEND;
+            optype = finLexNode::OP_DESCEND;
             this->_nextReadOrder = FIN_LR_ORD_OPERATOR_FIRST;
             trypos++;
         } else {
-            optype = finLexNode::FIN_LN_OPTYPE_SUB;
+            optype = finLexNode::OP_SUB;
             this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
         }
     } else if ( curchar == QChar('*') ) {
-        optype = finLexNode::FIN_LN_OPTYPE_MUL;
+        optype = finLexNode::OP_MUL;
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar('/') ) {
-        optype = finLexNode::FIN_LN_OPTYPE_DIV;
+        optype = finLexNode::OP_DIV;
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar('%') ) {
-        optype = finLexNode::FIN_LN_OPTYPE_MOD;
+        optype = finLexNode::OP_MOD;
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar('^') ) {
-        optype = finLexNode::FIN_LN_OPTYPE_POWER;
+        optype = finLexNode::OP_POWER;
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar('=') ) {
         READ_NEXT_CHAR;
         if ( nxtchar == QChar('=') ) {
-            optype = finLexNode::FIN_LN_OPTYPE_EQUAL;
+            optype = finLexNode::OP_EQUAL;
             trypos++;
         } else {
-            optype = finLexNode::FIN_LN_OPTYPE_LET;
+            optype = finLexNode::OP_LET;
         }
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar('>') ) {
         READ_NEXT_CHAR;
         if ( nxtchar == QChar('=') ) {
-            optype = finLexNode::FIN_LN_OPTYPE_GRT_EQ;
+            optype = finLexNode::OP_GRT_EQ;
             trypos++;
         } else {
-            optype = finLexNode::FIN_LN_OPTYPE_GRT;
+            optype = finLexNode::OP_GRT;
         }
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar('<') ) {
         READ_NEXT_CHAR;
         if ( nxtchar == QChar('=') ) {
-            optype = finLexNode::FIN_LN_OPTYPE_LES_EQ;
+            optype = finLexNode::OP_LES_EQ;
             trypos++;
         } else if ( nxtchar == QChar('>') ) {
-            optype = finLexNode::FIN_LN_OPTYPE_NONEQUAL;
+            optype = finLexNode::OP_NONEQUAL;
             trypos++;
         } else {
-            optype = finLexNode::FIN_LN_OPTYPE_LES;
+            optype = finLexNode::OP_LES;
         }
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar('!') ) {
         READ_NEXT_CHAR;
         if ( nxtchar == QChar('=') ) {
-            optype = finLexNode::FIN_LN_OPTYPE_NONEQUAL;
+            optype = finLexNode::OP_NONEQUAL;
             trypos++;
         } else {
             // Style 'num!' (Factorial) goes first, because the syntax reader can change it to LOGIC-NOT.
-            optype = finLexNode::FIN_LN_OPTYPE_FACTORI;
-            //optype = finLexNode::FIN_LN_OPTYPE_LOGIC_NOT;
+            optype = finLexNode::OP_FACTORI;
+            //optype = finLexNode::OP_LOGIC_NOT;
         }
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar('~') ) {
         READ_NEXT_CHAR;
         if ( nxtchar == QChar('~') ) {
-            optype = finLexNode::FIN_LN_OPTYPE_LOGIC_NOT;
+            optype = finLexNode::OP_LOGIC_NOT;
             trypos++;
         } else {
-            optype = finLexNode::FIN_LN_OPTYPE_BIT_NOT;
+            optype = finLexNode::OP_BIT_NOT;
         }
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar('&') ) {
         READ_NEXT_CHAR;
         if ( nxtchar == QChar('&') ) {
-            optype = finLexNode::FIN_LN_OPTYPE_LOGIC_AND;
+            optype = finLexNode::OP_LOGIC_AND;
             trypos++;
         } else {
-            optype = finLexNode::FIN_LN_OPTYPE_BIT_AND;
+            optype = finLexNode::OP_BIT_AND;
         }
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar('|') ) {
         READ_NEXT_CHAR;
         if ( nxtchar == QChar('|') ) {
-            optype = finLexNode::FIN_LN_OPTYPE_LOGIC_OR;
+            optype = finLexNode::OP_LOGIC_OR;
             trypos++;
         } else {
-            optype = finLexNode::FIN_LN_OPTYPE_BIT_OR;
+            optype = finLexNode::OP_BIT_OR;
         }
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar('$') ) {
         READ_NEXT_CHAR;
         if ( nxtchar == QChar('$') ) {
-            optype = finLexNode::FIN_LN_OPTYPE_LOGIC_XOR;
+            optype = finLexNode::OP_LOGIC_XOR;
             trypos++;
         } else {
-            optype = finLexNode::FIN_LN_OPTYPE_BIT_XOR;
+            optype = finLexNode::OP_BIT_XOR;
         }
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar('(') ) {
-        optype = finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT;
+        optype = finLexNode::OP_L_RND_BRCKT;
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar(')') ) {
-        optype = finLexNode::FIN_LN_OPTYPE_R_RND_BRCKT;
+        optype = finLexNode::OP_R_RND_BRCKT;
         this->_nextReadOrder = FIN_LR_ORD_OPERATOR_FIRST;
     } else if ( curchar == QChar('[') ) {
-        optype = finLexNode::FIN_LN_OPTYPE_L_SQR_BRCKT;
+        optype = finLexNode::OP_L_SQR_BRCKT;
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar(']') ) {
-        optype = finLexNode::FIN_LN_OPTYPE_R_SQR_BRCKT;
+        optype = finLexNode::OP_R_SQR_BRCKT;
         this->_nextReadOrder = FIN_LR_ORD_OPERATOR_FIRST;
     } else if ( curchar == QChar('{') ) {
-        optype = finLexNode::FIN_LN_OPTYPE_L_FLW_BRCKT;
+        optype = finLexNode::OP_L_FLW_BRCKT;
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar('}') ) {
-        optype = finLexNode::FIN_LN_OPTYPE_R_FLW_BRCKT;
+        optype = finLexNode::OP_R_FLW_BRCKT;
         this->_nextReadOrder = FIN_LR_ORD_OPERATOR_FIRST;
     } else if ( curchar == QChar(';') ) {
-        optype = finLexNode::FIN_LN_OPTYPE_SPLIT;
+        optype = finLexNode::OP_SPLIT;
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar(',') ) {
-        optype = finLexNode::FIN_LN_OPTYPE_COMMA;
+        optype = finLexNode::OP_COMMA;
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else if ( curchar == QChar(':') ) {
-        optype = finLexNode::FIN_LN_OPTYPE_COLON;
+        optype = finLexNode::OP_COLON;
         this->_nextReadOrder = FIN_LR_ORD_NUMBER_FIRST;
     } else {
         return finErrorKits::EC_NOT_FOUND;
     }
 #undef READ_NEXT_CHAR
 
-    if ( optype == finLexNode::FIN_LN_OPTYPE_DUMMY )
+    if ( optype == finLexNode::OP_DUMMY )
         return finErrorKits::EC_NOT_FOUND;
 
     retnode->setType(finLexNode::TP_OPERATOR);

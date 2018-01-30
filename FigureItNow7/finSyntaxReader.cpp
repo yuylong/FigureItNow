@@ -199,62 +199,62 @@ static struct _finSynLexOpTableItem {
     int afParamCnt;
     finLexOperatorType zpTransOp;
 } _finLexOpTable[] = {
-    { finLexNode::FIN_LN_OPTYPE_ADD,       0x1200, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_POSITIVE  },
-    { finLexNode::FIN_LN_OPTYPE_SUB,       0x1200, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_NEGATIVE  },
-    { finLexNode::FIN_LN_OPTYPE_POSITIVE,  0x2000, _finSynLexOpTableItem::FIN_MD_R2L,
-                                                        0, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_NEGATIVE,  0x2000, _finSynLexOpTableItem::FIN_MD_R2L,
-                                                        0, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_ACCUMLT,   0x2100, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 0, finLexNode::FIN_LN_OPTYPE_ACCUMLT_2 },
-    { finLexNode::FIN_LN_OPTYPE_ACCUMLT_2, 0x2000, _finSynLexOpTableItem::FIN_MD_R2L,
-                                                        0, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_DESCEND,   0x2100, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 0, finLexNode::FIN_LN_OPTYPE_DESCEND_2 },
-    { finLexNode::FIN_LN_OPTYPE_DESCEND_2, 0x2000, _finSynLexOpTableItem::FIN_MD_R2L,
-                                                        0, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_FACTORI,   0x2200, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 0, finLexNode::FIN_LN_OPTYPE_LOGIC_NOT },
-    { finLexNode::FIN_LN_OPTYPE_MUL,       0x1240, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_DIV,       0x1240, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_MOD,       0x1240, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_POWER,     0x1280, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_LET,       0x0100, _finSynLexOpTableItem::FIN_MD_R2L,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_EQUAL,     0x0600, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_GRT,       0x0600, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_LES,       0x0600, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_NONEQUAL,  0x0600, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_GRT_EQ,    0x0600, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_LES_EQ,    0x0600, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_LOGIC_NOT, 0x2000, _finSynLexOpTableItem::FIN_MD_R2L,
-                                                        0, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_LOGIC_AND, 0x0340, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_LOGIC_OR,  0x0320, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_LOGIC_XOR, 0x0340, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_BIT_NOT,   0x2000, _finSynLexOpTableItem::FIN_MD_R2L,
-                                                        0, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_BIT_AND,   0x1140, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_BIT_OR,    0x1140, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     },
-    { finLexNode::FIN_LN_OPTYPE_BIT_XOR,   0x1140, _finSynLexOpTableItem::FIN_MD_L2R,
-                                                        1, 1, finLexNode::FIN_LN_OPTYPE_DUMMY     }
+    { finLexNode::OP_ADD,       0x1200, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_POSITIVE  },
+    { finLexNode::OP_SUB,       0x1200, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_NEGATIVE  },
+    { finLexNode::OP_POSITIVE,  0x2000, _finSynLexOpTableItem::FIN_MD_R2L,
+                                                        0, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_NEGATIVE,  0x2000, _finSynLexOpTableItem::FIN_MD_R2L,
+                                                        0, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_ACCUMLT,   0x2100, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 0, finLexNode::OP_ACCUMLT_2 },
+    { finLexNode::OP_ACCUMLT_2, 0x2000, _finSynLexOpTableItem::FIN_MD_R2L,
+                                                        0, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_DESCEND,   0x2100, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 0, finLexNode::OP_DESCEND_2 },
+    { finLexNode::OP_DESCEND_2, 0x2000, _finSynLexOpTableItem::FIN_MD_R2L,
+                                                        0, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_FACTORI,   0x2200, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 0, finLexNode::OP_LOGIC_NOT },
+    { finLexNode::OP_MUL,       0x1240, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_DIV,       0x1240, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_MOD,       0x1240, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_POWER,     0x1280, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_LET,       0x0100, _finSynLexOpTableItem::FIN_MD_R2L,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_EQUAL,     0x0600, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_GRT,       0x0600, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_LES,       0x0600, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_NONEQUAL,  0x0600, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_GRT_EQ,    0x0600, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_LES_EQ,    0x0600, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_LOGIC_NOT, 0x2000, _finSynLexOpTableItem::FIN_MD_R2L,
+                                                        0, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_LOGIC_AND, 0x0340, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_LOGIC_OR,  0x0320, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_LOGIC_XOR, 0x0340, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_BIT_NOT,   0x2000, _finSynLexOpTableItem::FIN_MD_R2L,
+                                                        0, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_BIT_AND,   0x1140, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_BIT_OR,    0x1140, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     },
+    { finLexNode::OP_BIT_XOR,   0x1140, _finSynLexOpTableItem::FIN_MD_L2R,
+                                                        1, 1, finLexNode::OP_DUMMY     }
 };
 
 static struct _finSynLexOpTableItem *getLexOpTableItem(finLexOperatorType type)
@@ -298,7 +298,7 @@ finErrorCode finSyntaxReader::transformOpToNonBfParamOp(finLexNode *lexnode)
     struct _finSynLexOpTableItem *tblinfo = getLexOpTableItem(lexnode->getOperator());
     if ( tblinfo == NULL )
         return finErrorKits::EC_READ_ERROR;
-    if ( tblinfo->zpTransOp == finLexNode::FIN_LN_OPTYPE_DUMMY)
+    if ( tblinfo->zpTransOp == finLexNode::OP_DUMMY)
         return finErrorKits::EC_INVALID_PARAM;
 
     lexnode->setOperator(tblinfo->zpTransOp);
@@ -416,9 +416,9 @@ finErrorCode finSyntaxReader::processArithOperator(finLexNode *lexnode)
 bool finSyntaxReader::isLeftBracket(finLexNode *lexnode)
 {
     switch ( lexnode->getOperator() ) {
-      case finLexNode::FIN_LN_OPTYPE_L_FLW_BRCKT:
-      case finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT:
-      case finLexNode::FIN_LN_OPTYPE_L_SQR_BRCKT:
+      case finLexNode::OP_L_FLW_BRCKT:
+      case finLexNode::OP_L_RND_BRCKT:
+      case finLexNode::OP_L_SQR_BRCKT:
         return true;
 
       default:
@@ -429,9 +429,9 @@ bool finSyntaxReader::isLeftBracket(finLexNode *lexnode)
 bool finSyntaxReader::isRightBracket(finLexNode *lexnode)
 {
     switch ( lexnode->getOperator() ) {
-      case finLexNode::FIN_LN_OPTYPE_R_FLW_BRCKT:
-      case finLexNode::FIN_LN_OPTYPE_R_RND_BRCKT:
-      case finLexNode::FIN_LN_OPTYPE_R_SQR_BRCKT:
+      case finLexNode::OP_R_FLW_BRCKT:
+      case finLexNode::OP_R_RND_BRCKT:
+      case finLexNode::OP_R_SQR_BRCKT:
         return true;
 
       default:
@@ -446,7 +446,7 @@ bool finSyntaxReader::isBracket(finLexNode *lexnode)
 
 bool finSyntaxReader::isCorrespnBracket(finLexNode *lexnode1, finLexNode *lexnode2)
 {
-    finLexNode::finLexNodeOperatorType ltype, rtype;
+    finLexOperatorType ltype, rtype;
     if (isLeftBracket(lexnode1)) {
         ltype = lexnode1->getOperator();
         rtype = lexnode2->getOperator();
@@ -455,18 +455,18 @@ bool finSyntaxReader::isCorrespnBracket(finLexNode *lexnode1, finLexNode *lexnod
         rtype = lexnode1->getOperator();
     }
 
-    if ( ltype == finLexNode::FIN_LN_OPTYPE_L_FLW_BRCKT ) {
-        if ( rtype == finLexNode::FIN_LN_OPTYPE_R_FLW_BRCKT )
+    if ( ltype == finLexNode::OP_L_FLW_BRCKT ) {
+        if ( rtype == finLexNode::OP_R_FLW_BRCKT )
             return true;
         else
             return false;
-    } else if ( ltype == finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
-        if ( rtype == finLexNode::FIN_LN_OPTYPE_R_RND_BRCKT )
+    } else if ( ltype == finLexNode::OP_L_RND_BRCKT ) {
+        if ( rtype == finLexNode::OP_R_RND_BRCKT )
             return true;
         else
             return false;
-    } else if ( ltype == finLexNode::FIN_LN_OPTYPE_L_SQR_BRCKT ) {
-        if ( rtype == finLexNode::FIN_LN_OPTYPE_R_SQR_BRCKT )
+    } else if ( ltype == finLexNode::OP_L_SQR_BRCKT ) {
+        if ( rtype == finLexNode::OP_R_SQR_BRCKT )
             return true;
         else
             return false;
@@ -522,13 +522,13 @@ finErrorCode finSyntaxReader::processRightBracket(finLexNode *lexnode)
     this->_syntaxStack.prepend(meshednode);
 
     switch ( lexnode->getOperator() ) {
-      case finLexNode::FIN_LN_OPTYPE_R_FLW_BRCKT:
+      case finLexNode::OP_R_FLW_BRCKT:
         this->meshFlowerBracket();
         break;
-      case finLexNode::FIN_LN_OPTYPE_R_RND_BRCKT:
+      case finLexNode::OP_R_RND_BRCKT:
         this->meshRoundBracket();
         break;
-      case finLexNode::FIN_LN_OPTYPE_R_SQR_BRCKT:
+      case finLexNode::OP_R_SQR_BRCKT:
         this->meshSquareBracket();
         break;
       default:
@@ -549,9 +549,9 @@ finErrorCode finSyntaxReader::processBracket(finLexNode *lexnode)
 bool finSyntaxReader::isSplitter(finLexNode *lexnode)
 {
     switch ( lexnode->getOperator() ) {
-      case finLexNode::FIN_LN_OPTYPE_SPLIT:
-      case finLexNode::FIN_LN_OPTYPE_COMMA:
-      case finLexNode::FIN_LN_OPTYPE_COLON:
+      case finLexNode::OP_SPLIT:
+      case finLexNode::OP_COMMA:
+      case finLexNode::OP_COLON:
         return true;
 
       default:
@@ -570,7 +570,7 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
 
     switch ( lexnode->getOperator() ) {
       // Process S <- E; and S <- ; (empty statement)
-      case finLexNode::FIN_LN_OPTYPE_SPLIT:
+      case finLexNode::OP_SPLIT:
         errcode = this->meshAllCommas();
         if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
@@ -595,7 +595,7 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
         break;
 
       // Process L <- E:, where E <- var
-      case finLexNode::FIN_LN_OPTYPE_COLON:
+      case finLexNode::OP_COLON:
         if ( this->_syntaxStack.count() > 0 )
             presynnode = this->_syntaxStack.at(0);
 
@@ -731,7 +731,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
 
         if ( cursyn->getType() == finSyntaxNode::FIN_SN_TYPE_SINGLE &&
              curlex->getType() == finLexNode::TP_OPERATOR &&
-             curlex->getOperator() == finLexNode::FIN_LN_OPTYPE_COMMA ) {
+             curlex->getOperator() == finLexNode::OP_COMMA ) {
             hascomma = true;
             break;
         } else {
@@ -745,7 +745,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
     // Process E <- E,E,...,E
     finLexNode lexnode;
     lexnode.setType(finLexNode::TP_OPERATOR);
-    lexnode.setOperator(finLexNode::FIN_LN_OPTYPE_COMMA);
+    lexnode.setOperator(finLexNode::OP_COMMA);
     lexnode.setString(QString(","));
 
     finSyntaxNode *synnode = new finSyntaxNode();
@@ -768,7 +768,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
             hasinst = true;
         } else if ( cursyn->getType() == finSyntaxNode::FIN_SN_TYPE_SINGLE &&
                     curlex->getType() == finLexNode::TP_OPERATOR &&
-                    curlex->getOperator() == finLexNode::FIN_LN_OPTYPE_COMMA ) {
+                    curlex->getOperator() == finLexNode::OP_COMMA ) {
             if ( !hasinst ) {
                 finSyntaxNode *dmyexpsyn = createDummyExpress();
                 if ( dmyexpsyn == NULL )
@@ -810,7 +810,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
     finLexNode *sttlex = stttk->getCommandLexNode();
 
     if ( sttlex->getType() == finLexNode::TP_OPERATOR &&
-         sttlex->getOperator() == finLexNode::FIN_LN_OPTYPE_L_FLW_BRCKT ) {
+         sttlex->getOperator() == finLexNode::OP_L_FLW_BRCKT ) {
         // Process B <- B'S where B' <- if(E)
         if ( QString::compare(prevlex->getString(), QString("if")) == 0 ) {
             if ( prevtk->getSubListCount() != 1 )
@@ -872,7 +872,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
     }
 
     if ( sttlex->getType() == finLexNode::TP_OPERATOR &&
-         sttlex->getOperator() == finLexNode::FIN_LN_OPTYPE_SPLIT ) {
+         sttlex->getOperator() == finLexNode::OP_SPLIT ) {
         // Process J <- J'E; where J' <- goto, and E <- var
         if ( QString::compare(prevlex->getString(), QString("goto")) == 0 ) {
             int prevsubcnt = prevtk->getSubListCount();
@@ -990,7 +990,7 @@ finErrorCode finSyntaxReader::meshFlowerBracket()
     if ( prevtk->getType() == finSyntaxNode::FIN_SN_TYPE_EXPRESS &&
          prevlex != NULL &&
          prevlex->getType() == finLexNode::TP_OPERATOR &&
-         prevlex->getOperator() == finLexNode::FIN_LN_OPTYPE_FUNCTION ) {
+         prevlex->getOperator() == finLexNode::OP_FUNCTION ) {
 
         if ( curtk->getType() != finSyntaxNode::FIN_SN_TYPE_STATEMENT )
             return finErrorKits::EC_READ_ERROR;
@@ -1032,7 +1032,7 @@ finErrorCode finSyntaxReader::meshRoundBracket()
 
         finLexNode meshedlex;
         meshedlex.setType(finLexNode::TP_OPERATOR);
-        meshedlex.setOperator(finLexNode::FIN_LN_OPTYPE_FUNCTION);
+        meshedlex.setOperator(finLexNode::OP_FUNCTION);
 
         finSyntaxNode *meshedtk = new finSyntaxNode();
         if ( meshedtk == NULL )
@@ -1110,7 +1110,7 @@ finErrorCode finSyntaxReader::meshSquareBracket()
 
         finLexNode meshedlex;
         meshedlex.setType(finLexNode::TP_OPERATOR);
-        meshedlex.setOperator(finLexNode::FIN_LN_OPTYPE_ACCESS);
+        meshedlex.setOperator(finLexNode::OP_ACCESS);
 
         finSyntaxNode *meshedtk = new finSyntaxNode();
         if ( meshedtk == NULL )

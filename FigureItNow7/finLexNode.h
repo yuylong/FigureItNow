@@ -29,49 +29,49 @@ public:
         TP_MAX
     };
 
-    enum finLexNodeOperatorType
+    enum Operator
     {
-        FIN_LN_OPTYPE_DUMMY = 0,
-        FIN_LN_OPTYPE_ADD,
-        FIN_LN_OPTYPE_SUB,
-        FIN_LN_OPTYPE_POSITIVE,
-        FIN_LN_OPTYPE_NEGATIVE,
-        FIN_LN_OPTYPE_ACCUMLT,
-        FIN_LN_OPTYPE_ACCUMLT_2,
-        FIN_LN_OPTYPE_DESCEND,
-        FIN_LN_OPTYPE_DESCEND_2,
-        FIN_LN_OPTYPE_MUL,
-        FIN_LN_OPTYPE_DIV,
-        FIN_LN_OPTYPE_MOD,
-        FIN_LN_OPTYPE_POWER,
-        FIN_LN_OPTYPE_FACTORI,
-        FIN_LN_OPTYPE_L_RND_BRCKT,
-        FIN_LN_OPTYPE_R_RND_BRCKT,
-        FIN_LN_OPTYPE_L_SQR_BRCKT,
-        FIN_LN_OPTYPE_R_SQR_BRCKT,
-        FIN_LN_OPTYPE_L_FLW_BRCKT,
-        FIN_LN_OPTYPE_R_FLW_BRCKT,
-        FIN_LN_OPTYPE_LET,
-        FIN_LN_OPTYPE_EQUAL,
-        FIN_LN_OPTYPE_GRT,
-        FIN_LN_OPTYPE_LES,
-        FIN_LN_OPTYPE_NONEQUAL,
-        FIN_LN_OPTYPE_GRT_EQ,
-        FIN_LN_OPTYPE_LES_EQ,
-        FIN_LN_OPTYPE_LOGIC_NOT,
-        FIN_LN_OPTYPE_LOGIC_AND,
-        FIN_LN_OPTYPE_LOGIC_OR,
-        FIN_LN_OPTYPE_LOGIC_XOR,
-        FIN_LN_OPTYPE_BIT_NOT,
-        FIN_LN_OPTYPE_BIT_AND,
-        FIN_LN_OPTYPE_BIT_OR,
-        FIN_LN_OPTYPE_BIT_XOR,
-        FIN_LN_OPTYPE_SPLIT,
-        FIN_LN_OPTYPE_COMMA,
-        FIN_LN_OPTYPE_COLON,
-        FIN_LN_OPTYPE_FUNCTION,
-        FIN_LN_OPTYPE_ACCESS,
-        FIN_LN_OPTYPE_MAX
+        OP_DUMMY = 0,
+        OP_ADD,
+        OP_SUB,
+        OP_POSITIVE,
+        OP_NEGATIVE,
+        OP_ACCUMLT,
+        OP_ACCUMLT_2,
+        OP_DESCEND,
+        OP_DESCEND_2,
+        OP_MUL,
+        OP_DIV,
+        OP_MOD,
+        OP_POWER,
+        OP_FACTORI,
+        OP_L_RND_BRCKT,
+        OP_R_RND_BRCKT,
+        OP_L_SQR_BRCKT,
+        OP_R_SQR_BRCKT,
+        OP_L_FLW_BRCKT,
+        OP_R_FLW_BRCKT,
+        OP_LET,
+        OP_EQUAL,
+        OP_GRT,
+        OP_LES,
+        OP_NONEQUAL,
+        OP_GRT_EQ,
+        OP_LES_EQ,
+        OP_LOGIC_NOT,
+        OP_LOGIC_AND,
+        OP_LOGIC_OR,
+        OP_LOGIC_XOR,
+        OP_BIT_NOT,
+        OP_BIT_AND,
+        OP_BIT_OR,
+        OP_BIT_XOR,
+        OP_SPLIT,
+        OP_COMMA,
+        OP_COLON,
+        OP_FUNCTION,
+        OP_ACCESS,
+        OP_MAX
     };
 
 private:
@@ -82,7 +82,7 @@ private:
     union {
         long long _numericValue;
         double _floatValue;
-        finLexNodeOperatorType _operator;
+        Operator _operator;
         char _rawData[8];
     } _u;
 
@@ -99,7 +99,7 @@ public:
     Type getType() const;
     QString getString() const;
     double getFloatValue() const;
-    finLexNodeOperatorType getOperator() const;
+    Operator getOperator() const;
     QString getStringValue() const;
     unsigned int getRow() const;
     unsigned int getColumn() const;
@@ -107,13 +107,13 @@ public:
     finErrorCode setType(Type type);
     finErrorCode setString(const QString &str);
     finErrorCode setFloatValue(double val);
-    finErrorCode setOperator(finLexNodeOperatorType optype);
+    finErrorCode setOperator(Operator optype);
     finErrorCode setStringValue(const QString &strval);
     finErrorCode setRow(unsigned int row);
     finErrorCode setColumn(unsigned int column);
 };
 
 typedef enum finLexNode::Type finLexNodeType;
-typedef enum finLexNode::finLexNodeOperatorType finLexOperatorType;
+typedef enum finLexNode::Operator finLexOperatorType;
 
 #endif // FINLEXNODE_H

@@ -125,7 +125,7 @@ finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, f
     }
 
     if ( lexnode->getType() != finLexNode::TP_OPERATOR ||
-         lexnode->getOperator() != finLexNode::FIN_LN_OPTYPE_L_RND_BRCKT ) {
+         lexnode->getOperator() != finLexNode::OP_L_RND_BRCKT ) {
         machine->appendExecutionError(lexnode, QString("Unrecognized function arguments."));
         return finErrorKits::EC_READ_ERROR;
     }
@@ -199,7 +199,7 @@ finExecFunction::processArgsInSubEnv(finSyntaxNode *argnode, finExecEnvironment 
     finErrorCode errcode;
     bool subgoon = true;
     if ( lexnode->getType() == finLexNode::TP_OPERATOR &&
-         lexnode->getOperator() == finLexNode::FIN_LN_OPTYPE_COMMA ) {
+         lexnode->getOperator() == finLexNode::OP_COMMA ) {
         for ( int i = 0; i < argnode->getSubListCount(); i++ ) {
             flowctl->resetFlowControl();
 

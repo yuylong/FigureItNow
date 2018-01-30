@@ -84,7 +84,7 @@ double finLexNode::getFloatValue() const
 finLexOperatorType finLexNode::getOperator() const
 {
     if ( this->_type != TP_OPERATOR )
-        return finLexNode::FIN_LN_OPTYPE_DUMMY;
+        return finLexNode::OP_DUMMY;
 
     return this->_u._operator;
 }
@@ -128,7 +128,7 @@ finErrorCode finLexNode::setFloatValue(double val)
     return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finLexNode::setOperator(finLexNodeOperatorType optype)
+finErrorCode finLexNode::setOperator(finLexOperatorType optype)
 {
     if ( this->_type != TP_OPERATOR )
         return finErrorKits::EC_STATE_ERROR;
