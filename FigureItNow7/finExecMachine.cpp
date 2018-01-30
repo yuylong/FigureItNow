@@ -767,7 +767,7 @@ finExecMachine::instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     finErrorCode errcode;
-    newfunc->setFunctionType(finExecFunction::FIN_FN_TYPE_USER);
+    newfunc->setFunctionType(finExecFunction::TP_USER);
 
     errcode = this->instExecFuncName(fnname_syn, env, newfunc);
     if ( finErrorKits::isErrorResult(errcode) )

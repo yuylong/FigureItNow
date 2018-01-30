@@ -39,15 +39,15 @@ struct finExecSysFuncRegItem {
 class finExecFunction
 {
 public:
-    enum finExecFunctionType {
-        FIN_FN_TYPE_DUMMY,
-        FIN_FN_TYPE_USER,
-        FIN_FN_TYPE_SYSTEM,
-        FIN_FIN_TYPE_MAX
+    enum Type {
+        TP_DUMMY,
+        TP_USER,
+        TP_SYSTEM,
+        TP_MAX
     };
 
 protected:
-    finExecFunctionType _type;
+    Type _type;
     QString _funcName;
     QStringList _paramList;
 
@@ -62,13 +62,13 @@ protected:
 public:
     finExecFunction();
 
-    finExecFunctionType getFunctionType() const;
+    Type getFunctionType() const;
     const QString &getFunctionName() const;
     int getParameterCount() const;
     QString getParameterName(int idx) const;
     bool isParameterExist(const QString &paramname) const;
 
-    finErrorCode setFunctionType(finExecFunctionType type);
+    finErrorCode setFunctionType(Type type);
     finErrorCode setFunctionName(const QString &funcname);
     finErrorCode appendParameterName(const QString &paramname);
     finErrorCode clearParameterNames();
@@ -119,6 +119,6 @@ private:
     static finErrorCode registSysFuncPlot();
 };
 
-typedef finExecFunction::finExecFunctionType finExecFunctionType;
+typedef finExecFunction::Type finExecFunctionType;
 
 #endif // FINEXECFUNCTION_H

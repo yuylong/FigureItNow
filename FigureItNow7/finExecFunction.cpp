@@ -19,7 +19,7 @@ QString finExecFunction::_extArgPrefix("__ext_arg_");
 
 finExecFunction::finExecFunction()
 {
-    this->_type = FIN_FN_TYPE_DUMMY;
+    this->_type = TP_DUMMY;
     this->_u._rawPointer = NULL;
 }
 
@@ -96,7 +96,7 @@ finErrorCode finExecFunction::clearParameterNames()
 
 finErrorCode finExecFunction::setFunctionSyntaxNode(finSyntaxNode *funcnode)
 {
-    if ( this->_type != finExecFunction::FIN_FN_TYPE_USER )
+    if ( this->_type != finExecFunction::TP_USER )
         return finErrorKits::EC_STATE_ERROR;
 
     this->_u._funcNode = funcnode;
@@ -105,7 +105,7 @@ finErrorCode finExecFunction::setFunctionSyntaxNode(finSyntaxNode *funcnode)
 
 finErrorCode finExecFunction::setFunctionCall(finFunctionCall funccall)
 {
-    if ( this->_type != finExecFunction::FIN_FN_TYPE_SYSTEM )
+    if ( this->_type != finExecFunction::TP_SYSTEM )
         return finErrorKits::EC_STATE_ERROR;
 
     this->_u._funcCall = funccall;
@@ -159,9 +159,9 @@ finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, f
     }
 
     flowctl->resetFlowControl();
-    if ( this->_type == finExecFunction::FIN_FN_TYPE_SYSTEM ) {
+    if ( this->_type == finExecFunction::TP_SYSTEM ) {
         errcode = this->execSysFunction(subenv, machine, flowctl);
-    } else if ( this->_type == finExecFunction::FIN_FN_TYPE_USER ) {
+    } else if ( this->_type == finExecFunction::TP_USER ) {
         errcode = this->execUserFunction(subenv, machine, flowctl);
     } else {
         machine->appendExecutionError(lexnode, QString("ERROR: Function type cannot be recognized."));
@@ -277,9 +277,9 @@ finExecFunction::execFunction(QList<finExecVariable *> *arglist, finExecEnvironm
         }
     }
 
-    if ( this->_type == finExecFunction::FIN_FN_TYPE_SYSTEM ) {
+    if ( this->_type == finExecFunction::TP_SYSTEM ) {
         errcode = this->execSysFunction(subenv, machine, flowctl);
-    } else if ( this->_type == finExecFunction::FIN_FN_TYPE_USER ) {
+    } else if ( this->_type == finExecFunction::TP_USER ) {
         errcode = this->execUserFunction(subenv, machine, flowctl);
     } else {
         delete subenv;
@@ -536,7 +536,7 @@ finExecFunction::installSystemFunctions (finExecEnvironment *rootenv)
         if ( curfunc == NULL )
             goto item_bad;
 
-        errcode = curfunc->setFunctionType(finExecFunction::FIN_FN_TYPE_SYSTEM);
+        errcode = curfunc->setFunctionType(finExecFunction::TP_SYSTEM);
         if ( finErrorKits::isErrorResult(errcode) )
             goto item_bad;
 
