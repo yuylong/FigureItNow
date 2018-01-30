@@ -26,6 +26,8 @@ static finErrorCode _sysfunc_str_find(finExecFunction *self, finExecEnvironment 
                                       finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_str_bk_find(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_str_trim(finExecFunction *self, finExecEnvironment *env,
+                                      finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
     { QString("str_len"),     QString("str"),                  _sysfunc_str_len     },
@@ -34,6 +36,7 @@ static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
     { QString("str_mid"),     QString("str,pos,len"),          _sysfunc_str_mid     },
     { QString("str_find"),    QString("str,substr,from,case"), _sysfunc_str_find    },
     { QString("str_bk_find"), QString("str,substr,from,case"), _sysfunc_str_bk_find },
+    { QString("trim"),        QString("str"),                  _sysfunc_str_trim    },
 
     { QString(), QString(), NULL }
 };
@@ -270,6 +273,36 @@ static finErrorCode _sysfunc_str_bk_find(finExecFunction *self, finExecEnvironme
     int retidx = str.lastIndexOf(substr, from, casecare ? Qt::CaseSensitive : Qt::CaseInsensitive);
     retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(retidx);
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_str_trim(finExecFunction *self, finExecEnvironment *env,
+                                      finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *strvar, *retvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
+    if ( strvar == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+    if ( strvar->getType() != finExecVariable::TP_STRING )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorKits::EC_OUT_OF_MEMORY;
+
+    QString str = strvar->getStringValue();
+
+    retvar->setType(finExecVariable::TP_STRING);
+    retvar->setStringValue(str.trimmed());
     retvar->setWriteProtected();
     retvar->clearLeftValue();
 
