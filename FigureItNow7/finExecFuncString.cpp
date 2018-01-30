@@ -28,8 +28,11 @@ static finErrorCode _sysfunc_str_bk_find(finExecFunction *self, finExecEnvironme
                                          finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_str_trim(finExecFunction *self, finExecEnvironment *env,
                                       finExecMachine *machine, finExecFlowControl *flowctl);
+
 static finErrorCode _sysfunc_chr_unicode(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_chr_ascii(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
     { QString("str_len"),     QString("str"),                  _sysfunc_str_len     },
@@ -39,7 +42,9 @@ static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
     { QString("str_find"),    QString("str,substr,from,case"), _sysfunc_str_find    },
     { QString("str_bk_find"), QString("str,substr,from,case"), _sysfunc_str_bk_find },
     { QString("str_trim"),    QString("str"),                  _sysfunc_str_trim    },
+
     { QString("chr_unicode"), QString("chr"),                  _sysfunc_chr_unicode },
+    { QString("chr_ascii"),   QString("chr"),                  _sysfunc_chr_ascii },
 
     { QString(), QString(), NULL }
 };
@@ -337,6 +342,37 @@ static finErrorCode _sysfunc_chr_unicode(finExecFunction *self, finExecEnvironme
 
     retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(chr.unicode());
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_chr_ascii(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *chrvar, *retvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    chrvar = finExecVariable::transLinkTarget(env->findVariable("chr"));
+    if ( chrvar == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+    if ( chrvar->getType() != finExecVariable::TP_STRING )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorKits::EC_OUT_OF_MEMORY;
+
+    QString str = chrvar->getStringValue();
+    QChar chr = (str.isEmpty() ? QChar(0) : str.at(0));
+
+    retvar->setType(finExecVariable::TP_NUMERIC);
+    retvar->setNumericValue(chr.toLatin1());
     retvar->setWriteProtected();
     retvar->clearLeftValue();
 
