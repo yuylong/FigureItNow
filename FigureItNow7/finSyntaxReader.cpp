@@ -98,7 +98,7 @@ finErrorCode finSyntaxReader::readNextToken()
         this->_state = ST_DONE;
         return errcode;
     }
-    if ( lexnode.getType() == finLexNode::FIN_LN_TYPE_DUMMY )
+    if ( lexnode.getType() == finLexNode::TP_DUMMY )
         return finErrorKits::EC_NORMAL_WARN;
 
     return this->processTypedNextToken(&lexnode, lexnode.getType());
@@ -140,13 +140,13 @@ finErrorCode finSyntaxReader::disposeAllRead()
 finErrorCode finSyntaxReader::processTypedNextToken(finLexNode *lexnode, finLexNodeType lextype)
 {
     switch ( lextype ) {
-      case finLexNode::FIN_LN_TYPE_KEYWORD:
-      case finLexNode::FIN_LN_TYPE_VARIABLE:
-      case finLexNode::FIN_LN_TYPE_DECIMAL:
-      case finLexNode::FIN_LN_TYPE_STRING:
+      case finLexNode::TP_KEYWORD:
+      case finLexNode::TP_VARIABLE:
+      case finLexNode::TP_DECIMAL:
+      case finLexNode::TP_STRING:
         return processInstanceToken(lexnode);
 
-      case finLexNode::FIN_LN_TYPE_OPERATOR:
+      case finLexNode::TP_OPERATOR:
         return processOperatorToken(lexnode);
 
       default:
@@ -158,9 +158,9 @@ finErrorCode finSyntaxReader::processInstanceToken(finLexNode *lexnode)
 {
     finSyntaxNodeType tokentype;
     switch ( lexnode->getType() ) {
-      case finLexNode::FIN_LN_TYPE_VARIABLE:
-      case finLexNode::FIN_LN_TYPE_DECIMAL:
-      case finLexNode::FIN_LN_TYPE_STRING:
+      case finLexNode::TP_VARIABLE:
+      case finLexNode::TP_DECIMAL:
+      case finLexNode::TP_STRING:
         tokentype = finSyntaxNode::FIN_SN_TYPE_EXPRESS;
         break;
 
@@ -268,7 +268,7 @@ static struct _finSynLexOpTableItem *getLexOpTableItem(finLexOperatorType type)
 
 int finSyntaxReader::getOperatorBfParamCnt(finLexNode *lexnode)
 {
-    if (lexnode->getType() != finLexNode::FIN_LN_TYPE_OPERATOR)
+    if (lexnode->getType() != finLexNode::TP_OPERATOR)
         return -1;
 
     struct _finSynLexOpTableItem *tblinfo = getLexOpTableItem(lexnode->getOperator());
@@ -280,7 +280,7 @@ int finSyntaxReader::getOperatorBfParamCnt(finLexNode *lexnode)
 
 int finSyntaxReader::getOperatorAfParamCnt(finLexNode *lexnode)
 {
-    if (lexnode->getType() != finLexNode::FIN_LN_TYPE_OPERATOR)
+    if (lexnode->getType() != finLexNode::TP_OPERATOR)
         return -1;
 
     struct _finSynLexOpTableItem *tblinfo = getLexOpTableItem(lexnode->getOperator());
@@ -292,7 +292,7 @@ int finSyntaxReader::getOperatorAfParamCnt(finLexNode *lexnode)
 
 finErrorCode finSyntaxReader::transformOpToNonBfParamOp(finLexNode *lexnode)
 {
-    if (lexnode->getType() != finLexNode::FIN_LN_TYPE_OPERATOR)
+    if (lexnode->getType() != finLexNode::TP_OPERATOR)
         return finErrorKits::EC_READ_ERROR;
 
     struct _finSynLexOpTableItem *tblinfo = getLexOpTableItem(lexnode->getOperator());
@@ -307,7 +307,7 @@ finErrorCode finSyntaxReader::transformOpToNonBfParamOp(finLexNode *lexnode)
 
 int finSyntaxReader::getOperatorPriority(finLexNode *lexnode)
 {
-    if (lexnode->getType() != finLexNode::FIN_LN_TYPE_OPERATOR)
+    if (lexnode->getType() != finLexNode::TP_OPERATOR)
         return 0x0;
 
     struct _finSynLexOpTableItem *tblinfo = getLexOpTableItem(lexnode->getOperator());
@@ -319,7 +319,7 @@ int finSyntaxReader::getOperatorPriority(finLexNode *lexnode)
 
 int finSyntaxReader::getOperatorMeshDir(finLexNode *lexnode)
 {
-    if (lexnode->getType() != finLexNode::FIN_LN_TYPE_OPERATOR)
+    if (lexnode->getType() != finLexNode::TP_OPERATOR)
         return (int)_finSynLexOpTableItem::FIN_MD_L2R;
 
     struct _finSynLexOpTableItem *tblinfo = getLexOpTableItem(lexnode->getOperator());
@@ -331,7 +331,7 @@ int finSyntaxReader::getOperatorMeshDir(finLexNode *lexnode)
 
 bool finSyntaxReader::isArithOperator(finLexNode *lexnode)
 {
-    if (lexnode->getType() != finLexNode::FIN_LN_TYPE_OPERATOR)
+    if (lexnode->getType() != finLexNode::TP_OPERATOR)
         return false;
 
     struct _finSynLexOpTableItem *tblinfo = getLexOpTableItem(lexnode->getOperator());
@@ -384,7 +384,7 @@ finErrorCode finSyntaxReader::processArithOperator(finLexNode *lexnode)
             finSyntaxNode *preopsn = this->_syntaxStack.at(bfparamcnt);
             if ( preopsn->getType() == finSyntaxNode::FIN_SN_TYPE_SINGLE ) {
                 prevop = preopsn->getCommandLexNode();
-                if ( prevop->getType() != finLexNode::FIN_LN_TYPE_OPERATOR )
+                if ( prevop->getType() != finLexNode::TP_OPERATOR )
                     prevop = NULL;
             }
         }
@@ -601,7 +601,7 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
 
         if ( presynnode == NULL || presynnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS )
             return finErrorKits::EC_READ_ERROR;
-        if ( presynnode->getCommandLexNode()->getType() != finLexNode::FIN_LN_TYPE_VARIABLE )
+        if ( presynnode->getCommandLexNode()->getType() != finLexNode::TP_VARIABLE )
             return finErrorKits::EC_READ_ERROR;
 
         presynnode->setType(finSyntaxNode::FIN_SN_TYPE_LABEL);
@@ -709,7 +709,7 @@ finErrorCode finSyntaxReader::meshAllArithExpress()
 finSyntaxNode *finSyntaxReader::createDummyExpress()
 {
     finLexNode dmyexplex;
-    dmyexplex.setType(finLexNode::FIN_LN_TYPE_DUMMY);
+    dmyexplex.setType(finLexNode::TP_DUMMY);
 
     finSyntaxNode *dmyexpsyn = new finSyntaxNode();
     if ( dmyexpsyn == NULL )
@@ -730,7 +730,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
             continue;
 
         if ( cursyn->getType() == finSyntaxNode::FIN_SN_TYPE_SINGLE &&
-             curlex->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+             curlex->getType() == finLexNode::TP_OPERATOR &&
              curlex->getOperator() == finLexNode::FIN_LN_OPTYPE_COMMA ) {
             hascomma = true;
             break;
@@ -744,7 +744,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
 
     // Process E <- E,E,...,E
     finLexNode lexnode;
-    lexnode.setType(finLexNode::FIN_LN_TYPE_OPERATOR);
+    lexnode.setType(finLexNode::TP_OPERATOR);
     lexnode.setOperator(finLexNode::FIN_LN_OPTYPE_COMMA);
     lexnode.setString(QString(","));
 
@@ -767,7 +767,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
             synnode->prependSubSyntaxNode(cursyn);
             hasinst = true;
         } else if ( cursyn->getType() == finSyntaxNode::FIN_SN_TYPE_SINGLE &&
-                    curlex->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+                    curlex->getType() == finLexNode::TP_OPERATOR &&
                     curlex->getOperator() == finLexNode::FIN_LN_OPTYPE_COMMA ) {
             if ( !hasinst ) {
                 finSyntaxNode *dmyexpsyn = createDummyExpress();
@@ -803,13 +803,13 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
     finSyntaxNode *prevtk = this->_syntaxStack.at(1);
     finLexNode *prevlex = prevtk->getCommandLexNode();
     if ( prevtk->getType() != finSyntaxNode::FIN_SN_TYPE_SINGLE ||
-         prevlex->getType() != finLexNode::FIN_LN_TYPE_KEYWORD )
+         prevlex->getType() != finLexNode::TP_KEYWORD )
         return finErrorKits::EC_SUCCESS;
 
     finSyntaxNode *stttk = this->_syntaxStack.first();
     finLexNode *sttlex = stttk->getCommandLexNode();
 
-    if ( sttlex->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+    if ( sttlex->getType() == finLexNode::TP_OPERATOR &&
          sttlex->getOperator() == finLexNode::FIN_LN_OPTYPE_L_FLW_BRCKT ) {
         // Process B <- B'S where B' <- if(E)
         if ( QString::compare(prevlex->getString(), QString("if")) == 0 ) {
@@ -871,7 +871,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
         }
     }
 
-    if ( sttlex->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+    if ( sttlex->getType() == finLexNode::TP_OPERATOR &&
          sttlex->getOperator() == finLexNode::FIN_LN_OPTYPE_SPLIT ) {
         // Process J <- J'E; where J' <- goto, and E <- var
         if ( QString::compare(prevlex->getString(), QString("goto")) == 0 ) {
@@ -885,7 +885,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
             prevtk->appendSubSyntaxNode(sttsubtk);
 
             if ( sttsubtk->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
-                 sttsublex->getType() != finLexNode::FIN_LN_TYPE_VARIABLE )
+                 sttsublex->getType() != finLexNode::TP_VARIABLE )
                 return finErrorKits::EC_READ_ERROR;
 
             this->_syntaxStack.removeFirst();
@@ -989,7 +989,7 @@ finErrorCode finSyntaxReader::meshFlowerBracket()
     finLexNode *prevlex = prevtk->getCommandLexNode();
     if ( prevtk->getType() == finSyntaxNode::FIN_SN_TYPE_EXPRESS &&
          prevlex != NULL &&
-         prevlex->getType() == finLexNode::FIN_LN_TYPE_OPERATOR &&
+         prevlex->getType() == finLexNode::TP_OPERATOR &&
          prevlex->getOperator() == finLexNode::FIN_LN_OPTYPE_FUNCTION ) {
 
         if ( curtk->getType() != finSyntaxNode::FIN_SN_TYPE_STATEMENT )
@@ -1031,7 +1031,7 @@ finErrorCode finSyntaxReader::meshRoundBracket()
         this->_syntaxStack.removeFirst();
 
         finLexNode meshedlex;
-        meshedlex.setType(finLexNode::FIN_LN_TYPE_OPERATOR);
+        meshedlex.setType(finLexNode::TP_OPERATOR);
         meshedlex.setOperator(finLexNode::FIN_LN_OPTYPE_FUNCTION);
 
         finSyntaxNode *meshedtk = new finSyntaxNode();
@@ -1048,7 +1048,7 @@ finErrorCode finSyntaxReader::meshRoundBracket()
 
     finLexNode *prevlex = prevtk->getCommandLexNode();
     if ( prevtk->getType() == finSyntaxNode::FIN_SN_TYPE_SINGLE &&
-         prevlex->getType() == finLexNode::FIN_LN_TYPE_KEYWORD ) {
+         prevlex->getType() == finLexNode::TP_KEYWORD ) {
 
         // Process B' <- if(E) , B' <- elif(E) , and L' <- while(E)
         if ( QString::compare(prevlex->getString(), QString("if")) == 0 ||
@@ -1109,7 +1109,7 @@ finErrorCode finSyntaxReader::meshSquareBracket()
         this->_syntaxStack.removeFirst();
 
         finLexNode meshedlex;
-        meshedlex.setType(finLexNode::FIN_LN_TYPE_OPERATOR);
+        meshedlex.setType(finLexNode::TP_OPERATOR);
         meshedlex.setOperator(finLexNode::FIN_LN_OPTYPE_ACCESS);
 
         finSyntaxNode *meshedtk = new finSyntaxNode();

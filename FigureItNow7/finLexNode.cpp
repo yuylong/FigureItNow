@@ -14,7 +14,7 @@
 finLexNode::finLexNode() :
     _string(), _stringValue()
 {
-    this->_type = FIN_LN_TYPE_DUMMY;
+    this->_type = TP_DUMMY;
     memset(this->_u._rawData, 0, sizeof (this->_u));
     this->_row = 0;
     this->_column = 0;
@@ -28,7 +28,7 @@ finLexNode::finLexNode(const finLexNode &src)
 finErrorCode finLexNode::reset()
 {
     this->_string = QString();
-    this->_type = FIN_LN_TYPE_DUMMY;
+    this->_type = TP_DUMMY;
     this->_stringValue = QString();
     memset(this->_u._rawData, 0, sizeof (this->_u));
     this->_row = 0;
@@ -48,11 +48,11 @@ finErrorCode finLexNode::copyNode(const finLexNode *srcnode)
     this->_column = srcnode->getColumn();
 
     switch ( this->_type ) {
-      case finLexNode::FIN_LN_TYPE_DECIMAL:
+      case finLexNode::TP_DECIMAL:
         this->_u._floatValue = srcnode->getFloatValue();
         break;
 
-      case finLexNode::FIN_LN_TYPE_OPERATOR:
+      case finLexNode::TP_OPERATOR:
         this->_u._operator = srcnode->getOperator();
         break;
 
@@ -75,7 +75,7 @@ QString finLexNode::getString() const
 
 double finLexNode::getFloatValue() const
 {
-    if ( this->_type != FIN_LN_TYPE_DECIMAL )
+    if ( this->_type != TP_DECIMAL )
         return 0.0f;
 
     return this->_u._floatValue;
@@ -83,7 +83,7 @@ double finLexNode::getFloatValue() const
 
 finLexOperatorType finLexNode::getOperator() const
 {
-    if ( this->_type != FIN_LN_TYPE_OPERATOR )
+    if ( this->_type != TP_OPERATOR )
         return finLexNode::FIN_LN_OPTYPE_DUMMY;
 
     return this->_u._operator;
@@ -91,7 +91,7 @@ finLexOperatorType finLexNode::getOperator() const
 
 QString finLexNode::getStringValue() const
 {
-    if ( this->_type != FIN_LN_TYPE_STRING )
+    if ( this->_type != TP_STRING )
         return QString();
 
     return this->_stringValue;
@@ -121,7 +121,7 @@ finErrorCode finLexNode::setString(const QString &str)
 
 finErrorCode finLexNode::setFloatValue(double val)
 {
-    if ( this->_type != FIN_LN_TYPE_DECIMAL )
+    if ( this->_type != TP_DECIMAL )
         return finErrorKits::EC_STATE_ERROR;
 
     this->_u._floatValue = val;
@@ -130,7 +130,7 @@ finErrorCode finLexNode::setFloatValue(double val)
 
 finErrorCode finLexNode::setOperator(finLexNodeOperatorType optype)
 {
-    if ( this->_type != FIN_LN_TYPE_OPERATOR )
+    if ( this->_type != TP_OPERATOR )
         return finErrorKits::EC_STATE_ERROR;
 
     this->_u._operator = optype;
@@ -139,7 +139,7 @@ finErrorCode finLexNode::setOperator(finLexNodeOperatorType optype)
 
 finErrorCode finLexNode::setStringValue(const QString &strval)
 {
-    if ( this->_type != FIN_LN_TYPE_STRING )
+    if ( this->_type != TP_STRING )
         return finErrorKits::EC_STATE_ERROR;
 
     this->_stringValue = strval;

@@ -63,7 +63,7 @@ finSyntaxNodeType finSyntaxNode::getType() const
 
 const finLexNode *finSyntaxNode::getCommandLexNode() const
 {
-    if ( this->_cmdLexNode.getType() == finLexNode::FIN_LN_TYPE_DUMMY )
+    if ( this->_cmdLexNode.getType() == finLexNode::TP_DUMMY )
         return NULL;
     else
         return &this->_cmdLexNode;
@@ -71,7 +71,7 @@ const finLexNode *finSyntaxNode::getCommandLexNode() const
 
 finLexNode *finSyntaxNode::getCommandLexNode()
 {
-    if ( this->_cmdLexNode.getType() == finLexNode::FIN_LN_TYPE_DUMMY )
+    if ( this->_cmdLexNode.getType() == finLexNode::TP_DUMMY )
         return NULL;
     else
         return &this->_cmdLexNode;
@@ -142,7 +142,7 @@ bool finSyntaxNode::isExpressLevelType(finSyntaxNodeType type)
 
 finErrorCode finSyntaxNode::disposeCommandLexNode()
 {
-    this->_cmdLexNode.setType(finLexNode::FIN_LN_TYPE_DUMMY);
+    this->_cmdLexNode.setType(finLexNode::TP_DUMMY);
     return finErrorKits::EC_SUCCESS;
 }
 

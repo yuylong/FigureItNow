@@ -17,16 +17,16 @@
 class finLexNode
 {
 public:
-    enum finLexNodeType
+    enum Type
     {
-        FIN_LN_TYPE_DUMMY = 0,
-        FIN_LN_TYPE_DECIMAL,
-        FIN_LN_TYPE_STRING,
-        FIN_LN_TYPE_OPERATOR,
-        FIN_LN_TYPE_NOTE,
-        FIN_LN_TYPE_VARIABLE,
-        FIN_LN_TYPE_KEYWORD,
-        FIN_LN_TYPE_MAX
+        TP_DUMMY = 0,
+        TP_DECIMAL,
+        TP_STRING,
+        TP_OPERATOR,
+        TP_NOTE,
+        TP_VARIABLE,
+        TP_KEYWORD,
+        TP_MAX
     };
 
     enum finLexNodeOperatorType
@@ -75,7 +75,7 @@ public:
     };
 
 private:
-    finLexNodeType _type;
+    Type _type;
     QString _string;
 
     QString _stringValue;
@@ -96,7 +96,7 @@ public:
     finErrorCode reset();
     finErrorCode copyNode(const finLexNode *srcnode);
 
-    finLexNodeType getType() const;
+    Type getType() const;
     QString getString() const;
     double getFloatValue() const;
     finLexNodeOperatorType getOperator() const;
@@ -104,7 +104,7 @@ public:
     unsigned int getRow() const;
     unsigned int getColumn() const;
 
-    finErrorCode setType(finLexNodeType type);
+    finErrorCode setType(Type type);
     finErrorCode setString(const QString &str);
     finErrorCode setFloatValue(double val);
     finErrorCode setOperator(finLexNodeOperatorType optype);
@@ -113,7 +113,7 @@ public:
     finErrorCode setColumn(unsigned int column);
 };
 
-typedef enum finLexNode::finLexNodeType finLexNodeType;
+typedef enum finLexNode::Type finLexNodeType;
 typedef enum finLexNode::finLexNodeOperatorType finLexOperatorType;
 
 #endif // FINLEXNODE_H
