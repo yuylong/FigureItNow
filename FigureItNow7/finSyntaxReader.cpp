@@ -161,11 +161,11 @@ finErrorCode finSyntaxReader::processInstanceToken(finLexNode *lexnode)
       case finLexNode::TP_VARIABLE:
       case finLexNode::TP_DECIMAL:
       case finLexNode::TP_STRING:
-        tokentype = finSyntaxNode::FIN_SN_TYPE_EXPRESS;
+        tokentype = finSyntaxNode::TP_EXPRESS;
         break;
 
       default:
-        tokentype = finSyntaxNode::FIN_SN_TYPE_SINGLE;
+        tokentype = finSyntaxNode::TP_SINGLE;
         break;
     }
 
@@ -366,7 +366,7 @@ finErrorCode finSyntaxReader::processArithOperator(finLexNode *lexnode)
         prevtoken = this->_syntaxStack.at(0);
 
     bool prev_is_express = false;
-    if ( prevtoken != NULL && prevtoken->getType() == finSyntaxNode::FIN_SN_TYPE_EXPRESS )
+    if ( prevtoken != NULL && prevtoken->getType() == finSyntaxNode::TP_EXPRESS )
         prev_is_express = true;
 
     if ( bfparamcnt > 0 && !prev_is_express ) {
@@ -382,7 +382,7 @@ finErrorCode finSyntaxReader::processArithOperator(finLexNode *lexnode)
         finLexNode *prevop = NULL;
         if ( this->_syntaxStack.count() > bfparamcnt ) {
             finSyntaxNode *preopsn = this->_syntaxStack.at(bfparamcnt);
-            if ( preopsn->getType() == finSyntaxNode::FIN_SN_TYPE_SINGLE ) {
+            if ( preopsn->getType() == finSyntaxNode::TP_SINGLE ) {
                 prevop = preopsn->getCommandLexNode();
                 if ( prevop->getType() != finLexNode::TP_OPERATOR )
                     prevop = NULL;
@@ -400,7 +400,7 @@ finErrorCode finSyntaxReader::processArithOperator(finLexNode *lexnode)
     }
 
     finSyntaxNode *optoken = new finSyntaxNode();
-    optoken->setType(finSyntaxNode::FIN_SN_TYPE_SINGLE);
+    optoken->setType(finSyntaxNode::TP_SINGLE);
     optoken->setCommandLexNode(lexnode);
     this->_syntaxStack.prepend(optoken);
 
@@ -477,7 +477,7 @@ bool finSyntaxReader::isCorrespnBracket(finLexNode *lexnode1, finLexNode *lexnod
 
 finErrorCode finSyntaxReader::processLeftBracket(finLexNode *lexnode)
 {
-    return this->pushSingleLexNode(lexnode, finSyntaxNode::FIN_SN_TYPE_SINGLE);
+    return this->pushSingleLexNode(lexnode, finSyntaxNode::TP_SINGLE);
 }
 
 finErrorCode finSyntaxReader::processRightBracket(finLexNode *lexnode)
@@ -495,7 +495,7 @@ finErrorCode finSyntaxReader::processRightBracket(finLexNode *lexnode)
     if ( meshednode == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    meshednode->setType(finSyntaxNode::FIN_SN_TYPE_EXPRESS);
+    meshednode->setType(finSyntaxNode::TP_EXPRESS);
 
     bool foundcosbrk = false;
     while ( this->_syntaxStack.count() > 0) {
@@ -503,7 +503,7 @@ finErrorCode finSyntaxReader::processRightBracket(finLexNode *lexnode)
         finLexNode *curlex = curnode->getCommandLexNode();
         this->_syntaxStack.removeFirst();
 
-        if ( curnode->getType() == finSyntaxNode::FIN_SN_TYPE_SINGLE && isLeftBracket(curlex) ) {
+        if ( curnode->getType() == finSyntaxNode::TP_SINGLE && isLeftBracket(curlex) ) {
             if ( isCorrespnBracket(curlex, lexnode) ) {
                 meshednode->setCommandLexNode(curlex);
                 delete curnode;
@@ -578,12 +578,12 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
         synnode = new finSyntaxNode();
         if ( synnode == NULL )
             return finErrorKits::EC_OUT_OF_MEMORY;
-        synnode->setType(finSyntaxNode::FIN_SN_TYPE_STATEMENT);
+        synnode->setType(finSyntaxNode::TP_STATEMENT);
         synnode->setCommandLexNode(lexnode);
 
         if ( this->_syntaxStack.count() > 0 )
             presynnode = this->_syntaxStack.at(0);
-        if ( presynnode != NULL && presynnode->getType() == finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+        if ( presynnode != NULL && presynnode->getType() == finSyntaxNode::TP_EXPRESS ) {
             synnode->appendSubSyntaxNode(presynnode);
             this->_syntaxStack.removeFirst();
         }
@@ -599,12 +599,12 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
         if ( this->_syntaxStack.count() > 0 )
             presynnode = this->_syntaxStack.at(0);
 
-        if ( presynnode == NULL || presynnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS )
+        if ( presynnode == NULL || presynnode->getType() != finSyntaxNode::TP_EXPRESS )
             return finErrorKits::EC_READ_ERROR;
         if ( presynnode->getCommandLexNode()->getType() != finLexNode::TP_VARIABLE )
             return finErrorKits::EC_READ_ERROR;
 
-        presynnode->setType(finSyntaxNode::FIN_SN_TYPE_LABEL);
+        presynnode->setType(finSyntaxNode::TP_LABEL);
         break;
 
       default:
@@ -612,7 +612,7 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
         if ( synnode == NULL )
             return finErrorKits::EC_OUT_OF_MEMORY;
 
-        synnode->setType(finSyntaxNode::FIN_SN_TYPE_SINGLE);
+        synnode->setType(finSyntaxNode::TP_SINGLE);
         synnode->setCommandLexNode(lexnode);
         this->_syntaxStack.prepend(synnode);
         break;
@@ -653,11 +653,11 @@ finErrorCode finSyntaxReader::meshArithExpress()
     finSyntaxNode *oprand1 = NULL, *oprand2 = NULL;
 
     int afpcnt1, afpcnt2;
-    if ( token0->getType() == finSyntaxNode::FIN_SN_TYPE_SINGLE ) {
+    if ( token0->getType() == finSyntaxNode::TP_SINGLE ) {
         afpcnt1 = 0;
         optoken = token0;
-    } else if ( token0->getType() == finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
-        if ( token1->getType() != finSyntaxNode::FIN_SN_TYPE_SINGLE )
+    } else if ( token0->getType() == finSyntaxNode::TP_EXPRESS ) {
+        if ( token1->getType() != finSyntaxNode::TP_SINGLE )
             return finErrorKits::EC_READ_ERROR;
         afpcnt1 = 1;
         optoken = token1;
@@ -680,7 +680,7 @@ finErrorCode finSyntaxReader::meshArithExpress()
 
     if ( bfpcnt > 0 ) {
         oprand1 = this->_syntaxStack.at(afpcnt1 + 1);
-        if ( oprand1->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS )
+        if ( oprand1->getType() != finSyntaxNode::TP_EXPRESS )
             return finErrorKits::EC_READ_ERROR;
     }
 
@@ -689,7 +689,7 @@ finErrorCode finSyntaxReader::meshArithExpress()
     if ( bfpcnt > 0 && afpcnt1 > 0 )
         this->_syntaxStack.removeFirst();
 
-    optoken->setType(finSyntaxNode::FIN_SN_TYPE_EXPRESS);
+    optoken->setType(finSyntaxNode::TP_EXPRESS);
     //optoken->setCommandLexNode(oplex);
     if ( bfpcnt > 0 && oprand1 != NULL )
         optoken->appendSubSyntaxNode(oprand1);
@@ -715,7 +715,7 @@ finSyntaxNode *finSyntaxReader::createDummyExpress()
     if ( dmyexpsyn == NULL )
         return NULL;
 
-    dmyexpsyn->setType(finSyntaxNode::FIN_SN_TYPE_EXPRESS);
+    dmyexpsyn->setType(finSyntaxNode::TP_EXPRESS);
     dmyexpsyn->setCommandLexNode(&dmyexplex);
     return dmyexpsyn;
 }
@@ -726,10 +726,10 @@ finErrorCode finSyntaxReader::meshAllCommas()
     for ( int i = 0; i < this->_syntaxStack.count(); i++ ) {
         finSyntaxNode *cursyn = this->_syntaxStack.at(i);
         finLexNode *curlex = cursyn->getCommandLexNode();
-        if ( cursyn->getType() == finSyntaxNode::FIN_SN_TYPE_EXPRESS )
+        if ( cursyn->getType() == finSyntaxNode::TP_EXPRESS )
             continue;
 
-        if ( cursyn->getType() == finSyntaxNode::FIN_SN_TYPE_SINGLE &&
+        if ( cursyn->getType() == finSyntaxNode::TP_SINGLE &&
              curlex->getType() == finLexNode::TP_OPERATOR &&
              curlex->getOperator() == finLexNode::OP_COMMA ) {
             hascomma = true;
@@ -751,7 +751,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
     finSyntaxNode *synnode = new finSyntaxNode();
     if ( synnode == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
-    synnode->setType(finSyntaxNode::FIN_SN_TYPE_EXPRESS);
+    synnode->setType(finSyntaxNode::TP_EXPRESS);
     synnode->setCommandLexNode(&lexnode);
 
     bool hasinst = false;
@@ -759,14 +759,14 @@ finErrorCode finSyntaxReader::meshAllCommas()
         finSyntaxNode *cursyn = this->_syntaxStack.first();
         finLexNode *curlex = cursyn->getCommandLexNode();
 
-        if ( cursyn->getType() ==  finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+        if ( cursyn->getType() ==  finSyntaxNode::TP_EXPRESS ) {
             if ( hasinst )
                 return finErrorKits::EC_READ_ERROR;
 
             this->_syntaxStack.removeFirst();
             synnode->prependSubSyntaxNode(cursyn);
             hasinst = true;
-        } else if ( cursyn->getType() == finSyntaxNode::FIN_SN_TYPE_SINGLE &&
+        } else if ( cursyn->getType() == finSyntaxNode::TP_SINGLE &&
                     curlex->getType() == finLexNode::TP_OPERATOR &&
                     curlex->getOperator() == finLexNode::OP_COMMA ) {
             if ( !hasinst ) {
@@ -802,7 +802,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
 
     finSyntaxNode *prevtk = this->_syntaxStack.at(1);
     finLexNode *prevlex = prevtk->getCommandLexNode();
-    if ( prevtk->getType() != finSyntaxNode::FIN_SN_TYPE_SINGLE ||
+    if ( prevtk->getType() != finSyntaxNode::TP_SINGLE ||
          prevlex->getType() != finLexNode::TP_KEYWORD )
         return finErrorKits::EC_SUCCESS;
 
@@ -818,7 +818,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
 
             prevtk->appendSubSyntaxNode(stttk);
             this->_syntaxStack.removeFirst();
-            prevtk->setType(finSyntaxNode::FIN_SN_TYPE_BRANCH);
+            prevtk->setType(finSyntaxNode::TP_BRANCH);
             return finErrorKits::EC_SUCCESS;
         }
 
@@ -847,7 +847,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
                 return finErrorKits::EC_READ_ERROR;
 
             prevtk = this->_syntaxStack.first();
-            if ( prevtk->getType() != finSyntaxNode::FIN_SN_TYPE_BRANCH )
+            if ( prevtk->getType() != finSyntaxNode::TP_BRANCH )
                 return finErrorKits::EC_READ_ERROR;
             if ( prevtk->getSubListCount() % 2 != 0 )
                 return finErrorKits::EC_READ_ERROR;
@@ -866,7 +866,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
 
             prevtk->appendSubSyntaxNode(stttk);
             this->_syntaxStack.removeFirst();
-            prevtk->setType(finSyntaxNode::FIN_SN_TYPE_LOOP);
+            prevtk->setType(finSyntaxNode::TP_LOOP);
             return finErrorKits::EC_SUCCESS;
         }
     }
@@ -884,13 +884,13 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
             finLexNode *sttsublex = sttsubtk->getCommandLexNode();
             prevtk->appendSubSyntaxNode(sttsubtk);
 
-            if ( sttsubtk->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+            if ( sttsubtk->getType() != finSyntaxNode::TP_EXPRESS ||
                  sttsublex->getType() != finLexNode::TP_VARIABLE )
                 return finErrorKits::EC_READ_ERROR;
 
             this->_syntaxStack.removeFirst();
             delete stttk;
-            prevtk->setType(finSyntaxNode::FIN_SN_TYPE_JUMP);
+            prevtk->setType(finSyntaxNode::TP_JUMP);
             return finErrorKits::EC_SUCCESS;
         }
 
@@ -905,7 +905,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
 
             this->_syntaxStack.removeFirst();
             delete stttk;
-            prevtk->setType(finSyntaxNode::FIN_SN_TYPE_JUMP);
+            prevtk->setType(finSyntaxNode::TP_JUMP);
             return finErrorKits::EC_SUCCESS;
         }
 
@@ -919,7 +919,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
 
             this->_syntaxStack.removeFirst();
             delete stttk;
-            prevtk->setType(finSyntaxNode::FIN_SN_TYPE_JUMP);
+            prevtk->setType(finSyntaxNode::TP_JUMP);
             return finErrorKits::EC_SUCCESS;
         }
 
@@ -934,7 +934,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
 
             this->_syntaxStack.removeFirst();
             delete stttk;
-            prevtk->setType(finSyntaxNode::FIN_SN_TYPE_DECLARE);
+            prevtk->setType(finSyntaxNode::TP_DECLARE);
             return finErrorKits::EC_SUCCESS;
         }
     }
@@ -946,7 +946,7 @@ finErrorCode finSyntaxReader::recogFlowerBracketType()
 {
     finSyntaxNode *flwbtk = this->_syntaxStack.at(0);
     if ( flwbtk->getSubListCount() < 1 ) {
-        flwbtk->setType(finSyntaxNode::FIN_SN_TYPE_STATEMENT);
+        flwbtk->setType(finSyntaxNode::TP_STATEMENT);
         return finErrorKits::EC_SUCCESS;
     }
 
@@ -968,9 +968,9 @@ finErrorCode finSyntaxReader::recogFlowerBracketType()
         }
     }
     if ( isstt )
-        flwbtk->setType(finSyntaxNode::FIN_SN_TYPE_STATEMENT);
+        flwbtk->setType(finSyntaxNode::TP_STATEMENT);
     else
-        flwbtk->setType(finSyntaxNode::FIN_SN_TYPE_EXPRESS);
+        flwbtk->setType(finSyntaxNode::TP_EXPRESS);
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -987,22 +987,22 @@ finErrorCode finSyntaxReader::meshFlowerBracket()
     finSyntaxNode *curtk = this->_syntaxStack.at(0);
     finSyntaxNode *prevtk = this->_syntaxStack.at(1);
     finLexNode *prevlex = prevtk->getCommandLexNode();
-    if ( prevtk->getType() == finSyntaxNode::FIN_SN_TYPE_EXPRESS &&
+    if ( prevtk->getType() == finSyntaxNode::TP_EXPRESS &&
          prevlex != NULL &&
          prevlex->getType() == finLexNode::TP_OPERATOR &&
          prevlex->getOperator() == finLexNode::OP_FUNCTION ) {
 
-        if ( curtk->getType() != finSyntaxNode::FIN_SN_TYPE_STATEMENT )
+        if ( curtk->getType() != finSyntaxNode::TP_STATEMENT )
             return finErrorKits::EC_READ_ERROR;
 
         this->_syntaxStack.removeFirst();
-        prevtk->setType(finSyntaxNode::FIN_SN_TYPE_FUNCTION);
+        prevtk->setType(finSyntaxNode::TP_FUNCTION);
         prevtk->appendSubSyntaxNode(curtk);
 
         return finErrorKits::EC_SUCCESS;
     }
 
-    if ( curtk->getType() == finSyntaxNode::FIN_SN_TYPE_STATEMENT ) {
+    if ( curtk->getType() == finSyntaxNode::TP_STATEMENT ) {
         errcode = this->meshStatementWithKeywords();
         if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
@@ -1019,12 +1019,12 @@ finErrorCode finSyntaxReader::meshRoundBracket()
     finSyntaxNode *prevtk = this->_syntaxStack.at(1);
 
     // Process E <- E(E)
-    if ( prevtk->getType() == finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+    if ( prevtk->getType() == finSyntaxNode::TP_EXPRESS ) {
         finSyntaxNode *brcktk = this->_syntaxStack.at(0);
         int brcktk_subcnt = brcktk->getSubListCount();
         if ( brcktk_subcnt > 1 )
             return finErrorKits::EC_READ_ERROR;
-        if ( brcktk_subcnt > 0 && brcktk->getSubSyntaxNode(0)->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS )
+        if ( brcktk_subcnt > 0 && brcktk->getSubSyntaxNode(0)->getType() != finSyntaxNode::TP_EXPRESS )
             return finErrorKits::EC_READ_ERROR;
 
         this->_syntaxStack.removeFirst();
@@ -1037,7 +1037,7 @@ finErrorCode finSyntaxReader::meshRoundBracket()
         finSyntaxNode *meshedtk = new finSyntaxNode();
         if ( meshedtk == NULL )
             return finErrorKits::EC_OUT_OF_MEMORY;
-        meshedtk->setType(finSyntaxNode::FIN_SN_TYPE_EXPRESS);
+        meshedtk->setType(finSyntaxNode::TP_EXPRESS);
         meshedtk->setCommandLexNode(&meshedlex);
         meshedtk->appendSubSyntaxNode(prevtk);
         meshedtk->appendSubSyntaxNode(brcktk);
@@ -1047,7 +1047,7 @@ finErrorCode finSyntaxReader::meshRoundBracket()
     }
 
     finLexNode *prevlex = prevtk->getCommandLexNode();
-    if ( prevtk->getType() == finSyntaxNode::FIN_SN_TYPE_SINGLE &&
+    if ( prevtk->getType() == finSyntaxNode::TP_SINGLE &&
          prevlex->getType() == finLexNode::TP_KEYWORD ) {
 
         // Process B' <- if(E) , B' <- elif(E) , and L' <- while(E)
@@ -1057,7 +1057,7 @@ finErrorCode finSyntaxReader::meshRoundBracket()
             finSyntaxNode *brcktk = this->_syntaxStack.at(0);
             if ( brcktk->getSubListCount() != 1 )
                 return finErrorKits::EC_READ_ERROR;
-            if ( brcktk->getSubSyntaxNode(0)->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS )
+            if ( brcktk->getSubSyntaxNode(0)->getType() != finSyntaxNode::TP_EXPRESS )
                 return finErrorKits::EC_READ_ERROR;
 
             this->_syntaxStack.removeFirst();
@@ -1075,11 +1075,11 @@ finErrorCode finSyntaxReader::meshRoundBracket()
                               sub1type = brcktk->getSubSyntaxNode(1)->getType(),
                               sub2type = brcktk->getSubSyntaxNode(2)->getType();
             if ( !(finSyntaxNode::isStatementLevelType(sub0type) &&
-                   sub0type != finSyntaxNode::FIN_SN_TYPE_LABEL && sub0type != finSyntaxNode::FIN_SN_TYPE_JUMP) )
+                   sub0type != finSyntaxNode::TP_LABEL && sub0type != finSyntaxNode::TP_JUMP) )
                 return finErrorKits::EC_READ_ERROR;
-            if ( sub1type != finSyntaxNode::FIN_SN_TYPE_STATEMENT )
+            if ( sub1type != finSyntaxNode::TP_STATEMENT )
                 return finErrorKits::EC_READ_ERROR;
-            if ( sub2type != finSyntaxNode::FIN_SN_TYPE_EXPRESS )
+            if ( sub2type != finSyntaxNode::TP_EXPRESS )
                 return finErrorKits::EC_READ_ERROR;
 
             this->_syntaxStack.removeFirst();
@@ -1098,11 +1098,11 @@ finErrorCode finSyntaxReader::meshSquareBracket()
 
     // Process E <- E[E]
     finSyntaxNode *prevtk = this->_syntaxStack.at(1);
-    if ( prevtk->getType() == finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+    if ( prevtk->getType() == finSyntaxNode::TP_EXPRESS ) {
         finSyntaxNode *brcktk = this->_syntaxStack.at(0);
         if ( brcktk->getSubListCount() != 1 )
             return finErrorKits::EC_READ_ERROR;
-        if ( brcktk->getSubSyntaxNode(0)->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS )
+        if ( brcktk->getSubSyntaxNode(0)->getType() != finSyntaxNode::TP_EXPRESS )
             return finErrorKits::EC_READ_ERROR;
 
         this->_syntaxStack.removeFirst();
@@ -1115,7 +1115,7 @@ finErrorCode finSyntaxReader::meshSquareBracket()
         finSyntaxNode *meshedtk = new finSyntaxNode();
         if ( meshedtk == NULL )
             return finErrorKits::EC_OUT_OF_MEMORY;
-        meshedtk->setType(finSyntaxNode::FIN_SN_TYPE_EXPRESS);
+        meshedtk->setType(finSyntaxNode::TP_EXPRESS);
         meshedtk->setCommandLexNode(&meshedlex);
         meshedtk->appendSubSyntaxNode(prevtk);
         meshedtk->appendSubSyntaxNode(brcktk);

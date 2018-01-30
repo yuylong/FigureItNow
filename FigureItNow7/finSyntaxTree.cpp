@@ -14,7 +14,7 @@
 finSyntaxTree::finSyntaxTree()
     : _rootNode(), _scriptCodes(), _errList()
 {
-    this->_rootNode.setType(finSyntaxNode::FIN_SN_TYPE_PROGRAM);
+    this->_rootNode.setType(finSyntaxNode::TP_PROGRAM);
 }
 
 finSyntaxTree::~finSyntaxTree()
@@ -70,7 +70,7 @@ finErrorCode finSyntaxTree::setRootNode(const finSyntaxNode *rtnode)
     if ( rtnode == NULL)
         return finErrorKits::EC_NULL_POINTER;
 
-    if ( rtnode->getType() != finSyntaxNode::FIN_SN_TYPE_PROGRAM )
+    if ( rtnode->getType() != finSyntaxNode::TP_PROGRAM )
         return finErrorKits::EC_INVALID_PARAM;
 
     rtnode->dump();
@@ -192,7 +192,7 @@ finErrorCode finSyntaxTree::clearSyntaxErrorList()
 void finSyntaxTree::disposeAll()
 {
     this->_rootNode.disposeAll();
-    this->_rootNode.setType(finSyntaxNode::FIN_SN_TYPE_PROGRAM);
+    this->_rootNode.setType(finSyntaxNode::TP_PROGRAM);
     this->_scriptCodes.clear();
     this->_errList.clear();
 }

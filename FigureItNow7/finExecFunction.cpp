@@ -119,7 +119,7 @@ finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, f
     finErrorCode errcode;
     finLexNode *lexnode = argnode->getCommandLexNode();
 
-    if ( argnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+    if ( argnode->getType() != finSyntaxNode::TP_EXPRESS ) {
         machine->appendExecutionError(lexnode, QString("Unrecognized function arguments."));
         return finErrorKits::EC_READ_ERROR;
     }
@@ -191,7 +191,7 @@ finExecFunction::processArgsInSubEnv(finSyntaxNode *argnode, finExecEnvironment 
         return finErrorKits::EC_SUCCESS;
 
     finLexNode *lexnode = argnode->getCommandLexNode();
-    if ( argnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+    if ( argnode->getType() != finSyntaxNode::TP_EXPRESS ) {
         machine->appendExecutionError(lexnode, QString("Unrecognized function arguments."));
         return finErrorKits::EC_READ_ERROR;
     }

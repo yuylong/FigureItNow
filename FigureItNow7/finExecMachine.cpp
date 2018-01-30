@@ -191,43 +191,43 @@ finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, 
 
     finSyntaxNodeType syntype = synnode->getType();
     switch ( syntype ) {
-      case finSyntaxNode::FIN_SN_TYPE_SINGLE:
+      case finSyntaxNode::TP_SINGLE:
         return this->instExecSingle(synnode, env, flowctl);
         break;
 
-      case finSyntaxNode::FIN_SN_TYPE_DECLARE:
+      case finSyntaxNode::TP_DECLARE:
         return this->instExecDeclare(synnode, env, flowctl);
         break;
 
-      case finSyntaxNode::FIN_SN_TYPE_STATEMENT:
+      case finSyntaxNode::TP_STATEMENT:
         return this->instExecStatement(synnode, env, flowctl);
         break;
 
-      case finSyntaxNode::FIN_SN_TYPE_EXPRESS:
+      case finSyntaxNode::TP_EXPRESS:
         return this->instExecExpress(synnode, env, flowctl);
         break;
 
-      case finSyntaxNode::FIN_SN_TYPE_FUNCTION:
+      case finSyntaxNode::TP_FUNCTION:
         return this->instExecFunction(synnode, env, flowctl);
         break;
 
-      case finSyntaxNode::FIN_SN_TYPE_BRANCH:
+      case finSyntaxNode::TP_BRANCH:
         return this->instExecBranch(synnode, env, flowctl);
         break;
 
-      case finSyntaxNode::FIN_SN_TYPE_LOOP:
+      case finSyntaxNode::TP_LOOP:
         return this->instExecLoop(synnode, env, flowctl);
         break;
 
-      case finSyntaxNode::FIN_SN_TYPE_LABEL:
+      case finSyntaxNode::TP_LABEL:
         return this->instExecLabel(synnode, env, flowctl);
         break;
 
-      case finSyntaxNode::FIN_SN_TYPE_JUMP:
+      case finSyntaxNode::TP_JUMP:
         return this->instExecJump(synnode, env, flowctl);
         break;
 
-      case finSyntaxNode::FIN_SN_TYPE_PROGRAM:
+      case finSyntaxNode::TP_PROGRAM:
         return this->instExecProgram(synnode, env, flowctl);
         break;
 
@@ -307,7 +307,7 @@ finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironme
     finSyntaxNode *varname_synnode = synnode->getSubSyntaxNode(0);
     finLexNode *varname_lexnode = varname_synnode->getCommandLexNode();
 
-    if ( varname_synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+    if ( varname_synnode->getType() != finSyntaxNode::TP_EXPRESS ||
          varname_lexnode->getType() != finLexNode::TP_VARIABLE ) {
         this->appendExecutionError(varname_lexnode, QString("Variable name is not recognized."));
         return finErrorKits::EC_READ_ERROR;
@@ -376,7 +376,7 @@ finExecMachine::instExecDeclareExpr(finSyntaxNode *synnode, finExecEnvironment *
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
 
-    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+    if ( synnode->getType() != finSyntaxNode::TP_EXPRESS ) {
         this->appendExecutionError(lexnode, QString("Declaration on invalid syntax symbol."));
         return finErrorKits::EC_READ_ERROR;
     }
@@ -552,7 +552,7 @@ finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env
     finSyntaxNode *fnsynn = synnode->getSubSyntaxNode(0);
     finLexNode *fnlexn = fnsynn->getCommandLexNode();
 
-    if ( fnsynn->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+    if ( fnsynn->getType() != finSyntaxNode::TP_EXPRESS ||
          fnlexn->getType() != finLexNode::TP_VARIABLE ) {
         this->appendExecutionError(fnlexn, QString("Invalid function name."));
         return finErrorKits::EC_READ_ERROR;
@@ -655,7 +655,7 @@ finExecMachine::instExecFuncName(finSyntaxNode *synnode, finExecEnvironment *env
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
 
-    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+    if ( synnode->getType() != finSyntaxNode::TP_EXPRESS ||
          lexnode->getType() != finLexNode::TP_VARIABLE ) {
         this->appendExecutionError(lexnode, QString("Function name cannot be recognized."));
         return finErrorKits::EC_READ_ERROR;
@@ -676,7 +676,7 @@ finExecMachine::instExecFuncArg(finSyntaxNode *synnode, finExecFunction *func)
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
 
-    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+    if ( synnode->getType() != finSyntaxNode::TP_EXPRESS ||
          lexnode->getType() != finLexNode::TP_VARIABLE ) {
         this->appendExecutionError(lexnode, QString("Function name cannot be recognized."));
         return finErrorKits::EC_READ_ERROR;
@@ -697,7 +697,7 @@ finExecMachine::instExecFuncArgs(finSyntaxNode *synnode, finExecFunction *func)
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
 
-    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+    if ( synnode->getType() != finSyntaxNode::TP_EXPRESS ||
          lexnode->getType() != finLexNode::TP_OPERATOR ||
          lexnode->getOperator() != finLexNode::OP_L_RND_BRCKT ) {
         this->appendExecutionError(lexnode, QString("Function arguments cannot be recognized."));
@@ -710,7 +710,7 @@ finExecMachine::instExecFuncArgs(finSyntaxNode *synnode, finExecFunction *func)
     finSyntaxNode *insynnode = synnode->getSubSyntaxNode(0);
     finLexNode *inlexnode = insynnode->getCommandLexNode();
 
-    if ( insynnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+    if ( insynnode->getType() != finSyntaxNode::TP_EXPRESS ) {
         this->appendExecutionError(inlexnode, QString("Function arguments cannot be recognized."));
         return finErrorKits::EC_READ_ERROR;
     }
@@ -739,7 +739,7 @@ finExecMachine::instExecFuncBody(finSyntaxNode *synnode, finExecFunction *func)
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
 
-    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_STATEMENT ) {
+    if ( synnode->getType() != finSyntaxNode::TP_STATEMENT ) {
         this->appendExecutionError(lexnode, QString("Function body cannot be recognized."));
         return finErrorKits::EC_READ_ERROR;
     }
@@ -807,7 +807,7 @@ finErrorCode finExecMachine::instExecBrCond(finSyntaxNode *synnode, finExecEnvir
         return this->instExecBrCondVoid(retblval, flowctl);
 
     finLexNode *lexnode = synnode->getCommandLexNode();
-    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+    if ( synnode->getType() != finSyntaxNode::TP_EXPRESS ) {
         this->appendExecutionError(lexnode, QString("Cannot recognize the branch condition."));
         return finErrorKits::EC_READ_ERROR;
     }
@@ -886,7 +886,7 @@ finErrorCode finExecMachine::instExecLoopCond(finSyntaxNode *synnode, finExecEnv
         return this->instExecLoopCondVoid(retblval, flowctl);
 
     finLexNode *lexnode = synnode->getCommandLexNode();
-    if ( synnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+    if ( synnode->getType() != finSyntaxNode::TP_EXPRESS ) {
         this->appendExecutionError(lexnode, QString("Cannot recognize the branch condition."));
         return finErrorKits::EC_READ_ERROR;
     }
@@ -975,7 +975,7 @@ finErrorCode finExecMachine::instExecLoopForHead(finSyntaxNode *synnode,
 
     finSyntaxNode *headsn = synnode->getSubSyntaxNode(0);
     finLexNode *headlex = headsn->getCommandLexNode();
-    if ( headsn->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS || headsn->getSubListCount() < 3 ) {
+    if ( headsn->getType() != finSyntaxNode::TP_EXPRESS || headsn->getSubListCount() < 3 ) {
         this->appendExecutionError(headlex, QString("Unrecognized loop head."));
         return finErrorKits::EC_READ_ERROR;
     }
@@ -998,7 +998,7 @@ finErrorCode finExecMachine::instExecLoopForHead(finSyntaxNode *synnode,
 
     *condhead = headsn->getSubSyntaxNode(1);
     finLexNode *condheadlex = (*condhead)->getCommandLexNode();
-    if ( (*condhead)->getType() != finSyntaxNode::FIN_SN_TYPE_STATEMENT ||
+    if ( (*condhead)->getType() != finSyntaxNode::TP_STATEMENT ||
          condheadlex->getType() != finLexNode::TP_OPERATOR ||
          condheadlex->getOperator() != finLexNode::OP_SPLIT ) {
         this->appendExecutionError(condheadlex, QString("Unrecognized loop condition head."));
@@ -1141,7 +1141,7 @@ finErrorCode finExecMachine::instExecJumpGoto(finSyntaxNode *synnode, finExecFlo
 
     finSyntaxNode *lblsynnode = synnode->getSubSyntaxNode(0);
     finLexNode *lbllexnode = lblsynnode->getCommandLexNode();
-    if ( lblsynnode->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ||
+    if ( lblsynnode->getType() != finSyntaxNode::TP_EXPRESS ||
          lbllexnode->getType() != finLexNode::TP_VARIABLE) {
         this->appendExecutionError(lbllexnode, QString("Jumping target cannot be recognized."));
         return finErrorKits::EC_READ_ERROR;
@@ -1186,7 +1186,7 @@ finExecMachine::instExecJumpRet(finSyntaxNode *synnode, finExecEnvironment *env,
 
     finSyntaxNode *basesn = synnode->getSubSyntaxNode(0);
     finLexNode *baseln = basesn->getCommandLexNode();
-    if ( basesn->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+    if ( basesn->getType() != finSyntaxNode::TP_EXPRESS ) {
         this->appendExecutionError(baseln, QString("Return value cannot be calculated."));
         return finErrorKits::EC_READ_ERROR;
     }
@@ -1243,7 +1243,7 @@ finExecMachine::instExecJumpExit(finSyntaxNode *synnode, finExecEnvironment *env
     } else {
         finSyntaxNode *basesn = synnode->getSubSyntaxNode(0);
         finLexNode *baseln = basesn->getCommandLexNode();
-        if ( basesn->getType() != finSyntaxNode::FIN_SN_TYPE_EXPRESS ) {
+        if ( basesn->getType() != finSyntaxNode::TP_EXPRESS ) {
             this->appendExecutionError(baseln, QString("Exit value cannot be calculated."));
             return finErrorKits::EC_READ_ERROR;
         }

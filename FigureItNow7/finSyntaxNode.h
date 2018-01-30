@@ -26,23 +26,23 @@
 class finSyntaxNode
 {
 public:
-    enum finSyntaxNodeType {
-        FIN_SN_TYPE_DUMMY = 0,
-        FIN_SN_TYPE_SINGLE,
-        FIN_SN_TYPE_DECLARE,
-        FIN_SN_TYPE_STATEMENT,
-        FIN_SN_TYPE_EXPRESS,
-        FIN_SN_TYPE_FUNCTION,
-        FIN_SN_TYPE_BRANCH,
-        FIN_SN_TYPE_LOOP,
-        FIN_SN_TYPE_LABEL,
-        FIN_SN_TYPE_JUMP,
-        FIN_SN_TYPE_PROGRAM,
-        FIN_SN_TYPE_MAX
+    enum Type {
+        TP_DUMMY = 0,
+        TP_SINGLE,
+        TP_DECLARE,
+        TP_STATEMENT,
+        TP_EXPRESS,
+        TP_FUNCTION,
+        TP_BRANCH,
+        TP_LOOP,
+        TP_LABEL,
+        TP_JUMP,
+        TP_PROGRAM,
+        TP_MAX
     };
 
 protected:
-    finSyntaxNodeType _type;
+    Type _type;
     finLexNode _cmdLexNode;
     QList<finSyntaxNode *> _subSyntaxList;
 
@@ -52,7 +52,7 @@ public:
 
     finErrorCode copyNode(const finSyntaxNode *srcnode);
 
-    finSyntaxNodeType getType() const;
+    Type getType() const;
     const finLexNode *getCommandLexNode() const;
     finLexNode *getCommandLexNode();
     int getSubListCount() const;
@@ -60,7 +60,7 @@ public:
 
     void dump() const;
 
-    finErrorCode setType(finSyntaxNodeType type);
+    finErrorCode setType(Type type);
     finErrorCode setCommandLexNode(const finLexNode *lexnode);
     finErrorCode appendSubSyntaxNode(finSyntaxNode *synnode);
     finErrorCode prependSubSyntaxNode(finSyntaxNode *synnode);
@@ -70,8 +70,8 @@ public:
     finErrorCode disposeSubSyntaxNodes();
     finErrorCode disposeAll();
 
-    static bool isExpressLevelType(finSyntaxNodeType type);
-    static bool isStatementLevelType(finSyntaxNodeType type);
+    static bool isExpressLevelType(Type type);
+    static bool isStatementLevelType(Type type);
 
     int findLabelIdx(const QString &labelname);
 
@@ -80,6 +80,6 @@ private:
 
 };
 
-typedef finSyntaxNode::finSyntaxNodeType finSyntaxNodeType;
+typedef finSyntaxNode::Type finSyntaxNodeType;
 
 #endif // FINSYNTAXNODE_H

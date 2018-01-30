@@ -12,7 +12,7 @@
 finSyntaxNode::finSyntaxNode()
     : _cmdLexNode(), _subSyntaxList()
 {
-    this->_type = FIN_SN_TYPE_DUMMY;
+    this->_type = TP_DUMMY;
 }
 
 finSyntaxNode::~finSyntaxNode()
@@ -94,7 +94,7 @@ finErrorCode finSyntaxNode::setType(finSyntaxNodeType type)
 
     this->_type = type;
 
-    if ( type == FIN_SN_TYPE_DUMMY || type == FIN_SN_TYPE_MAX )
+    if ( type == TP_DUMMY || type == TP_MAX )
         return finErrorKits::EC_NORMAL_WARN;
     else
         return finErrorKits::EC_SUCCESS;
@@ -131,8 +131,8 @@ finSyntaxNode *finSyntaxNode::pickSubSyntaxNode(int idx)
 bool finSyntaxNode::isExpressLevelType(finSyntaxNodeType type)
 {
     switch ( type ) {
-      case FIN_SN_TYPE_EXPRESS:
-      case FIN_SN_TYPE_SINGLE:
+      case TP_EXPRESS:
+      case TP_SINGLE:
         return true;
 
       default:
@@ -177,12 +177,12 @@ finErrorCode finSyntaxNode::disposeAll()
 bool finSyntaxNode::isStatementLevelType(finSyntaxNodeType type)
 {
     switch ( type ) {
-      case FIN_SN_TYPE_DECLARE:
-      case FIN_SN_TYPE_BRANCH:
-      case FIN_SN_TYPE_JUMP:
-      case FIN_SN_TYPE_LABEL:
-      case FIN_SN_TYPE_LOOP:
-      case FIN_SN_TYPE_STATEMENT:
+      case TP_DECLARE:
+      case TP_BRANCH:
+      case TP_JUMP:
+      case TP_LABEL:
+      case TP_LOOP:
+      case TP_STATEMENT:
         return true;
 
       default:
@@ -220,7 +220,7 @@ int finSyntaxNode::findLabelIdx(const QString &labelname)
 {
     for ( int i = 0; i < this->getSubListCount(); i++ ) {
         finSyntaxNode *subnode = this->getSubSyntaxNode(i);
-        if ( subnode->getType() != finSyntaxNode::FIN_SN_TYPE_LABEL )
+        if ( subnode->getType() != finSyntaxNode::TP_LABEL )
             continue;
 
         finLexNode *lexnode = subnode->getCommandLexNode();
