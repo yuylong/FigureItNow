@@ -33,6 +33,10 @@ static finErrorCode _sysfunc_chr_unicode(finExecFunction *self, finExecEnvironme
                                          finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_chr_ascii(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_unicode_chr(finExecFunction *self, finExecEnvironment *env,
+                                         finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_ascii_chr(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
     { QString("str_len"),     QString("str"),                  _sysfunc_str_len     },
@@ -44,7 +48,9 @@ static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
     { QString("str_trim"),    QString("str"),                  _sysfunc_str_trim    },
 
     { QString("chr_unicode"), QString("chr"),                  _sysfunc_chr_unicode },
-    { QString("chr_ascii"),   QString("chr"),                  _sysfunc_chr_ascii },
+    { QString("chr_ascii"),   QString("chr"),                  _sysfunc_chr_ascii   },
+    { QString("unicode_chr"), QString("code"),                 _sysfunc_unicode_chr },
+    { QString("ascii_chr"),   QString("code"),                 _sysfunc_ascii_chr   },
 
     { QString(), QString(), NULL }
 };
@@ -373,6 +379,67 @@ static finErrorCode _sysfunc_chr_ascii(finExecFunction *self, finExecEnvironment
 
     retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(chr.toLatin1());
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_unicode_chr(finExecFunction *self, finExecEnvironment *env,
+                                         finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *codevar, *retvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    codevar = finExecVariable::transLinkTarget(env->findVariable("code"));
+    if ( codevar == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+    if ( codevar->getType() != finExecVariable::TP_NUMERIC )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorKits::EC_OUT_OF_MEMORY;
+
+    ushort code = (ushort)codevar->getNumericValue();
+    QChar chr = QChar(code);
+
+    retvar->setType(finExecVariable::TP_STRING);
+    retvar->setStringValue(QString(chr));
+    retvar->setWriteProtected();
+    retvar->clearLeftValue();
+
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_ascii_chr(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *codevar, *retvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    codevar = finExecVariable::transLinkTarget(env->findVariable("code"));
+    if ( codevar == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+    if ( codevar->getType() != finExecVariable::TP_NUMERIC )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorKits::EC_OUT_OF_MEMORY;
+
+    char chr = (char)codevar->getNumericValue();
+
+    retvar->setType(finExecVariable::TP_STRING);
+    retvar->setStringValue(QString(chr));
     retvar->setWriteProtected();
     retvar->clearLeftValue();
 
