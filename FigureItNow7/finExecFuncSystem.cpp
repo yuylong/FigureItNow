@@ -130,6 +130,7 @@ static finErrorCode _sysfunc_call_stack_count(finExecFunction *self, finExecEnvi
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
+    /* Kick out the current 'call_stack' function from count. */
     int funclevelcnt = env->getTotalBelongFunctionLevelCount() - 1;
     retvar->setType(finExecVariable::TP_NUMERIC);
     retvar->setNumericValue(funclevelcnt);
@@ -156,6 +157,9 @@ static finErrorCode _sysfunc_call_stack(finExecFunction *self, finExecEnvironmen
     finErrorCode errcode = env->getBelongFunctionList(&funcnamelist);
     if ( finErrorKits::isErrorResult(errcode) )
         goto err;
+
+    /* Kick out the current 'call_stack' function from list. */
+    funcnamelist.removeFirst();
 
     errcode = retvar->preallocArrayLength(funcnamelist.count());
     if ( finErrorKits::isErrorResult(errcode) )

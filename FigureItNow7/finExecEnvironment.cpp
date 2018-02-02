@@ -367,9 +367,9 @@ int finExecEnvironment::getTotalFucnLevelCountIn(int curlevel) const
             return curlevel;
     } else {
         if ( this->_belongFunc != NULL )
-            return this->_prevEnv->getTotalEnvLevelCountIn(curlevel + 1);
+            return this->_prevEnv->getTotalFucnLevelCountIn(curlevel + 1);
         else
-            return this->_prevEnv->getTotalEnvLevelCountIn(curlevel);
+            return this->_prevEnv->getTotalFucnLevelCountIn(curlevel);
     }
 }
 
