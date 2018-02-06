@@ -11,7 +11,7 @@
 #include "finExecVariable.h"
 #include "finExecFunction.h"
 #include "finExecMachine.h"
-#include "finExecOperartorClac.h"
+#include "finExecOperartorCalc.h"
 
 
 finExecEnvironment::finExecEnvironment()

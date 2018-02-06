@@ -12,7 +12,7 @@
 #include "finExecVariable.h"
 #include "finExecEnvironment.h"
 #include "finExecMachine.h"
-#include "finExecOperartorClac.h"
+#include "finExecOperartorCalc.h"
 
 
 QString finExecFunction::_extArgPrefix("__ext_arg_");

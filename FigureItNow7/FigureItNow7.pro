@@ -29,7 +29,7 @@ SOURCES += main.cpp\
     finGraphPanelBase.cpp \
     finGraphConfig.cpp \
     finFigureContainer.cpp \
-    finExecOperartorClac.cpp \
+    finExecOperartorCalc.cpp \
     finExecMachine.cpp \
     finFigureConfig.cpp \
     finExecFlowControl.cpp \
@@ -79,7 +79,7 @@ HEADERS  += MainWindow.h \
     finGraphPanelBase.h \
     finGraphConfig.h \
     finFigureContainer.h \
-    finExecOperartorClac.h \
+    finExecOperartorCalc.h \
     finExecMachine.h \
     finFigureConfig.h \
     finExecFlowControl.h \
