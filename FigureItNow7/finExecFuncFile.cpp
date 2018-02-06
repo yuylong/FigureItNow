@@ -125,6 +125,7 @@ static finErrorCode _sysfunc_load_numerical_csv(finExecFunction *self, finExecEn
     }
     retvar->setWriteProtected();
     retvar->clearLeftValue();
+    fp.close();
 
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
@@ -178,6 +179,7 @@ static finErrorCode _sysfunc_load_string_csv(finExecFunction *self, finExecEnvir
     }
     retvar->setWriteProtected();
     retvar->clearLeftValue();
+    fp.close();
 
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
@@ -241,6 +243,7 @@ static finErrorCode _sysfunc_load_auto_csv(finExecFunction *self, finExecEnviron
     }
     retvar->setWriteProtected();
     retvar->clearLeftValue();
+    fp.close();
 
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
