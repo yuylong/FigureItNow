@@ -144,21 +144,9 @@ static finErrorCode _sysfunc_load_string_csv(finExecFunction *self, finExecEnvir
     QTextStream tsin(&fp);
     while ( !tsin.atEnd() ) {
         QString lnstr = tsin.readLine();
-        QStringList lnstrlist = lnstr.split(',');
-
         finExecVariable *rowvar = retvar->getVariableItemAt(currow);
-        rowvar->setType(finExecVariable::TP_ARRAY);
-        if ( lnstr.isEmpty() )
-            continue;
 
-        rowvar->preallocArrayLength(lnstrlist.length());
-        int curcol = 0;
-        foreach (QString stritem, lnstrlist) {
-            finExecVariable *colvar = rowvar->getVariableItemAt(curcol);
-            colvar->setType(finExecVariable::TP_STRING);
-            colvar->setStringValue(stritem);
-            curcol++;
-        }
+        finExecAlg::csStringToStrArrayVar(lnstr, rowvar);
         currow++;
     }
     retvar->setWriteProtected();
