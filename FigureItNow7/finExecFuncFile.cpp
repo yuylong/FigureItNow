@@ -16,6 +16,7 @@
 #include "finExecVariable.h"
 #include "finExecEnvironment.h"
 #include "finExecMachine.h"
+#include "finExecAlg.h"
 
 static finErrorCode _sysfunc_load_image(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl);
@@ -101,26 +102,9 @@ static finErrorCode _sysfunc_load_numerical_csv(finExecFunction *self, finExecEn
     QTextStream tsin(&fp);
     while ( !tsin.atEnd() ) {
         QString lnstr = tsin.readLine();
-        QStringList lnstrlist = lnstr.split(',');
-
         finExecVariable *rowvar = retvar->getVariableItemAt(currow);
-        rowvar->setType(finExecVariable::TP_ARRAY);
-        if ( lnstr.isEmpty() )
-            continue;
 
-        rowvar->preallocArrayLength(lnstrlist.length());
-        int curcol = 0;
-        foreach (QString stritem, lnstrlist) {
-            finExecVariable *colvar = rowvar->getVariableItemAt(curcol);
-            bool numok = false;
-            double valitem = stritem.toDouble(&numok);
-            if ( !numok )
-                valitem = 0.0;
-
-            colvar->setType(finExecVariable::TP_NUMERIC);
-            colvar->setNumericValue(valitem);
-            curcol++;
-        }
+        finExecAlg::csStringToNumArrayVar(lnstr, rowvar);
         currow++;
     }
     retvar->setWriteProtected();

@@ -61,7 +61,8 @@ SOURCES += main.cpp\
     finUiSyntaxHighlighter.cpp \
     finUiScriptEditor.cpp \
     finUiAboutDlg.cpp \
-    finUiCommandLine.cpp
+    finUiCommandLine.cpp \
+    finExecAlg.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
@@ -104,7 +105,8 @@ HEADERS  += MainWindow.h \
     finUiSyntaxHighlighter.h \
     finUiScriptEditor.h \
     finUiAboutDlg.h \
-    finUiCommandLine.h
+    finUiCommandLine.h \
+    finExecAlg.h
 
 FORMS    += MainWindow.ui \
     finUiFigConfigDlg.ui \
