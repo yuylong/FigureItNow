@@ -45,6 +45,33 @@ finErrorCode finExecAlg::stringListToStrArrayVar(const QStringList &strlist, fin
     return finErrorKits::EC_SUCCESS;
 }
 
+finErrorCode finExecAlg::stringListToArrayVar(const QStringList &strlist, finExecVariable *outvar)
+{
+    int curcol = 0;
+    outvar->setType(finExecVariable::TP_ARRAY);
+    if ( strlist.isEmpty() )
+        return finErrorKits::EC_REACH_BOTTOM;
+
+    outvar->preallocArrayLength(strlist.length());
+    foreach ( QString stritem, strlist ) {
+        finExecVariable *colvar = outvar->getVariableItemAt(curcol);
+        bool numok = false;
+        double valitem = stritem.toDouble(&numok);
+
+        if ( numok ) {
+            colvar->setType(finExecVariable::TP_NUMERIC);
+            colvar->setNumericValue(valitem);
+        } else if ( stritem.isEmpty() ) {
+            colvar->setType(finExecVariable::TP_NULL);
+        } else {
+            colvar->setType(finExecVariable::TP_STRING);
+            colvar->setStringValue(stritem);
+        }
+        curcol++;
+    }
+    return finErrorKits::EC_SUCCESS;
+}
+
 finErrorCode finExecAlg::csStringToNumArrayVar(const QString &csstr, finExecVariable *outvar)
 {
     QString trimstr = csstr.trimmed();
@@ -65,4 +92,15 @@ finErrorCode finExecAlg::csStringToStrArrayVar(const QString &csstr, finExecVari
     }
 
     return stringListToStrArrayVar(trimstr.split(','), outvar);
+}
+
+finErrorCode finExecAlg::csStringToArrayVar(const QString &csstr, finExecVariable *outvar)
+{
+    QString trimstr = csstr.trimmed();
+    if ( trimstr.isEmpty() ) {
+        outvar->setType(finExecVariable::TP_ARRAY);
+        return finErrorKits::EC_REACH_BOTTOM;
+    }
+
+    return stringListToArrayVar(trimstr.split(','), outvar);
 }
