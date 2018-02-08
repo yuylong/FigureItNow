@@ -80,6 +80,36 @@ finErrorCode finExecAlg::stringListToArrayVar(const QStringList &strlist, finExe
     return finErrorKits::EC_SUCCESS;
 }
 
+static inline finErrorCode _appendNumVarToStrList(finExecVariable *invar, QStringList *strlist)
+{
+    if ( invar == NULL || invar->getType() == finExecVariable::TP_NULL ) {
+        strlist->append(QString());
+        return finErrorKits::EC_NORMAL_WARN;
+    } else if ( invar->getType() == finExecVariable::TP_STRING || invar->getType() == finExecVariable::TP_IMAGE ) {
+        strlist->append(QString("0"));
+        return finErrorKits::EC_NORMAL_WARN;
+    } else if ( invar->getType() == finExecVariable::TP_NUMERIC ) {
+        strlist->append(QString::number(invar->getNumericValue()));
+        return finErrorKits::EC_SUCCESS;
+    } else {
+        return finErrorKits::EC_INVALID_PARAM;
+    }
+}
+
+finErrorCode finExecAlg::numArrayVarToStringList(finExecVariable *invar, QStringList *strlist)
+{
+    strlist->clear();
+    if ( invar == NULL || invar->getType() != finExecVariable::TP_ARRAY )
+        return _appendNumVarToStrList(invar, strlist);
+
+    int itemcnt = invar->getArrayLength();
+    for ( int i = 0; i < itemcnt; i++ ) {
+        finExecVariable *itemvar = invar->getVariableItemAt(i);
+        _appendNumVarToStrList(itemvar, strlist);
+    }
+    return finErrorKits::EC_SUCCESS;
+}
+
 finErrorCode finExecAlg::csStringToNumArrayVar(const QString &csstr, finExecVariable *outvar)
 {
     QString trimstr = csstr.trimmed();
@@ -111,6 +141,16 @@ finErrorCode finExecAlg::csStringToArrayVar(const QString &csstr, finExecVariabl
     }
 
     return stringListToArrayVar(trimstr.split(','), outvar);
+}
+
+QString finExecAlg::numArrayVarToCsString(finExecVariable *invar)
+{
+    QStringList strlist;
+    finErrorCode errcode = numArrayVarToStringList(invar, &strlist);
+    if ( finErrorKits::isErrorResult(errcode) )
+        return QString();
+
+    return strlist.join(',');
 }
 
 static inline finErrorCode _appendVarToNumList(finExecVariable *invar, QList<double> *list)

@@ -120,6 +120,8 @@ public:
     bool isNumericMatrix(int *rowcnt = NULL, int *colcnt = NULL) const;
     bool isNumericArray(int *cnt = NULL) const;
     bool isStringArray(int *cnt = NULL) const;
+    int maxArrayLevel() const;
+    bool hasMultiLevel() const;
 
     const finExecVariable *getLinkTarget() const;
     finExecVariable *getLinkTarget();

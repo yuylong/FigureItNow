@@ -375,6 +375,32 @@ bool finExecVariable::isStringArray(int *cnt) const
     return true;
 }
 
+int finExecVariable::maxArrayLevel() const
+{
+    if ( this->_type != TP_ARRAY )
+        return 0;
+
+    int maxlevel = 0;
+    foreach ( finExecVariable *curitem, this->_itemList ) {
+        int curlevel = curitem->maxArrayLevel();
+        if ( curlevel > maxlevel )
+            maxlevel = curlevel;
+    }
+    return maxlevel + 1;
+}
+
+bool finExecVariable::hasMultiLevel() const
+{
+    if ( this->_type != TP_ARRAY )
+        return false;
+
+    foreach ( finExecVariable *curitem, this->_itemList ) {
+        if ( curitem->getType() == TP_ARRAY )
+            return true;
+    }
+    return false;
+}
+
 const finExecVariable *finExecVariable::getLinkTarget() const
 {
     if ( this->_type != finExecVariable::TP_LINK )
