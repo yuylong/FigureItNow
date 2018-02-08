@@ -30,6 +30,7 @@ public:
     static finErrorCode csStringToArrayVar(const QString &csstr, finExecVariable *outvar);
 
     static finErrorCode numArrayVarToList(finExecVariable *invar, QList<double> *list);
+    static finErrorCode numMatVarToList(finExecVariable *invar, QList<QList<double>> *list);
 };
 
 #endif // FINEXECALG_H

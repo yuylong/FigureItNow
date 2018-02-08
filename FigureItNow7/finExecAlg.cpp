@@ -141,3 +141,23 @@ finErrorCode finExecAlg::numArrayVarToList(finExecVariable *invar, QList<double>
     }
     return finErrorKits::EC_SUCCESS;
 }
+
+finErrorCode finExecAlg::numMatVarToList(finExecVariable *invar, QList<QList<double>> *list)
+{
+    list->clear();
+    if ( invar == NULL || invar->getType() != finExecVariable::TP_ARRAY ) {
+        QList<double> tmplist;
+        finErrorCode errcode = _appendVarToNumList(invar, &tmplist);
+        list->append(tmplist);
+        return errcode;
+    }
+
+    int itemcnt = invar->getArrayLength();
+    for ( int i = 0; i < itemcnt; i++ ) {
+        finExecVariable *itemvar = invar->getVariableItemAt(i);
+        QList<double> itemlist;
+        numArrayVarToList(itemvar, &itemlist);
+        list->append(itemlist);
+    }
+    return finErrorKits::EC_SUCCESS;
+}
