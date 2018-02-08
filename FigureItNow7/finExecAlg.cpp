@@ -1,3 +1,11 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2018 Yulong Yu. All rights reserved.
+ */
+
 #include "finExecAlg.h"
 
 finExecAlg::finExecAlg()
@@ -103,4 +111,33 @@ finErrorCode finExecAlg::csStringToArrayVar(const QString &csstr, finExecVariabl
     }
 
     return stringListToArrayVar(trimstr.split(','), outvar);
+}
+
+static inline finErrorCode _appendVarToNumList(finExecVariable *invar, QList<double> *list)
+{
+    if ( invar == NULL || invar->getType() == finExecVariable::TP_NULL ) {
+        return finErrorKits::EC_NORMAL_WARN;
+    } else if ( invar->getType() == finExecVariable::TP_STRING || invar->getType() == finExecVariable::TP_IMAGE ) {
+        list->append(0.0);
+        return finErrorKits::EC_NORMAL_WARN;
+    } else if ( invar->getType() == finExecVariable::TP_NUMERIC ) {
+        list->append(invar->getNumericValue());
+        return finErrorKits::EC_SUCCESS;
+    } else {
+        return finErrorKits::EC_INVALID_PARAM;
+    }
+}
+
+finErrorCode finExecAlg::numArrayVarToList(finExecVariable *invar, QList<double> *list)
+{
+    list->clear();
+    if ( invar == NULL || invar->getType() != finExecVariable::TP_ARRAY )
+        return _appendVarToNumList(invar, list);
+
+    int itemcnt = invar->getArrayLength();
+    for ( int i = 0; i < itemcnt; i++ ) {
+        finExecVariable *itemvar = invar->getVariableItemAt(i);
+        _appendVarToNumList(itemvar, list);
+    }
+    return finErrorKits::EC_SUCCESS;
 }
