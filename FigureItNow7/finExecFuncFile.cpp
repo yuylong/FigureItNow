@@ -28,6 +28,8 @@ static finErrorCode _sysfunc_load_auto_csv(finExecFunction *self, finExecEnviron
                                            finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_save_numerical_csv(finExecFunction *self, finExecEnvironment *env,
                                                 finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_save_auto_csv(finExecFunction *self, finExecEnvironment *env,
+                                           finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct finExecSysFuncRegItem _finSysFuncFileList[] = {
     { QString("load_image"),         QString("fn"),     _sysfunc_load_image         },
@@ -36,6 +38,8 @@ static struct finExecSysFuncRegItem _finSysFuncFileList[] = {
     { QString("load_string_csv"),    QString("fn"),     _sysfunc_load_string_csv    },
     { QString("load_auto_csv"),      QString("fn"),     _sysfunc_load_auto_csv      },
     { QString("save_numerical_csv"), QString("fn,ary"), _sysfunc_save_numerical_csv },
+    { QString("save_string_csv"),    QString("fn,ary"), _sysfunc_save_auto_csv      },
+    { QString("save_auto_csv"),      QString("fn,ary"), _sysfunc_save_auto_csv      },
 
     { QString(), QString(), NULL }
 };
@@ -233,6 +237,42 @@ static finErrorCode _sysfunc_save_numerical_csv(finExecFunction *self, finExecEn
         }
     } else {
         tsout << finExecAlg::numArrayVarToCsString(aryvar) << endl;
+    }
+    fp.close();
+
+    flowctl->setFlowNext();
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_save_auto_csv(finExecFunction *self, finExecEnvironment *env,
+                                           finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finExecVariable *fnvar, *aryvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    fnvar = finExecVariable::transLinkTarget(env->findVariable("fn"));
+    aryvar = finExecVariable::transLinkTarget(env->findVariable("ary"));
+    if ( fnvar == NULL || aryvar == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+    if ( fnvar->getType() != finExecVariable::TP_STRING )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    QString filename = fnvar->getStringValue();
+    QFile fp(filename);
+    if ( !fp.open(QIODevice::WriteOnly | QIODevice::Text) )
+        return finErrorKits::EC_FILE_NOT_OPEN;
+
+    QTextStream tsout(&fp);
+    if ( aryvar->hasMultiLevel() ) {
+        int lncnt = aryvar->getArrayLength();
+        for ( int i = 0; i < lncnt; i++ ) {
+            finExecVariable *rowvar = aryvar->getVariableItemAt(i);
+            tsout << finExecAlg::arrayVarToCsString(rowvar) << endl;
+        }
+    } else {
+        tsout << finExecAlg::arrayVarToCsString(aryvar) << endl;
     }
     fp.close();
 

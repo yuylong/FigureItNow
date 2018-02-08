@@ -25,11 +25,13 @@ public:
     static finErrorCode stringListToStrArrayVar(const QStringList &strlist, finExecVariable *outvar);
     static finErrorCode stringListToArrayVar(const QStringList &strlist, finExecVariable *outvar);
     static finErrorCode numArrayVarToStringList(finExecVariable *invar, QStringList *strlist);
+    static finErrorCode arrayVarToStringList(finExecVariable *invar, QStringList *strlist);
 
     static finErrorCode csStringToNumArrayVar(const QString &csstr, finExecVariable *outvar);
     static finErrorCode csStringToStrArrayVar(const QString &csstr, finExecVariable *outvar);
     static finErrorCode csStringToArrayVar(const QString &csstr, finExecVariable *outvar);
     static QString numArrayVarToCsString(finExecVariable *invar);
+    static QString arrayVarToCsString(finExecVariable *invar);
 
     static finErrorCode numArrayVarToList(finExecVariable *invar, QList<double> *list);
     static finErrorCode numMatVarToList(finExecVariable *invar, QList<QList<double>> *list);

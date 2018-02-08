@@ -110,6 +110,37 @@ finErrorCode finExecAlg::numArrayVarToStringList(finExecVariable *invar, QString
     return finErrorKits::EC_SUCCESS;
 }
 
+static inline finErrorCode _appendVarToStrList(finExecVariable *invar, QStringList *strlist)
+{
+    if ( invar == NULL || invar->getType() == finExecVariable::TP_NULL ||
+         invar->getType() == finExecVariable::TP_IMAGE ) {
+        strlist->append(QString());
+        return finErrorKits::EC_NORMAL_WARN;
+    } else if ( invar->getType() == finExecVariable::TP_STRING ) {
+        strlist->append(invar->getStringValue());
+        return finErrorKits::EC_SUCCESS;
+    } else if ( invar->getType() == finExecVariable::TP_NUMERIC ) {
+        strlist->append(QString::number(invar->getNumericValue()));
+        return finErrorKits::EC_SUCCESS;
+    } else {
+        return finErrorKits::EC_INVALID_PARAM;
+    }
+}
+
+finErrorCode finExecAlg::arrayVarToStringList(finExecVariable *invar, QStringList *strlist)
+{
+    strlist->clear();
+    if ( invar == NULL || invar->getType() != finExecVariable::TP_ARRAY )
+        return _appendVarToStrList(invar, strlist);
+
+    int itemcnt = invar->getArrayLength();
+    for ( int i = 0; i < itemcnt; i++ ) {
+        finExecVariable *itemvar = invar->getVariableItemAt(i);
+        _appendVarToStrList(itemvar, strlist);
+    }
+    return finErrorKits::EC_SUCCESS;
+}
+
 finErrorCode finExecAlg::csStringToNumArrayVar(const QString &csstr, finExecVariable *outvar)
 {
     QString trimstr = csstr.trimmed();
@@ -147,6 +178,16 @@ QString finExecAlg::numArrayVarToCsString(finExecVariable *invar)
 {
     QStringList strlist;
     finErrorCode errcode = numArrayVarToStringList(invar, &strlist);
+    if ( finErrorKits::isErrorResult(errcode) )
+        return QString();
+
+    return strlist.join(',');
+}
+
+QString finExecAlg::arrayVarToCsString(finExecVariable *invar)
+{
+    QStringList strlist;
+    finErrorCode errcode = arrayVarToStringList(invar, &strlist);
     if ( finErrorKits::isErrorResult(errcode) )
         return QString();
 
