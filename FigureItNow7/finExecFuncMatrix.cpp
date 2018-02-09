@@ -31,6 +31,8 @@ static finErrorCode _sysfunc_array_sub(finExecFunction *self, finExecEnvironment
 
 static finErrorCode _sysfunc_vec_dim(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_vec_norm(finExecFunction *self, finExecEnvironment *env,
+                                      finExecMachine *machine, finExecFlowControl *flowctl);
 
 static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl);
@@ -55,6 +57,7 @@ static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
     { QString("vec_neg"),       QString("ary"),       _sysfunc_array_neg     },
     { QString("vec_add"),       QString("ary1,ary2"), _sysfunc_array_add     },
     { QString("vec_sub"),       QString("ary1,ary2"), _sysfunc_array_sub     },
+    { QString("vec_norm"),      QString("ary"),       _sysfunc_vec_norm      },
 
     { QString("mat_transpose"), QString("mat"),       _sysfunc_mat_transpose },
     { QString("mat_add"),       QString("mat1,mat2"), _sysfunc_mat_add       },
@@ -351,6 +354,36 @@ static finErrorCode _sysfunc_vec_dim(finExecFunction *self, finExecEnvironment *
     retvar->clearLeftValue();
     retvar->setWriteProtected();
 
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode _sysfunc_vec_norm(finExecFunction *self, finExecEnvironment *env,
+                                      finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *aryvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    aryvar = finExecVariable::transLinkTarget(env->findVariable("ary"));
+    if ( aryvar == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorKits::EC_OUT_OF_MEMORY;
+
+    errcode = finExecAlg::varVectorNorm(aryvar, retvar);
+    if ( finErrorKits::isErrorResult(errcode) ) {
+        delete retvar;
+        return errcode;
+    }
+
+    retvar->clearLeftValue();
+    retvar->setWriteProtected();
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;

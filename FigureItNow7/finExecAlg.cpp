@@ -6,6 +6,8 @@
  * Copyright(c) 2015-2018 Yulong Yu. All rights reserved.
  */
 
+#include <qmath.h>
+
 #include "finExecAlg.h"
 
 finExecAlg::finExecAlg()
@@ -320,6 +322,19 @@ finErrorCode finExecAlg::listArraySub(const QList<double> &inlist1, const QList<
     return finErrorKits::EC_SUCCESS;
 }
 
+finErrorCode finExecAlg::listVectorNorm(const QList<double> &inlist, double *outval)
+{
+    if ( outval == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    double norm2 = 0.0;
+    foreach ( double val, inlist ) {
+        norm2 += val * val;
+    }
+    *outval = sqrt(norm2);
+    return finErrorKits::EC_SUCCESS;
+}
+
 finErrorCode finExecAlg::varArrayNeg(finExecVariable *invar, finExecVariable *outvar)
 {
     if ( invar == NULL || outvar == NULL )
@@ -383,6 +398,26 @@ finErrorCode finExecAlg::varArraySub(finExecVariable *invar1, finExecVariable *i
         return errcode;
 
     return listToNumArrayVar(outlist, outvar);
+}
+
+finErrorCode finExecAlg::varVectorNorm(finExecVariable *invar, finExecVariable *outvar)
+{
+    if ( invar == NULL || outvar == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+    if ( !invar->isNumericArray() )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    QList<double> inlist;
+    numArrayVarToList(invar, &inlist);
+
+    double outval = 0.0;
+    finErrorCode errcode = listVectorNorm(inlist, &outval);
+    if ( finErrorKits::isErrorResult(errcode) )
+        return errcode;
+
+    outvar->setType(finExecVariable::TP_NUMERIC);
+    outvar->setNumericValue(outval);
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::listMatAdd(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
