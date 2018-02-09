@@ -313,3 +313,51 @@ finErrorCode finExecAlg::varArrayAdd(finExecVariable *invar1, finExecVariable *i
 
     return listToNumArrayVar(outlist, outvar);
 }
+
+finErrorCode finExecAlg::listMatAdd(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
+                                    QList<QList<double>> *outlist)
+{
+    if ( outlist == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+    if ( inlist1.length() != inlist2.length() )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    int len = inlist1.length();
+    outlist->clear();
+    for ( int i = 0; i < len; i++ ) {
+        const QList<double> &insublist1 = inlist1.at(i);
+        const QList<double> &insublist2 = inlist2.at(i);
+        QList<double> outsublist;
+
+        finErrorCode errcode = listArrayAdd(insublist1, insublist2, &outsublist);
+        if ( finErrorKits::isErrorResult(errcode) )
+            return errcode;
+
+        outlist->append(outsublist);
+    }
+    return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finExecAlg::varMatAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
+{
+    if ( invar1 == NULL || invar2 == NULL || outvar == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    int varrow1 = 0, varcol1 = 0, varrow2 = 0, varcol2 = 0;
+    bool ismat1 = invar1->isNumericMatrix(&varrow1, &varcol1);
+    bool ismat2 = invar2->isNumericMatrix(&varrow2, &varcol2);
+    if ( !ismat1 || !ismat2 )
+        return finErrorKits::EC_INVALID_PARAM;
+    if ( varrow1 != varrow2 || varcol1 != varcol2 )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    QList<QList<double>> inlist1, inlist2, outlist;
+    numMatVarToList(invar1, &inlist1);
+    numMatVarToList(invar2, &inlist2);
+
+    finErrorCode errcode = listMatAdd(inlist1, inlist2, &outlist);
+    if ( finErrorKits::isErrorResult(errcode) )
+        return errcode;
+
+    return listToNumMatVar(outlist, outvar);
+}

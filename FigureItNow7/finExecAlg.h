@@ -42,6 +42,11 @@ public:
                                      QList<double> *outlist);
 
     static finErrorCode varArrayAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
+
+    static finErrorCode listMatAdd(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
+                                   QList<QList<double>> *outlist);
+
+    static finErrorCode varMatAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
 };
 
 #endif // FINEXECALG_H
