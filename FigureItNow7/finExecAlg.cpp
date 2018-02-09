@@ -335,6 +335,23 @@ finErrorCode finExecAlg::listVectorNorm(const QList<double> &inlist, double *out
     return finErrorKits::EC_SUCCESS;
 }
 
+finErrorCode finExecAlg::listVectorNormalize(const QList<double> &inlist, QList<double> *outlist)
+{
+    if ( outlist == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    double norm = 1.0;
+    finErrorCode errcode = listVectorNorm(inlist, &norm);
+    if ( finErrorKits::isErrorResult(errcode) )
+        norm = 1.0;
+
+    outlist->clear();
+    foreach ( double val, inlist ) {
+        outlist->append(val/norm);
+    }
+    return finErrorKits::EC_SUCCESS;
+}
+
 finErrorCode finExecAlg::varArrayNeg(finExecVariable *invar, finExecVariable *outvar)
 {
     if ( invar == NULL || outvar == NULL )
@@ -418,6 +435,23 @@ finErrorCode finExecAlg::varVectorNorm(finExecVariable *invar, finExecVariable *
     outvar->setType(finExecVariable::TP_NUMERIC);
     outvar->setNumericValue(outval);
     return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finExecAlg::varVectorNormalize(finExecVariable *invar, finExecVariable *outvar)
+{
+    if ( invar == NULL || outvar == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+    if ( !invar->isNumericArray() )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    QList<double> inlist, outlist;
+    numArrayVarToList(invar, &inlist);
+
+    finErrorCode errcode = listVectorNormalize(inlist, &outlist);
+    if ( finErrorKits::isErrorResult(errcode) )
+        return errcode;
+
+    return listToNumArrayVar(outlist, outvar);
 }
 
 finErrorCode finExecAlg::listMatAdd(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
