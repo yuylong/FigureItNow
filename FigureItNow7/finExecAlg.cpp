@@ -272,6 +272,18 @@ finErrorCode finExecAlg::listToNumMatVar(const QList<QList<double>> &list, finEx
     return finErrorKits::EC_SUCCESS;
 }
 
+finErrorCode finExecAlg::listArrayNeg(const QList<double> &inlist, QList<double> *outlist)
+{
+    if ( outlist == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    outlist->clear();
+    foreach ( double val, inlist) {
+        outlist->append(-val);
+    }
+    return finErrorKits::EC_SUCCESS;
+}
+
 finErrorCode finExecAlg::listArrayAdd(const QList<double> &inlist1, const QList<double> &inlist2,
                                       QList<double> *outlist)
 {
@@ -306,6 +318,23 @@ finErrorCode finExecAlg::listArraySub(const QList<double> &inlist1, const QList<
         outlist->append(val1 - val2);
     }
     return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finExecAlg::varArrayNeg(finExecVariable *invar, finExecVariable *outvar)
+{
+    if ( invar == NULL || outvar == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+    if ( !invar->isNumericArray() )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    QList<double> inlist, outlist;
+    numArrayVarToList(invar, &inlist);
+
+    finErrorCode errcode = listArrayNeg(inlist, &outlist);
+    if ( finErrorKits::isErrorResult(errcode) )
+        return errcode;
+
+    return listToNumArrayVar(outlist, outvar);
 }
 
 finErrorCode finExecAlg::varArrayAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
