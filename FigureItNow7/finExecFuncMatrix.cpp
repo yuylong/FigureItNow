@@ -10,6 +10,7 @@
 
 #include <qmath.h>
 
+#include "finExecAlg.h"
 #include "finExecVariable.h"
 #include "finExecEnvironment.h"
 #include "finExecMachine.h"
@@ -18,6 +19,9 @@ static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *en
                                    finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl);
+
+static finErrorCode _sysfunc_array_add(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl);
 
 static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl);
@@ -31,6 +35,8 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
 static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
     { QString("array"),         QString("n"),         _sysfunc_array         },
     { QString("matrix"),        QString("row,col"),   _sysfunc_matrix        },
+
+    { QString("array_add"),     QString("ary1,ary2"), _sysfunc_array_add     },
 
     { QString("mat_transpose"), QString("mat"),       _sysfunc_mat_transpose },
     { QString("mat_add"),       QString("mat1,mat2"), _sysfunc_mat_add       },
@@ -91,6 +97,7 @@ static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *en
             delete retvar;
             return errcode;
         }
+        aryidx++;
     }
 
 out:
@@ -171,6 +178,37 @@ static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *e
     }
 
 out:
+    retvar->clearLeftValue();
+    retvar->setWriteProtected();
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_array_add(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *ary1var, *ary2var;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    ary1var = finExecVariable::transLinkTarget(env->findVariable("ary1"));
+    ary2var = finExecVariable::transLinkTarget(env->findVariable("ary2"));
+    if ( ary1var == NULL || ary2var == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorKits::EC_OUT_OF_MEMORY;
+
+    errcode = finExecAlg::varArrayAdd(ary1var, ary2var, retvar);
+    if ( finErrorKits::isErrorResult(errcode) ) {
+        delete retvar;
+        return errcode;
+    }
+
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
