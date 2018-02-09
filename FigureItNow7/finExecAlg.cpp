@@ -290,6 +290,24 @@ finErrorCode finExecAlg::listArrayAdd(const QList<double> &inlist1, const QList<
     return finErrorKits::EC_SUCCESS;
 }
 
+finErrorCode finExecAlg::listArraySub(const QList<double> &inlist1, const QList<double> &inlist2,
+                                      QList<double> *outlist)
+{
+    if ( outlist == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+    if ( inlist1.length() != inlist2.length() )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    int len = inlist1.length();
+    outlist->clear();
+    for ( int i = 0; i < len; i++ ) {
+        double val1 = inlist1.at(i);
+        double val2 = inlist2.at(i);
+        outlist->append(val1 - val2);
+    }
+    return finErrorKits::EC_SUCCESS;
+}
+
 finErrorCode finExecAlg::varArrayAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
 {
     if ( invar1 == NULL || invar2 == NULL || outvar == NULL )
@@ -308,6 +326,30 @@ finErrorCode finExecAlg::varArrayAdd(finExecVariable *invar1, finExecVariable *i
     numArrayVarToList(invar2, &inlist2);
 
     finErrorCode errcode = listArrayAdd(inlist1, inlist2, &outlist);
+    if ( finErrorKits::isErrorResult(errcode) )
+        return errcode;
+
+    return listToNumArrayVar(outlist, outvar);
+}
+
+finErrorCode finExecAlg::varArraySub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
+{
+    if ( invar1 == NULL || invar2 == NULL || outvar == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    int varlen1 = 0, varlen2 = 0;
+    bool isary1 = invar1->isNumericArray(&varlen1);
+    bool isary2 = invar2->isNumericArray(&varlen2);
+    if ( !isary1 || !isary2 )
+        return finErrorKits::EC_INVALID_PARAM;
+    if ( varlen1 != varlen2 )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    QList<double> inlist1, inlist2, outlist;
+    numArrayVarToList(invar1, &inlist1);
+    numArrayVarToList(invar2, &inlist2);
+
+    finErrorCode errcode = listArraySub(inlist1, inlist2, &outlist);
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
