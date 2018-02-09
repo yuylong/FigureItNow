@@ -242,3 +242,32 @@ finErrorCode finExecAlg::numMatVarToList(finExecVariable *invar, QList<QList<dou
     }
     return finErrorKits::EC_SUCCESS;
 }
+
+finErrorCode finExecAlg::listToNumArrayVar(const QList<double> &list, finExecVariable *outvar)
+{
+    outvar->setType(finExecVariable::TP_ARRAY);
+    outvar->preallocArrayLength(list.length());
+
+    int idx = 0;
+    foreach ( double val, list ) {
+        finExecVariable *itemvar = outvar->getVariableItemAt(idx);
+        itemvar->setType(finExecVariable::TP_NUMERIC);
+        itemvar->setNumericValue(val);
+        idx++;
+    }
+    return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finExecAlg::listToNumMatVar(const QList<QList<double>> &list, finExecVariable *outvar)
+{\
+    outvar->setType(finExecVariable::TP_ARRAY);
+    outvar->preallocArrayLength(list.length());
+
+    int idx = 0;
+    foreach ( const QList<double> &sublist, list ) {
+        finExecVariable *itemvar = outvar->getVariableItemAt(idx);
+        listToNumArrayVar(sublist, itemvar);
+        idx++;
+    }
+    return finErrorKits::EC_SUCCESS;
+}
