@@ -45,12 +45,14 @@ public:
                                      QList<double> *outlist);
     static finErrorCode listVectorNorm(const QList<double> &inlist, double *outval);
     static finErrorCode listVectorNormalize(const QList<double> &inlist, QList<double> *outlist);
+    static finErrorCode listVectorDot(const QList<double> &inlist1, const QList<double> &inlist2, double *outval);
 
     static finErrorCode varArrayNeg(finExecVariable *invar, finExecVariable *outvar);
     static finErrorCode varArrayAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
     static finErrorCode varArraySub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
     static finErrorCode varVectorNorm(finExecVariable *invar, finExecVariable *outvar);
     static finErrorCode varVectorNormalize(finExecVariable *invar, finExecVariable *outvar);
+    static finErrorCode varVectorDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
 
     static finErrorCode listMatAdd(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
                                    QList<QList<double>> *outlist);

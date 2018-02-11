@@ -352,6 +352,25 @@ finErrorCode finExecAlg::listVectorNormalize(const QList<double> &inlist, QList<
     return finErrorKits::EC_SUCCESS;
 }
 
+finErrorCode finExecAlg::listVectorDot(const QList<double> &inlist1, const QList<double> &inlist2, double *outval)
+{
+    if ( outval == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    int len = inlist1.length();
+    if ( len > inlist2.length() )
+        len = inlist2.length();
+
+    double retval = 0.0;
+    for ( int i = 0; i < len; i++ ) {
+        double val1 = inlist1.at(i);
+        double val2 = inlist2.at(i);
+        retval += val1 * val2;
+    }
+    *outval = retval;
+    return finErrorKits::EC_SUCCESS;
+}
+
 finErrorCode finExecAlg::varArrayNeg(finExecVariable *invar, finExecVariable *outvar)
 {
     if ( invar == NULL || outvar == NULL )
@@ -452,6 +471,33 @@ finErrorCode finExecAlg::varVectorNormalize(finExecVariable *invar, finExecVaria
         return errcode;
 
     return listToNumArrayVar(outlist, outvar);
+}
+
+finErrorCode finExecAlg::varVectorDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
+{
+    if ( invar1 == NULL || invar2 == NULL || outvar == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    int varlen1 = 0, varlen2 = 0;
+    bool isary1 = invar1->isNumericArray(&varlen1);
+    bool isary2 = invar2->isNumericArray(&varlen2);
+    if ( !isary1 || !isary2 )
+        return finErrorKits::EC_INVALID_PARAM;
+    if ( varlen1 != varlen2 )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    QList<double> inlist1, inlist2;
+    numArrayVarToList(invar1, &inlist1);
+    numArrayVarToList(invar2, &inlist2);
+
+    double outval = 0.0;
+    finErrorCode errcode = listVectorDot(inlist1, inlist2, &outval);
+    if ( finErrorKits::isErrorResult(errcode) )
+        return errcode;
+
+    outvar->setType(finExecVariable::TP_NUMERIC);
+    outvar->setNumericValue(outval);
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::listMatAdd(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
