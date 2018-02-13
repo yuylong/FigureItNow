@@ -783,6 +783,29 @@
    <header>finUiColorLabel.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>spbPanelWidth</tabstop>
+  <tabstop>spbPanelHeight</tabstop>
+  <tabstop>ckbPanelSizeRatio</tabstop>
+  <tabstop>spbOriginPtX</tabstop>
+  <tabstop>spbOriginPtY</tabstop>
+  <tabstop>ckbOriginPtRatio</tabstop>
+  <tabstop>dsbAxisUnitSize</tabstop>
+  <tabstop>spbAxisZDeg</tabstop>
+  <tabstop>dsbAxisZRatio</tabstop>
+  <tabstop>cmbTransformType</tabstop>
+  <tabstop>dsbTransRectZoomX</tabstop>
+  <tabstop>dsbTransRectZoomY</tabstop>
+  <tabstop>tbwTransAffineActList</tabstop>
+  <tabstop>pbTransAffineReset</tabstop>
+  <tabstop>pbTransAffineRemove</tabstop>
+  <tabstop>pbTransAffineMoveUp</tabstop>
+  <tabstop>pbTransAffineMoveDown</tabstop>
+  <tabstop>cmbTransAffineNewAct</tabstop>
+  <tabstop>dsbTransAffineArgX</tabstop>
+  <tabstop>dsbTransAffineArgY</tabstop>
+  <tabstop>pbTransAffineAppendAct</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
