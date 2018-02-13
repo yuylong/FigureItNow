@@ -33,6 +33,12 @@ static finErrorCode _sysfunc_vec_dim(finExecFunction *self, finExecEnvironment *
                                      finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_vec_norm(finExecFunction *self, finExecEnvironment *env,
                                       finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_vec_norm_1(finExecFunction *self, finExecEnvironment *env,
+                                        finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_vec_norm_p(finExecFunction *self, finExecEnvironment *env,
+                                        finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_vec_norm_inf(finExecFunction *self, finExecEnvironment *env,
+                                          finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_vec_normalize(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_vec_dot(finExecFunction *self, finExecEnvironment *env,
@@ -62,6 +68,9 @@ static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
     { QString("vec_add"),       QString("ary1,ary2"), _sysfunc_array_add     },
     { QString("vec_sub"),       QString("ary1,ary2"), _sysfunc_array_sub     },
     { QString("vec_norm"),      QString("ary"),       _sysfunc_vec_norm      },
+    { QString("vec_norm_1"),    QString("ary"),       _sysfunc_vec_norm_1    },
+    { QString("vec_norm_p"),    QString("ary,p"),     _sysfunc_vec_norm_p    },
+    { QString("vec_norm_inf"),  QString("ary"),       _sysfunc_vec_norm_inf  },
     { QString("vec_normalize"), QString("ary"),       _sysfunc_vec_normalize },
     { QString("vec_dot"),       QString("ary1,ary2"), _sysfunc_vec_dot       },
 
@@ -383,6 +392,97 @@ finErrorCode _sysfunc_vec_norm(finExecFunction *self, finExecEnvironment *env,
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     errcode = finExecAlg::varVectorNorm(aryvar, retvar);
+    if ( finErrorKits::isErrorResult(errcode) ) {
+        delete retvar;
+        return errcode;
+    }
+
+    retvar->clearLeftValue();
+    retvar->setWriteProtected();
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_vec_norm_1(finExecFunction *self, finExecEnvironment *env,
+                                        finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *aryvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    aryvar = finExecVariable::transLinkTarget(env->findVariable("ary"));
+    if ( aryvar == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorKits::EC_OUT_OF_MEMORY;
+
+    errcode = finExecAlg::varVectorNorm1(aryvar, retvar);
+    if ( finErrorKits::isErrorResult(errcode) ) {
+        delete retvar;
+        return errcode;
+    }
+
+    retvar->clearLeftValue();
+    retvar->setWriteProtected();
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_vec_norm_p(finExecFunction *self, finExecEnvironment *env,
+                                        finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *aryvar, *pvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    aryvar = finExecVariable::transLinkTarget(env->findVariable("ary"));
+    pvar = finExecVariable::transLinkTarget(env->findVariable("p"));
+    if ( aryvar == NULL || pvar == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorKits::EC_OUT_OF_MEMORY;
+
+    errcode = finExecAlg::varVectorNormP(aryvar, pvar, retvar);
+    if ( finErrorKits::isErrorResult(errcode) ) {
+        delete retvar;
+        return errcode;
+    }
+
+    retvar->clearLeftValue();
+    retvar->setWriteProtected();
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_vec_norm_inf(finExecFunction *self, finExecEnvironment *env,
+                                          finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *aryvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    aryvar = finExecVariable::transLinkTarget(env->findVariable("ary"));
+    if ( aryvar == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorKits::EC_OUT_OF_MEMORY;
+
+    errcode = finExecAlg::varVectorNormInf(aryvar, retvar);
     if ( finErrorKits::isErrorResult(errcode) ) {
         delete retvar;
         return errcode;
