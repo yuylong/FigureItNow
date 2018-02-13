@@ -6,924 +6,775 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>561</width>
-    <height>567</height>
+    <width>574</width>
+    <height>528</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Graphics Configuration</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>530</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
-  <widget class="QGroupBox" name="grbPanel">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>541</width>
-     <height>171</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Panel</string>
-   </property>
-   <widget class="QLabel" name="lblBgColorTitle">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>121</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Background Color:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="finUiColorLabel" name="lblBgColor">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>20</y>
-      <width>131</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="autoFillBackground">
-     <bool>true</bool>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Box</enum>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblPanelSizeTitle">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>91</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Panel Size:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblPanelWidthTitle">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>50</y>
-      <width>41</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Width</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblPanelWidthUnit">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>50</y>
-      <width>21</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>px</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spbPanelWidth">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>50</y>
-      <width>61</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-    <property name="minimum">
-     <number>10</number>
-    </property>
-    <property name="maximum">
-     <number>65535</number>
-    </property>
-    <property name="singleStep">
-     <number>10</number>
-    </property>
-    <property name="value">
-     <number>640</number>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spbPanelHeight">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>50</y>
-      <width>61</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-    <property name="minimum">
-     <number>10</number>
-    </property>
-    <property name="maximum">
-     <number>65535</number>
-    </property>
-    <property name="singleStep">
-     <number>10</number>
-    </property>
-    <property name="value">
-     <number>480</number>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblPanelHeightUnit">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>50</y>
-      <width>21</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>px</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblPanelHeightTitle">
-    <property name="geometry">
-     <rect>
-      <x>260</x>
-      <y>50</y>
-      <width>51</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Height</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="ckbPanelSizeRatio">
-    <property name="geometry">
-     <rect>
-      <x>120</x>
-      <y>80</y>
-      <width>201</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Keep the width-height ratio.</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblOriginPointTitle">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>110</y>
-      <width>91</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Origin Point:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spbOriginPtX">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>110</y>
-      <width>61</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-    <property name="minimum">
-     <number>-65535</number>
-    </property>
-    <property name="maximum">
-     <number>65535</number>
-    </property>
-    <property name="singleStep">
-     <number>10</number>
-    </property>
-    <property name="value">
-     <number>320</number>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spbOriginPtY">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>110</y>
-      <width>61</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-    <property name="minimum">
-     <number>-65535</number>
-    </property>
-    <property name="maximum">
-     <number>65535</number>
-    </property>
-    <property name="singleStep">
-     <number>10</number>
-    </property>
-    <property name="value">
-     <number>240</number>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblOriginPtXUnit">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>110</y>
-      <width>21</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>px</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblOriginPtYUnit">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>110</y>
-      <width>21</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>px</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblOriginPtXTitle">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>110</y>
-      <width>41</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>X:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblOriginPtYTitle">
-    <property name="geometry">
-     <rect>
-      <x>260</x>
-      <y>110</y>
-      <width>51</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Y:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="ckbOriginPtRatio">
-    <property name="geometry">
-     <rect>
-      <x>120</x>
-      <y>140</y>
-      <width>311</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Keep the respective position to the panel size.</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="grbAxis">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>190</y>
-     <width>541</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Axis</string>
-   </property>
-   <widget class="QLabel" name="lblAxisUnitSizeTitle">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>121</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Axis Unit Size:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="dsbAxisUnitSize">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>20</y>
-      <width>71</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-    <property name="decimals">
-     <number>1</number>
-    </property>
-    <property name="minimum">
-     <double>0.100000000000000</double>
-    </property>
-    <property name="maximum">
-     <double>8192.000000000000000</double>
-    </property>
-    <property name="value">
-     <double>40.000000000000000</double>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblAxisUnitSizeUnit">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>20</y>
-      <width>21</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>px</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblAxisZDegTitle">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>50</y>
-      <width>101</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Z-axis Degree:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spbAxisZDeg">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>50</y>
-      <width>61</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-    <property name="minimum">
-     <number>-179</number>
-    </property>
-    <property name="maximum">
-     <number>180</number>
-    </property>
-    <property name="singleStep">
-     <number>10</number>
-    </property>
-    <property name="value">
-     <number>-135</number>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblAxisZRatioTitle">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>50</y>
-      <width>101</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Z-axis Ratio:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="dsbAxisZRatio">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>50</y>
-      <width>71</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-    <property name="decimals">
-     <number>3</number>
-    </property>
-    <property name="minimum">
-     <double>0.001000000000000</double>
-    </property>
-    <property name="maximum">
-     <double>5.000000000000000</double>
-    </property>
-    <property name="singleStep">
-     <double>0.100000000000000</double>
-    </property>
-    <property name="value">
-     <double>0.618000000000000</double>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="grbTransform">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>280</y>
-     <width>541</width>
-     <height>241</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Transformation</string>
-   </property>
-   <widget class="QStackedWidget" name="stwTransformArgs">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>521</width>
-      <height>181</height>
-     </rect>
-    </property>
-    <property name="currentIndex">
-     <number>2</number>
-    </property>
-    <widget class="QWidget" name="stpTransArgNone">
-     <widget class="QLabel" name="lblTransNoneTitle">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>30</y>
-        <width>471</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>There is configurations for transformation typed &lt;NONE&gt;.</string>
-      </property>
-     </widget>
+  <layout class="QVBoxLayout" name="verticalLayout_4">
+   <item>
+    <widget class="QGroupBox" name="grbPanel">
+     <property name="title">
+      <string>Panel</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
+        <item row="0" column="0">
+         <widget class="QLabel" name="lblBgColorTitle">
+          <property name="text">
+           <string>Background Color:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QCheckBox" name="ckbOriginPtRatio">
+          <property name="text">
+           <string>Keep the respective position to the panel size.</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,0,0,1,0">
+          <item>
+           <widget class="QLabel" name="lblPanelWidthTitle">
+            <property name="text">
+             <string>Width</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spbPanelWidth">
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="minimum">
+             <number>10</number>
+            </property>
+            <property name="maximum">
+             <number>65535</number>
+            </property>
+            <property name="singleStep">
+             <number>10</number>
+            </property>
+            <property name="value">
+             <number>640</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblPanelWidthUnit">
+            <property name="text">
+             <string>px</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblPanelHeightTitle">
+            <property name="text">
+             <string>Height</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spbPanelHeight">
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="minimum">
+             <number>10</number>
+            </property>
+            <property name="maximum">
+             <number>65535</number>
+            </property>
+            <property name="singleStep">
+             <number>10</number>
+            </property>
+            <property name="value">
+             <number>480</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblPanelHeightUnit">
+            <property name="text">
+             <string>px</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="4" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1,0,0,0,1,0">
+          <item>
+           <widget class="QLabel" name="lblOriginPtXTitle">
+            <property name="text">
+             <string>X:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spbOriginPtX">
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="minimum">
+             <number>-65535</number>
+            </property>
+            <property name="maximum">
+             <number>65535</number>
+            </property>
+            <property name="singleStep">
+             <number>10</number>
+            </property>
+            <property name="value">
+             <number>320</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblOriginPtXUnit">
+            <property name="text">
+             <string>px</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblOriginPtYTitle">
+            <property name="text">
+             <string>Y:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spbOriginPtY">
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="minimum">
+             <number>-65535</number>
+            </property>
+            <property name="maximum">
+             <number>65535</number>
+            </property>
+            <property name="singleStep">
+             <number>10</number>
+            </property>
+            <property name="value">
+             <number>240</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblOriginPtYUnit">
+            <property name="text">
+             <string>px</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="1">
+         <widget class="QCheckBox" name="ckbPanelSizeRatio">
+          <property name="text">
+           <string>Keep the width-height ratio.</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="lblOriginPointTitle">
+          <property name="text">
+           <string>Origin Point:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="lblPanelSizeTitle">
+          <property name="text">
+           <string>Panel Size:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,1">
+          <item>
+           <widget class="finUiColorLabel" name="lblBgColor">
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::Box</enum>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
-    <widget class="QWidget" name="stpTransArgRect">
-     <widget class="QLabel" name="lblTransRectZoomXTitle">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>10</y>
-        <width>111</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Axis X Ratio:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lblTransRectZoomYTitle">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>40</y>
-        <width>111</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Axis Y Ratio:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="dsbTransRectZoomX">
-      <property name="geometry">
-       <rect>
-        <x>120</x>
-        <y>10</y>
-        <width>81</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-      <property name="decimals">
-       <number>3</number>
-      </property>
-      <property name="minimum">
-       <double>0.001000000000000</double>
-      </property>
-      <property name="maximum">
-       <double>5.000000000000000</double>
-      </property>
-      <property name="singleStep">
-       <double>0.100000000000000</double>
-      </property>
-      <property name="value">
-       <double>0.618000000000000</double>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="dsbTransRectZoomY">
-      <property name="geometry">
-       <rect>
-        <x>120</x>
-        <y>40</y>
-        <width>81</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-      <property name="decimals">
-       <number>3</number>
-      </property>
-      <property name="minimum">
-       <double>0.001000000000000</double>
-      </property>
-      <property name="maximum">
-       <double>5.000000000000000</double>
-      </property>
-      <property name="singleStep">
-       <double>0.100000000000000</double>
-      </property>
-      <property name="value">
-       <double>0.618000000000000</double>
-      </property>
-     </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="grbAxis">
+     <property name="title">
+      <string>Axis</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0,0,1">
+        <item row="0" column="0">
+         <widget class="QLabel" name="lblAxisUnitSizeTitle">
+          <property name="text">
+           <string>Axis Unit Size:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QLabel" name="lblAxisZRatioTitle">
+          <property name="text">
+           <string>Z-axis Ratio:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="lblAxisZDegTitle">
+          <property name="text">
+           <string>Z-axis Degree:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDoubleSpinBox" name="dsbAxisUnitSize">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="decimals">
+           <number>1</number>
+          </property>
+          <property name="minimum">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>8192.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>40.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLabel" name="lblAxisUnitSizeUnit">
+          <property name="text">
+           <string>px</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="spbAxisZDeg">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="minimum">
+           <number>-179</number>
+          </property>
+          <property name="maximum">
+           <number>180</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="value">
+           <number>-135</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4">
+         <widget class="QDoubleSpinBox" name="dsbAxisZRatio">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="decimals">
+           <number>3</number>
+          </property>
+          <property name="minimum">
+           <double>0.001000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>5.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.618000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
-    <widget class="QWidget" name="stpTransArgAffine">
-     <widget class="QTableWidget" name="tbwTransAffineActList">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>391</width>
-        <height>141</height>
-       </rect>
-      </property>
-      <property name="editTriggers">
-       <set>QAbstractItemView::NoEditTriggers</set>
-      </property>
-      <property name="showDropIndicator" stdset="0">
-       <bool>false</bool>
-      </property>
-      <property name="dragDropOverwriteMode">
-       <bool>false</bool>
-      </property>
-      <property name="selectionMode">
-       <enum>QAbstractItemView::SingleSelection</enum>
-      </property>
-      <property name="selectionBehavior">
-       <enum>QAbstractItemView::SelectRows</enum>
-      </property>
-      <property name="columnCount">
-       <number>3</number>
-      </property>
-      <column>
-       <property name="text">
-        <string>Action</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Deg / Arg X</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Arg Y</string>
-       </property>
-      </column>
-     </widget>
-     <widget class="QLabel" name="lblTransAffineNewActTitle">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>0</y>
-        <width>121</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>New Action:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="cmbTransAffineNewAct">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>20</y>
-        <width>121</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lblTransAffineArgXTitle">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>50</y>
-        <width>121</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Degree / Arg X:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="dsbTransAffineArgX">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>70</y>
-        <width>121</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-      <property name="decimals">
-       <number>1</number>
-      </property>
-      <property name="minimum">
-       <double>-5.000000000000000</double>
-      </property>
-      <property name="maximum">
-       <double>5.000000000000000</double>
-      </property>
-      <property name="singleStep">
-       <double>1.000000000000000</double>
-      </property>
-      <property name="value">
-       <double>0.000000000000000</double>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lblTransAffineArgYTitle">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>100</y>
-        <width>121</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Arg Y:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="dsbTransAffineArgY">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>120</y>
-        <width>121</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-      <property name="decimals">
-       <number>1</number>
-      </property>
-      <property name="minimum">
-       <double>-5.000000000000000</double>
-      </property>
-      <property name="maximum">
-       <double>5.000000000000000</double>
-      </property>
-      <property name="singleStep">
-       <double>1.000000000000000</double>
-      </property>
-      <property name="value">
-       <double>0.000000000000000</double>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbTransAffineAppendAct">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>150</y>
-        <width>121</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Append Action</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbTransAffineReset">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>150</y>
-        <width>111</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Clear All</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbTransAffineRemove">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>150</y>
-        <width>101</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Remove</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lblTransAffineMoveTitle">
-      <property name="geometry">
-       <rect>
-        <x>230</x>
-        <y>150</y>
-        <width>50</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Move:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbTransAffineMoveUp">
-      <property name="geometry">
-       <rect>
-        <x>280</x>
-        <y>150</y>
-        <width>60</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Up</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pbTransAffineMoveDown">
-      <property name="geometry">
-       <rect>
-        <x>340</x>
-        <y>150</y>
-        <width>60</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Down</string>
-      </property>
-     </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="grbTransform">
+     <property name="title">
+      <string>Transformation</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,1,1">
+        <item>
+         <widget class="QLabel" name="lblTransformTypeTitle">
+          <property name="text">
+           <string>Type:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="cmbTransformType"/>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QStackedWidget" name="stwTransformArgs">
+        <property name="currentIndex">
+         <number>2</number>
+        </property>
+        <widget class="QWidget" name="stpTransArgNone">
+         <layout class="QVBoxLayout" name="verticalLayout_41" stretch="0">
+          <item>
+           <widget class="QLabel" name="lblTransNoneTitle">
+            <property name="text">
+             <string>There is no configurations for transformation typed &lt;NONE&gt;.</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="stpTransArgRect">
+         <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1,2">
+          <item row="1" column="0">
+           <widget class="QLabel" name="lblTransRectZoomYTitle">
+            <property name="text">
+             <string>Axis Y Ratio:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="lblTransRectZoomXTitle">
+            <property name="text">
+             <string>Axis X Ratio:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="dsbTransRectZoomX">
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="minimum">
+             <double>0.001000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>5.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+            <property name="value">
+             <double>0.618000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="dsbTransRectZoomY">
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="minimum">
+             <double>0.001000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>5.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+            <property name="value">
+             <double>0.618000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="2">
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="stpTransArgAffine">
+         <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="5,2">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_8" stretch="1,0">
+            <item>
+             <widget class="QTableWidget" name="tbwTransAffineActList">
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="showDropIndicator" stdset="0">
+               <bool>false</bool>
+              </property>
+              <property name="dragDropOverwriteMode">
+               <bool>false</bool>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <property name="columnCount">
+               <number>3</number>
+              </property>
+              <column>
+               <property name="text">
+                <string>Action</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Deg / Arg X</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Arg Y</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="1,1,0,0,1,1">
+              <item>
+               <widget class="QPushButton" name="pbTransAffineReset">
+                <property name="text">
+                 <string>Clear All</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pbTransAffineRemove">
+                <property name="text">
+                 <string>Remove</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="lblTransAffineMoveTitle">
+                <property name="text">
+                 <string>Move:</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pbTransAffineMoveUp">
+                <property name="text">
+                 <string>Up</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pbTransAffineMoveDown">
+                <property name="text">
+                 <string>Down</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <item>
+             <widget class="QLabel" name="lblTransAffineNewActTitle">
+              <property name="text">
+               <string>New Action:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="cmbTransAffineNewAct"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="lblTransAffineArgXTitle">
+              <property name="text">
+               <string>Degree / Arg X:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="dsbTransAffineArgX">
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="decimals">
+               <number>1</number>
+              </property>
+              <property name="minimum">
+               <double>-5.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>5.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>1.000000000000000</double>
+              </property>
+              <property name="value">
+               <double>0.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="lblTransAffineArgYTitle">
+              <property name="text">
+               <string>Arg Y:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="dsbTransAffineArgY">
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="decimals">
+               <number>1</number>
+              </property>
+              <property name="minimum">
+               <double>-5.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>5.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>1.000000000000000</double>
+              </property>
+              <property name="value">
+               <double>0.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pbTransAffineAppendAct">
+              <property name="text">
+               <string>Append Action</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
     </widget>
-   </widget>
-   <widget class="QLabel" name="lblTransformTypeTitle">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>51</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Type:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="cmbTransformType">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>20</y>
-      <width>211</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-  </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
   <customwidget>
