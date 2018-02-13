@@ -569,42 +569,14 @@ static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnviron
     if ( matvar == NULL )
         return finErrorKits::EC_NOT_FOUND;
 
-    int matrow = 0, matcol = 0;
-    if ( !matvar->isNumericMatrix(&matrow, &matcol) )
-        return finErrorKits::EC_INVALID_PARAM;
-
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = retvar->preallocArrayLength(matcol);
+    errcode = finExecAlg::varMatTranspose(matvar, retvar);
     if ( finErrorKits::isErrorResult(errcode) ) {
         delete retvar;
         return errcode;
-    }
-    for ( int rowidx = 0; rowidx < matcol; rowidx++ ) {
-        finExecVariable *retrowvar = retvar->getVariableItemAt(rowidx);
-        if ( retrowvar == NULL ) {
-            delete retvar;
-            return finErrorKits::EC_OUT_OF_MEMORY;
-        }
-
-        errcode = retrowvar->preallocArrayLength(matrow);
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            delete retvar;
-            return errcode;
-        }
-        for ( int colidx = 0; colidx < matrow; colidx++ ) {
-            finExecVariable *srcvar = matvar->getVariableItemAt(colidx)->getVariableItemAt(rowidx);
-            finExecVariable *retcolvar = retrowvar->getVariableItemAt(colidx);
-            if ( srcvar == NULL || retcolvar == NULL ) {
-                delete retvar;
-                return finErrorKits::EC_OUT_OF_MEMORY;
-            }
-
-            retcolvar->setType(finExecVariable::TP_NUMERIC);
-            retcolvar->setNumericValue(srcvar->getNumericValue());
-        }
     }
 
     retvar->clearLeftValue();

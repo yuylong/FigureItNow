@@ -261,7 +261,7 @@ finErrorCode finExecAlg::listToNumArrayVar(const QList<double> &list, finExecVar
 }
 
 finErrorCode finExecAlg::listToNumMatVar(const QList<QList<double>> &list, finExecVariable *outvar)
-{\
+{
     outvar->setType(finExecVariable::TP_ARRAY);
     outvar->preallocArrayLength(list.length());
 
@@ -603,6 +603,33 @@ finErrorCode finExecAlg::varVectorDot(finExecVariable *invar1, finExecVariable *
     return finErrorKits::EC_SUCCESS;
 }
 
+finErrorCode finExecAlg::listMatTranspose(const QList<QList<double>> &inlist, QList<QList<double>> *outlist)
+{
+    if ( outlist == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    int outrow = 0, outcol = inlist.length();
+    foreach ( const QList<double> &sublist, inlist ) {
+        if ( sublist.length() > outrow )
+            outrow = sublist.length();
+    }
+
+    outlist->clear();
+    for ( int r = 0; r < outrow; r++ ) {
+        QList<double> outsublist;
+        for ( int c = 0; c < outcol; c++ ) {
+            double val = 0.0;
+            const QList<double> &insublist = inlist.at(c);
+            if ( r < insublist.length() )
+                val = insublist.at(r);
+
+            outsublist.append(val);
+        }
+        outlist->append(outsublist);
+    }
+    return finErrorKits::EC_SUCCESS;
+}
+
 finErrorCode finExecAlg::listMatAdd(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
                                     QList<QList<double>> *outlist)
 {
@@ -625,6 +652,23 @@ finErrorCode finExecAlg::listMatAdd(const QList<QList<double>> &inlist1, const Q
         outlist->append(outsublist);
     }
     return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finExecAlg::varMatTranspose(finExecVariable *invar, finExecVariable *outvar)
+{
+    if ( invar == NULL || outvar == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+    if ( !invar->isNumericMatrix() )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    QList<QList<double>> inlist, outlist;
+    numMatVarToList(invar, &inlist);
+
+    finErrorCode errcode = listMatTranspose(inlist, &outlist);
+    if ( finErrorKits::isErrorResult(errcode) )
+        return errcode;
+
+    return listToNumMatVar(outlist, outvar);
 }
 
 finErrorCode finExecAlg::varMatAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
