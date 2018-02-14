@@ -631,47 +631,14 @@ static finErrorCode _sysfunc_mat_sub(finExecFunction *self, finExecEnvironment *
     if ( mat1var == NULL || mat2var == NULL )
         return finErrorKits::EC_NOT_FOUND;
 
-    int mat1row = 0, mat1col = 0, mat2row = 0, mat2col = 0;
-    if ( !mat1var->isNumericMatrix(&mat1row, &mat1col) || !mat2var->isNumericMatrix(&mat2row, &mat2col) )
-        return finErrorKits::EC_INVALID_PARAM;
-    if ( mat1row != mat2row || mat1col != mat2col )
-        return finErrorKits::EC_INVALID_PARAM;
-
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = retvar->preallocArrayLength(mat1row);
+    errcode = finExecAlg::varMatSub(mat1var, mat2var, retvar);
     if ( finErrorKits::isErrorResult(errcode) ) {
         delete retvar;
         return errcode;
-    }
-    for ( int rowidx = 0; rowidx < mat1row; rowidx++ ) {
-        finExecVariable *rowvar1 = mat1var->getVariableItemAt(rowidx);
-        finExecVariable *rowvar2 = mat2var->getVariableItemAt(rowidx);
-        finExecVariable *retrowvar = retvar->getVariableItemAt(rowidx);
-        if ( rowvar1 == NULL || rowvar2 == NULL || retrowvar == NULL ) {
-            delete retvar;
-            return finErrorKits::EC_OUT_OF_MEMORY;
-        }
-
-        errcode = retrowvar->preallocArrayLength(mat1col);
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            delete retvar;
-            return errcode;
-        }
-        for ( int colidx = 0; colidx < mat1col; colidx++ ) {
-            finExecVariable *colvar1 = rowvar1->getVariableItemAt(colidx);
-            finExecVariable *colvar2 = rowvar2->getVariableItemAt(colidx);
-            finExecVariable *retcolvar = retrowvar->getVariableItemAt(colidx);
-            if ( colvar1 == NULL || colvar2 == NULL || retcolvar == NULL ) {
-                delete retvar;
-                return finErrorKits::EC_OUT_OF_MEMORY;
-            }
-
-            retcolvar->setType(finExecVariable::TP_NUMERIC);
-            retcolvar->setNumericValue(colvar1->getNumericValue() - colvar2->getNumericValue());
-        }
     }
 
     retvar->clearLeftValue();
