@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>519</width>
-    <height>512</height>
+    <width>500</width>
+    <height>518</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Graphics Configuration</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_4">
+  <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,1,0">
    <item>
     <widget class="QGroupBox" name="grbPanel">
      <property name="title">
@@ -613,7 +613,7 @@
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="1,1,0,0,1,1">
+             <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="1,1,2,0,1,1">
               <item>
                <widget class="QPushButton" name="pbTransAffineReset">
                 <property name="text">
@@ -635,7 +635,7 @@
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
+                  <width>0</width>
                   <height>20</height>
                  </size>
                 </property>
@@ -670,7 +670,7 @@
            </layout>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_7">
+           <layout class="QVBoxLayout" name="verticalLayout_7" stretch="0,0,0,0,0,0,0,1">
             <item>
              <widget class="QLabel" name="lblTransAffineNewActTitle">
               <property name="text">
@@ -754,6 +754,19 @@
                <string>Append Action</string>
               </property>
              </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </item>
