@@ -62,7 +62,8 @@ SOURCES += main.cpp\
     finUiScriptEditor.cpp \
     finUiAboutDlg.cpp \
     finUiCommandLine.cpp \
-    finExecAlg.cpp
+    finExecAlg.cpp \
+    finExecVariableSysvar.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
