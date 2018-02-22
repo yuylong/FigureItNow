@@ -18,6 +18,13 @@ static finExecVariable *_sysvar_pi();
 static finExecVariable *_sysvar_e();
 static finExecVariable *_sysvar_pythagoras_const();
 static finExecVariable *_sysvar_theodorus_const();
+static finExecVariable *_sysvar_euler_mascheroni_const();
+static finExecVariable *_sysvar_golden_ratio();
+static finExecVariable *_sysvar_meissel_mertens_const();
+static finExecVariable *_sysvar_bernsteins_const();
+static finExecVariable *_sysvar_gauss_kuzmin_wirsing_const();
+static finExecVariable *_sysvar_hafner_sarnak_mccurley_const();
+static finExecVariable *_sysvar_landaus_const();
 
 typedef finExecVariable *(*_finSysvarGencall)();
 
@@ -27,6 +34,13 @@ _finSysvarGencall _finSysvarGencallList[] = {
     _sysvar_e,
     _sysvar_pythagoras_const,
     _sysvar_theodorus_const,
+    _sysvar_euler_mascheroni_const,
+    _sysvar_golden_ratio,
+    _sysvar_meissel_mertens_const,
+    _sysvar_bernsteins_const,
+    _sysvar_gauss_kuzmin_wirsing_const,
+    _sysvar_hafner_sarnak_mccurley_const,
+    _sysvar_landaus_const,
     NULL
 };
 
@@ -147,4 +161,39 @@ static finExecVariable *_sysvar_pythagoras_const()
 static finExecVariable *_sysvar_theodorus_const()
 {
     return _sysvar_gen_num_var(QString("THEODORUS_CONST"), sqrt(3.0));
+}
+
+static finExecVariable *_sysvar_euler_mascheroni_const()
+{
+    return _sysvar_gen_num_var(QString("EULER_MASCHERONI_CONST"), 0.57721566490153286060651209008240243);
+}
+
+static finExecVariable *_sysvar_golden_ratio()
+{
+    return _sysvar_gen_num_var(QString("GOLDEN_RATIO"), 1.61803398874989484820458683436563811);
+}
+
+static finExecVariable *_sysvar_meissel_mertens_const()
+{
+    return _sysvar_gen_num_var(QString("MEISSEL_MERTENS_CONST"), 0.26149721284764278375542683860869585);
+}
+
+static finExecVariable *_sysvar_bernsteins_const()
+{
+    return _sysvar_gen_num_var(QString("BERNSTEINS_CONST"), 0.28016949902386913303);
+}
+
+static finExecVariable *_sysvar_gauss_kuzmin_wirsing_const()
+{
+    return _sysvar_gen_num_var(QString("GAUSS_KUZMIN_WIRSING_CONST"), 0.30366300289873265859744812190155623);
+}
+
+static finExecVariable *_sysvar_hafner_sarnak_mccurley_const()
+{
+    return _sysvar_gen_num_var(QString("HAFNER_SARNAK_MCCURLEY_CONST"), 0.35323637185499598454351655043268201);
+}
+
+static finExecVariable *_sysvar_landaus_const()
+{
+    return _sysvar_gen_num_var(QString("LANDAUS_CONST"), 0.5);
 }
