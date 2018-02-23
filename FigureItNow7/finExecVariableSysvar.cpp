@@ -36,6 +36,27 @@ static finExecVariable *_sysvar_alladi_grinstead_const();
 static finExecVariable *_sysvar_prime_quad_bruns_const();
 static finExecVariable *_sysvar_catalans_const();
 static finExecVariable *_sysvar_legendres_const();
+static finExecVariable *_sysvar_lengyels_const();
+static finExecVariable *_sysvar_viswanaths_const();
+static finExecVariable *_sysvar_aperys_const();
+static finExecVariable *_sysvar_conways_const();
+static finExecVariable *_sysvar_mills_const();
+static finExecVariable *_sysvar_plastic_const();
+static finExecVariable *_sysvar_ramanujan_soldner_const();
+static finExecVariable *_sysvar_backhouses_const();
+static finExecVariable *_sysvar_porters_const();
+static finExecVariable *_sysvar_liebs_sqr_ice_const();
+static finExecVariable *_sysvar_erdos_borwein_const();
+static finExecVariable *_sysvar_nivens_const();
+static finExecVariable *_sysvar_twin_primes_bruns_const();
+static finExecVariable *_sysvar_universal_parabolic_const();
+static finExecVariable *_sysvar_feigenbaum_const_2nd();
+static finExecVariable *_sysvar_sierpinskis_const();
+static finExecVariable *_sysvar_khinchins_const();
+static finExecVariable *_sysvar_fransen_robinson_const();
+static finExecVariable *_sysvar_levys_const();
+static finExecVariable *_sysvar_reciprocal_fibonacci_const();
+static finExecVariable *_sysvar_feigenbaum_const();
 
 typedef finExecVariable *(*_finSysvarGencall)();
 
@@ -63,6 +84,27 @@ _finSysvarGencall _finSysvarGencallList[] = {
     _sysvar_prime_quad_bruns_const,
     _sysvar_catalans_const,
     _sysvar_legendres_const,
+    _sysvar_lengyels_const,
+    _sysvar_viswanaths_const,
+    _sysvar_aperys_const,
+    _sysvar_conways_const,
+    _sysvar_mills_const,
+    _sysvar_plastic_const,
+    _sysvar_ramanujan_soldner_const,
+    _sysvar_backhouses_const,
+    _sysvar_porters_const,
+    _sysvar_liebs_sqr_ice_const,
+    _sysvar_erdos_borwein_const,
+    _sysvar_nivens_const,
+    _sysvar_twin_primes_bruns_const,
+    _sysvar_universal_parabolic_const,
+    _sysvar_feigenbaum_const_2nd,
+    _sysvar_sierpinskis_const,
+    _sysvar_khinchins_const,
+    _sysvar_fransen_robinson_const,
+    _sysvar_levys_const,
+    _sysvar_reciprocal_fibonacci_const,
+    _sysvar_feigenbaum_const,
     NULL
 };
 
@@ -273,4 +315,109 @@ static finExecVariable *_sysvar_catalans_const()
 static finExecVariable *_sysvar_legendres_const()
 {
     return _sysvar_gen_num_var(QString("LEGENDRES_CONST"), 1.0);
+}
+
+static finExecVariable *_sysvar_lengyels_const()
+{
+    return _sysvar_gen_num_var(QString("LENGYELS_CONST"), 1.0986858055);
+}
+
+static finExecVariable *_sysvar_viswanaths_const()
+{
+    return _sysvar_gen_num_var(QString("VISWANATHS_CONST"), 1.13198824);
+}
+
+static finExecVariable *_sysvar_aperys_const()
+{
+    return _sysvar_gen_num_var(QString("APERYS_CONST"), 1.20205690315959428539973816151144999);
+}
+
+static finExecVariable *_sysvar_conways_const()
+{
+    return _sysvar_gen_num_var(QString("CONWAYS_CONST"), 1.30357726903429639125709911215255189);
+}
+
+static finExecVariable *_sysvar_mills_const()
+{
+    return _sysvar_gen_num_var(QString("MILLS_CONST"), 1.30637788386308069046861449260260571);
+}
+
+static finExecVariable *_sysvar_plastic_const()
+{
+    return _sysvar_gen_num_var(QString("PLASTIC_CONST"), 1.32471795724474602596090885447809734);
+}
+
+static finExecVariable *_sysvar_ramanujan_soldner_const()
+{
+    return _sysvar_gen_num_var(QString("RAMANUJAN_SOLDNER_CONST"), 1.45136923488338105028396848589202744);
+}
+
+static finExecVariable *_sysvar_backhouses_const()
+{
+    return _sysvar_gen_num_var(QString("BACKHOUSES_CONST"), 1.45607494858268967139959535111654356);
+}
+
+static finExecVariable *_sysvar_porters_const()
+{
+    return _sysvar_gen_num_var(QString("PORTERS_CONST"), 1.4670780794);
+}
+
+static finExecVariable *_sysvar_liebs_sqr_ice_const()
+{
+    return _sysvar_gen_num_var(QString("LIEBS_SQR_ICE_CONST"), 1.5396007178);
+}
+
+static finExecVariable *_sysvar_erdos_borwein_const()
+{
+    return _sysvar_gen_num_var(QString("ERDOS_BORWEIN_CONST"), 1.60669515241529176378330152319092458);
+}
+
+static finExecVariable *_sysvar_nivens_const()
+{
+    return _sysvar_gen_num_var(QString("NIVENS_CONST"), 1.70521114010536776428855145343450816);
+}
+
+static finExecVariable *_sysvar_twin_primes_bruns_const()
+{
+    return _sysvar_gen_num_var(QString("TWIN_PRIMES_BRUNS_CONST"), 1.902160583104);
+}
+
+static finExecVariable *_sysvar_universal_parabolic_const()
+{
+    return _sysvar_gen_num_var(QString("UNIVERSAL_PARABOLIC_CONST"), 2.29558714939263807403429804918949039);
+}
+
+static finExecVariable *_sysvar_feigenbaum_const_2nd()
+{
+    return _sysvar_gen_num_var(QString("FEIGENBAUM_CONST_2ND"), 2.50290787509589282228390287321821578);
+}
+
+static finExecVariable *_sysvar_sierpinskis_const()
+{
+    return _sysvar_gen_num_var(QString("SIERPINSKIS_CONST"), 2.58498175957925321706589358738317116);
+}
+
+static finExecVariable *_sysvar_khinchins_const()
+{
+    return _sysvar_gen_num_var(QString("KHINCHINS_CONST"), 2.68545200106530644530971483548179569);
+}
+
+static finExecVariable *_sysvar_fransen_robinson_const()
+{
+    return _sysvar_gen_num_var(QString("FRANSEN_ROBINSON_CONST"), 2.80777024202851936522150118655777293);
+}
+
+static finExecVariable *_sysvar_levys_const()
+{
+    return _sysvar_gen_num_var(QString("LEVYS_CONST"), 3.27582291872181115978768188245384386);
+}
+
+static finExecVariable *_sysvar_reciprocal_fibonacci_const()
+{
+    return _sysvar_gen_num_var(QString("RECIPROCAL_FIBONACCI_CONST"), 3.35988566624317755317201130291892717);
+}
+
+static finExecVariable *_sysvar_feigenbaum_const()
+{
+    return _sysvar_gen_num_var(QString("FEIGENBAUM_CONST"), 4.66920160910299067185320382046620161);
 }
