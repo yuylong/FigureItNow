@@ -16,6 +16,17 @@
 static finExecVariable *_sysvar_nil();
 static finExecVariable *_sysvar_pi();
 static finExecVariable *_sysvar_e();
+
+static finExecVariable *_sysvar_kilo();
+static finExecVariable *_sysvar_million();
+static finExecVariable *_sysvar_billion();
+static finExecVariable *_sysvar_trillion();
+static finExecVariable *_sysvar_quarter();
+static finExecVariable *_sysvar_percent();
+static finExecVariable *_sysvar_permille();
+static finExecVariable *_sysvar_ppm();
+static finExecVariable *_sysvar_ppb();
+
 static finExecVariable *_sysvar_pythagoras_const();
 static finExecVariable *_sysvar_theodorus_const();
 static finExecVariable *_sysvar_euler_mascheroni_const();
@@ -64,6 +75,17 @@ _finSysvarGencall _finSysvarGencallList[] = {
     _sysvar_nil,
     _sysvar_pi,
     _sysvar_e,
+
+    _sysvar_kilo,
+    _sysvar_million,
+    _sysvar_billion,
+    _sysvar_trillion,
+    _sysvar_quarter,
+    _sysvar_percent,
+    _sysvar_permille,
+    _sysvar_ppm,
+    _sysvar_ppb,
+
     _sysvar_pythagoras_const,
     _sysvar_theodorus_const,
     _sysvar_euler_mascheroni_const,
@@ -215,6 +237,51 @@ static finExecVariable *_sysvar_pi()
 static finExecVariable *_sysvar_e()
 {
     return _sysvar_gen_num_var(QString("E"), M_E);
+}
+
+static finExecVariable *_sysvar_kilo()
+{
+    return _sysvar_gen_num_var(QString("KILO"), 1000.0);
+}
+
+static finExecVariable *_sysvar_million()
+{
+    return _sysvar_gen_num_var(QString("MILLION"), 1.0e+6);
+}
+
+static finExecVariable *_sysvar_billion()
+{
+    return _sysvar_gen_num_var(QString("BILLION"), 1.0e+9);
+}
+
+static finExecVariable *_sysvar_trillion()
+{
+    return _sysvar_gen_num_var(QString("TRILLION"), 1.0e+12);
+}
+
+static finExecVariable *_sysvar_quarter()
+{
+    return _sysvar_gen_num_var(QString("QUARTER"), 0.25);
+}
+
+static finExecVariable *_sysvar_percent()
+{
+    return _sysvar_gen_num_var(QString("PERCENT"), 0.01);
+}
+
+static finExecVariable *_sysvar_permille()
+{
+    return _sysvar_gen_num_var(QString("PERMILLE"), 0.001);
+}
+
+static finExecVariable *_sysvar_ppm()
+{
+    return _sysvar_gen_num_var(QString("PPM"), 1.0e-6);
+}
+
+static finExecVariable *_sysvar_ppb()
+{
+    return _sysvar_gen_num_var(QString("PPB"), 1.0e-9);
 }
 
 static finExecVariable *_sysvar_pythagoras_const()
