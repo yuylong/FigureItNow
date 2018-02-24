@@ -44,6 +44,7 @@ public:
     static finErrorCode listArraySub(const QList<double> &inlist1, const QList<double> &inlist2,
                                      QList<double> *outlist);
     static finErrorCode listArraySum(const QList<double> &inlist, double *outval);
+    static finErrorCode listArrayAvg(const QList<double> &inlist, double *outval);
 
     static finErrorCode listVectorNorm(const QList<double> &inlist, double *outval);
     static finErrorCode listVectorNorm1(const QList<double> &inlist, double *outval);
@@ -56,6 +57,7 @@ public:
     static finErrorCode varArrayAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
     static finErrorCode varArraySub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
     static finErrorCode varArraySum(finExecVariable *invar, finExecVariable *outvar);
+    static finErrorCode varArrayAvg(finExecVariable *invar, finExecVariable *outvar);
 
     static finErrorCode varVectorNorm(finExecVariable *invar, finExecVariable *outvar);
     static finErrorCode varVectorNorm1(finExecVariable *invar, finExecVariable *outvar);
