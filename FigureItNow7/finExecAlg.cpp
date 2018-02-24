@@ -322,6 +322,19 @@ finErrorCode finExecAlg::listArraySub(const QList<double> &inlist1, const QList<
     return finErrorKits::EC_SUCCESS;
 }
 
+finErrorCode finExecAlg::listArraySum(const QList<double> &inlist, double *outval)
+{
+    if ( outval == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    double sumval = 0.0;
+    foreach ( double val, inlist ) {
+        sumval += val;
+    }
+    *outval = sumval;
+    return finErrorKits::EC_SUCCESS;
+}
+
 finErrorCode finExecAlg::listVectorNorm(const QList<double> &inlist, double *outval)
 {
     if ( outval == NULL )
@@ -474,6 +487,26 @@ finErrorCode finExecAlg::varArraySub(finExecVariable *invar1, finExecVariable *i
         return errcode;
 
     return listToNumArrayVar(outlist, outvar);
+}
+
+finErrorCode finExecAlg::varArraySum(finExecVariable *invar, finExecVariable *outvar)
+{
+    if ( invar == NULL || outvar == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+    if ( !invar->isNumericArray() )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    QList<double> inlist;
+    numArrayVarToList(invar, &inlist);
+
+    double outval = 0.0;
+    finErrorCode errcode = listArraySum(inlist, &outval);
+    if ( finErrorKits::isErrorResult(errcode) )
+        return errcode;
+
+    outvar->setType(finExecVariable::TP_NUMERIC);
+    outvar->setNumericValue(outval);
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::varVectorNorm(finExecVariable *invar, finExecVariable *outvar)
