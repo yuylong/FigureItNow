@@ -678,6 +678,39 @@ finErrorCode finExecAlg::listMatSub(const QList<QList<double>> &inlist1, const Q
     return finErrorKits::EC_SUCCESS;
 }
 
+finErrorCode finExecAlg::listMatDot(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
+                                    QList<QList<double>> *outlist)
+{
+    if ( outlist == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    finErrorCode errcode;
+    QList<QList<double>> inlist2t;
+    errcode = listMatTranspose(inlist2, &inlist2t);
+    if ( finErrorKits::isErrorResult(errcode) )
+        return errcode;
+
+    outlist->clear();
+    foreach ( const QList<double> &in1row, inlist1 ) {
+        QList<double> outrow;
+        foreach ( const QList<double> &in2col, inlist2t ) {
+            int len = in1row.length();
+            if ( len != in2col.length() )
+                return finErrorKits::EC_INVALID_PARAM;
+
+            double itemval = 0.0;
+            for ( int i = 0; i < len; i++ ) {
+                double in1item = in1row.at(i);
+                double in2item = in2col.at(i);
+                itemval += in1item * in2item;
+            }
+            outrow.append(itemval);
+        }
+        outlist->append(outrow);
+    }
+    return finErrorKits::EC_SUCCESS;
+}
+
 finErrorCode finExecAlg::varMatTranspose(finExecVariable *invar, finExecVariable *outvar)
 {
     if ( invar == NULL || outvar == NULL )
@@ -737,6 +770,30 @@ finErrorCode finExecAlg::varMatSub(finExecVariable *invar1, finExecVariable *inv
     numMatVarToList(invar2, &inlist2);
 
     finErrorCode errcode = listMatSub(inlist1, inlist2, &outlist);
+    if ( finErrorKits::isErrorResult(errcode) )
+        return errcode;
+
+    return listToNumMatVar(outlist, outvar);
+}
+
+finErrorCode finExecAlg::varMatDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
+{
+    if ( invar1 == NULL || invar2 == NULL || outvar == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    int varrow1 = 0, varcol1 = 0, varrow2 = 0, varcol2 = 0;
+    bool ismat1 = invar1->isNumericMatrix(&varrow1, &varcol1);
+    bool ismat2 = invar2->isNumericMatrix(&varrow2, &varcol2);
+    if ( !ismat1 || !ismat2 )
+        return finErrorKits::EC_INVALID_PARAM;
+    if ( varcol1 != varrow2 )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    QList< QList<double> > inlist1, inlist2, outlist;
+    numMatVarToList(invar1, &inlist1);
+    numMatVarToList(invar2, &inlist2);
+
+    finErrorCode errcode = listMatDot(inlist1, inlist2, &outlist);
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 

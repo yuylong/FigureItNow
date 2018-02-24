@@ -662,56 +662,14 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
     if ( mat1var == NULL || mat2var == NULL )
         return finErrorKits::EC_NOT_FOUND;
 
-    int mat1row = 0, mat1col = 0, mat2row = 0, mat2col = 0;
-    if ( !mat1var->isNumericMatrix(&mat1row, &mat1col) || !mat2var->isNumericMatrix(&mat2row, &mat2col) )
-        return finErrorKits::EC_INVALID_PARAM;
-    if ( mat1col != mat2row )
-        return finErrorKits::EC_INVALID_PARAM;
-
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = retvar->preallocArrayLength(mat1row);
+    errcode = finExecAlg::varMatDot(mat1var, mat2var, retvar);
     if ( finErrorKits::isErrorResult(errcode) ) {
         delete retvar;
         return errcode;
-    }
-    for ( int rowidx = 0; rowidx < mat1row; rowidx++ ) {
-        finExecVariable *rowvar1 = mat1var->getVariableItemAt(rowidx);
-        finExecVariable *retrowvar = retvar->getVariableItemAt(rowidx);
-        if ( rowvar1 == NULL || retrowvar == NULL ) {
-            delete retvar;
-            return finErrorKits::EC_OUT_OF_MEMORY;
-        }
-
-        errcode = retrowvar->preallocArrayLength(mat2col);
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            delete retvar;
-            return errcode;
-        }
-        for ( int colidx = 0; colidx < mat2col; colidx++ ) {
-            double itemval = 0.0;
-            for ( int i = 0; i < mat1col; i++ ) {
-                finExecVariable *colvar1 = rowvar1->getVariableItemAt(i);
-                finExecVariable *colvar2 = mat2var->getVariableItemAt(i)->getVariableItemAt(colidx);
-                if ( colvar1 == NULL || colvar2 == NULL ) {
-                    delete retvar;
-                    return finErrorKits::EC_OUT_OF_MEMORY;
-                }
-
-                itemval += colvar1->getNumericValue() * colvar2->getNumericValue();
-            }
-
-            finExecVariable *retcolvar = retrowvar->getVariableItemAt(colidx);
-            if ( retcolvar == NULL ) {
-                delete retvar;
-                return finErrorKits::EC_OUT_OF_MEMORY;
-            }
-
-            retcolvar->setType(finExecVariable::TP_NUMERIC);
-            retcolvar->setNumericValue(itemval);
-        }
     }
 
     retvar->clearLeftValue();
