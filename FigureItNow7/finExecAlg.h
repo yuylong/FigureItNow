@@ -38,6 +38,9 @@ public:
     static finErrorCode listToNumArrayVar(const QList<double> &list, finExecVariable *outvar);
     static finErrorCode listToNumMatVar(const QList<QList<double>> &list, finExecVariable *outvar);
 
+    static finErrorCode listMatrixToArray(const QList< QList<double> > &inlist, QList<double> *outlist);
+    static finErrorCode varMatrixToArray(finExecVariable *invar, finExecVariable *outvar);
+
     static finErrorCode listArrayNeg(const QList<double> &inlist, QList<double> *outlist);
     static finErrorCode listArrayAdd(const QList<double> &inlist1, const QList<double> &inlist2,
                                      QList<double> *outlist);

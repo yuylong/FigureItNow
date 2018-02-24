@@ -19,6 +19,8 @@ static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *en
                                    finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_matrix2array(finExecFunction *self, finExecEnvironment *env,
+                                          finExecMachine *machine, finExecFlowControl *flowctl);
 
 static finErrorCode _sysfunc_array_size(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl);
@@ -58,32 +60,35 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
                                      finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
-    { QString("array"),         QString("n"),         _sysfunc_array         },
-    { QString("vector"),        QString("n"),         _sysfunc_array         },
-    { QString("matrix"),        QString("row,col"),   _sysfunc_matrix        },
+    { QString("array"),            QString("n"),         _sysfunc_array         },
+    { QString("vector"),           QString("n"),         _sysfunc_array         },
+    { QString("matrix"),           QString("row,col"),   _sysfunc_matrix        },
+    { QString("matrix_to_array"),  QString("mat"),       _sysfunc_matrix2array  },
+    { QString("matrix_to_vector"), QString("mat"),       _sysfunc_matrix2array  },
 
-    { QString("array_size"),    QString("ary"),       _sysfunc_array_size    },
-    { QString("array_neg"),     QString("ary"),       _sysfunc_array_neg     },
-    { QString("array_add"),     QString("ary1,ary2"), _sysfunc_array_add     },
-    { QString("array_sub"),     QString("ary1,ary2"), _sysfunc_array_sub     },
-    { QString("array_sum"),     QString("ary"),       _sysfunc_array_sum     },
-    { QString("array_avg"),     QString("ary"),       _sysfunc_array_avg     },
 
-    { QString("vec_dim"),       QString("ary"),       _sysfunc_vec_dim       },
-    { QString("vec_neg"),       QString("ary"),       _sysfunc_array_neg     },
-    { QString("vec_add"),       QString("ary1,ary2"), _sysfunc_array_add     },
-    { QString("vec_sub"),       QString("ary1,ary2"), _sysfunc_array_sub     },
-    { QString("vec_norm"),      QString("ary"),       _sysfunc_vec_norm      },
-    { QString("vec_norm_1"),    QString("ary"),       _sysfunc_vec_norm_1    },
-    { QString("vec_norm_p"),    QString("ary,p"),     _sysfunc_vec_norm_p    },
-    { QString("vec_norm_inf"),  QString("ary"),       _sysfunc_vec_norm_inf  },
-    { QString("vec_normalize"), QString("ary"),       _sysfunc_vec_normalize },
-    { QString("vec_dot"),       QString("ary1,ary2"), _sysfunc_vec_dot       },
+    { QString("array_size"),       QString("ary"),       _sysfunc_array_size    },
+    { QString("array_neg"),        QString("ary"),       _sysfunc_array_neg     },
+    { QString("array_add"),        QString("ary1,ary2"), _sysfunc_array_add     },
+    { QString("array_sub"),        QString("ary1,ary2"), _sysfunc_array_sub     },
+    { QString("array_sum"),        QString("ary"),       _sysfunc_array_sum     },
+    { QString("array_avg"),        QString("ary"),       _sysfunc_array_avg     },
 
-    { QString("mat_transpose"), QString("mat"),       _sysfunc_mat_transpose },
-    { QString("mat_add"),       QString("mat1,mat2"), _sysfunc_mat_add       },
-    { QString("mat_sub"),       QString("mat1,mat2"), _sysfunc_mat_sub       },
-    { QString("mat_dot"),       QString("mat1,mat2"), _sysfunc_mat_dot       },
+    { QString("vec_dim"),          QString("ary"),       _sysfunc_vec_dim       },
+    { QString("vec_neg"),          QString("ary"),       _sysfunc_array_neg     },
+    { QString("vec_add"),          QString("ary1,ary2"), _sysfunc_array_add     },
+    { QString("vec_sub"),          QString("ary1,ary2"), _sysfunc_array_sub     },
+    { QString("vec_norm"),         QString("ary"),       _sysfunc_vec_norm      },
+    { QString("vec_norm_1"),       QString("ary"),       _sysfunc_vec_norm_1    },
+    { QString("vec_norm_p"),       QString("ary,p"),     _sysfunc_vec_norm_p    },
+    { QString("vec_norm_inf"),     QString("ary"),       _sysfunc_vec_norm_inf  },
+    { QString("vec_normalize"),    QString("ary"),       _sysfunc_vec_normalize },
+    { QString("vec_dot"),          QString("ary1,ary2"), _sysfunc_vec_dot       },
+
+    { QString("mat_transpose"),    QString("mat"),       _sysfunc_mat_transpose },
+    { QString("mat_add"),          QString("mat1,mat2"), _sysfunc_mat_add       },
+    { QString("mat_sub"),          QString("mat1,mat2"), _sysfunc_mat_sub       },
+    { QString("mat_dot"),          QString("mat1,mat2"), _sysfunc_mat_dot       },
 
     { QString(), QString(), NULL }
 };
@@ -220,6 +225,36 @@ static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *e
     }
 
 out:
+    retvar->clearLeftValue();
+    retvar->setWriteProtected();
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_matrix2array(finExecFunction *self, finExecEnvironment *env,
+                                          finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *matvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    matvar = finExecVariable::transLinkTarget(env->findVariable("mat"));
+    if ( matvar == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorKits::EC_OUT_OF_MEMORY;
+
+    errcode = finExecAlg::varMatrixToArray(matvar, retvar);
+    if ( finErrorKits::isErrorResult(errcode) ) {
+        delete retvar;
+        return errcode;
+    }
+
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
