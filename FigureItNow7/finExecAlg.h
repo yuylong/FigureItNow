@@ -40,6 +40,8 @@ public:
 
     static finErrorCode listMatrixToArray(const QList< QList<double> > &inlist, QList<double> *outlist);
     static finErrorCode varMatrixToArray(finExecVariable *invar, finExecVariable *outvar);
+    static finErrorCode varArrayCut(finExecVariable *invar, int from, int to, finExecVariable *outvar);
+    static finErrorCode varArrayJoin(const QList<finExecVariable *> &invarlist, finExecVariable *outvar);
 
     static finErrorCode listArrayNeg(const QList<double> &inlist, QList<double> *outlist);
     static finErrorCode listArrayAdd(const QList<double> &inlist1, const QList<double> &inlist2,

@@ -335,6 +335,85 @@ finErrorCode finExecAlg::varMatrixToArray(finExecVariable *invar, finExecVariabl
     return finErrorKits::EC_SUCCESS;
 }
 
+finErrorCode finExecAlg::varArrayCut(finExecVariable *invar, int from, int to, finExecVariable *outvar)
+{
+    if ( invar == NULL || outvar == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+    if ( invar->getType() != finExecVariable::TP_ARRAY )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    int inlen = invar->getArrayLength();
+    from = (from < 0 ? 0 : from);
+    to = (to > inlen ? inlen : to);
+    int realfrom = (from < to ? from : to);
+    int realto = (from < to ? to : from);
+
+    finErrorCode errcode;
+    outvar->setType(finExecVariable::TP_ARRAY);
+    outvar->preallocArrayLength(realto - realfrom);
+    for (int outi = 0, ini = from; ini < to; outi++, ini++) {
+        finExecVariable *initem = invar->getVariableItemAt(ini);
+        finExecVariable *outitem = outvar->getVariableItemAt(outi);
+        if ( initem == NULL || outitem == NULL )
+            return finErrorKits::EC_OUT_OF_MEMORY;
+
+        errcode = outitem->copyVariable(initem);
+        if ( finErrorKits::isErrorResult(errcode) )
+            return errcode;
+    }
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _appendSubVar(finExecVariable *outvar, finExecVariable *subvar, int startpos, int *endpos)
+{
+    if ( subvar == NULL || subvar->getType() == finExecVariable::TP_NULL ) {
+        *endpos = startpos;
+        return finErrorKits::EC_NORMAL_WARN;
+    }
+
+    if ( subvar->getType() != finExecVariable::TP_ARRAY ) {
+        outvar->preallocArrayLength(startpos + 1);
+        finExecVariable *outitem = outvar->getVariableItemAt(startpos);
+        if ( outitem == NULL )
+            return finErrorKits::EC_OUT_OF_MEMORY;
+
+        outitem->copyVariable(subvar);
+        *endpos = startpos + 1;
+        return finErrorKits::EC_SUCCESS;
+    }
+
+    finErrorCode errcode;
+    int sublen = subvar->getArrayLength();
+    outvar->preallocArrayLength(startpos + sublen);
+    for ( int i = 0; i < sublen; i++ ) {
+        finExecVariable *initem = subvar->getVariableItemAt(i);
+        finExecVariable *outitem = outvar->getVariableItemAt(startpos + i);
+        if ( initem == NULL || outitem == NULL )
+            return finErrorKits::EC_OUT_OF_MEMORY;
+
+        errcode = outitem->copyVariable(initem);
+        if ( finErrorKits::isErrorResult(errcode) )
+            return errcode;
+    }
+    *endpos = startpos + sublen;
+    return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finExecAlg::varArrayJoin(const QList<finExecVariable *> &invarlist, finExecVariable *outvar)
+{
+    if ( outvar == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    int pos = 0;
+    outvar->setType(finExecVariable::TP_ARRAY);
+    foreach ( finExecVariable *invar, invarlist ) {
+        finErrorCode errcode = _appendSubVar(outvar, invar, pos, &pos);
+        if ( finErrorKits::isErrorResult(errcode) )
+            return errcode;
+    }
+    return finErrorKits::EC_SUCCESS;
+}
+
 finErrorCode finExecAlg::listArrayNeg(const QList<double> &inlist, QList<double> *outlist)
 {
     if ( outlist == NULL )
