@@ -21,6 +21,10 @@ static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *e
                                     finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_matrix2array(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_array_cut(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl);
+static finErrorCode _sysfunc_array_join(finExecFunction *self, finExecEnvironment *env,
+                                        finExecMachine *machine, finExecFlowControl *flowctl);
 
 static finErrorCode _sysfunc_array_size(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl);
@@ -60,35 +64,38 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
                                      finExecMachine *machine, finExecFlowControl *flowctl);
 
 static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
-    { QString("array"),            QString("n"),         _sysfunc_array         },
-    { QString("vector"),           QString("n"),         _sysfunc_array         },
-    { QString("matrix"),           QString("row,col"),   _sysfunc_matrix        },
-    { QString("matrix_to_array"),  QString("mat"),       _sysfunc_matrix2array  },
-    { QString("matrix_to_vector"), QString("mat"),       _sysfunc_matrix2array  },
+    { QString("array"),            QString("n"),           _sysfunc_array         },
+    { QString("vector"),           QString("n"),           _sysfunc_array         },
+    { QString("matrix"),           QString("row,col"),     _sysfunc_matrix        },
+    { QString("matrix_to_array"),  QString("mat"),         _sysfunc_matrix2array  },
+    { QString("matrix_to_vector"), QString("mat"),         _sysfunc_matrix2array  },
+    { QString("array_cut"),        QString("ary,from,to"), _sysfunc_array_cut     },
+    { QString("vector_cut"),       QString("ary,from,to"), _sysfunc_array_cut     },
+    { QString("array_join"),       QString("ary"),         _sysfunc_array_join    },
+    { QString("vector_join"),      QString("ary"),         _sysfunc_array_join    },
 
+    { QString("array_size"),       QString("ary"),         _sysfunc_array_size    },
+    { QString("array_neg"),        QString("ary"),         _sysfunc_array_neg     },
+    { QString("array_add"),        QString("ary1,ary2"),   _sysfunc_array_add     },
+    { QString("array_sub"),        QString("ary1,ary2"),   _sysfunc_array_sub     },
+    { QString("array_sum"),        QString("ary"),         _sysfunc_array_sum     },
+    { QString("array_avg"),        QString("ary"),         _sysfunc_array_avg     },
 
-    { QString("array_size"),       QString("ary"),       _sysfunc_array_size    },
-    { QString("array_neg"),        QString("ary"),       _sysfunc_array_neg     },
-    { QString("array_add"),        QString("ary1,ary2"), _sysfunc_array_add     },
-    { QString("array_sub"),        QString("ary1,ary2"), _sysfunc_array_sub     },
-    { QString("array_sum"),        QString("ary"),       _sysfunc_array_sum     },
-    { QString("array_avg"),        QString("ary"),       _sysfunc_array_avg     },
+    { QString("vec_dim"),          QString("ary"),         _sysfunc_vec_dim       },
+    { QString("vec_neg"),          QString("ary"),         _sysfunc_array_neg     },
+    { QString("vec_add"),          QString("ary1,ary2"),   _sysfunc_array_add     },
+    { QString("vec_sub"),          QString("ary1,ary2"),   _sysfunc_array_sub     },
+    { QString("vec_norm"),         QString("ary"),         _sysfunc_vec_norm      },
+    { QString("vec_norm_1"),       QString("ary"),         _sysfunc_vec_norm_1    },
+    { QString("vec_norm_p"),       QString("ary,p"),       _sysfunc_vec_norm_p    },
+    { QString("vec_norm_inf"),     QString("ary"),         _sysfunc_vec_norm_inf  },
+    { QString("vec_normalize"),    QString("ary"),         _sysfunc_vec_normalize },
+    { QString("vec_dot"),          QString("ary1,ary2"),   _sysfunc_vec_dot       },
 
-    { QString("vec_dim"),          QString("ary"),       _sysfunc_vec_dim       },
-    { QString("vec_neg"),          QString("ary"),       _sysfunc_array_neg     },
-    { QString("vec_add"),          QString("ary1,ary2"), _sysfunc_array_add     },
-    { QString("vec_sub"),          QString("ary1,ary2"), _sysfunc_array_sub     },
-    { QString("vec_norm"),         QString("ary"),       _sysfunc_vec_norm      },
-    { QString("vec_norm_1"),       QString("ary"),       _sysfunc_vec_norm_1    },
-    { QString("vec_norm_p"),       QString("ary,p"),     _sysfunc_vec_norm_p    },
-    { QString("vec_norm_inf"),     QString("ary"),       _sysfunc_vec_norm_inf  },
-    { QString("vec_normalize"),    QString("ary"),       _sysfunc_vec_normalize },
-    { QString("vec_dot"),          QString("ary1,ary2"), _sysfunc_vec_dot       },
-
-    { QString("mat_transpose"),    QString("mat"),       _sysfunc_mat_transpose },
-    { QString("mat_add"),          QString("mat1,mat2"), _sysfunc_mat_add       },
-    { QString("mat_sub"),          QString("mat1,mat2"), _sysfunc_mat_sub       },
-    { QString("mat_dot"),          QString("mat1,mat2"), _sysfunc_mat_dot       },
+    { QString("mat_transpose"),    QString("mat"),         _sysfunc_mat_transpose },
+    { QString("mat_add"),          QString("mat1,mat2"),   _sysfunc_mat_add       },
+    { QString("mat_sub"),          QString("mat1,mat2"),   _sysfunc_mat_sub       },
+    { QString("mat_dot"),          QString("mat1,mat2"),   _sysfunc_mat_dot       },
 
     { QString(), QString(), NULL }
 };
@@ -250,6 +257,87 @@ static finErrorCode _sysfunc_matrix2array(finExecFunction *self, finExecEnvironm
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     errcode = finExecAlg::varMatrixToArray(matvar, retvar);
+    if ( finErrorKits::isErrorResult(errcode) ) {
+        delete retvar;
+        return errcode;
+    }
+
+    retvar->clearLeftValue();
+    retvar->setWriteProtected();
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_array_cut(finExecFunction *self, finExecEnvironment *env,
+                                       finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *aryvar, *fromvar, *tovar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    aryvar = finExecVariable::transLinkTarget(env->findVariable("ary"));
+    fromvar = finExecVariable::transLinkTarget(env->findVariable("from"));
+    tovar = finExecVariable::transLinkTarget(env->findVariable("to"));
+    if ( aryvar == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+    if ( fromvar != NULL && fromvar->getType() != finExecVariable::TP_NULL &&
+         fromvar->getType() != finExecVariable::TP_NUMERIC &&
+         tovar != NULL && tovar->getType() != finExecVariable::TP_NULL &&
+         tovar->getType() != finExecVariable::TP_NUMERIC )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    int from = -1, to = -1;
+    if ( fromvar != NULL && fromvar->getType() == finExecVariable::TP_NUMERIC )
+        from = fromvar->getNumericValue();
+    if ( tovar != NULL && tovar->getType() == finExecVariable::TP_NUMERIC )
+        to = tovar->getNumericValue();
+
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorKits::EC_OUT_OF_MEMORY;
+
+    errcode = finExecAlg::varArrayCut(aryvar, from, to, retvar);
+    if ( finErrorKits::isErrorResult(errcode) ) {
+        delete retvar;
+        return errcode;
+    }
+
+    retvar->clearLeftValue();
+    retvar->setWriteProtected();
+    flowctl->setFlowNext();
+    flowctl->setReturnVariable(retvar);
+    return finErrorKits::EC_SUCCESS;
+}
+
+static finErrorCode _sysfunc_array_join(finExecFunction *self, finExecEnvironment *env,
+                                        finExecMachine *machine, finExecFlowControl *flowctl)
+{
+    finErrorCode errcode;
+    finExecVariable *aryvar;
+
+    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    aryvar = finExecVariable::transLinkTarget(env->findVariable("ary"));
+    if ( aryvar == NULL )
+        return finErrorKits::EC_NOT_FOUND;
+
+    QList<finExecVariable *> invarlist;
+    invarlist.append(aryvar);
+    int varcnt = finExecFunction::getExtendArgCount(env);
+    for ( int i = 0; i < varcnt; i++ ) {
+        aryvar = finExecVariable::transLinkTarget(finExecFunction::getExtendArgAt(env, i));
+        invarlist.append(aryvar);
+    }
+
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return finErrorKits::EC_OUT_OF_MEMORY;
+
+    errcode = finExecAlg::varArrayJoin(invarlist, retvar);
     if ( finErrorKits::isErrorResult(errcode) ) {
         delete retvar;
         return errcode;

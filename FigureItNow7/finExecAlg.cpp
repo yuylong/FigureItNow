@@ -354,7 +354,7 @@ finErrorCode finExecAlg::varArrayCut(finExecVariable *invar, int from, int to, f
 
     int inlen = invar->getArrayLength();
     from = (from < 0 ? 0 : from);
-    to = (to > inlen ? inlen : to);
+    to = ((to > inlen || to < 0) ? inlen : to);
     int realfrom = (from < to ? from : to);
     int realto = (from < to ? to : from);
 
