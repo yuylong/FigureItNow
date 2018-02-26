@@ -288,82 +288,6 @@ finErrorCode finExecAlg::listMatrixToArray(const QList< QList<double> > &inlist,
     return finErrorKits::EC_SUCCESS;
 }
 
-static inline finErrorCode _setupSubVar(finExecVariable *invar, finExecVariable *outvar, int idx)
-{
-    finExecVariable *suboutvar = outvar->getVariableItemAt(idx);
-    if ( suboutvar == NULL )
-        return finErrorKits::EC_INVALID_PARAM;
-
-    return suboutvar->copyVariable(invar);
-}
-
-finErrorCode finExecAlg::varMatrixToArray(finExecVariable *invar, finExecVariable *outvar)
-{
-    if ( invar == NULL || outvar == NULL )
-        return finErrorKits::EC_NULL_POINTER;
-
-    outvar->setType(finExecVariable::TP_ARRAY);
-    if ( invar->getType() != finExecVariable::TP_ARRAY )
-        return _setupSubVar(invar, outvar, 0);
-
-    finErrorCode errcode;
-    int rowcnt = invar->getArrayLength();
-    int outidx = 0;
-    for ( int rowidx = 0; rowidx < rowcnt; rowidx++ ) {
-        finExecVariable *inrowvar = invar->getVariableItemAt(rowidx);
-        if ( inrowvar == NULL )
-            continue;
-
-        if ( inrowvar->getType() != finExecVariable::TP_ARRAY ) {
-            errcode = _setupSubVar(inrowvar, outvar, outidx++);
-            if ( finErrorKits::isErrorResult(errcode) )
-                return errcode;
-            continue;
-        }
-
-        int colcnt = inrowvar->getArrayLength();
-        for ( int colidx = 0; colidx < colcnt; colidx++ ) {
-            finExecVariable *initemvar = inrowvar->getVariableItemAt(colidx);
-            if ( inrowvar == NULL )
-                continue;
-
-            errcode = _setupSubVar(initemvar, outvar, outidx++);
-            if ( finErrorKits::isErrorResult(errcode) )
-                return errcode;
-        }
-    }
-    return finErrorKits::EC_SUCCESS;
-}
-
-finErrorCode finExecAlg::varArrayCut(finExecVariable *invar, int from, int to, finExecVariable *outvar)
-{
-    if ( invar == NULL || outvar == NULL )
-        return finErrorKits::EC_NULL_POINTER;
-    if ( invar->getType() != finExecVariable::TP_ARRAY )
-        return finErrorKits::EC_INVALID_PARAM;
-
-    int inlen = invar->getArrayLength();
-    from = (from < 0 ? 0 : from);
-    to = (to > inlen ? inlen : to);
-    int realfrom = (from < to ? from : to);
-    int realto = (from < to ? to : from);
-
-    finErrorCode errcode;
-    outvar->setType(finExecVariable::TP_ARRAY);
-    outvar->preallocArrayLength(realto - realfrom);
-    for (int outi = 0, ini = from; ini < to; outi++, ini++) {
-        finExecVariable *initem = invar->getVariableItemAt(ini);
-        finExecVariable *outitem = outvar->getVariableItemAt(outi);
-        if ( initem == NULL || outitem == NULL )
-            return finErrorKits::EC_OUT_OF_MEMORY;
-
-        errcode = outitem->copyVariable(initem);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
-    }
-    return finErrorKits::EC_SUCCESS;
-}
-
 static finErrorCode _appendSubVar(finExecVariable *outvar, finExecVariable *subvar, int startpos, int *endpos)
 {
     if ( subvar == NULL || subvar->getType() == finExecVariable::TP_NULL ) {
@@ -396,6 +320,57 @@ static finErrorCode _appendSubVar(finExecVariable *outvar, finExecVariable *subv
             return errcode;
     }
     *endpos = startpos + sublen;
+    return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finExecAlg::varMatrixToArray(finExecVariable *invar, finExecVariable *outvar)
+{
+    if ( invar == NULL || outvar == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+
+    int pos = 0;
+    outvar->setType(finExecVariable::TP_ARRAY);
+    if ( invar->getType() != finExecVariable::TP_ARRAY )
+        return _appendSubVar(outvar, invar, 0, &pos);
+
+    finErrorCode errcode;
+    int rowcnt = invar->getArrayLength();
+    for ( int rowidx = 0; rowidx < rowcnt; rowidx++ ) {
+        finExecVariable *inrowvar = invar->getVariableItemAt(rowidx);
+
+        errcode = _appendSubVar(outvar, inrowvar, pos, &pos);
+        if ( finErrorKits::isErrorResult(errcode) )
+            return errcode;
+    }
+    return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finExecAlg::varArrayCut(finExecVariable *invar, int from, int to, finExecVariable *outvar)
+{
+    if ( invar == NULL || outvar == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+    if ( invar->getType() != finExecVariable::TP_ARRAY )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    int inlen = invar->getArrayLength();
+    from = (from < 0 ? 0 : from);
+    to = (to > inlen ? inlen : to);
+    int realfrom = (from < to ? from : to);
+    int realto = (from < to ? to : from);
+
+    finErrorCode errcode;
+    outvar->setType(finExecVariable::TP_ARRAY);
+    outvar->preallocArrayLength(realto - realfrom);
+    for (int outi = 0, ini = from; ini < to; outi++, ini++) {
+        finExecVariable *initem = invar->getVariableItemAt(ini);
+        finExecVariable *outitem = outvar->getVariableItemAt(outi);
+        if ( initem == NULL || outitem == NULL )
+            return finErrorKits::EC_OUT_OF_MEMORY;
+
+        errcode = outitem->copyVariable(initem);
+        if ( finErrorKits::isErrorResult(errcode) )
+            return errcode;
+    }
     return finErrorKits::EC_SUCCESS;
 }
 
