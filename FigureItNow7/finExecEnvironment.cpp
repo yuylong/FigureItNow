@@ -8,6 +8,8 @@
 
 #include "finExecEnvironment.h"
 
+#include <QList>
+
 #include "finExecVariable.h"
 #include "finExecFunction.h"
 #include "finExecMachine.h"
@@ -28,12 +30,12 @@ finExecEnvironment::~finExecEnvironment()
 {
     while ( !this->_varList.empty() ) {
         finExecVariable *evar = this->_varList.first();
-        this->_varList.removeFirst();
+        this->_varList.remove(evar->getName());
         delete evar;
     }
     while ( !this->_funcList.empty() ) {
         finExecFunction *efunc = this->_funcList.first();
-        this->_funcList.removeFirst();
+        this->_funcList.remove(efunc->getFunctionName());
         delete efunc;
     }
 }
@@ -75,12 +77,7 @@ finExecEnvironment::getVariableHere(const QString &varname)
     if ( varname.isEmpty() )
         return NULL;
 
-    for ( int i = 0; i < this->_varList.count(); i++ ) {
-        finExecVariable *var = this->_varList.at(i);
-        if ( QString::compare(var->getName(), varname) == 0 )
-            return var;
-    }
-    return NULL;
+    return this->_varList.value(varname, NULL);
 }
 
 finExecVariable *
@@ -144,13 +141,7 @@ finExecEnvironment::getFunctionHere(const QString &funcname)
     if ( funcname.isEmpty() )
         return NULL;
 
-    for ( int i = 0; i < this->_funcList.count(); i++ ) {
-        finExecFunction *func = this->_funcList.at(i);
-
-        if ( QString::compare(func->getFunctionName(), funcname) == 0 )
-            return func;
-    }
-    return NULL;
+    return this->_funcList.value(funcname, NULL);
 }
 
 finExecFunction *
@@ -192,7 +183,8 @@ finExecEnvironment::findFunctionUntil(const QString &funcname, finExecFunction *
         return NULL;
 }
 
-finExecFunction *finExecEnvironment::findFunctionUntil(const QString &funcname, int envlevel)
+finExecFunction *
+finExecEnvironment::findFunctionUntil(const QString &funcname, int envlevel)
 {
     if ( envlevel < 0 )
         return NULL;
@@ -209,8 +201,10 @@ finExecFunction *finExecEnvironment::findFunctionUntil(const QString &funcname, 
 
 bool finExecEnvironment::isVariableInEnv(finExecVariable *var)
 {
-    for ( int i = 0; i < this->_varList.count(); i++ ) {
-        if ( this->_varList.at(i)->isVariableInside(var) )
+    QList<finExecVariable *> varlist = this->_varList.values();
+
+    foreach ( finExecVariable *ivar, varlist ) {
+        if ( ivar->isVariableInside(var) )
             return true;
     }
     return false;
@@ -218,68 +212,72 @@ bool finExecEnvironment::isVariableInEnv(finExecVariable *var)
 
 bool finExecEnvironment::isVariableDirectInEnv(finExecVariable *var)
 {
-    for ( int i = 0; i < this->_varList.count(); i++ ) {
-        if ( this->_varList.at(i) == var )
-            return true;
-    }
-    return false;
+    QList<finExecVariable *> varlist = this->_varList.values();
+    return varlist.contains(var);
 }
 
 bool finExecEnvironment::isFunctionInEnv(finExecFunction *func)
 {
-    for ( int i = 0; i < this->_funcList.count(); i++ ) {
-        if ( this->_funcList.at(i) == func )
-            return true;
-    }
-    return false;
+    QList<finExecFunction *> funclist = this->_funcList.values();
+    return funclist.contains(func);
 }
 
 finErrorCode
 finExecEnvironment::addVariable(finExecVariable *var)
 {
+    if ( var == NULL )
+        return finErrorKits::EC_NULL_POINTER;
     if ( !var->isLeftValue() )
         return finErrorKits::EC_STATE_ERROR;
 
-    finExecVariable *oldvar = NULL;
-    if ( !var->getName().isEmpty() )
-        this->getVariableHere(var->getName());
+    if ( var->getName().isEmpty() )
+        return finErrorKits::EC_INVALID_PARAM;
 
+    finExecVariable *oldvar = this->getVariableHere(var->getName());
     if ( oldvar != NULL )
         return finErrorKits::EC_CONTENTION;
 
-    this->_varList.append(var);
+    this->_varList.insert(var->getName(), var);
     return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode
 finExecEnvironment::addFunction(finExecFunction *func)
 {
-    finExecFunction *oldfunc = NULL;
-    if ( !func->getFunctionName().isEmpty() )
-        this->getFunctionHere(func->getFunctionName());
+    if ( func == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+    if ( func->getFunctionName().isEmpty() )
+        return finErrorKits::EC_INVALID_PARAM;
 
+    finExecFunction *oldfunc = this->getFunctionHere(func->getFunctionName());
     if ( oldfunc != NULL )
         return finErrorKits::EC_CONTENTION;
 
-    this->_funcList.append(func);
+    this->_funcList.insert(func->getFunctionName(), func);
     return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecEnvironment::removeVariable(finExecVariable *var)
 {
-    for ( int i = this->_varList.count() - 1; i >= 0; i-- ) {
-        if ( this->_varList.at(i) == var )
-            this->_varList.removeAt(i);
-    }
+    if ( var == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+    finExecVariable *envvar = this->_varList.value(var->getName(), NULL);
+    if ( envvar != var )
+        return finErrorKits::EC_NOT_FOUND;
+
+    this->_varList.remove(var->getName());
     return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecEnvironment::removeFunction(finExecFunction *func)
 {
-    for ( int i = this->_funcList.count() - 1; i >= 0; i-- ) {
-        if ( this->_funcList.at(i) == func )
-            this->_funcList.removeAt(i);
-    }
+    if ( func == NULL )
+        return finErrorKits::EC_NULL_POINTER;
+    finExecFunction *envfunc = this->_funcList.value(func->getFunctionName(), NULL);
+    if ( envfunc != func )
+        return finErrorKits::EC_NOT_FOUND;
+
+    this->_funcList.remove(func->getFunctionName());
     return finErrorKits::EC_SUCCESS;
 }
 

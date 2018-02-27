@@ -16,7 +16,7 @@
 #ifndef FINEXECENVIRONMENT_H
 #define FINEXECENVIRONMENT_H
 
-#include <QList>
+#include <QMap>
 #include <QString>
 
 #include "finErrorCode.h"
@@ -43,16 +43,16 @@ class finExecMachine;
 class finExecEnvironment
 {
 protected:
-    QString _envName;                    //!< Environment name.
+    QString _envName;                            //!< Environment name.
 
-    QList<finExecVariable *> _varList;   //!< The variables in this layer.
-    QList<finExecFunction *> _funcList;  //!< The functions defined in this layer.
+    QMap<QString, finExecVariable *> _varList;   //!< The variables in this layer.
+    QMap<QString, finExecFunction *> _funcList;  //!< The functions defined in this layer.
 
-    finExecFunction *_belongFunc;        //!< The function which creates this environment. Leave NULL if this
-                                         //!< environment is not created by a function call.
-    finFigureContainer *_figContainer;   //!< The output figure container.
-    finExecEnvironment *_prevEnv;        //!< The previous or parent environment, whose running script creates this
-                                         //!< environment.
+    finExecFunction *_belongFunc;                //!< The function which creates this environment. Leave NULL if this
+                                                 //!< environment is not created by a function call.
+    finFigureContainer *_figContainer;           //!< The output figure container.
+    finExecEnvironment *_prevEnv;                //!< The previous or parent environment, whose running script creates
+                                                 //!< this environment.
 
     static finExecEnvironment *_rootEnv;  //!< The system-wide root environment.
 
