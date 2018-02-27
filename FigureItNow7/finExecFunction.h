@@ -28,35 +28,64 @@ class finExecFunction;
 class finExecEnvironment;
 class finExecMachine;
 
+/*! \typedef finFunctionCall
+ *  \brief The prototype style of a system script function implementation.
+ *
+ * Each system script function is natively implemented in a C++ function with the unified prototype style. The four
+ * arguments in the prototye identify the runtime environment, where self is the static infomation of the current
+ * function, env is the current layer environment that contains the input arguments of the function, machine is the
+ * current execution machine with the code and syntax tree information, and flowctl is used to pass the return value
+ * and flow control information. An error code is required to return by such functions.
+ */
 typedef finErrorCode (*finFunctionCall)(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine,
                                         finExecFlowControl *flowctl);
+
+/*! \struct finExecSysFuncRegItem
+ *  \brief the information table when install system script function.
+ */
 struct finExecSysFuncRegItem {
-    QString _funcName;
-    QString _paramCsvList;
-    finFunctionCall _funcCall;
+    QString _funcName;          //!< The function name.
+    QString _paramCsvList;      //!< The argument list in comma-splitted format.
+    finFunctionCall _funcCall;  //!< The function pointer to the script function implementation.
 };
 
+/*! \class finExecFunction
+ *  \brief A runtime static information of a script function.
+ *
+ * This class holds the static information of a script function.
+ */
 class finExecFunction
 {
 public:
+    /*! \enum finExecFunction::Type
+     *  \brief The type of script function.
+     */
     enum Type {
-        TP_DUMMY,
-        TP_USER,
-        TP_SYSTEM,
-        TP_MAX
+        TP_DUMMY,   //!< An invalid scirpt function type.
+        TP_USER,    //!< A user-defined script function in a piece of FIN-script code.
+        TP_SYSTEM,  //!< A system script function implemented natively in C++ code.
+        TP_MAX      //!< The number of script function types.
     };
 
 protected:
-    Type _type;
-    QString _funcName;
-    QStringList _paramList;
+    Type _type;              //!< The type of the script function.
+    QString _funcName;       //!< The script function name.
+    QStringList _paramList;  //!< The argument list of a script function.
 
     union {
-        finSyntaxNode *_funcNode;
-        finFunctionCall _funcCall;
-        void *_rawPointer;
-    } _u;
+        finSyntaxNode *_funcNode;   //!< The root syntax node of the script function body of a user-defined script
+                                    //!< function.
+        finFunctionCall _funcCall;  //!< The natively implemented C++ function of a system script function.
+        void *_rawPointer;          //!< The raw pointer of the script function body.
+    } _u;                    //!< The script function implementation information.
 
+    /*!
+     * \brief The prefix of the name an extended argurment.
+     *
+     * In FIN-script code, the number of arguments in function invocation is allowed to be more than its declaration.
+     * In this case, these extra arguments is stored in environment as extended arguments which named as __ext_arg_0,
+     * __ext_arg_1, etc, where '__ext_arg_' is referred as prefix.
+     */
     static QString _extArgPrefix;
 
 public:

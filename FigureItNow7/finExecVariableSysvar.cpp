@@ -134,6 +134,8 @@ _finSysvarGencall _finSysvarGencallList[] = {
     _sysvar_feigenbaum_const,
 
     _sysvar_app_name,
+    _sysvar_app_prime_version,
+    _sysvar_app_version,
     _sysvar_app_author,
     NULL
 };
