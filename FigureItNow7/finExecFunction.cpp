@@ -112,6 +112,39 @@ finErrorCode finExecFunction::setFunctionCall(finFunctionCall funccall)
     return finErrorKits::EC_SUCCESS;
 }
 
+const QString &finExecFunction::getCategory() const
+{
+    return this->_category;
+}
+
+const QString &finExecFunction::getPrototypeExample() const
+{
+    return this->_prototypeExample;
+}
+
+const QString &finExecFunction::getDescription() const
+{
+    return this->_description;
+}
+
+finErrorCode finExecFunction::setCategory(const QString &category)
+{
+    this->_category = category;
+    return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finExecFunction::setPrototypeExample(const QString &proto)
+{
+    this->_prototypeExample = proto;
+    return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finExecFunction::setDescription(const QString &description)
+{
+    this->_description = description;
+    return finErrorKits::EC_SUCCESS;
+}
+
 finErrorCode
 finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, finExecMachine *machine,
                               finExecFlowControl *flowctl)

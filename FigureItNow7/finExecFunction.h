@@ -79,12 +79,17 @@ protected:
         void *_rawPointer;          //!< The raw pointer of the script function body.
     } _u;                    //!< The script function implementation information.
 
+    /* These three members are used for friendly GUI. */
+    QString _category;          //!< The logical category of this function.
+    QString _prototypeExample;  //!< A common prototype of this function.
+    QString _description;       //!< A human readable description of this function.
+
     /*!
      * \brief The prefix of the name an extended argurment.
      *
      * In FIN-script code, the number of arguments in function invocation is allowed to be more than its declaration.
-     * In this case, these extra arguments is stored in environment as extended arguments which named as __ext_arg_0,
-     * __ext_arg_1, etc, where '__ext_arg_' is referred as prefix.
+     * In this case, these extra arguments is stored in environment as extended arguments which is named as
+     * __ext_arg_0, __ext_arg_1, etc, where '__ext_arg_' is referred as prefix.
      */
     static QString _extArgPrefix;
 
@@ -104,6 +109,13 @@ public:
 
     finErrorCode setFunctionSyntaxNode(finSyntaxNode *funcnode);
     finErrorCode setFunctionCall(finFunctionCall funccall);
+
+    const QString &getCategory() const;
+    const QString &getPrototypeExample() const;
+    const QString &getDescription() const;
+    finErrorCode setCategory(const QString &category);
+    finErrorCode setPrototypeExample(const QString &proto);
+    finErrorCode setDescription(const QString &description);
 
     finErrorCode execFunction(finSyntaxNode *argnode, finExecEnvironment *env,
                               finExecMachine *machine, finExecFlowControl *flowctl);
