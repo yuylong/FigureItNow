@@ -69,6 +69,11 @@ static finExecVariable *_sysvar_levys_const();
 static finExecVariable *_sysvar_reciprocal_fibonacci_const();
 static finExecVariable *_sysvar_feigenbaum_const();
 
+static finExecVariable *_sysvar_app_name();
+static finExecVariable *_sysvar_app_prime_version();
+static finExecVariable *_sysvar_app_version();
+static finExecVariable *_sysvar_app_author();
+
 typedef finExecVariable *(*_finSysvarGencall)();
 
 _finSysvarGencall _finSysvarGencallList[] = {
@@ -127,6 +132,9 @@ _finSysvarGencall _finSysvarGencallList[] = {
     _sysvar_levys_const,
     _sysvar_reciprocal_fibonacci_const,
     _sysvar_feigenbaum_const,
+
+    _sysvar_app_name,
+    _sysvar_app_author,
     NULL
 };
 
@@ -211,6 +219,41 @@ _sysvar_gen_num_var(const QString &name, double val)
         goto err;
 
     errcode = retvar->setNumericValue(val);
+    if ( finErrorKits::isErrorResult(errcode) )
+        goto err;
+
+    errcode = retvar->setLeftValue();
+    if ( finErrorKits::isErrorResult(errcode) )
+        goto err;
+
+    errcode = retvar->setWriteProtected();
+    if ( finErrorKits::isErrorResult(errcode) )
+        goto err;
+
+    return retvar;
+
+err:
+    delete retvar;
+    return NULL;
+}
+
+static inline finExecVariable *
+_sysvar_gen_str_var(const QString &name, const QString &val)
+{
+    finErrorCode errcode;
+    finExecVariable *retvar = new finExecVariable();
+    if ( retvar == NULL )
+        return NULL;
+
+    errcode = retvar->setName(name);
+    if ( finErrorKits::isErrorResult(errcode) )
+        goto err;
+
+    errcode = retvar->setType(finExecVariable::TP_STRING);
+    if ( finErrorKits::isErrorResult(errcode) )
+        goto err;
+
+    errcode = retvar->setStringValue(val);
     if ( finErrorKits::isErrorResult(errcode) )
         goto err;
 
@@ -487,4 +530,24 @@ static finExecVariable *_sysvar_reciprocal_fibonacci_const()
 static finExecVariable *_sysvar_feigenbaum_const()
 {
     return _sysvar_gen_num_var(QString("FEIGENBAUM_CONST"), 4.66920160910299067185320382046620161);
+}
+
+static finExecVariable *_sysvar_app_name()
+{
+    return _sysvar_gen_str_var(QString("APP_NAME"), QString("FigureItNow"));
+}
+
+static finExecVariable *_sysvar_app_prime_version()
+{
+    return _sysvar_gen_str_var(QString("APP_PRIME_VER"), QString("7"));
+}
+
+static finExecVariable *_sysvar_app_version()
+{
+    return _sysvar_gen_str_var(QString("APP_VERSION"), QString("0.3"));
+}
+
+static finExecVariable *_sysvar_app_author()
+{
+    return _sysvar_gen_str_var(QString("APP_AUTHOR"), QString("Yulong Yu"));
 }
