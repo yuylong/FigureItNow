@@ -13,7 +13,6 @@
 #include <QTreeWidgetItem>
 
 #include "finErrorCode.h"
-#include "finExecEnvironment.h"
 #include "finExecFunction.h"
 
 namespace Ui {
@@ -29,9 +28,9 @@ public:
     ~finUiSysFuncList();
 
     finErrorCode clearList();
-    finErrorCode installFunction(finExecFunction *func);
-    finErrorCode installFunctionList(const QList<finExecFunction *> &funclist);
-    finErrorCode installFunctionList(finExecEnvironment *env);
+    finErrorCode installFunction(const finExecSysFuncRegItem *func);
+    finErrorCode installFunctionList(const QList<finExecSysFuncRegItem> &funclist);
+    finErrorCode installFunctionList();
 
 private:
     Ui::finUiSysFuncList *ui;
@@ -39,7 +38,6 @@ private:
     QTreeWidgetItem *createCategoryItem(const QString &ctgstr);
     QTreeWidgetItem *findCategoryItem(const QString &ctgstr);
     QTreeWidgetItem *findAndCreateCategoryItem(const QString &ctgstr);
-
 };
 
 #endif // FINUISYSFUNCLIST_H

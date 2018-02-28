@@ -112,39 +112,6 @@ finErrorCode finExecFunction::setFunctionCall(finFunctionCall funccall)
     return finErrorKits::EC_SUCCESS;
 }
 
-const QString &finExecFunction::getCategory() const
-{
-    return this->_category;
-}
-
-const QString &finExecFunction::getPrototypeExample() const
-{
-    return this->_prototypeExample;
-}
-
-const QString &finExecFunction::getDescription() const
-{
-    return this->_description;
-}
-
-finErrorCode finExecFunction::setCategory(const QString &category)
-{
-    this->_category = category;
-    return finErrorKits::EC_SUCCESS;
-}
-
-finErrorCode finExecFunction::setPrototypeExample(const QString &proto)
-{
-    this->_prototypeExample = proto;
-    return finErrorKits::EC_SUCCESS;
-}
-
-finErrorCode finExecFunction::setDescription(const QString &description)
-{
-    this->_description = description;
-    return finErrorKits::EC_SUCCESS;
-}
-
 finErrorCode
 finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, finExecMachine *machine,
                               finExecFlowControl *flowctl)
@@ -505,10 +472,15 @@ QList<finExecSysFuncRegItem> finExecFunction::_sysFuncList =
         QList<finExecSysFuncRegItem>();
 
 finErrorCode
-finExecFunction::registSysFuncFromArray(finExecSysFuncRegItem *sysfuncist)
+finExecFunction::registSysFuncFromArray(finExecSysFuncRegItem *sysfunclist, const QString &category)
 {
-    for ( int i = 0; !sysfuncist[i]._funcName.isNull(); i++ ) {
-        finExecFunction::_sysFuncList.append(sysfuncist[i]);
+    for ( int i = 0; !sysfunclist[i]._funcName.isNull(); i++ ) {
+        if ( sysfunclist[i]._category.isEmpty() )
+            sysfunclist[i]._category = category;
+        if ( sysfunclist[i]._prototype.isEmpty() )
+            sysfunclist[i]._prototype = sysfunclist->_funcName + " (" + sysfunclist->_paramCsvList + ")";
+
+        finExecFunction::_sysFuncList.append(sysfunclist[i]);
     }
     return finErrorKits::EC_SUCCESS;
 }
@@ -614,4 +586,9 @@ item_bad:
         else
             return finErrorKits::EC_NOT_FOUND;
     }
+}
+
+const QList<finExecSysFuncRegItem> &finExecFunction::getSysFuncRegList()
+{
+    return finExecFunction::_sysFuncList;
 }

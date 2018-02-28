@@ -115,7 +115,7 @@ static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
 
 finErrorCode finExecFunction::registSysFuncMath()
 {
-    return finExecFunction::registSysFuncFromArray(_finSysFuncMathList);
+    return finExecFunction::registSysFuncFromArray(_finSysFuncMathList, QString("Mathematics"));
 }
 
 static finErrorCode _sysfunc_abs(finExecFunction *self, finExecEnvironment *env,

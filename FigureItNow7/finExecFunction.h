@@ -47,6 +47,9 @@ struct finExecSysFuncRegItem {
     QString _funcName;          //!< The function name.
     QString _paramCsvList;      //!< The argument list in comma-splitted format.
     finFunctionCall _funcCall;  //!< The function pointer to the script function implementation.
+    QString _category;          //!< The category of this function
+    QString _prototype;         //!< The prototype of this function for GUI helper.
+    QString _description;       //!< The description.
 };
 
 /*! \class finExecFunction
@@ -79,11 +82,6 @@ protected:
         void *_rawPointer;          //!< The raw pointer of the script function body.
     } _u;                    //!< The script function implementation information.
 
-    /* These three members are used for friendly GUI. */
-    QString _category;          //!< The logical category of this function.
-    QString _prototypeExample;  //!< A common prototype of this function.
-    QString _description;       //!< A human readable description of this function.
-
     /*!
      * \brief The prefix of the name an extended argurment.
      *
@@ -110,13 +108,6 @@ public:
     finErrorCode setFunctionSyntaxNode(finSyntaxNode *funcnode);
     finErrorCode setFunctionCall(finFunctionCall funccall);
 
-    const QString &getCategory() const;
-    const QString &getPrototypeExample() const;
-    const QString &getDescription() const;
-    finErrorCode setCategory(const QString &category);
-    finErrorCode setPrototypeExample(const QString &proto);
-    finErrorCode setDescription(const QString &description);
-
     finErrorCode execFunction(finSyntaxNode *argnode, finExecEnvironment *env,
                               finExecMachine *machine, finExecFlowControl *flowctl);
     finErrorCode execFunction(QList<finExecVariable *> *arglist, finExecEnvironment *env,
@@ -136,6 +127,7 @@ public:
     static finExecVariable *getPreviousExtendArgAt(finExecEnvironment *env, int idx, int level);
 
     static finErrorCode installSystemFunctions (finExecEnvironment *rootenv);
+    static const QList<finExecSysFuncRegItem> &getSysFuncRegList();
 
 private:
     finErrorCode processArgsInSubEnv(finSyntaxNode *argnode, finExecEnvironment *env,
@@ -150,7 +142,8 @@ private:
     static QList<finExecSysFuncRegItem> _sysFuncList;
     static finErrorCode registSysFuncAll();
 
-    static finErrorCode registSysFuncFromArray(finExecSysFuncRegItem *sysfuncist);
+    static finErrorCode registSysFuncFromArray(finExecSysFuncRegItem *sysfunclist,
+                                               const QString &category = QString());
     static finErrorCode registSysFuncMath();
     static finErrorCode registSysFuncMatrix();
     static finErrorCode registSysFuncString();

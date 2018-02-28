@@ -46,7 +46,7 @@ static struct finExecSysFuncRegItem _finSysFuncFileList[] = {
 
 finErrorCode finExecFunction::registSysFuncFile()
 {
-    return finExecFunction::registSysFuncFromArray(_finSysFuncFileList);
+    return finExecFunction::registSysFuncFromArray(_finSysFuncFileList, QString("File Operations"));
 }
 
 static finErrorCode _sysfunc_load_image(finExecFunction *self, finExecEnvironment *env,

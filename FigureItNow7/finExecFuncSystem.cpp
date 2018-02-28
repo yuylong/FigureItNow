@@ -50,7 +50,7 @@ static struct finExecSysFuncRegItem _finSysFuncSystemList[] = {
 
 finErrorCode finExecFunction::registSysFuncSystem()
 {
-    return finExecFunction::registSysFuncFromArray(_finSysFuncSystemList);
+    return finExecFunction::registSysFuncFromArray(_finSysFuncSystemList, QString("System"));
 }
 
 static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironment *env,

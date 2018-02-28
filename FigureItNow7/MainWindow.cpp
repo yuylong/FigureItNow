@@ -208,7 +208,7 @@ finErrorCode MainWindow::refreshSysFuncList()
     if ( rootenv == NULL )
         return finErrorKits::EC_STATE_ERROR;
 
-    return ui->dwcSysFuncList->installFunctionList(rootenv);
+    return ui->dwcSysFuncList->installFunctionList();
 }
 
 void MainWindow::on_actNew_triggered()

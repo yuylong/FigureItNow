@@ -103,7 +103,7 @@ static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
 
 finErrorCode finExecFunction::registSysFuncMatrix()
 {
-    return finExecFunction::registSysFuncFromArray(_finSysFuncMatrixList);
+    return finExecFunction::registSysFuncFromArray(_finSysFuncMatrixList, QString("Matrix"));
 }
 
 static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *env,

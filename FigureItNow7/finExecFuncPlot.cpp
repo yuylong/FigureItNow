@@ -60,7 +60,7 @@ static finExecSysFuncRegItem _finSysFuncPlotList[] = {
 
 finErrorCode finExecFunction::registSysFuncPlot()
 {
-    return finExecFunction::registSysFuncFromArray(_finSysFuncPlotList);
+    return finExecFunction::registSysFuncFromArray(_finSysFuncPlotList, QString("Plotting"));
 }
 
 static finErrorCode _sysfunc_plot_dots(finExecFunction *self, finExecEnvironment *env,

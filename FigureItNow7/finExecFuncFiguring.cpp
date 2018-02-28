@@ -98,7 +98,7 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
 
 finErrorCode finExecFunction::registSysFuncFiguring()
 {
-    return finExecFunction::registSysFuncFromArray(_finSysFuncFigureList);
+    return finExecFunction::registSysFuncFromArray(_finSysFuncFigureList, QString("Figuring"));
 }
 
 static finErrorCode _sysfunc_clear_fig(finExecFunction *self, finExecEnvironment *env,

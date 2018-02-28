@@ -57,7 +57,7 @@ static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
 
 finErrorCode finExecFunction::registSysFuncString()
 {
-    return finExecFunction::registSysFuncFromArray(_finSysFuncStringList);
+    return finExecFunction::registSysFuncFromArray(_finSysFuncStringList, QString("String Operations"));
 }
 
 static finErrorCode _sysfunc_str_len(finExecFunction *self, finExecEnvironment *env,

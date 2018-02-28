@@ -62,36 +62,36 @@ QTreeWidgetItem *finUiSysFuncList::findAndCreateCategoryItem(const QString &ctgs
     return this->createCategoryItem(ctgstr);
 }
 
-finErrorCode finUiSysFuncList::installFunction(finExecFunction *func)
+finErrorCode finUiSysFuncList::installFunction(const finExecSysFuncRegItem *func)
 {
-    QTreeWidgetItem *ctgitem = this->findAndCreateCategoryItem(func->getCategory());
+    QTreeWidgetItem *ctgitem = this->findAndCreateCategoryItem(func->_category);
     if ( ctgitem == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     QMap<QString, QVariant> propmap;
-    propmap.insert(QString("Prototype"), func->getPrototypeExample());
-    propmap.insert(QString("Description"), func->getDescription());
+    propmap.insert(QString("Prototype"), func->_prototype);
+    propmap.insert(QString("Description"), func->_description);
 
     QTreeWidgetItem *funcitem = new QTreeWidgetItem(ctgitem);
-    funcitem->setText(0, func->getFunctionName());
+    funcitem->setText(0, func->_funcName);
     funcitem->setData(0, Qt::UserRole, propmap);
     ctgitem->addChild(funcitem);
     return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finUiSysFuncList::installFunctionList(const QList<finExecFunction *> &funclist)
+finErrorCode finUiSysFuncList::installFunctionList(const QList<finExecSysFuncRegItem> &funclist)
 {
     finErrorCode errcode;
-    foreach ( finExecFunction *func, funclist ) {
-        errcode = this->installFunction(func);
+    foreach ( const finExecSysFuncRegItem &func, funclist ) {
+        errcode = this->installFunction(&func);
         if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
     }
     return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finUiSysFuncList::installFunctionList(finExecEnvironment *env)
+finErrorCode finUiSysFuncList::installFunctionList()
 {
-    QList<finExecFunction *> funclist = env->getAllFunctionList();
+    const QList<finExecSysFuncRegItem> &funclist = finExecFunction::getSysFuncRegList();
     return this->installFunctionList(funclist);
 }
