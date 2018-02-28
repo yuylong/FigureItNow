@@ -281,6 +281,16 @@ finErrorCode finExecEnvironment::removeFunction(finExecFunction *func)
     return finErrorKits::EC_SUCCESS;
 }
 
+QList<finExecVariable *> finExecEnvironment::getAllVariableList()
+{
+    return this->_varList.values();
+}
+
+QList<finExecFunction *> finExecEnvironment::getAllFunctionList()
+{
+    return this->_funcList.values();
+}
+
 finExecFunction *finExecEnvironment::getBelongFunctionHere() const
 {
     return this->_belongFunc;

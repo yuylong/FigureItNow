@@ -42,6 +42,8 @@ public:
     finErrorCode openScriptFile(const QString &filepath);
     finErrorCode createNewScriptFile();
 
+    finErrorCode refreshSysFuncList();
+
 private slots:
     void on_actNew_triggered();
     void on_actOpen_triggered();

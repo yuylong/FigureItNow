@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->_fileDirPath = QDir::homePath();
+    this->refreshSysFuncList();
 }
 
 MainWindow::~MainWindow()
@@ -197,6 +198,17 @@ out:
     ui->tbwDocumentList->removeTab(idx);
     delete editor;
     return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode MainWindow::refreshSysFuncList()
+{
+    ui->dwcSysFuncList->clearList();
+
+    finExecEnvironment *rootenv = finExecEnvironment::getRootEnvironment();
+    if ( rootenv == NULL )
+        return finErrorKits::EC_STATE_ERROR;
+
+    return ui->dwcSysFuncList->installFunctionList(rootenv);
 }
 
 void MainWindow::on_actNew_triggered()

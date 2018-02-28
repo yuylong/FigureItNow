@@ -1,7 +1,20 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2018 Yulong Yu. All rights reserved.
+ */
+
 #ifndef FINUISYSFUNCLIST_H
 #define FINUISYSFUNCLIST_H
 
 #include <QWidget>
+#include <QTreeWidgetItem>
+
+#include "finErrorCode.h"
+#include "finExecEnvironment.h"
+#include "finExecFunction.h"
 
 namespace Ui {
 class finUiSysFuncList;
@@ -15,8 +28,18 @@ public:
     explicit finUiSysFuncList(QWidget *parent = 0);
     ~finUiSysFuncList();
 
+    finErrorCode clearList();
+    finErrorCode installFunction(finExecFunction *func);
+    finErrorCode installFunctionList(const QList<finExecFunction *> &funclist);
+    finErrorCode installFunctionList(finExecEnvironment *env);
+
 private:
     Ui::finUiSysFuncList *ui;
+
+    QTreeWidgetItem *createCategoryItem(const QString &ctgstr);
+    QTreeWidgetItem *findCategoryItem(const QString &ctgstr);
+    QTreeWidgetItem *findAndCreateCategoryItem(const QString &ctgstr);
+
 };
 
 #endif // FINUISYSFUNCLIST_H

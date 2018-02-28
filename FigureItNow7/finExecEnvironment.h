@@ -85,6 +85,9 @@ public:
     finErrorCode removeVariable(finExecVariable *var);
     finErrorCode removeFunction(finExecFunction *func);
 
+    QList<finExecVariable *> getAllVariableList();
+    QList<finExecFunction *> getAllFunctionList();
+
     finExecFunction *getBelongFunctionHere() const;
     finExecFunction *getBelongFunction() const;
     finExecFunction *getPreviousBelongFunction() const;

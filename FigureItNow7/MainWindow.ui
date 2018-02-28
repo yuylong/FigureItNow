@@ -158,7 +158,7 @@
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
-   <widget class="finUiSysFuncList" name="dockWidgetContents"/>
+   <widget class="finUiSysFuncList" name="dwcSysFuncList"/>
   </widget>
   <action name="actNew">
    <property name="icon">
