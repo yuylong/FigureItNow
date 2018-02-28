@@ -142,6 +142,24 @@
    <addaction name="actDefGraphConfig"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QDockWidget" name="dckSysFuncList">
+   <property name="minimumSize">
+    <size>
+     <width>172</width>
+     <height>38</height>
+    </size>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+   </property>
+   <property name="windowTitle">
+    <string>System Function List</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="finUiSysFuncList" name="dockWidgetContents"/>
+  </widget>
   <action name="actNew">
    <property name="icon">
     <iconset resource="Icons.qrc">
@@ -411,6 +429,14 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>finUiSysFuncList</class>
+   <extends>QWidget</extends>
+   <header>finUiSysFuncList.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="Icons.qrc"/>
  </resources>

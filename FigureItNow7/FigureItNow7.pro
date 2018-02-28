@@ -63,7 +63,8 @@ SOURCES += main.cpp\
     finUiAboutDlg.cpp \
     finUiCommandLine.cpp \
     finExecAlg.cpp \
-    finExecVariableSysvar.cpp
+    finExecVariableSysvar.cpp \
+    finUiSysFuncList.cpp
 
 HEADERS  += MainWindow.h \
     finErrorCode.h \
@@ -107,13 +108,15 @@ HEADERS  += MainWindow.h \
     finUiScriptEditor.h \
     finUiAboutDlg.h \
     finUiCommandLine.h \
-    finExecAlg.h
+    finExecAlg.h \
+    finUiSysFuncList.h
 
 FORMS    += MainWindow.ui \
     finUiFigConfigDlg.ui \
     finUiGraphConfigDlg.ui \
     finUiScriptEditor.ui \
-    finUiAboutDlg.ui
+    finUiAboutDlg.ui \
+    finUiSysFuncList.ui
 
 DISTFILES +=
 
