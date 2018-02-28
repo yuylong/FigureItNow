@@ -478,7 +478,7 @@ finExecFunction::registSysFuncFromArray(finExecSysFuncRegItem *sysfunclist, cons
         if ( sysfunclist[i]._category.isEmpty() )
             sysfunclist[i]._category = category;
         if ( sysfunclist[i]._prototype.isEmpty() )
-            sysfunclist[i]._prototype = sysfunclist->_funcName + " (" + sysfunclist->_paramCsvList + ")";
+            sysfunclist[i]._prototype = sysfunclist[i]._funcName + " (" + sysfunclist[i]._paramCsvList + ")";
 
         finExecFunction::_sysFuncList.append(sysfunclist[i]);
     }

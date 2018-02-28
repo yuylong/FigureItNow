@@ -32,12 +32,17 @@ public:
     finErrorCode installFunctionList(const QList<finExecSysFuncRegItem> &funclist);
     finErrorCode installFunctionList();
 
+private slots:
+    void on_trwFuncList_itemSelectionChanged();
+
 private:
     Ui::finUiSysFuncList *ui;
 
     QTreeWidgetItem *createCategoryItem(const QString &ctgstr);
     QTreeWidgetItem *findCategoryItem(const QString &ctgstr);
     QTreeWidgetItem *findAndCreateCategoryItem(const QString &ctgstr);
+
+    QString getItemDescString(QTreeWidgetItem *item);
 };
 
 #endif // FINUISYSFUNCLIST_H

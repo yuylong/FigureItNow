@@ -33,25 +33,8 @@ static finErrorCode _sysfunc_print_warn(finExecFunction *self, finExecEnvironmen
 static finErrorCode _sysfunc_print_err(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl);
 
-static struct finExecSysFuncRegItem _finSysFuncSystemList[] = {
-    { QString("run_function"),     QString("funcname"), _sysfunc_run_function     },
-    { QString("ext_arg"),          QString("idx"),      _sysfunc_ext_arg          },
-    { QString("ext_arg_count"),    QString(""),         _sysfunc_ext_arg_count    },
-    { QString("call_stack_count"), QString(""),         _sysfunc_call_stack_count },
-    { QString("call_stack"),       QString(""),         _sysfunc_call_stack       },
-
-    { QString("print"),            QString(""),         _sysfunc_print_info       },
-    { QString("print_info"),       QString(""),         _sysfunc_print_info       },
-    { QString("print_warn"),       QString(""),         _sysfunc_print_warn       },
-    { QString("print_err"),        QString(""),         _sysfunc_print_err        },
-
-    { QString(), QString(), NULL }
-};
-
-finErrorCode finExecFunction::registSysFuncSystem()
-{
-    return finExecFunction::registSysFuncFromArray(_finSysFuncSystemList, QString("System"));
-}
+static QString _defFuncCtg("System");
+//static struct finExecSysFuncRegItem _funcRegItem_run_function;
 
 static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
@@ -77,6 +60,15 @@ static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironm
     return func->execFunction(&arglist, env, machine, flowctl);
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_run_function = {
+    /*._funcName     =*/ QString("run_function"),
+    /*._paramCsvList =*/ QString("funcname"),
+    /*._funcCall     =*/ _sysfunc_run_function,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("run_function (funcname, ...)"),
+    /*._description  =*/ QString("Invoke a given function along with a sequence of arguments."),
+};
+
 static finErrorCode _sysfunc_ext_arg(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -98,6 +90,15 @@ static finErrorCode _sysfunc_ext_arg(finExecFunction *self, finExecEnvironment *
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_ext_arg = {
+    /*._funcName     =*/ QString("ext_arg"),
+    /*._paramCsvList =*/ QString("idx"),
+    /*._funcCall     =*/ _sysfunc_ext_arg,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("ext_arg (idx)"),
+    /*._description  =*/ QString("Get the idx-th extended variable of the current function."),
+};
 
 static finErrorCode _sysfunc_ext_arg_count(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
@@ -290,4 +291,24 @@ static finErrorCode _sysfunc_print_err(finExecFunction *self, finExecEnvironment
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
     return _sysfunc_print_base(FIN_DBGLVL_ERROR, self, env, machine, flowctl);
+}
+
+static struct finExecSysFuncRegItem _finSysFuncSystemList[] = {
+    _funcRegItem_run_function,
+    _funcRegItem_ext_arg,
+    { QString("ext_arg_count"),    QString(""),         _sysfunc_ext_arg_count    },
+    { QString("call_stack_count"), QString(""),         _sysfunc_call_stack_count },
+    { QString("call_stack"),       QString(""),         _sysfunc_call_stack       },
+
+    { QString("print"),            QString(""),         _sysfunc_print_info       },
+    { QString("print_info"),       QString(""),         _sysfunc_print_info       },
+    { QString("print_warn"),       QString(""),         _sysfunc_print_warn       },
+    { QString("print_err"),        QString(""),         _sysfunc_print_err        },
+
+    { QString(), QString(), NULL }
+};
+
+finErrorCode finExecFunction::registSysFuncSystem()
+{
+    return finExecFunction::registSysFuncFromArray(_finSysFuncSystemList, _defFuncCtg);
 }
