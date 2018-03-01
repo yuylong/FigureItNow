@@ -42,39 +42,39 @@ void finUiSyntaxHighlighter::installFormatList()
     curfmt = this->_baseFormat;
     curfmt.setForeground(Qt::blue);
     curfmt.setFontWeight(QFont::Bold);
-    this->_formatList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_KEYWORD, curfmt);
+    this->_formatList.insert(finUiSyntaxHighlighter::TP_KEYWORD, curfmt);
 
     // Key Functions
     curfmt = this->_baseFormat;
     curfmt.setForeground(Qt::darkYellow);
-    this->_formatList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_KEYFUNC, curfmt);
+    this->_formatList.insert(finUiSyntaxHighlighter::TP_KEYFUNC, curfmt);
 
     // Operators
     curfmt = this->_baseFormat;
     curfmt.setForeground(Qt::darkBlue);
-    this->_formatList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_OPERATOR, curfmt);
+    this->_formatList.insert(finUiSyntaxHighlighter::TP_OPERATOR, curfmt);
 
     // Brackets
     curfmt = this->_baseFormat;
     curfmt.setForeground(Qt::darkMagenta);
-    this->_formatList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_BRACKET, curfmt);
+    this->_formatList.insert(finUiSyntaxHighlighter::TP_BRACKET, curfmt);
 
     // Decimal
     curfmt = this->_baseFormat;
     curfmt.setForeground(Qt::red);
-    this->_formatList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_DECIMAL, curfmt);
+    this->_formatList.insert(finUiSyntaxHighlighter::TP_DECIMAL, curfmt);
 
     // String
     curfmt = this->_baseFormat;
     curfmt.setForeground(Qt::darkGreen);
-    this->_formatList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_STRING, curfmt);
+    this->_formatList.insert(finUiSyntaxHighlighter::TP_STRING, curfmt);
 
     // Comment
     curfmt = this->_baseFormat;
     curfmt.setForeground(Qt::darkGray);
-    this->_formatList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_LINE_COMMENT, curfmt);
-    this->_formatList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_ON, curfmt);
-    this->_formatList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_OFF, curfmt);
+    this->_formatList.insert(finUiSyntaxHighlighter::TP_LINE_COMMENT, curfmt);
+    this->_formatList.insert(finUiSyntaxHighlighter::TP_BLOCK_COMMENT_ON, curfmt);
+    this->_formatList.insert(finUiSyntaxHighlighter::TP_BLOCK_COMMENT_OFF, curfmt);
 }
 
 void finUiSyntaxHighlighter::installRegExpList()
@@ -83,38 +83,38 @@ void finUiSyntaxHighlighter::installRegExpList()
 
     // Keyword
     regexp = QRegExp(QString("\\b(if|elif|else|for|while|continue|break|return|exit|goto|var)\\b"));
-    this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_KEYWORD, regexp);
+    this->_regExpList.insert(finUiSyntaxHighlighter::TP_KEYWORD, regexp);
 
     // Key functions
     regexp = QRegExp(QString("\\b(dot|line|polyline|rect|polygon|circle|ellipse|axis|clear_fig|"
                                  "draw_(pinned_)?(text|image)|(read|write)_(fig|graph)_config|"
                                  "plot_(function|polar|parametric|equation)|named_color|"
                                  "sin|cos|tan|tg|cot|ctg|ln|log|PI|E)\\b"));
-    this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_KEYFUNC, regexp);
+    this->_regExpList.insert(finUiSyntaxHighlighter::TP_KEYFUNC, regexp);
 
     // Operators
     regexp = QRegExp(QString("(\\+|\\-|\\-|\\*|\\/|\\^|\\=|\\!|\\&|\\||\\<|\\>|\\$)"));
-    this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_OPERATOR, regexp);
+    this->_regExpList.insert(finUiSyntaxHighlighter::TP_OPERATOR, regexp);
 
     // Brackets
     regexp = QRegExp(QString("(\\(|\\)|\\[|\\]|\\{|\\})"));
-    this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_BRACKET, regexp);
+    this->_regExpList.insert(finUiSyntaxHighlighter::TP_BRACKET, regexp);
 
     // Decimal
     regexp = QRegExp(QString("\\b[0-9]+(\\.[0-9]+)?([e|E][\\-\\+]?[0-9]+)?\\b"));
-    this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_DECIMAL, regexp);
+    this->_regExpList.insert(finUiSyntaxHighlighter::TP_DECIMAL, regexp);
 
     // String
     regexp = QRegExp(QString("\\\""));
-    this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_STRING, regexp);
+    this->_regExpList.insert(finUiSyntaxHighlighter::TP_STRING, regexp);
 
     // Comment
     regexp = QRegExp(QString("\\/\\/"));
-    this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_LINE_COMMENT, regexp);
+    this->_regExpList.insert(finUiSyntaxHighlighter::TP_LINE_COMMENT, regexp);
     regexp = QRegExp(QString("\\/\\*"));
-    this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_ON, regexp);
+    this->_regExpList.insert(finUiSyntaxHighlighter::TP_BLOCK_COMMENT_ON, regexp);
     regexp = QRegExp(QString("\\*\\/"));
-    this->_regExpList.insert(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_OFF, regexp);
+    this->_regExpList.insert(finUiSyntaxHighlighter::TP_BLOCK_COMMENT_OFF, regexp);
 }
 
 const QTextCharFormat &finUiSyntaxHighlighter::getBaseFormat() const
@@ -167,22 +167,22 @@ int finUiSyntaxHighlighter::findCommentAndString(finUiSyntaxHighlighter::Type *t
         return -1;
     int minidx = -1, curidx;
 
-    curidx = this->searchTypedIndex(finUiSyntaxHighlighter::FIN_SH_TYPE_STRING, text, startpos);
+    curidx = this->searchTypedIndex(finUiSyntaxHighlighter::TP_STRING, text, startpos);
     if ( curidx >= 0 && (minidx < 0 || curidx < minidx) ) {
         minidx = curidx;
-        *type = finUiSyntaxHighlighter::FIN_SH_TYPE_STRING;
+        *type = finUiSyntaxHighlighter::TP_STRING;
     }
 
-    curidx = this->searchTypedIndex(finUiSyntaxHighlighter::FIN_SH_TYPE_LINE_COMMENT, text, startpos);
+    curidx = this->searchTypedIndex(finUiSyntaxHighlighter::TP_LINE_COMMENT, text, startpos);
     if ( curidx >= 0 && (minidx < 0 || curidx < minidx) ) {
         minidx = curidx;
-        *type = finUiSyntaxHighlighter::FIN_SH_TYPE_LINE_COMMENT;
+        *type = finUiSyntaxHighlighter::TP_LINE_COMMENT;
     }
 
-    curidx = this->searchTypedIndex(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_ON, text, startpos);
+    curidx = this->searchTypedIndex(finUiSyntaxHighlighter::TP_BLOCK_COMMENT_ON, text, startpos);
     if ( curidx >= 0 && (minidx < 0 || curidx < minidx) ) {
         minidx = curidx;
-        *type = finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_ON;
+        *type = finUiSyntaxHighlighter::TP_BLOCK_COMMENT_ON;
     }
     return minidx;
 }
@@ -192,10 +192,10 @@ int finUiSyntaxHighlighter::handleString(const QString &text, int startpos,
 {
     if ( startpos < 0 || startpos >= text.length() )
         return -1;
-    if ( !this->_regExpList.contains(finUiSyntaxHighlighter::FIN_SH_TYPE_STRING) )
+    if ( !this->_regExpList.contains(finUiSyntaxHighlighter::TP_STRING) )
         return startpos + 1;
 
-    QRegExp expression = this->_regExpList.value(finUiSyntaxHighlighter::FIN_SH_TYPE_STRING);
+    QRegExp expression = this->_regExpList.value(finUiSyntaxHighlighter::TP_STRING);
     int lastidx = text.indexOf(expression, startpos + 1);
     int length;
     if ( lastidx < 0 ) {
@@ -205,10 +205,10 @@ int finUiSyntaxHighlighter::handleString(const QString &text, int startpos,
         length = lastidx - startpos;
     }
 
-    QTextCharFormat format = this->_formatList.value(finUiSyntaxHighlighter::FIN_SH_TYPE_STRING,
+    QTextCharFormat format = this->_formatList.value(finUiSyntaxHighlighter::TP_STRING,
                                                      this->_baseFormat);
     setFormat(startpos, length, format);
-    this->setCurrentBlockState(FIN_SH_STAT_NORMAL);
+    this->setCurrentBlockState(ST_NORMAL);
 
     finUiSyntaxHighlighter::IgnoreItem newitem;
     newitem._startIdx = startpos;
@@ -224,10 +224,10 @@ int finUiSyntaxHighlighter::handleLineComment(const QString &text, int startpos,
         return -1;
 
     int length = text.length() - startpos;
-    QTextCharFormat format = this->_formatList.value(finUiSyntaxHighlighter::FIN_SH_TYPE_LINE_COMMENT,
+    QTextCharFormat format = this->_formatList.value(finUiSyntaxHighlighter::TP_LINE_COMMENT,
                                                      this->_baseFormat);
     setFormat(startpos, length, format);
-    this->setCurrentBlockState(FIN_SH_STAT_NORMAL);
+    this->setCurrentBlockState(ST_NORMAL);
 
     finUiSyntaxHighlighter::IgnoreItem newitem;
     newitem._startIdx = startpos;
@@ -241,29 +241,29 @@ int finUiSyntaxHighlighter::handleBlockComment(const QString &text, int startpos
 {
     if ( startpos < 0 || startpos >= text.length() )
         return -1;
-    if ( !this->_regExpList.contains(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_OFF) )
+    if ( !this->_regExpList.contains(finUiSyntaxHighlighter::TP_BLOCK_COMMENT_OFF) )
         return startpos + 2;
 
-    QRegExp expression = this->_regExpList.value(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_OFF);
+    QRegExp expression = this->_regExpList.value(finUiSyntaxHighlighter::TP_BLOCK_COMMENT_OFF);
     finUiSyntaxHighlighter::IgnoreItem newitem;
     newitem._startIdx = startpos;
 
     int fromidx = startpos;
-    if ( this->currentBlockState() != FIN_SH_STAT_INCOMMENT )
+    if ( this->currentBlockState() != ST_INCOMMENT )
         fromidx += 2;
 
     int lastidx = text.indexOf(expression, fromidx);
     int length;
     if ( lastidx < 0 ) {
-        this->setCurrentBlockState(FIN_SH_STAT_INCOMMENT);
+        this->setCurrentBlockState(ST_INCOMMENT);
         length = text.length() - startpos;
     } else {
-        this->setCurrentBlockState(FIN_SH_STAT_NORMAL);
+        this->setCurrentBlockState(ST_NORMAL);
         lastidx += expression.matchedLength();
         length = lastidx - startpos;
     }
 
-    QTextCharFormat format = this->_formatList.value(finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_ON,
+    QTextCharFormat format = this->_formatList.value(finUiSyntaxHighlighter::TP_BLOCK_COMMENT_ON,
                                                      this->_baseFormat);
     setFormat(startpos, length, format);
 
@@ -275,28 +275,28 @@ int finUiSyntaxHighlighter::handleBlockComment(const QString &text, int startpos
 finErrorCode finUiSyntaxHighlighter::handleCommentAndString(const QString &text,
                                                             QList<finUiSyntaxHighlighter::IgnoreItem> *ignorerange)
 {
-    finUiSyntaxHighlighter::Type curtype = finUiSyntaxHighlighter::FIN_SH_TYPE_DUMMY;
+    finUiSyntaxHighlighter::Type curtype = finUiSyntaxHighlighter::TP_DUMMY;
     int index = 0;
-    if ( this->previousBlockState() == FIN_SH_STAT_INCOMMENT) {
-        curtype = finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_ON;
-        this->setCurrentBlockState(FIN_SH_STAT_INCOMMENT);
+    if ( this->previousBlockState() == ST_INCOMMENT) {
+        curtype = finUiSyntaxHighlighter::TP_BLOCK_COMMENT_ON;
+        this->setCurrentBlockState(ST_INCOMMENT);
     } else {
         index = this->findCommentAndString(&curtype, text);
-        this->setCurrentBlockState(FIN_SH_STAT_NORMAL);
+        this->setCurrentBlockState(ST_NORMAL);
     }
 
     while ( index >= 0 ) {
         switch ( curtype ) {
-          case finUiSyntaxHighlighter::FIN_SH_TYPE_STRING:
+          case finUiSyntaxHighlighter::TP_STRING:
             index = this->handleString(text, index, ignorerange);
             break;
 
-          case finUiSyntaxHighlighter::FIN_SH_TYPE_LINE_COMMENT:
+          case finUiSyntaxHighlighter::TP_LINE_COMMENT:
             index = this->handleLineComment(text, index, ignorerange);
             break;
 
-          case finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_ON:
-          case finUiSyntaxHighlighter::FIN_SH_TYPE_BLOCK_COMMENT_OFF:
+          case finUiSyntaxHighlighter::TP_BLOCK_COMMENT_ON:
+          case finUiSyntaxHighlighter::TP_BLOCK_COMMENT_OFF:
             index = this->handleBlockComment(text, index, ignorerange);
             break;
 
@@ -337,9 +337,9 @@ void finUiSyntaxHighlighter::highlightBlock(const QString &text)
     QList<finUiSyntaxHighlighter::IgnoreItem> ignorerange;
     this->handleCommentAndString(text, &ignorerange);
 
-    this->handleNormalType(finUiSyntaxHighlighter::FIN_SH_TYPE_KEYWORD, text, ignorerange);
-    this->handleNormalType(finUiSyntaxHighlighter::FIN_SH_TYPE_KEYFUNC, text, ignorerange);
-    this->handleNormalType(finUiSyntaxHighlighter::FIN_SH_TYPE_OPERATOR, text, ignorerange);
-    this->handleNormalType(finUiSyntaxHighlighter::FIN_SH_TYPE_BRACKET, text, ignorerange);
-    this->handleNormalType(finUiSyntaxHighlighter::FIN_SH_TYPE_DECIMAL, text, ignorerange);
+    this->handleNormalType(finUiSyntaxHighlighter::TP_KEYWORD, text, ignorerange);
+    this->handleNormalType(finUiSyntaxHighlighter::TP_KEYFUNC, text, ignorerange);
+    this->handleNormalType(finUiSyntaxHighlighter::TP_OPERATOR, text, ignorerange);
+    this->handleNormalType(finUiSyntaxHighlighter::TP_BRACKET, text, ignorerange);
+    this->handleNormalType(finUiSyntaxHighlighter::TP_DECIMAL, text, ignorerange);
 }

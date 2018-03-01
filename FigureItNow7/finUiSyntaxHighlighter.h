@@ -22,24 +22,24 @@ class finUiSyntaxHighlighter : public QSyntaxHighlighter
 {
 protected:
     enum Type {
-        FIN_SH_TYPE_DUMMY,
+        TP_DUMMY,
 
-        FIN_SH_TYPE_KEYWORD,
-        FIN_SH_TYPE_KEYFUNC,
-        FIN_SH_TYPE_OPERATOR,
-        FIN_SH_TYPE_BRACKET,
-        FIN_SH_TYPE_DECIMAL,
+        TP_KEYWORD,
+        TP_KEYFUNC,
+        TP_OPERATOR,
+        TP_BRACKET,
+        TP_DECIMAL,
 
-        FIN_SH_TYPE_STRING,
-        FIN_SH_TYPE_LINE_COMMENT,
-        FIN_SH_TYPE_BLOCK_COMMENT_ON,
-        FIN_SH_TYPE_BLOCK_COMMENT_OFF,
+        TP_STRING,
+        TP_LINE_COMMENT,
+        TP_BLOCK_COMMENT_ON,
+        TP_BLOCK_COMMENT_OFF,
     };
 
     enum State {
-        FIN_SH_STAT_DUMMY = -1,
-        FIN_SH_STAT_NORMAL = 0,
-        FIN_SH_STAT_INCOMMENT,
+        ST_DUMMY = -1,
+        ST_NORMAL = 0,
+        ST_INCOMMENT,
     };
 
     QTextCharFormat _baseFormat;
