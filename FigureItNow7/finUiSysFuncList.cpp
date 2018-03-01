@@ -44,7 +44,7 @@ QTreeWidgetItem *finUiSysFuncList::createCategoryItem(const QString &ctgstr)
     ctgitem->setText(0, searchstr);
 
     QMap<QString, QVariant> propmap;
-    propmap.insert(QString("Type"), QString("Function"));
+    propmap.insert(QString("Type"), QString("Category"));
     ctgitem->setData(0, Qt::UserRole, propmap);
 
     ui->trwFuncList->addTopLevelItem(ctgitem);

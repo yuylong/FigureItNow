@@ -97,7 +97,7 @@ static struct finExecSysFuncRegItem _funcRegItem_ext_arg = {
     /*._funcCall     =*/ _sysfunc_ext_arg,
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("ext_arg (idx)"),
-    /*._description  =*/ QString("Get the idx-th extended variable of the current function."),
+    /*._description  =*/ QString("Get the extended variable at the given index of the current function invocation."),
 };
 
 static finErrorCode _sysfunc_ext_arg_count(finExecFunction *self, finExecEnvironment *env,
@@ -121,6 +121,15 @@ static finErrorCode _sysfunc_ext_arg_count(finExecFunction *self, finExecEnviron
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_ext_arg_count = {
+    /*._funcName     =*/ QString("ext_arg_count"),
+    /*._paramCsvList =*/ QString(""),
+    /*._funcCall     =*/ _sysfunc_ext_arg_count,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("ext_arg_count ()"),
+    /*._description  =*/ QString("Get the number of extended arguments of the current function invocation."),
+};
+
 static finErrorCode _sysfunc_call_stack_count(finExecFunction *self, finExecEnvironment *env,
                                               finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -142,6 +151,15 @@ static finErrorCode _sysfunc_call_stack_count(finExecFunction *self, finExecEnvi
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_call_stack_count = {
+    /*._funcName     =*/ QString("call_stack_count"),
+    /*._paramCsvList =*/ QString(""),
+    /*._funcCall     =*/ _sysfunc_call_stack_count,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("call_stack_count ()"),
+    /*._description  =*/ QString("Get the number of functions in call stack of the current function invocation."),
+};
 
 static finErrorCode _sysfunc_call_stack(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
@@ -187,6 +205,15 @@ err:
     delete retvar;
     return errcode;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_call_stack = {
+    /*._funcName     =*/ QString("call_stack"),
+    /*._paramCsvList =*/ QString(""),
+    /*._funcCall     =*/ _sysfunc_call_stack,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("call_stack ()"),
+    /*._description  =*/ QString("Get function names in current call stack as a string array variable."),
+};
 
 enum _finDebugLevel {
     FIN_DBGLVL_INFO,
@@ -281,11 +308,44 @@ static finErrorCode _sysfunc_print_info(finExecFunction *self, finExecEnvironmen
     return _sysfunc_print_base(FIN_DBGLVL_INFO, self, env, machine, flowctl);
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_print = {
+    /*._funcName     =*/ QString("print"),
+    /*._paramCsvList =*/ QString(""),
+    /*._funcCall     =*/ _sysfunc_print_info,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("print (...)"),
+    /*._description  =*/ QString("Output the strings, numbers, or arrays into the standard output device. Each print "
+                                 "will create a singal line in output, and is allowed contains multiple variables to "
+                                 "print. The default print is under the output level \'INFO\'."),
+};
+
+static struct finExecSysFuncRegItem _funcRegItem_print_info = {
+    /*._funcName     =*/ QString("print_info"),
+    /*._paramCsvList =*/ QString(""),
+    /*._funcCall     =*/ _sysfunc_print_info,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("print_info (...)"),
+    /*._description  =*/ QString("Output the strings, numbers, or arrays into the standard output device under the "
+                                 "output level \'INFO\'. Each print will create a singal line in output, and is "
+                                 "allowed contains multiple variables to print."),
+};
+
 static finErrorCode _sysfunc_print_warn(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
 {
     return _sysfunc_print_base(FIN_DBGLVL_WARNING, self, env, machine, flowctl);
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_print_warn = {
+    /*._funcName     =*/ QString("print_warn"),
+    /*._paramCsvList =*/ QString(""),
+    /*._funcCall     =*/ _sysfunc_print_warn,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("print_warn (...)"),
+    /*._description  =*/ QString("Output the strings, numbers, or arrays into the standard output device under the "
+                                 "output level \'WARN\'. Each print will create a singal line in output, and is "
+                                 "allowed contains multiple variables to print."),
+};
 
 static finErrorCode _sysfunc_print_err(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
@@ -293,17 +353,28 @@ static finErrorCode _sysfunc_print_err(finExecFunction *self, finExecEnvironment
     return _sysfunc_print_base(FIN_DBGLVL_ERROR, self, env, machine, flowctl);
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_print_err = {
+    /*._funcName     =*/ QString("print_err"),
+    /*._paramCsvList =*/ QString(""),
+    /*._funcCall     =*/ _sysfunc_print_err,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("print_err (...)"),
+    /*._description  =*/ QString("Output the strings, numbers, or arrays into the standard error output device under "
+                                 "the output level \'ERROR\'. Each print will create a singal line in output, and is "
+                                 "allowed contains multiple variables to print."),
+};
+
 static struct finExecSysFuncRegItem _finSysFuncSystemList[] = {
     _funcRegItem_run_function,
     _funcRegItem_ext_arg,
-    { QString("ext_arg_count"),    QString(""),         _sysfunc_ext_arg_count    },
-    { QString("call_stack_count"), QString(""),         _sysfunc_call_stack_count },
-    { QString("call_stack"),       QString(""),         _sysfunc_call_stack       },
+    _funcRegItem_ext_arg_count,
+    _funcRegItem_call_stack_count,
+    _funcRegItem_call_stack,
 
-    { QString("print"),            QString(""),         _sysfunc_print_info       },
-    { QString("print_info"),       QString(""),         _sysfunc_print_info       },
-    { QString("print_warn"),       QString(""),         _sysfunc_print_warn       },
-    { QString("print_err"),        QString(""),         _sysfunc_print_err        },
+    _funcRegItem_print,
+    _funcRegItem_print_info,
+    _funcRegItem_print_warn,
+    _funcRegItem_print_err,
 
     { QString(), QString(), NULL }
 };
