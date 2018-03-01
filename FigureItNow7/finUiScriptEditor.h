@@ -70,6 +70,7 @@ public:
     void cutScript();
     void pasteScript();
     void copyFigure();
+    void insertTextAtCurrentPos(const QString &text);
 
     finErrorCode applyFigureConfig(finFigureConfig *figconfig);
     finErrorCode applyGraphConfig(finGraphConfig *graphconfig);

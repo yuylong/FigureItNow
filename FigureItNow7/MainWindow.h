@@ -76,6 +76,8 @@ private slots:
     void on_tbwDocumentList_currentChanged(int index);
     void on_tbwDocumentList_tabCloseRequested(int index);
 
+    void on_dwcSysFuncList_itemTriggerred(const QString &name, const QMap<QString, QVariant> &propmap);
+
 protected:
     virtual void closeEvent(QCloseEvent *event);
 

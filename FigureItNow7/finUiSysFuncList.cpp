@@ -153,3 +153,13 @@ void finUiSysFuncList::on_trwFuncList_itemSelectionChanged()
     QString descstr = this->getItemDescString(selitem);
     ui->pteFunctionDesc->setPlainText(descstr);
 }
+
+void finUiSysFuncList::on_trwFuncList_itemActivated(QTreeWidgetItem *item, int column)
+{
+    if ( item == NULL )
+        return;
+
+    QString itemname = item->text(0);
+    QMap<QString, QVariant> propmap = item->data(0, Qt::UserRole).toMap();
+    emit this->itemTriggerred(itemname, propmap);
+}

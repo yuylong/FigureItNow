@@ -204,6 +204,11 @@ void finUiScriptEditor::pasteScript()
     ui->pteScriptCode->paste();
 }
 
+void finUiScriptEditor::insertTextAtCurrentPos(const QString &text)
+{
+    ui->pteScriptCode->insertPlainText(text);
+}
+
 finErrorCode finUiScriptEditor::getFigureImage(QImage *outimg)
 {
     if ( outimg == NULL )

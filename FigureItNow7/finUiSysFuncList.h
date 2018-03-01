@@ -32,8 +32,12 @@ public:
     finErrorCode installFunctionList(const QList<finExecSysFuncRegItem> &funclist);
     finErrorCode installFunctionList();
 
+signals:
+    void itemTriggerred(const QString &name, const QMap<QString, QVariant> &propmap);
+
 private slots:
     void on_trwFuncList_itemSelectionChanged();
+    void on_trwFuncList_itemActivated(QTreeWidgetItem *item, int column);
 
 private:
     Ui::finUiSysFuncList *ui;

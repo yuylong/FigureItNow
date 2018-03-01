@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     this->_fileDirPath = QDir::homePath();
     this->refreshSysFuncList();
 }
@@ -553,6 +554,19 @@ void MainWindow::on_tbwDocumentList_currentChanged(int)
     }
 }
 
+void MainWindow::on_dwcSysFuncList_itemTriggerred(const QString &, const QMap<QString, QVariant> &propmap)
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == NULL )
+        return;
+
+    QVariant value = propmap.value("Prototype");
+    if ( value.isNull() )
+        return;
+
+    cureditor->insertTextAtCurrentPos(value.toString());
+}
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     finUiScriptEditor *preveditor = NULL;
@@ -591,3 +605,4 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
     event->accept();
 }
+
