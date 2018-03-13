@@ -115,6 +115,16 @@ static finErrorCode _sysfunc_str_left(finExecFunction *self, finExecEnvironment 
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_str_left = {
+    /*._funcName     =*/ QString("str_left"),
+    /*._paramCsvList =*/ QString("str,len"),
+    /*._funcCall     =*/ _sysfunc_str_left,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("str_left (str, len)"),
+    /*._description  =*/ QString("Get the left part of a given string with the given length. If the string length is "
+                                 "smaller than the expected length, the whole string is returned."),
+};
+
 static finErrorCode _sysfunc_str_right(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -150,6 +160,16 @@ static finErrorCode _sysfunc_str_right(finExecFunction *self, finExecEnvironment
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_str_right = {
+    /*._funcName     =*/ QString("str_right"),
+    /*._paramCsvList =*/ QString("str,len"),
+    /*._funcCall     =*/ _sysfunc_str_right,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("str_right (str, len)"),
+    /*._description  =*/ QString("Get the right part of a given string with the given length. If the string length is "
+                                 "smaller than the expected length, the whole string is returned."),
+};
 
 static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
@@ -189,6 +209,17 @@ static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_str_mid = {
+    /*._funcName     =*/ QString("str_mid"),
+    /*._paramCsvList =*/ QString("str,len"),
+    /*._funcCall     =*/ _sysfunc_str_mid,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("str_mid (str, pos, len)"),
+    /*._description  =*/ QString("Get the sub-string of a given string with the given starting position and length. "
+                                 "If the left length is smaller than the expected length from the starting position, "
+                                 "all the characters rangingfrom the starting position to the end will be returned."),
+};
 
 static finErrorCode _sysfunc_str_find(finExecFunction *self, finExecEnvironment *env,
                                       finExecMachine *machine, finExecFlowControl *flowctl)
@@ -439,9 +470,9 @@ static finErrorCode _sysfunc_ascii_chr(finExecFunction *self, finExecEnvironment
 
 static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
     _funcRegItem_str_len,
-    { QString("str_left"),    QString("str,len"),              _sysfunc_str_left    },
-    { QString("str_right"),   QString("str,len"),              _sysfunc_str_right   },
-    { QString("str_mid"),     QString("str,pos,len"),          _sysfunc_str_mid     },
+    _funcRegItem_str_left,
+    _funcRegItem_str_right,
+    _funcRegItem_str_mid,
     { QString("str_find"),    QString("str,substr,from,case"), _sysfunc_str_find    },
     { QString("str_bk_find"), QString("str,substr,from,case"), _sysfunc_str_bk_find },
     { QString("str_trim"),    QString("str"),                  _sysfunc_str_trim    },
