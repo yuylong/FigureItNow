@@ -38,27 +38,7 @@ static finErrorCode _sysfunc_unicode_chr(finExecFunction *self, finExecEnvironme
 static finErrorCode _sysfunc_ascii_chr(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl);
 
-static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
-    { QString("str_len"),     QString("str"),                  _sysfunc_str_len     },
-    { QString("str_left"),    QString("str,len"),              _sysfunc_str_left    },
-    { QString("str_right"),   QString("str,len"),              _sysfunc_str_right   },
-    { QString("str_mid"),     QString("str,pos,len"),          _sysfunc_str_mid     },
-    { QString("str_find"),    QString("str,substr,from,case"), _sysfunc_str_find    },
-    { QString("str_bk_find"), QString("str,substr,from,case"), _sysfunc_str_bk_find },
-    { QString("str_trim"),    QString("str"),                  _sysfunc_str_trim    },
-
-    { QString("chr_unicode"), QString("chr"),                  _sysfunc_chr_unicode },
-    { QString("chr_ascii"),   QString("chr"),                  _sysfunc_chr_ascii   },
-    { QString("unicode_chr"), QString("code"),                 _sysfunc_unicode_chr },
-    { QString("ascii_chr"),   QString("code"),                 _sysfunc_ascii_chr   },
-
-    { QString(), QString(), NULL }
-};
-
-finErrorCode finExecFunction::registSysFuncString()
-{
-    return finExecFunction::registSysFuncFromArray(_finSysFuncStringList, QString("String Operations"));
-}
+static QString _defFuncCtg("String Operations");
 
 static finErrorCode _sysfunc_str_len(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
@@ -89,6 +69,15 @@ static finErrorCode _sysfunc_str_len(finExecFunction *self, finExecEnvironment *
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_str_len = {
+    /*._funcName     =*/ QString("str_len"),
+    /*._paramCsvList =*/ QString("str"),
+    /*._funcCall     =*/ _sysfunc_str_len,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("str_len (str)"),
+    /*._description  =*/ QString("Get the length or the number of characters of a given string."),
+};
 
 static finErrorCode _sysfunc_str_left(finExecFunction *self, finExecEnvironment *env,
                                       finExecMachine *machine, finExecFlowControl *flowctl)
@@ -446,4 +435,26 @@ static finErrorCode _sysfunc_ascii_chr(finExecFunction *self, finExecEnvironment
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
+}
+
+static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
+    _funcRegItem_str_len,
+    { QString("str_left"),    QString("str,len"),              _sysfunc_str_left    },
+    { QString("str_right"),   QString("str,len"),              _sysfunc_str_right   },
+    { QString("str_mid"),     QString("str,pos,len"),          _sysfunc_str_mid     },
+    { QString("str_find"),    QString("str,substr,from,case"), _sysfunc_str_find    },
+    { QString("str_bk_find"), QString("str,substr,from,case"), _sysfunc_str_bk_find },
+    { QString("str_trim"),    QString("str"),                  _sysfunc_str_trim    },
+
+    { QString("chr_unicode"), QString("chr"),                  _sysfunc_chr_unicode },
+    { QString("chr_ascii"),   QString("chr"),                  _sysfunc_chr_ascii   },
+    { QString("unicode_chr"), QString("code"),                 _sysfunc_unicode_chr },
+    { QString("ascii_chr"),   QString("code"),                 _sysfunc_ascii_chr   },
+
+    { QString(), QString(), NULL }
+};
+
+finErrorCode finExecFunction::registSysFuncString()
+{
+    return finExecFunction::registSysFuncFromArray(_finSysFuncStringList, _defFuncCtg);
 }

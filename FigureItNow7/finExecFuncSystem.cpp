@@ -16,25 +16,7 @@
 #include "finExecEnvironment.h"
 #include "finExecMachine.h"
 
-static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironment *env,
-                                          finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_ext_arg(finExecFunction *self, finExecEnvironment *env,
-                                     finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_ext_arg_count(finExecFunction *self, finExecEnvironment *env,
-                                           finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_call_stack_count(finExecFunction *self, finExecEnvironment *env,
-                                              finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_call_stack(finExecFunction *self, finExecEnvironment *env,
-                                        finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_print_info(finExecFunction *self, finExecEnvironment *env,
-                                        finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_print_warn(finExecFunction *self, finExecEnvironment *env,
-                                        finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_print_err(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
-
 static QString _defFuncCtg("System");
-//static struct finExecSysFuncRegItem _funcRegItem_run_function;
 
 static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
