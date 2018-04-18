@@ -268,6 +268,18 @@ static finErrorCode _sysfunc_str_find(finExecFunction *self, finExecEnvironment 
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_str_find = {
+    /*._funcName     =*/ QString("str_find"),
+    /*._paramCsvList =*/ QString("str,substr,from,case"),
+    /*._funcCall     =*/ _sysfunc_str_find,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("str_find (str,substr[,from,case])"),
+    /*._description  =*/ QString("Find the sub-string inside a given string, and return the very first index of the "
+                                 "sub-string inside a string. There are two optional arguments, which \'from\' gives "
+                                 "the starting position of searching, and the boolean value \'case\' indicates whether "
+                                 "case sensitive."),
+};
+
 static finErrorCode _sysfunc_str_bk_find(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -314,6 +326,18 @@ static finErrorCode _sysfunc_str_bk_find(finExecFunction *self, finExecEnvironme
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_str_bk_find = {
+    /*._funcName     =*/ QString("str_bk_find"),
+    /*._paramCsvList =*/ QString("str,substr,from,case"),
+    /*._funcCall     =*/ _sysfunc_str_bk_find,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("str_bk_find (str,substr[,from,case])"),
+    /*._description  =*/ QString("Find the sub-string inside a given string, and return the very last index of the "
+                                 "sub-string inside a string. There are two optional arguments, which \'from\' gives "
+                                 "the starting position of searching, and the boolean value \'case\' indicates whether "
+                                 "case sensitive."),
+};
 
 static finErrorCode _sysfunc_str_trim(finExecFunction *self, finExecEnvironment *env,
                                       finExecMachine *machine, finExecFlowControl *flowctl)
@@ -473,8 +497,8 @@ static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
     _funcRegItem_str_left,
     _funcRegItem_str_right,
     _funcRegItem_str_mid,
-    { QString("str_find"),    QString("str,substr,from,case"), _sysfunc_str_find    },
-    { QString("str_bk_find"), QString("str,substr,from,case"), _sysfunc_str_bk_find },
+    _funcRegItem_str_find,
+    _funcRegItem_str_bk_find,
     { QString("str_trim"),    QString("str"),                  _sysfunc_str_trim    },
 
     { QString("chr_unicode"), QString("chr"),                  _sysfunc_chr_unicode },
