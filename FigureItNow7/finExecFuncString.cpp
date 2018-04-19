@@ -369,6 +369,16 @@ static finErrorCode _sysfunc_str_trim(finExecFunction *self, finExecEnvironment 
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_str_trim = {
+    /*._funcName     =*/ QString("str_trim"),
+    /*._paramCsvList =*/ QString("str"),
+    /*._funcCall     =*/ _sysfunc_str_trim,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("str_trim (str)"),
+    /*._description  =*/ QString("Return a sub-string of the input, whose white-spaces are remove at the beginning "
+                                 "and the end."),
+};
+
 static finErrorCode _sysfunc_chr_unicode(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -499,7 +509,7 @@ static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
     _funcRegItem_str_mid,
     _funcRegItem_str_find,
     _funcRegItem_str_bk_find,
-    { QString("str_trim"),    QString("str"),                  _sysfunc_str_trim    },
+    _funcRegItem_str_trim,
 
     { QString("chr_unicode"), QString("chr"),                  _sysfunc_chr_unicode },
     { QString("chr_ascii"),   QString("chr"),                  _sysfunc_chr_ascii   },
