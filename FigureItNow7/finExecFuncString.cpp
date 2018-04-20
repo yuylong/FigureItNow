@@ -410,6 +410,16 @@ static finErrorCode _sysfunc_chr_unicode(finExecFunction *self, finExecEnvironme
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_chr_unicode = {
+    /*._funcName     =*/ QString("chr_unicode"),
+    /*._paramCsvList =*/ QString("chr"),
+    /*._funcCall     =*/ _sysfunc_chr_unicode,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("chr_unicode (chr)"),
+    /*._description  =*/ QString("Return the unicode of the given character. If a string is given as argument, only "
+                                 "the unicode of the first character is returned."),
+};
+
 static finErrorCode _sysfunc_chr_ascii(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -440,6 +450,16 @@ static finErrorCode _sysfunc_chr_ascii(finExecFunction *self, finExecEnvironment
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_chr_ascii = {
+    /*._funcName     =*/ QString("chr_ascii"),
+    /*._paramCsvList =*/ QString("chr"),
+    /*._funcCall     =*/ _sysfunc_chr_ascii,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("chr_ascii (chr)"),
+    /*._description  =*/ QString("Return the ASCII code of the given character. If a string is given as argument, only "
+                                 "the ASCII code of the first character is returned."),
+};
 
 static finErrorCode _sysfunc_unicode_chr(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl)
@@ -472,6 +492,15 @@ static finErrorCode _sysfunc_unicode_chr(finExecFunction *self, finExecEnvironme
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_unicode_chr = {
+    /*._funcName     =*/ QString("unicode_chr"),
+    /*._paramCsvList =*/ QString("code"),
+    /*._funcCall     =*/ _sysfunc_unicode_chr,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("unicode_chr (code)"),
+    /*._description  =*/ QString("Return the character corresponding to the given unicode in numerical variable."),
+};
+
 static finErrorCode _sysfunc_ascii_chr(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -502,6 +531,15 @@ static finErrorCode _sysfunc_ascii_chr(finExecFunction *self, finExecEnvironment
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_ascii_chr = {
+    /*._funcName     =*/ QString("ascii_chr"),
+    /*._paramCsvList =*/ QString("code"),
+    /*._funcCall     =*/ _sysfunc_ascii_chr,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("ascii_chr (code)"),
+    /*._description  =*/ QString("Return the character corresponding to the given ASCII code in numerical variable."),
+};
+
 static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
     _funcRegItem_str_len,
     _funcRegItem_str_left,
@@ -511,10 +549,10 @@ static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
     _funcRegItem_str_bk_find,
     _funcRegItem_str_trim,
 
-    { QString("chr_unicode"), QString("chr"),                  _sysfunc_chr_unicode },
-    { QString("chr_ascii"),   QString("chr"),                  _sysfunc_chr_ascii   },
-    { QString("unicode_chr"), QString("code"),                 _sysfunc_unicode_chr },
-    { QString("ascii_chr"),   QString("code"),                 _sysfunc_ascii_chr   },
+    _funcRegItem_chr_unicode,
+    _funcRegItem_chr_ascii,
+    _funcRegItem_unicode_chr,
+    _funcRegItem_ascii_chr,
 
     { QString(), QString(), NULL }
 };
