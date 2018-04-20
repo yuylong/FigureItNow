@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2018 Yulong Yu. All rights reserved.
  */
 
 #include "finExecFunction.h"
@@ -14,29 +14,6 @@
 #include "finExecEnvironment.h"
 #include "finExecMachine.h"
 
-static finErrorCode _sysfunc_str_len(finExecFunction *self, finExecEnvironment *env,
-                                     finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_str_left(finExecFunction *self, finExecEnvironment *env,
-                                      finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_str_right(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *env,
-                                     finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_str_find(finExecFunction *self, finExecEnvironment *env,
-                                      finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_str_bk_find(finExecFunction *self, finExecEnvironment *env,
-                                         finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_str_trim(finExecFunction *self, finExecEnvironment *env,
-                                      finExecMachine *machine, finExecFlowControl *flowctl);
-
-static finErrorCode _sysfunc_chr_unicode(finExecFunction *self, finExecEnvironment *env,
-                                         finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_chr_ascii(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_unicode_chr(finExecFunction *self, finExecEnvironment *env,
-                                         finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_ascii_chr(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
 
 static QString _defFuncCtg("String Operations");
 

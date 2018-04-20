@@ -31,23 +31,7 @@ static finErrorCode _sysfunc_save_numerical_csv(finExecFunction *self, finExecEn
 static finErrorCode _sysfunc_save_auto_csv(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl);
 
-static struct finExecSysFuncRegItem _finSysFuncFileList[] = {
-    { QString("load_image"),         QString("fn"),     _sysfunc_load_image         },
-
-    { QString("load_numerical_csv"), QString("fn"),     _sysfunc_load_numerical_csv },
-    { QString("load_string_csv"),    QString("fn"),     _sysfunc_load_string_csv    },
-    { QString("load_auto_csv"),      QString("fn"),     _sysfunc_load_auto_csv      },
-    { QString("save_numerical_csv"), QString("fn,ary"), _sysfunc_save_numerical_csv },
-    { QString("save_string_csv"),    QString("fn,ary"), _sysfunc_save_auto_csv      },
-    { QString("save_auto_csv"),      QString("fn,ary"), _sysfunc_save_auto_csv      },
-
-    { QString(), QString(), NULL }
-};
-
-finErrorCode finExecFunction::registSysFuncFile()
-{
-    return finExecFunction::registSysFuncFromArray(_finSysFuncFileList, QString("File Operations"));
-}
+static QString _defFuncCtg("File Operations");
 
 static finErrorCode _sysfunc_load_image(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
@@ -81,6 +65,15 @@ static finErrorCode _sysfunc_load_image(finExecFunction *self, finExecEnvironmen
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_load_image = {
+    /*._funcName     =*/ QString("load_image"),
+    /*._paramCsvList =*/ QString("fn"),
+    /*._funcCall     =*/ _sysfunc_load_image,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("load_image (fn)"),
+    /*._description  =*/ QString("Load an image from the given file path."),
+};
 
 static finErrorCode _sysfunc_load_numerical_csv(finExecFunction *self, finExecEnvironment *env,
                                                 finExecMachine *machine, finExecFlowControl *flowctl)
@@ -278,4 +271,22 @@ static finErrorCode _sysfunc_save_auto_csv(finExecFunction *self, finExecEnviron
 
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
+}
+
+static struct finExecSysFuncRegItem _finSysFuncFileList[] = {
+    _funcRegItem_load_image,
+
+    { QString("load_numerical_csv"), QString("fn"),     _sysfunc_load_numerical_csv },
+    { QString("load_string_csv"),    QString("fn"),     _sysfunc_load_string_csv    },
+    { QString("load_auto_csv"),      QString("fn"),     _sysfunc_load_auto_csv      },
+    { QString("save_numerical_csv"), QString("fn,ary"), _sysfunc_save_numerical_csv },
+    { QString("save_string_csv"),    QString("fn,ary"), _sysfunc_save_auto_csv      },
+    { QString("save_auto_csv"),      QString("fn,ary"), _sysfunc_save_auto_csv      },
+
+    { QString(), QString(), NULL }
+};
+
+finErrorCode finExecFunction::registSysFuncFile()
+{
+    return finExecFunction::registSysFuncFromArray(_finSysFuncFileList, _defFuncCtg);
 }
