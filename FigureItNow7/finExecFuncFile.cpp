@@ -117,6 +117,17 @@ static finErrorCode _sysfunc_load_numerical_csv(finExecFunction *self, finExecEn
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_load_numerical_csv = {
+    /*._funcName     =*/ QString("load_numerical_csv"),
+    /*._paramCsvList =*/ QString("fn"),
+    /*._funcCall     =*/ _sysfunc_load_numerical_csv,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("load_numerical_csv (fn)"),
+    /*._description  =*/ QString("Load a numerical array from a Comma-Separated Values (CSV) file. The returned array "
+                                 "may be one or two dimensions based on the number of rows or columns in the file. A "
+                                 "NULL item will be placed if the corresponding data item is not a number."),
+};
+
 static finErrorCode _sysfunc_load_string_csv(finExecFunction *self, finExecEnvironment *env,
                                              finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -159,6 +170,16 @@ static finErrorCode _sysfunc_load_string_csv(finExecFunction *self, finExecEnvir
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_load_string_csv = {
+    /*._funcName     =*/ QString("load_string_csv"),
+    /*._paramCsvList =*/ QString("fn"),
+    /*._funcCall     =*/ _sysfunc_load_string_csv,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("load_string_csv (fn)"),
+    /*._description  =*/ QString("Load a text array from a Comma-Separated Values (CSV) file. The returned array may "
+                                 "be one or two dimensions based on the number of rows or columns in the file."),
+};
+
 static finErrorCode _sysfunc_load_auto_csv(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -200,6 +221,19 @@ static finErrorCode _sysfunc_load_auto_csv(finExecFunction *self, finExecEnviron
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_load_auto_csv = {
+    /*._funcName     =*/ QString("load_auto_csv"),
+    /*._paramCsvList =*/ QString("fn"),
+    /*._funcCall     =*/ _sysfunc_load_auto_csv,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("load_auto_csv (fn)"),
+    /*._description  =*/ QString("Load an array from a Comma-Separated Values (CSV) file. The returned array may be "
+                                 "one or two dimensions based on the number of rows or columns in the file. The data "
+                                 "type of each array item depends on the contents of the corresponding data item in "
+                                 "the file. If the data is a number, the data item will be set as a numerical "
+                                 "variable; otherwise, a string variable or a NULL variable will be set."),
+};
 
 static finErrorCode _sysfunc_save_numerical_csv(finExecFunction *self, finExecEnvironment *env,
                                                 finExecMachine *machine, finExecFlowControl *flowctl)
@@ -276,8 +310,8 @@ static finErrorCode _sysfunc_save_auto_csv(finExecFunction *self, finExecEnviron
 static struct finExecSysFuncRegItem _finSysFuncFileList[] = {
     _funcRegItem_load_image,
 
-    { QString("load_numerical_csv"), QString("fn"),     _sysfunc_load_numerical_csv },
-    { QString("load_string_csv"),    QString("fn"),     _sysfunc_load_string_csv    },
+    _funcRegItem_load_numerical_csv,
+    _funcRegItem_load_string_csv,
     { QString("load_auto_csv"),      QString("fn"),     _sysfunc_load_auto_csv      },
     { QString("save_numerical_csv"), QString("fn,ary"), _sysfunc_save_numerical_csv },
     { QString("save_string_csv"),    QString("fn,ary"), _sysfunc_save_auto_csv      },
