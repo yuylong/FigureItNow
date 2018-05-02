@@ -18,19 +18,6 @@
 #include "finExecMachine.h"
 #include "finExecAlg.h"
 
-static finErrorCode _sysfunc_load_image(finExecFunction *self, finExecEnvironment *env,
-                                        finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_load_numerical_csv(finExecFunction *self, finExecEnvironment *env,
-                                                finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_load_string_csv(finExecFunction *self, finExecEnvironment *env,
-                                             finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_load_auto_csv(finExecFunction *self, finExecEnvironment *env,
-                                           finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_save_numerical_csv(finExecFunction *self, finExecEnvironment *env,
-                                                finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_save_auto_csv(finExecFunction *self, finExecEnvironment *env,
-                                           finExecMachine *machine, finExecFlowControl *flowctl);
-
 static QString _defFuncCtg("File Operations");
 
 static finErrorCode _sysfunc_load_image(finExecFunction *self, finExecEnvironment *env,
