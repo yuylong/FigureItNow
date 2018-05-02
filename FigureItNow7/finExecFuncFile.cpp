@@ -271,6 +271,16 @@ static finErrorCode _sysfunc_save_numerical_csv(finExecFunction *self, finExecEn
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_save_numerical_csv = {
+    /*._funcName     =*/ QString("save_numerical_csv"),
+    /*._paramCsvList =*/ QString("fn,ary"),
+    /*._funcCall     =*/ _sysfunc_save_numerical_csv,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("save_numerical_csv (fn, ary)"),
+    /*._description  =*/ QString("Save a numerical array to a Comma-Separated Values (CSV) file. A NULL item will be "
+                                 "placed if the corresponding data item is not a number."),
+};
+
 static finErrorCode _sysfunc_save_auto_csv(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -307,15 +317,35 @@ static finErrorCode _sysfunc_save_auto_csv(finExecFunction *self, finExecEnviron
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_save_string_csv = {
+    /*._funcName     =*/ QString("save_string_csv"),
+    /*._paramCsvList =*/ QString("fn,ary"),
+    /*._funcCall     =*/ _sysfunc_save_auto_csv,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("save_string_csv (fn, ary)"),
+    /*._description  =*/ QString("Save a string array to a Comma-Separated Values (CSV) file. If an array item is not "
+                                 "string, it will be converted to string if possible before write into the file."),
+};
+
+static struct finExecSysFuncRegItem _funcRegItem_save_auto_csv = {
+    /*._funcName     =*/ QString("save_auto_csv"),
+    /*._paramCsvList =*/ QString("fn,ary"),
+    /*._funcCall     =*/ _sysfunc_save_auto_csv,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("save_auto_csv (fn, ary)"),
+    /*._description  =*/ QString("Save an array to a Comma-Separated Values (CSV) file. The data type of an array "
+                                 "item will be recognized automatically."),
+};
+
 static struct finExecSysFuncRegItem _finSysFuncFileList[] = {
     _funcRegItem_load_image,
 
     _funcRegItem_load_numerical_csv,
     _funcRegItem_load_string_csv,
-    { QString("load_auto_csv"),      QString("fn"),     _sysfunc_load_auto_csv      },
-    { QString("save_numerical_csv"), QString("fn,ary"), _sysfunc_save_numerical_csv },
-    { QString("save_string_csv"),    QString("fn,ary"), _sysfunc_save_auto_csv      },
-    { QString("save_auto_csv"),      QString("fn,ary"), _sysfunc_save_auto_csv      },
+    _funcRegItem_load_auto_csv,
+    _funcRegItem_save_numerical_csv,
+    _funcRegItem_save_string_csv,
+    _funcRegItem_save_auto_csv,
 
     { QString(), QString(), NULL }
 };
