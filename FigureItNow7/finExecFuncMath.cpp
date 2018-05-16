@@ -516,7 +516,7 @@ static struct finExecSysFuncRegItem _funcRegItem_linear = {
     /*._funcCall     =*/ _sysfunc_linear,
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("linear (x, a, b)"),
-    /*._description  =*/ QString("The 2D analytic geometry function -- Linear function."),
+    /*._description  =*/ QString("The 2D analytic geometry equation -- Linear equation."),
 };
 
 static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment *env,
@@ -564,7 +564,7 @@ static struct finExecSysFuncRegItem _funcRegItem_quadratic = {
     /*._funcCall     =*/ _sysfunc_quadratic,
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("quadratic (x, a, b, c)"),
-    /*._description  =*/ QString("The 2D analytic geometry function -- Quadratic function."),
+    /*._description  =*/ QString("The 2D analytic geometry equation -- Quadratic equation."),
 };
 
 static finErrorCode _sysfunc_frequency_curve(finExecFunction *self, finExecEnvironment *env,
@@ -603,7 +603,7 @@ static struct finExecSysFuncRegItem _funcRegItem_frequency_curve = {
     /*._funcCall     =*/ _sysfunc_frequency_curve,
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("frequency_curve (x)"),
-    /*._description  =*/ QString("The 2D analytic geometry function -- Frequency curve."),
+    /*._description  =*/ QString("The 2D analytic geometry equation -- Frequency curve."),
 };
 
 static finErrorCode _sysfunc_parm_circle(finExecFunction *self, finExecEnvironment *env,
@@ -648,6 +648,15 @@ static finErrorCode _sysfunc_parm_circle(finExecFunction *self, finExecEnvironme
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_parm_circle = {
+    /*._funcName     =*/ QString("parm_circle"),
+    /*._paramCsvList =*/ QString("t,r"),
+    /*._funcCall     =*/ _sysfunc_parm_circle,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("parm_circle (t, r)"),
+    /*._description  =*/ QString("The 2D parametric equation -- Circle."),
+};
 
 static finErrorCode _sysfunc_parm_ellipse(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
@@ -694,6 +703,15 @@ static finErrorCode _sysfunc_parm_ellipse(finExecFunction *self, finExecEnvironm
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_parm_ellipse = {
+    /*._funcName     =*/ QString("parm_ellipse"),
+    /*._paramCsvList =*/ QString("t,a,b"),
+    /*._funcCall     =*/ _sysfunc_parm_ellipse,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("parm_ellipse (t, a, b)"),
+    /*._description  =*/ QString("The 2D parametric equation -- Ellipse."),
+};
 
 static finErrorCode _sysfunc_parm_general_ellipse(finExecFunction *self, finExecEnvironment *env,
                                                   finExecMachine *machine, finExecFlowControl *flowctl)
@@ -753,6 +771,15 @@ static finErrorCode _sysfunc_parm_general_ellipse(finExecFunction *self, finExec
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_parm_general_ellipse = {
+    /*._funcName     =*/ QString("parm_general_ellipse"),
+    /*._paramCsvList =*/ QString("t,a,b,xc,yc,phi"),
+    /*._funcCall     =*/ _sysfunc_parm_general_ellipse,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("parm_general_ellipse (t, a, b, xc, yc, phi)"),
+    /*._description  =*/ QString("The 2D parametric equation -- General Ellipse."),
+};
+
 static finErrorCode _sysfunc_parm_hyperbola(finExecFunction *self, finExecEnvironment *env,
                                             finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -808,6 +835,15 @@ static finErrorCode _sysfunc_parm_hyperbola(finExecFunction *self, finExecEnviro
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_parm_hyperbola = {
+    /*._funcName     =*/ QString("parm_hyperbola"),
+    /*._paramCsvList =*/ QString("t,a,b,h,k"),
+    /*._funcCall     =*/ _sysfunc_parm_hyperbola,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("parm_hyperbola (t, a, b, h, k)"),
+    /*._description  =*/ QString("The 2D parametric equation -- Hyperbola."),
+};
 
 static finErrorCode _sysfunc_parm_hyperbola_rational(finExecFunction *self, finExecEnvironment *env,
                                                      finExecMachine *machine, finExecFlowControl *flowctl)
@@ -867,6 +903,15 @@ static finErrorCode _sysfunc_parm_hyperbola_rational(finExecFunction *self, finE
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_parm_hyperbola_rational = {
+    /*._funcName     =*/ QString("parm_hyperbola_rational"),
+    /*._paramCsvList =*/ QString("t,a,b,h,k"),
+    /*._funcCall     =*/ _sysfunc_parm_hyperbola_rational,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("parm_hyperbola_rational (t, a, b, h, k)"),
+    /*._description  =*/ QString("The 2D parametric equation -- Rational Hyperbola."),
+};
+
 static finErrorCode _sysfunc_parm_astroid(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -910,6 +955,15 @@ static finErrorCode _sysfunc_parm_astroid(finExecFunction *self, finExecEnvironm
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_parm_astroid = {
+    /*._funcName     =*/ QString("parm_astroid"),
+    /*._paramCsvList =*/ QString("t,a"),
+    /*._funcCall     =*/ _sysfunc_parm_astroid,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("parm_astroid (t, a)"),
+    /*._description  =*/ QString("The 2D parametric equation -- Astroid."),
+};
 
 static finErrorCode _sysfunc_parm_lissajous(finExecFunction *self, finExecEnvironment *env,
                                             finExecMachine *machine, finExecFlowControl *flowctl)
@@ -1279,12 +1333,12 @@ static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
     _funcRegItem_quadratic,
     _funcRegItem_frequency_curve,
 
-    { QString("parm_circle"),               QString("t,r"),              _sysfunc_parm_circle               },
-    { QString("parm_ellipse"),              QString("t,a,b"),            _sysfunc_parm_ellipse              },
-    { QString("parm_general_ellipse"),      QString("t,a,b,xc,yc,phi"),  _sysfunc_parm_general_ellipse      },
-    { QString("parm_hyperbola"),            QString("t,a,b,h,k"),        _sysfunc_parm_hyperbola            },
-    { QString("parm_hyperbola_rational"),   QString("t,a,b,h,k"),        _sysfunc_parm_hyperbola_rational   },
-    { QString("parm_astroid"),              QString("t,a"),              _sysfunc_parm_astroid              },
+    _funcRegItem_parm_circle,
+    _funcRegItem_parm_ellipse,
+    _funcRegItem_parm_general_ellipse,
+    _funcRegItem_parm_hyperbola,
+    _funcRegItem_parm_hyperbola_rational,
+    _funcRegItem_parm_astroid,
     { QString("parm_lissajous"),            QString("t,a,b,kx,ky"),      _sysfunc_parm_lissajous            },
     { QString("parm_involute"),             QString("t,r"),              _sysfunc_parm_involute             },
     { QString("parm_cycloid"),              QString("t,r"),              _sysfunc_parm_cycloid              },
