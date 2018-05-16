@@ -75,48 +75,7 @@ static finErrorCode _sysfunc_eq2d_ellipse(finExecFunction *self, finExecEnvironm
 static finErrorCode _sysfunc_eq2d_hyperbola(finExecFunction *self, finExecEnvironment *env,
                                             finExecMachine *machine, finExecFlowControl *flowctl);
 
-static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
-    { QString("abs"),                       QString("num"),              _sysfunc_abs                       },
-    { QString("sig"),                       QString("num"),              _sysfunc_sig                       },
-
-    { QString("sin"),                       QString("rad"),              _sysfunc_sin                       },
-    { QString("cos"),                       QString("rad"),              _sysfunc_cos                       },
-    { QString("tan"),                       QString("rad"),              _sysfunc_tan                       },
-    { QString("tg"),                        QString("rad"),              _sysfunc_tan                       },
-    { QString("cot"),                       QString("rad"),              _sysfunc_cot                       },
-    { QString("ctg"),                       QString("rad"),              _sysfunc_cot                       },
-    { QString("sec"),                       QString("rad"),              _sysfunc_sec                       },
-    { QString("csc"),                       QString("rad"),              _sysfunc_csc                       },
-    { QString("ln"),                        QString("base"),             _sysfunc_ln                        },
-    { QString("log"),                       QString("idx,base"),         _sysfunc_log                       },
-
-    { QString("linear"),                    QString("x,a,b"),            _sysfunc_linear                    },
-    { QString("quadratic"),                 QString("x,a,b,c"),          _sysfunc_quadratic                 },
-    { QString("frequency_curve"),           QString("x"),                _sysfunc_frequency_curve           },
-
-    { QString("parm_circle"),               QString("t,r"),              _sysfunc_parm_circle               },
-    { QString("parm_ellipse"),              QString("t,a,b"),            _sysfunc_parm_ellipse              },
-    { QString("parm_general_ellipse"),      QString("t,a,b,xc,yc,phi"),  _sysfunc_parm_general_ellipse      },
-    { QString("parm_hyperbola"),            QString("t,a,b,h,k"),        _sysfunc_parm_hyperbola            },
-    { QString("parm_hyperbola_rational"),   QString("t,a,b,h,k"),        _sysfunc_parm_hyperbola_rational   },
-    { QString("parm_astroid"),              QString("t,a"),              _sysfunc_parm_astroid              },
-    { QString("parm_lissajous"),            QString("t,a,b,kx,ky"),      _sysfunc_parm_lissajous            },
-    { QString("parm_involute"),             QString("t,r"),              _sysfunc_parm_involute             },
-    { QString("parm_cycloid"),              QString("t,r"),              _sysfunc_parm_cycloid              },
-    { QString("parm_hypotrochoid"),         QString("t,R,r,d"),          _sysfunc_parm_hypotrochoid         },
-    { QString("parm_butterfly"),            QString("t"),                _sysfunc_parm_butterfly            },
-
-    { QString("eq2d_circle"),               QString("x,y,r"),            _sysfunc_eq2d_circle               },
-    { QString("eq2d_ellipse"),              QString("x,y,a,b"),          _sysfunc_eq2d_ellipse              },
-    { QString("eq2d_hyperbola"),            QString("x,y,a,b"),          _sysfunc_eq2d_hyperbola            },
-
-    { QString(), QString(), NULL }
-};
-
-finErrorCode finExecFunction::registSysFuncMath()
-{
-    return finExecFunction::registSysFuncFromArray(_finSysFuncMathList, QString("Mathematics"));
-}
+static QString _defFuncCtg("Mathematics");
 
 static finErrorCode _sysfunc_abs(finExecFunction *self, finExecEnvironment *env,
                                  finExecMachine *machine, finExecFlowControl *flowctl)
@@ -145,6 +104,15 @@ static finErrorCode _sysfunc_abs(finExecFunction *self, finExecEnvironment *env,
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_abs = {
+    /*._funcName     =*/ QString("abs"),
+    /*._paramCsvList =*/ QString("num"),
+    /*._funcCall     =*/ _sysfunc_abs,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("abs (num)"),
+    /*._description  =*/ QString("Get the abstractive value of given number."),
+};
 
 static finErrorCode _sysfunc_sig(finExecFunction *self, finExecEnvironment *env,
                                  finExecMachine *machine, finExecFlowControl *flowctl)
@@ -180,6 +148,15 @@ static finErrorCode _sysfunc_sig(finExecFunction *self, finExecEnvironment *env,
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_sig = {
+    /*._funcName     =*/ QString("sig"),
+    /*._paramCsvList =*/ QString("num"),
+    /*._funcCall     =*/ _sysfunc_sig,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("sig (num)"),
+    /*._description  =*/ QString("Get the signature of given number."),
+};
 
 static finErrorCode _sysfunc_sin(finExecFunction *self, finExecEnvironment *env,
                                  finExecMachine *machine, finExecFlowControl *flowctl)
@@ -1165,4 +1142,47 @@ static finErrorCode _sysfunc_eq2d_hyperbola(finExecFunction *self, finExecEnviro
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
+}
+
+static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
+    _funcRegItem_abs,
+    _funcRegItem_sig,
+
+    { QString("sin"),                       QString("rad"),              _sysfunc_sin                       },
+    { QString("cos"),                       QString("rad"),              _sysfunc_cos                       },
+    { QString("tan"),                       QString("rad"),              _sysfunc_tan                       },
+    { QString("tg"),                        QString("rad"),              _sysfunc_tan                       },
+    { QString("cot"),                       QString("rad"),              _sysfunc_cot                       },
+    { QString("ctg"),                       QString("rad"),              _sysfunc_cot                       },
+    { QString("sec"),                       QString("rad"),              _sysfunc_sec                       },
+    { QString("csc"),                       QString("rad"),              _sysfunc_csc                       },
+    { QString("ln"),                        QString("base"),             _sysfunc_ln                        },
+    { QString("log"),                       QString("idx,base"),         _sysfunc_log                       },
+
+    { QString("linear"),                    QString("x,a,b"),            _sysfunc_linear                    },
+    { QString("quadratic"),                 QString("x,a,b,c"),          _sysfunc_quadratic                 },
+    { QString("frequency_curve"),           QString("x"),                _sysfunc_frequency_curve           },
+
+    { QString("parm_circle"),               QString("t,r"),              _sysfunc_parm_circle               },
+    { QString("parm_ellipse"),              QString("t,a,b"),            _sysfunc_parm_ellipse              },
+    { QString("parm_general_ellipse"),      QString("t,a,b,xc,yc,phi"),  _sysfunc_parm_general_ellipse      },
+    { QString("parm_hyperbola"),            QString("t,a,b,h,k"),        _sysfunc_parm_hyperbola            },
+    { QString("parm_hyperbola_rational"),   QString("t,a,b,h,k"),        _sysfunc_parm_hyperbola_rational   },
+    { QString("parm_astroid"),              QString("t,a"),              _sysfunc_parm_astroid              },
+    { QString("parm_lissajous"),            QString("t,a,b,kx,ky"),      _sysfunc_parm_lissajous            },
+    { QString("parm_involute"),             QString("t,r"),              _sysfunc_parm_involute             },
+    { QString("parm_cycloid"),              QString("t,r"),              _sysfunc_parm_cycloid              },
+    { QString("parm_hypotrochoid"),         QString("t,R,r,d"),          _sysfunc_parm_hypotrochoid         },
+    { QString("parm_butterfly"),            QString("t"),                _sysfunc_parm_butterfly            },
+
+    { QString("eq2d_circle"),               QString("x,y,r"),            _sysfunc_eq2d_circle               },
+    { QString("eq2d_ellipse"),              QString("x,y,a,b"),          _sysfunc_eq2d_ellipse              },
+    { QString("eq2d_hyperbola"),            QString("x,y,a,b"),          _sysfunc_eq2d_hyperbola            },
+
+    { QString(), QString(), NULL }
+};
+
+finErrorCode finExecFunction::registSysFuncMath()
+{
+    return finExecFunction::registSysFuncFromArray(_finSysFuncMathList, _defFuncCtg);
 }
