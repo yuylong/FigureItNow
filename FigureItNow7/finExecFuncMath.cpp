@@ -16,65 +16,6 @@
 #include "finExecFlowControl.h"
 
 
-static finErrorCode _sysfunc_abs(finExecFunction *self, finExecEnvironment *env,
-                                 finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_sig(finExecFunction *self, finExecEnvironment *env,
-                                 finExecMachine *machine, finExecFlowControl *flowctl);
-
-static finErrorCode _sysfunc_sin(finExecFunction *self, finExecEnvironment *env,
-                                 finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_cos(finExecFunction *self, finExecEnvironment *env,
-                                 finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_tan(finExecFunction *self, finExecEnvironment *env,
-                                 finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_cot(finExecFunction *self, finExecEnvironment *env,
-                                 finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_sec(finExecFunction *self, finExecEnvironment *env,
-                                 finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_csc(finExecFunction *self, finExecEnvironment *env,
-                                 finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_ln(finExecFunction *self, finExecEnvironment *env,
-                                finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_log(finExecFunction *self, finExecEnvironment *env,
-                                 finExecMachine *machine, finExecFlowControl *flowctl);
-
-static finErrorCode _sysfunc_linear(finExecFunction *self, finExecEnvironment *env,
-                                    finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_frequency_curve(finExecFunction *self, finExecEnvironment *env,
-                                             finExecMachine *machine, finExecFlowControl *flowctl);
-
-static finErrorCode _sysfunc_parm_circle(finExecFunction *self, finExecEnvironment *env,
-                                         finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_parm_ellipse(finExecFunction *self, finExecEnvironment *env,
-                                          finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_parm_general_ellipse(finExecFunction *self, finExecEnvironment *env,
-                                                  finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_parm_hyperbola(finExecFunction *self, finExecEnvironment *env,
-                                            finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_parm_hyperbola_rational(finExecFunction *self, finExecEnvironment *env,
-                                                     finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_parm_astroid(finExecFunction *self, finExecEnvironment *env,
-                                          finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_parm_lissajous(finExecFunction *self, finExecEnvironment *env,
-                                            finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_parm_involute(finExecFunction *self, finExecEnvironment *env,
-                                           finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_parm_cycloid(finExecFunction *self, finExecEnvironment *env,
-                                          finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_parm_hypotrochoid(finExecFunction *self, finExecEnvironment *env,
-                                               finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_parm_butterfly(finExecFunction *self, finExecEnvironment *env,
-                                            finExecMachine *machine, finExecFlowControl *flowctl);
-
-static finErrorCode _sysfunc_eq2d_circle(finExecFunction *self, finExecEnvironment *env,
-                                         finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_eq2d_ellipse(finExecFunction *self, finExecEnvironment *env,
-                                          finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_eq2d_hyperbola(finExecFunction *self, finExecEnvironment *env,
-                                            finExecMachine *machine, finExecFlowControl *flowctl);
-
 static QString _defFuncCtg("Mathematics");
 
 static finErrorCode _sysfunc_abs(finExecFunction *self, finExecEnvironment *env,
