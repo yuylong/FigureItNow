@@ -516,7 +516,7 @@ static struct finExecSysFuncRegItem _funcRegItem_linear = {
     /*._funcCall     =*/ _sysfunc_linear,
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("linear (x, a, b)"),
-    /*._description  =*/ QString("The 2D analytic geometry equation -- Linear equation."),
+    /*._description  =*/ QString("The 2D analytic geometry function -- Linear equation."),
 };
 
 static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment *env,
@@ -564,7 +564,7 @@ static struct finExecSysFuncRegItem _funcRegItem_quadratic = {
     /*._funcCall     =*/ _sysfunc_quadratic,
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("quadratic (x, a, b, c)"),
-    /*._description  =*/ QString("The 2D analytic geometry equation -- Quadratic equation."),
+    /*._description  =*/ QString("The 2D analytic geometry function -- Quadratic equation."),
 };
 
 static finErrorCode _sysfunc_frequency_curve(finExecFunction *self, finExecEnvironment *env,
@@ -603,7 +603,7 @@ static struct finExecSysFuncRegItem _funcRegItem_frequency_curve = {
     /*._funcCall     =*/ _sysfunc_frequency_curve,
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("frequency_curve (x)"),
-    /*._description  =*/ QString("The 2D analytic geometry equation -- Frequency curve."),
+    /*._description  =*/ QString("The 2D analytic geometry function -- Frequency curve."),
 };
 
 static finErrorCode _sysfunc_parm_circle(finExecFunction *self, finExecEnvironment *env,
@@ -1017,6 +1017,15 @@ static finErrorCode _sysfunc_parm_lissajous(finExecFunction *self, finExecEnviro
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_parm_lissajous = {
+    /*._funcName     =*/ QString("parm_lissajous"),
+    /*._paramCsvList =*/ QString("t,a,b,kx,ky"),
+    /*._funcCall     =*/ _sysfunc_parm_lissajous,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("parm_lissajous (t, a, b, kx, ky)"),
+    /*._description  =*/ QString("The 2D parametric equation -- Lissajous Curve."),
+};
+
 static finErrorCode _sysfunc_parm_involute(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -1060,6 +1069,15 @@ static finErrorCode _sysfunc_parm_involute(finExecFunction *self, finExecEnviron
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_parm_involute = {
+    /*._funcName     =*/ QString("parm_involute"),
+    /*._paramCsvList =*/ QString("t,r"),
+    /*._funcCall     =*/ _sysfunc_parm_involute,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("parm_involute (t, r)"),
+    /*._description  =*/ QString("The 2D parametric equation -- Involute Curve."),
+};
+
 static finErrorCode _sysfunc_parm_cycloid(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -1102,6 +1120,15 @@ static finErrorCode _sysfunc_parm_cycloid(finExecFunction *self, finExecEnvironm
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_parm_cycloid = {
+    /*._funcName     =*/ QString("parm_cycloid"),
+    /*._paramCsvList =*/ QString("t,r"),
+    /*._funcCall     =*/ _sysfunc_parm_cycloid,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("parm_cycloid (t, r)"),
+    /*._description  =*/ QString("The 2D parametric equation -- Cycloid."),
+};
 
 static finErrorCode _sysfunc_parm_hypotrochoid(finExecFunction *self, finExecEnvironment *env,
                                                finExecMachine *machine, finExecFlowControl *flowctl)
@@ -1154,6 +1181,15 @@ static finErrorCode _sysfunc_parm_hypotrochoid(finExecFunction *self, finExecEnv
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_parm_hypotrochoid = {
+    /*._funcName     =*/ QString("parm_hypotrochoid"),
+    /*._paramCsvList =*/ QString("t,R,r,d"),
+    /*._funcCall     =*/ _sysfunc_parm_hypotrochoid,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("parm_hypotrochoid (t, R, r, d)"),
+    /*._description  =*/ QString("The 2D parametric equation -- Hypotrochoid."),
+};
+
 static finErrorCode _sysfunc_parm_butterfly(finExecFunction *self, finExecEnvironment *env,
                                             finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -1198,6 +1234,15 @@ static finErrorCode _sysfunc_parm_butterfly(finExecFunction *self, finExecEnviro
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_parm_butterfly = {
+    /*._funcName     =*/ QString("parm_butterfly"),
+    /*._paramCsvList =*/ QString("t"),
+    /*._funcCall     =*/ _sysfunc_parm_butterfly,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("parm_butterfly (t)"),
+    /*._description  =*/ QString("The 2D parametric equation -- Butterfly Curve."),
+};
+
 static finErrorCode _sysfunc_eq2d_circle(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -1233,6 +1278,15 @@ static finErrorCode _sysfunc_eq2d_circle(finExecFunction *self, finExecEnvironme
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_eq2d_circle = {
+    /*._funcName     =*/ QString("eq2d_circle"),
+    /*._paramCsvList =*/ QString("x,y,r"),
+    /*._funcCall     =*/ _sysfunc_eq2d_circle,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("eq2d_circle (x, y, r)"),
+    /*._description  =*/ QString("The 2D analytic geometry function -- Circle."),
+};
 
 static finErrorCode _sysfunc_eq2d_ellipse(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
@@ -1274,6 +1328,15 @@ static finErrorCode _sysfunc_eq2d_ellipse(finExecFunction *self, finExecEnvironm
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_eq2d_ellipse = {
+    /*._funcName     =*/ QString("eq2d_ellipse"),
+    /*._paramCsvList =*/ QString("x,y,a,b"),
+    /*._funcCall     =*/ _sysfunc_eq2d_ellipse,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("eq2d_ellipse (x, y, a, b)"),
+    /*._description  =*/ QString("The 2D analytic geometry function -- Ellipse."),
+};
+
 static finErrorCode _sysfunc_eq2d_hyperbola(finExecFunction *self, finExecEnvironment *env,
                                             finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -1314,6 +1377,15 @@ static finErrorCode _sysfunc_eq2d_hyperbola(finExecFunction *self, finExecEnviro
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_eq2d_hyperbola = {
+    /*._funcName     =*/ QString("eq2d_hyperbola"),
+    /*._paramCsvList =*/ QString("x,y,a,b"),
+    /*._funcCall     =*/ _sysfunc_eq2d_hyperbola,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("eq2d_hyperbola (x, y, a, b)"),
+    /*._description  =*/ QString("The 2D analytic geometry function -- Hyperbola."),
+};
+
 static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
     _funcRegItem_abs,
     _funcRegItem_sig,
@@ -1339,15 +1411,15 @@ static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
     _funcRegItem_parm_hyperbola,
     _funcRegItem_parm_hyperbola_rational,
     _funcRegItem_parm_astroid,
-    { QString("parm_lissajous"),            QString("t,a,b,kx,ky"),      _sysfunc_parm_lissajous            },
-    { QString("parm_involute"),             QString("t,r"),              _sysfunc_parm_involute             },
-    { QString("parm_cycloid"),              QString("t,r"),              _sysfunc_parm_cycloid              },
-    { QString("parm_hypotrochoid"),         QString("t,R,r,d"),          _sysfunc_parm_hypotrochoid         },
-    { QString("parm_butterfly"),            QString("t"),                _sysfunc_parm_butterfly            },
+    _funcRegItem_parm_lissajous,
+    _funcRegItem_parm_involute,
+    _funcRegItem_parm_cycloid,
+    _funcRegItem_parm_hypotrochoid,
+    _funcRegItem_parm_butterfly,
 
-    { QString("eq2d_circle"),               QString("x,y,r"),            _sysfunc_eq2d_circle               },
-    { QString("eq2d_ellipse"),              QString("x,y,a,b"),          _sysfunc_eq2d_ellipse              },
-    { QString("eq2d_hyperbola"),            QString("x,y,a,b"),          _sysfunc_eq2d_hyperbola            },
+    _funcRegItem_eq2d_circle,
+    _funcRegItem_eq2d_ellipse,
+    _funcRegItem_eq2d_hyperbola,
 
     { QString(), QString(), NULL }
 };
