@@ -5,6 +5,11 @@
  * Author: Yulong Yu
  * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
  */
+/*! \file finFigureAlg.h
+ *  \brief The figuring algorithm library.
+ *
+ * This file declares a static class that contains all the figuring algorithms used in FIN-7 system.
+ */
 
 #ifndef FINFIGUREALG_H
 #define FINFIGUREALG_H

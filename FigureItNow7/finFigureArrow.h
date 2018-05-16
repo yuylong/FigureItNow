@@ -5,6 +5,11 @@
  * Author: Yulong Yu
  * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
  */
+/*! \file finFigureArrow.h
+ *  \brief The arrow object installed on figuring objects.
+ *
+ * This file declares a class referred as arrow to describe the arrow at the line end of the figuring object.
+ */
 
 #ifndef FINFIGUREARROW_H
 #define FINFIGUREARROW_H
