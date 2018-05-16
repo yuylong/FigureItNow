@@ -467,7 +467,7 @@ static finErrorCode _sysfunc_log(finExecFunction *self, finExecEnvironment *env,
 
 static struct finExecSysFuncRegItem _funcRegItem_log = {
     /*._funcName     =*/ QString("log"),
-    /*._paramCsvList =*/ QString("idx, base"),
+    /*._paramCsvList =*/ QString("idx,base"),
     /*._funcCall     =*/ _sysfunc_log,
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("log (idx, base)"),
@@ -510,6 +510,15 @@ static finErrorCode _sysfunc_linear(finExecFunction *self, finExecEnvironment *e
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_linear = {
+    /*._funcName     =*/ QString("linear"),
+    /*._paramCsvList =*/ QString("x,a,b"),
+    /*._funcCall     =*/ _sysfunc_linear,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("linear (x, a, b)"),
+    /*._description  =*/ QString("The 2D analytic geometry function -- Linear function."),
+};
+
 static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -549,6 +558,15 @@ static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_quadratic = {
+    /*._funcName     =*/ QString("quadratic"),
+    /*._paramCsvList =*/ QString("x,a,b,c"),
+    /*._funcCall     =*/ _sysfunc_quadratic,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("quadratic (x, a, b, c)"),
+    /*._description  =*/ QString("The 2D analytic geometry function -- Quadratic function."),
+};
+
 static finErrorCode _sysfunc_frequency_curve(finExecFunction *self, finExecEnvironment *env,
                                              finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -579,6 +597,14 @@ static finErrorCode _sysfunc_frequency_curve(finExecFunction *self, finExecEnvir
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_frequency_curve = {
+    /*._funcName     =*/ QString("frequency_curve"),
+    /*._paramCsvList =*/ QString("x"),
+    /*._funcCall     =*/ _sysfunc_frequency_curve,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("frequency_curve (x)"),
+    /*._description  =*/ QString("The 2D analytic geometry function -- Frequency curve."),
+};
 
 static finErrorCode _sysfunc_parm_circle(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl)
@@ -1249,9 +1275,9 @@ static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
     _funcRegItem_ln,
     _funcRegItem_log,
 
-    { QString("linear"),                    QString("x,a,b"),            _sysfunc_linear                    },
-    { QString("quadratic"),                 QString("x,a,b,c"),          _sysfunc_quadratic                 },
-    { QString("frequency_curve"),           QString("x"),                _sysfunc_frequency_curve           },
+    _funcRegItem_linear,
+    _funcRegItem_quadratic,
+    _funcRegItem_frequency_curve,
 
     { QString("parm_circle"),               QString("t,r"),              _sysfunc_parm_circle               },
     { QString("parm_ellipse"),              QString("t,a,b"),            _sysfunc_parm_ellipse              },
