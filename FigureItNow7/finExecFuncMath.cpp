@@ -186,6 +186,15 @@ static finErrorCode _sysfunc_sin(finExecFunction *self, finExecEnvironment *env,
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_sin = {
+    /*._funcName     =*/ QString("sin"),
+    /*._paramCsvList =*/ QString("rad"),
+    /*._funcCall     =*/ _sysfunc_sin,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("sin (rad)"),
+    /*._description  =*/ QString("The mathematical function -- sin."),
+};
+
 static finErrorCode _sysfunc_cos(finExecFunction *self, finExecEnvironment *env,
                                  finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -213,6 +222,15 @@ static finErrorCode _sysfunc_cos(finExecFunction *self, finExecEnvironment *env,
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_cos = {
+    /*._funcName     =*/ QString("cos"),
+    /*._paramCsvList =*/ QString("rad"),
+    /*._funcCall     =*/ _sysfunc_cos,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("cos (rad)"),
+    /*._description  =*/ QString("The mathematical function -- cos."),
+};
 
 static finErrorCode _sysfunc_tan(finExecFunction *self, finExecEnvironment *env,
                                  finExecMachine *machine, finExecFlowControl *flowctl)
@@ -242,6 +260,24 @@ static finErrorCode _sysfunc_tan(finExecFunction *self, finExecEnvironment *env,
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_tan = {
+    /*._funcName     =*/ QString("tan"),
+    /*._paramCsvList =*/ QString("rad"),
+    /*._funcCall     =*/ _sysfunc_tan,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("tan (rad)"),
+    /*._description  =*/ QString("The mathematical function -- tan. An alias of tg."),
+};
+
+static struct finExecSysFuncRegItem _funcRegItem_tg = {
+    /*._funcName     =*/ QString("tg"),
+    /*._paramCsvList =*/ QString("rad"),
+    /*._funcCall     =*/ _sysfunc_tan,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("tg (rad)"),
+    /*._description  =*/ QString("The mathematical function -- tg. An alias of tan."),
+};
+
 static finErrorCode _sysfunc_cot(finExecFunction *self, finExecEnvironment *env,
                                  finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -269,6 +305,24 @@ static finErrorCode _sysfunc_cot(finExecFunction *self, finExecEnvironment *env,
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_cot = {
+    /*._funcName     =*/ QString("cot"),
+    /*._paramCsvList =*/ QString("rad"),
+    /*._funcCall     =*/ _sysfunc_cot,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("cot (rad)"),
+    /*._description  =*/ QString("The mathematical function -- cot. An alias of ctg."),
+};
+
+static struct finExecSysFuncRegItem _funcRegItem_ctg = {
+    /*._funcName     =*/ QString("ctg"),
+    /*._paramCsvList =*/ QString("rad"),
+    /*._funcCall     =*/ _sysfunc_cot,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("ctg (rad)"),
+    /*._description  =*/ QString("The mathematical function -- ctg. An alias of cot."),
+};
 
 static finErrorCode _sysfunc_sec(finExecFunction *self, finExecEnvironment *env,
                                  finExecMachine *machine, finExecFlowControl *flowctl)
@@ -298,6 +352,15 @@ static finErrorCode _sysfunc_sec(finExecFunction *self, finExecEnvironment *env,
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_sec = {
+    /*._funcName     =*/ QString("sec"),
+    /*._paramCsvList =*/ QString("rad"),
+    /*._funcCall     =*/ _sysfunc_sec,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("sec (rad)"),
+    /*._description  =*/ QString("The mathematical function -- sec."),
+};
+
 static finErrorCode _sysfunc_csc(finExecFunction *self, finExecEnvironment *env,
                                  finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -326,6 +389,15 @@ static finErrorCode _sysfunc_csc(finExecFunction *self, finExecEnvironment *env,
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_csc = {
+    /*._funcName     =*/ QString("csc"),
+    /*._paramCsvList =*/ QString("rad"),
+    /*._funcCall     =*/ _sysfunc_csc,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("csc (rad)"),
+    /*._description  =*/ QString("The mathematical function -- csc."),
+};
+
 static finErrorCode _sysfunc_ln(finExecFunction *self, finExecEnvironment *env,
                                 finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -353,6 +425,15 @@ static finErrorCode _sysfunc_ln(finExecFunction *self, finExecEnvironment *env,
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_ln = {
+    /*._funcName     =*/ QString("ln"),
+    /*._paramCsvList =*/ QString("base"),
+    /*._funcCall     =*/ _sysfunc_ln,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("ln (base)"),
+    /*._description  =*/ QString("The mathematical function -- ln."),
+};
 
 static finErrorCode _sysfunc_log(finExecFunction *self, finExecEnvironment *env,
                                  finExecMachine *machine, finExecFlowControl *flowctl)
@@ -383,6 +464,15 @@ static finErrorCode _sysfunc_log(finExecFunction *self, finExecEnvironment *env,
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_log = {
+    /*._funcName     =*/ QString("log"),
+    /*._paramCsvList =*/ QString("idx, base"),
+    /*._funcCall     =*/ _sysfunc_log,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("log (idx, base)"),
+    /*._description  =*/ QString("The mathematical function -- log."),
+};
 
 static finErrorCode _sysfunc_linear(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl)
@@ -1148,16 +1238,16 @@ static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
     _funcRegItem_abs,
     _funcRegItem_sig,
 
-    { QString("sin"),                       QString("rad"),              _sysfunc_sin                       },
-    { QString("cos"),                       QString("rad"),              _sysfunc_cos                       },
-    { QString("tan"),                       QString("rad"),              _sysfunc_tan                       },
-    { QString("tg"),                        QString("rad"),              _sysfunc_tan                       },
-    { QString("cot"),                       QString("rad"),              _sysfunc_cot                       },
-    { QString("ctg"),                       QString("rad"),              _sysfunc_cot                       },
-    { QString("sec"),                       QString("rad"),              _sysfunc_sec                       },
-    { QString("csc"),                       QString("rad"),              _sysfunc_csc                       },
-    { QString("ln"),                        QString("base"),             _sysfunc_ln                        },
-    { QString("log"),                       QString("idx,base"),         _sysfunc_log                       },
+    _funcRegItem_sin,
+    _funcRegItem_cos,
+    _funcRegItem_tan,
+    _funcRegItem_tg,
+    _funcRegItem_cot,
+    _funcRegItem_ctg,
+    _funcRegItem_sec,
+    _funcRegItem_csc,
+    _funcRegItem_ln,
+    _funcRegItem_log,
 
     { QString("linear"),                    QString("x,a,b"),            _sysfunc_linear                    },
     { QString("quadratic"),                 QString("x,a,b,c"),          _sysfunc_quadratic                 },
