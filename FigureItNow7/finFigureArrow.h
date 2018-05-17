@@ -72,8 +72,6 @@ private:
     QPointF lineShrinkPtTriangle(const QPointF &prevpt, const QPointF &arwpt, const finFigureConfig *cfg) const;
     finErrorCode getPixelPathTriangle(QList<finFigurePath> *pathlist, const QPointF &arwpt, const QPointF &prevpt,
                                       const finFigureConfig *cfg) const;
-
-
 };
 
 typedef finFigureArrow::Type finFigureArrowType;

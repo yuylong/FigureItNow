@@ -67,39 +67,7 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
 static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEnvironment *env,
                                                 finExecMachine *machine, finExecFlowControl *flowctl);
 
-
-static finExecSysFuncRegItem _finSysFuncFigureList[] = {
-    { QString("clear_fig"),          QString(""),                            _sysfunc_clear_fig          },
-    { QString("draw_dot"),           QString("cx,cy"),                       _sysfunc_draw_dot           },
-    { QString("line"),               QString("x1,y1,x2,y2"),                 _sysfunc_line               },
-    { QString("polyline"),           QString("x1,y1,x2,y2"),                 _sysfunc_polyline           },
-    { QString("polyline_mat"),       QString("xary,yary"),                   _sysfunc_polyline_mat       },
-    { QString("rect"),               QString("cx,cy,w,h,rad"),               _sysfunc_rect               },
-    { QString("polygon"),            QString("x1,y1,x2,y2"),                 _sysfunc_polygon            },
-    { QString("polygon_mat"),        QString("xary,yary"),                   _sysfunc_polygon_mat        },
-    { QString("circle"),             QString("cx,cy,r"),                     _sysfunc_circle             },
-    { QString("ellipse"),            QString("cx,cy,lr,sr,rad"),             _sysfunc_ellipse            },
-    { QString("draw_text"),          QString("text,cx,cy,rad,sc"),           _sysfunc_draw_text          },
-    { QString("draw_pinned_text"),   QString("text,cx,cy,rad,sc"),           _sysfunc_draw_pinned_text   },
-    { QString("draw_image"),         QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_image         },
-    { QString("draw_pinned_image"),  QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_pinned_image  },
-    { QString("axis"),               QString("sx,sy,tx,ty,rx1,rx2,ry1,ry2"), _sysfunc_axis               },
-
-    { QString("line3d"),             QString("x1,y1,z1,x2,y2,z2"),           _sysfunc_line3d             },
-
-    { QString("named_color"),        QString("colorname"),                   _sysfunc_named_color        },
-    { QString("read_fig_config"),    QString("cfgname"),                     _sysfunc_read_fig_config    },
-    { QString("write_fig_config"),   QString("cfgname,value"),               _sysfunc_write_fig_config   },
-    { QString("read_graph_config"),  QString("cfgname"),                     _sysfunc_read_graph_config  },
-    { QString("write_graph_config"), QString("cfgname,value"),               _sysfunc_write_graph_config },
-
-    { QString(), QString(), NULL }
-};
-
-finErrorCode finExecFunction::registSysFuncFiguring()
-{
-    return finExecFunction::registSysFuncFromArray(_finSysFuncFigureList, QString("Figuring"));
-}
+static QString _defFuncCtg("Figuring");
 
 static finErrorCode _sysfunc_clear_fig(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
@@ -114,6 +82,15 @@ static finErrorCode _sysfunc_clear_fig(finExecFunction *self, finExecEnvironment
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_clear_fig = {
+    /*._funcName     =*/ QString("clear_fig"),
+    /*._paramCsvList =*/ QString(""),
+    /*._funcCall     =*/ _sysfunc_clear_fig,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("clear_fig ()"),
+    /*._description  =*/ QString("Clear all the figure objects on the panel."),
+};
 
 static finErrorCode _sysfunc_draw_dot(finExecFunction *self, finExecEnvironment *env,
                                       finExecMachine *machine, finExecFlowControl *flowctl)
@@ -149,6 +126,15 @@ static finErrorCode _sysfunc_draw_dot(finExecFunction *self, finExecEnvironment 
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_draw_dot = {
+    /*._funcName     =*/ QString("draw_dot"),
+    /*._paramCsvList =*/ QString("cx,cy"),
+    /*._funcCall     =*/ _sysfunc_draw_dot,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("draw_dot (cx, cy)"),
+    /*._description  =*/ QString("Draw a dot at given position on the panel."),
+};
 
 static finErrorCode
 _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl)
@@ -190,6 +176,15 @@ _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *ma
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_line = {
+    /*._funcName     =*/ QString("line"),
+    /*._paramCsvList =*/ QString("x1,y1,x2,y2"),
+    /*._funcCall     =*/ _sysfunc_line,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("line (x1, y1, x2, y2)"),
+    /*._description  =*/ QString("Draw a line at given start and end positions on the panel."),
+};
 
 static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment *env,
                                       finExecMachine *machine, finExecFlowControl *flowctl)
@@ -1362,4 +1357,37 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
 
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
+}
+
+static finExecSysFuncRegItem _finSysFuncFigureList[] = {
+    _funcRegItem_clear_fig,
+    _funcRegItem_draw_dot,
+    _funcRegItem_line,
+    { QString("polyline"),           QString("x1,y1,x2,y2"),                 _sysfunc_polyline           },
+    { QString("polyline_mat"),       QString("xary,yary"),                   _sysfunc_polyline_mat       },
+    { QString("rect"),               QString("cx,cy,w,h,rad"),               _sysfunc_rect               },
+    { QString("polygon"),            QString("x1,y1,x2,y2"),                 _sysfunc_polygon            },
+    { QString("polygon_mat"),        QString("xary,yary"),                   _sysfunc_polygon_mat        },
+    { QString("circle"),             QString("cx,cy,r"),                     _sysfunc_circle             },
+    { QString("ellipse"),            QString("cx,cy,lr,sr,rad"),             _sysfunc_ellipse            },
+    { QString("draw_text"),          QString("text,cx,cy,rad,sc"),           _sysfunc_draw_text          },
+    { QString("draw_pinned_text"),   QString("text,cx,cy,rad,sc"),           _sysfunc_draw_pinned_text   },
+    { QString("draw_image"),         QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_image         },
+    { QString("draw_pinned_image"),  QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_pinned_image  },
+    { QString("axis"),               QString("sx,sy,tx,ty,rx1,rx2,ry1,ry2"), _sysfunc_axis               },
+
+    { QString("line3d"),             QString("x1,y1,z1,x2,y2,z2"),           _sysfunc_line3d             },
+
+    { QString("named_color"),        QString("colorname"),                   _sysfunc_named_color        },
+    { QString("read_fig_config"),    QString("cfgname"),                     _sysfunc_read_fig_config    },
+    { QString("write_fig_config"),   QString("cfgname,value"),               _sysfunc_write_fig_config   },
+    { QString("read_graph_config"),  QString("cfgname"),                     _sysfunc_read_graph_config  },
+    { QString("write_graph_config"), QString("cfgname,value"),               _sysfunc_write_graph_config },
+
+    { QString(), QString(), NULL }
+};
+
+finErrorCode finExecFunction::registSysFuncFiguring()
+{
+    return finExecFunction::registSysFuncFromArray(_finSysFuncFigureList, QString("Figuring"));
 }
