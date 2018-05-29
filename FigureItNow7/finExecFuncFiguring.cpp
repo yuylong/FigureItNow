@@ -246,6 +246,15 @@ static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment 
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_polyline = {
+    /*._funcName     =*/ QString("polyline"),
+    /*._paramCsvList =*/ QString("x1,y1,x2,y2"),
+    /*._funcCall     =*/ _sysfunc_polyline,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("polyline (x1, y1, x2, y2, ...)"),
+    /*._description  =*/ QString("Draw multiple continuous lines at given positions on the panel."),
+};
+
 static finErrorCode _sysfunc_polyline_mat(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -275,6 +284,16 @@ static finErrorCode _sysfunc_polyline_mat(finExecFunction *self, finExecEnvironm
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_polyline_mat = {
+    /*._funcName     =*/ QString("polyline_mat"),
+    /*._paramCsvList =*/ QString("xary,yary"),
+    /*._funcCall     =*/ _sysfunc_polyline_mat,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("polyline_mat (xary, yary)"),
+    /*._description  =*/ QString("Draw multiple continuous lines at given positions on the panel. The points are "
+                                 "assigned with two arrays for x and y coordinates."),
+};
 
 static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env,
                                   finExecMachine *machine, finExecFlowControl *flowctl)
@@ -323,6 +342,15 @@ static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_rect = {
+    /*._funcName     =*/ QString("rect"),
+    /*._paramCsvList =*/ QString("cx,cy,w,h,rad"),
+    /*._funcCall     =*/ _sysfunc_rect,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("rect (cx, cy, w, h, [rad])"),
+    /*._description  =*/ QString("Draw a rectangle with the central position, size and optional sloping radian."),
+};
 
 static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
@@ -383,6 +411,15 @@ static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_polygon = {
+    /*._funcName     =*/ QString("polygon"),
+    /*._paramCsvList =*/ QString("x1,y1,x2,y2"),
+    /*._funcCall     =*/ _sysfunc_polygon,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("polygon (x1, y1, x2, y2, ...)"),
+    /*._description  =*/ QString("Draw a polygon with the vertexes listed in the argument list."),
+};
 
 static finErrorCode _sysfunc_polygon_mat(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl)
@@ -1363,10 +1400,10 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     _funcRegItem_clear_fig,
     _funcRegItem_draw_dot,
     _funcRegItem_line,
-    { QString("polyline"),           QString("x1,y1,x2,y2"),                 _sysfunc_polyline           },
-    { QString("polyline_mat"),       QString("xary,yary"),                   _sysfunc_polyline_mat       },
-    { QString("rect"),               QString("cx,cy,w,h,rad"),               _sysfunc_rect               },
-    { QString("polygon"),            QString("x1,y1,x2,y2"),                 _sysfunc_polygon            },
+    _funcRegItem_polyline,
+    _funcRegItem_polyline_mat,
+    _funcRegItem_rect,
+    _funcRegItem_polygon,
     { QString("polygon_mat"),        QString("xary,yary"),                   _sysfunc_polygon_mat        },
     { QString("circle"),             QString("cx,cy,r"),                     _sysfunc_circle             },
     { QString("ellipse"),            QString("cx,cy,lr,sr,rad"),             _sysfunc_ellipse            },
