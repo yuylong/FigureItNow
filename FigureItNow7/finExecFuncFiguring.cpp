@@ -292,7 +292,7 @@ static struct finExecSysFuncRegItem _funcRegItem_polyline_mat = {
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("polyline_mat (xary, yary)"),
     /*._description  =*/ QString("Draw multiple continuous lines at given positions on the panel. The points are "
-                                 "assigned with two arrays for x and y coordinates."),
+                                 "assigned with two arrays of x and y coordinates or a matrix with two columns."),
 };
 
 static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env,
@@ -451,6 +451,16 @@ static finErrorCode _sysfunc_polygon_mat(finExecFunction *self, finExecEnvironme
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_polygon_mat = {
+    /*._funcName     =*/ QString("polygon_mat"),
+    /*._paramCsvList =*/ QString("xary,yary"),
+    /*._funcCall     =*/ _sysfunc_polygon_mat,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("polygon_mat (xary, yary) or polygon_mat(xymat)"),
+    /*._description  =*/ QString("Draw a polygon at given positions on the panel. The points are assigned with two "
+                                 "arrays of x and y coordinates or a matrix with two columns."),
+};
+
 static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -491,6 +501,15 @@ static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *e
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_circle = {
+    /*._funcName     =*/ QString("circle"),
+    /*._paramCsvList =*/ QString("cx,cy,r"),
+    /*._funcCall     =*/ _sysfunc_circle,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("circle (cx, cy, r)"),
+    /*._description  =*/ QString("Draw a circle with center position and radius."),
+};
 
 static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
@@ -540,6 +559,16 @@ static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_ellipse = {
+    /*._funcName     =*/ QString("ellipse"),
+    /*._paramCsvList =*/ QString("cx,cy,lr,sr,rad"),
+    /*._funcCall     =*/ _sysfunc_ellipse,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("ellipse (cx, cy, lr, sr[, rad])"),
+    /*._description  =*/ QString("Draw an ellipse with center position, the radius in x and y coordinates, and "
+                                 "optional the radian of slope. "),
+};
 
 static finErrorCode _sysfunc_draw_text_base(finExecFunction *self, finExecEnvironment *env,
                                             finExecMachine *machine, finExecFlowControl *flowctl, bool pinned)
@@ -1404,9 +1433,9 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     _funcRegItem_polyline_mat,
     _funcRegItem_rect,
     _funcRegItem_polygon,
-    { QString("polygon_mat"),        QString("xary,yary"),                   _sysfunc_polygon_mat        },
-    { QString("circle"),             QString("cx,cy,r"),                     _sysfunc_circle             },
-    { QString("ellipse"),            QString("cx,cy,lr,sr,rad"),             _sysfunc_ellipse            },
+    _funcRegItem_polygon_mat,
+    _funcRegItem_circle,
+    _funcRegItem_ellipse,
     { QString("draw_text"),          QString("text,cx,cy,rad,sc"),           _sysfunc_draw_text          },
     { QString("draw_pinned_text"),   QString("text,cx,cy,rad,sc"),           _sysfunc_draw_pinned_text   },
     { QString("draw_image"),         QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_image         },
