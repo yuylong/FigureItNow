@@ -23,17 +23,17 @@ static finErrorCode _sysfunc_abs(finExecFunction *self, finExecEnvironment *env,
 {
     finExecVariable *num, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     num = finExecVariable::transLinkTarget(env->findVariable("num"));
-    if ( num == NULL )
+    if ( num == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( num->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -60,11 +60,11 @@ static finErrorCode _sysfunc_sig(finExecFunction *self, finExecEnvironment *env,
 {
     finExecVariable *numvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     numvar = finExecVariable::transLinkTarget(env->findVariable("num"));
-    if ( numvar == NULL )
+    if ( numvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( numvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
@@ -77,7 +77,7 @@ static finErrorCode _sysfunc_sig(finExecFunction *self, finExecEnvironment *env,
         ret = 1.0;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -104,17 +104,17 @@ static finErrorCode _sysfunc_sin(finExecFunction *self, finExecEnvironment *env,
 {
     finExecVariable *rad, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
-    if ( rad == NULL )
+    if ( rad == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( rad->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -141,17 +141,17 @@ static finErrorCode _sysfunc_cos(finExecFunction *self, finExecEnvironment *env,
 {
     finExecVariable *rad, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
-    if ( rad == NULL )
+    if ( rad == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( rad->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -178,17 +178,17 @@ static finErrorCode _sysfunc_tan(finExecFunction *self, finExecEnvironment *env,
 {
     finExecVariable *rad, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
-    if ( rad == NULL )
+    if ( rad == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( rad->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -224,17 +224,17 @@ static finErrorCode _sysfunc_cot(finExecFunction *self, finExecEnvironment *env,
 {
     finExecVariable *rad, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
-    if ( rad == NULL )
+    if ( rad == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( rad->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -270,17 +270,17 @@ static finErrorCode _sysfunc_sec(finExecFunction *self, finExecEnvironment *env,
 {
     finExecVariable *rad, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
-    if ( rad == NULL )
+    if ( rad == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( rad->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -307,17 +307,17 @@ static finErrorCode _sysfunc_csc(finExecFunction *self, finExecEnvironment *env,
 {
     finExecVariable *rad, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     rad = finExecVariable::transLinkTarget(env->findVariable("rad"));
-    if ( rad == NULL )
+    if ( rad == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( rad->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -344,17 +344,17 @@ static finErrorCode _sysfunc_ln(finExecFunction *self, finExecEnvironment *env,
 {
     finExecVariable *base, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     base = finExecVariable::transLinkTarget(env->findVariable("base"));
-    if ( base == NULL )
+    if ( base == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( base->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -381,19 +381,19 @@ static finErrorCode _sysfunc_log(finExecFunction *self, finExecEnvironment *env,
 {
     finExecVariable *index, *base, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     index = finExecVariable::transLinkTarget(env->findVariable("index"));
     base = finExecVariable::transLinkTarget(env->findVariable("base"));
-    if ( index == NULL || base == NULL )
+    if ( index == nullptr || base == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( index->getType() != finExecVariable::TP_NUMERIC ||
          base->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -420,13 +420,13 @@ static finErrorCode _sysfunc_linear(finExecFunction *self, finExecEnvironment *e
 {
     finExecVariable *xvar, *avar, *bvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     xvar = finExecVariable::transLinkTarget(env->findVariable("x"));
     avar = finExecVariable::transLinkTarget(env->findVariable("a"));
     bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
-    if ( xvar == NULL || avar == NULL || bvar == NULL )
+    if ( xvar == nullptr || avar == nullptr || bvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( xvar->getType() != finExecVariable::TP_NUMERIC ||
          avar->getType() != finExecVariable::TP_NUMERIC ||
@@ -438,7 +438,7 @@ static finErrorCode _sysfunc_linear(finExecFunction *self, finExecEnvironment *e
     double b = bvar->getNumericValue();
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -465,14 +465,14 @@ static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment
 {
     finExecVariable *xvar, *avar, *bvar, *cvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     xvar = finExecVariable::transLinkTarget(env->findVariable("x"));
     avar = finExecVariable::transLinkTarget(env->findVariable("a"));
     bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
     cvar = finExecVariable::transLinkTarget(env->findVariable("c"));
-    if ( xvar == NULL || avar == NULL || bvar == NULL || cvar == NULL )
+    if ( xvar == nullptr || avar == nullptr || bvar == nullptr || cvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( xvar->getType() != finExecVariable::TP_NUMERIC ||
          avar->getType() != finExecVariable::TP_NUMERIC ||
@@ -486,7 +486,7 @@ static finErrorCode _sysfunc_quadratic(finExecFunction *self, finExecEnvironment
     double c = cvar->getNumericValue();
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -513,11 +513,11 @@ static finErrorCode _sysfunc_frequency_curve(finExecFunction *self, finExecEnvir
 {
     finExecVariable *xvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     xvar = finExecVariable::transLinkTarget(env->findVariable("x"));
-    if ( xvar == NULL )
+    if ( xvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( xvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
@@ -525,7 +525,7 @@ static finErrorCode _sysfunc_frequency_curve(finExecFunction *self, finExecEnvir
     double x = xvar->getNumericValue();
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -552,12 +552,12 @@ static finErrorCode _sysfunc_parm_circle(finExecFunction *self, finExecEnvironme
 {
     finExecVariable *tvar, *rvar, *retvar, *retitemx, *retitemy;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
     rvar = finExecVariable::transLinkTarget(env->findVariable("r"));
-    if ( tvar == NULL || rvar == NULL )
+    if ( tvar == nullptr || rvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
          rvar->getType() != finExecVariable::TP_NUMERIC )
@@ -567,13 +567,13 @@ static finErrorCode _sysfunc_parm_circle(finExecFunction *self, finExecEnvironme
     double r = rvar->getNumericValue();
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->preallocArrayLength(2);
     retitemx = retvar->getVariableItemAt(0);
     retitemy = retvar->getVariableItemAt(1);
-    if ( retitemx == NULL || retitemy == NULL ) {
+    if ( retitemx == nullptr || retitemy == nullptr ) {
         delete retvar;
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
@@ -604,13 +604,13 @@ static finErrorCode _sysfunc_parm_ellipse(finExecFunction *self, finExecEnvironm
 {
     finExecVariable *tvar, *avar, *bvar, *retvar, *retitemx, *retitemy;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
     avar = finExecVariable::transLinkTarget(env->findVariable("a"));
     bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
-    if ( tvar == NULL || avar == NULL || bvar == NULL )
+    if ( tvar == nullptr || avar == nullptr || bvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
          avar->getType() != finExecVariable::TP_NUMERIC ||
@@ -622,13 +622,13 @@ static finErrorCode _sysfunc_parm_ellipse(finExecFunction *self, finExecEnvironm
     double b = bvar->getNumericValue();
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->preallocArrayLength(2);
     retitemx = retvar->getVariableItemAt(0);
     retitemy = retvar->getVariableItemAt(1);
-    if ( retitemx == NULL || retitemy == NULL ) {
+    if ( retitemx == nullptr || retitemy == nullptr ) {
         delete retvar;
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
@@ -659,7 +659,7 @@ static finErrorCode _sysfunc_parm_general_ellipse(finExecFunction *self, finExec
 {
     finExecVariable *tvar, *avar, *bvar, *xcvar, *ycvar, *phivar, *retvar, *retitemx, *retitemy;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
@@ -668,7 +668,7 @@ static finErrorCode _sysfunc_parm_general_ellipse(finExecFunction *self, finExec
     xcvar = finExecVariable::transLinkTarget(env->findVariable("xc"));
     ycvar = finExecVariable::transLinkTarget(env->findVariable("yc"));
     phivar = finExecVariable::transLinkTarget(env->findVariable("phi"));
-    if ( tvar == NULL || avar == NULL || bvar == NULL || xcvar == NULL || ycvar == NULL || phivar == NULL )
+    if ( tvar == nullptr || avar == nullptr || bvar == nullptr || xcvar == nullptr || ycvar == nullptr || phivar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
          avar->getType() != finExecVariable::TP_NUMERIC ||
@@ -689,13 +689,13 @@ static finErrorCode _sysfunc_parm_general_ellipse(finExecFunction *self, finExec
     double cosphi = cos(phi), sinphi = sin(phi);
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->preallocArrayLength(2);
     retitemx = retvar->getVariableItemAt(0);
     retitemy = retvar->getVariableItemAt(1);
-    if ( retitemx == NULL || retitemy == NULL ) {
+    if ( retitemx == nullptr || retitemy == nullptr ) {
         delete retvar;
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
@@ -726,7 +726,7 @@ static finErrorCode _sysfunc_parm_hyperbola(finExecFunction *self, finExecEnviro
 {
     finExecVariable *tvar, *avar, *bvar, *hvar, *kvar, *retvar, *retitemx, *retitemy;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
@@ -734,33 +734,33 @@ static finErrorCode _sysfunc_parm_hyperbola(finExecFunction *self, finExecEnviro
     bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
     hvar = finExecVariable::transLinkTarget(env->findVariable("h"));
     kvar = finExecVariable::transLinkTarget(env->findVariable("k"));
-    if ( tvar == NULL || avar == NULL || bvar == NULL )
+    if ( tvar == nullptr || avar == nullptr || bvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
          avar->getType() != finExecVariable::TP_NUMERIC ||
          bvar->getType() != finExecVariable::TP_NUMERIC ||
-         (hvar != NULL && hvar->getType() != finExecVariable::TP_NULL &&
+         (hvar != nullptr && hvar->getType() != finExecVariable::TP_NULL &&
                           hvar->getType() != finExecVariable::TP_NUMERIC) ||
-         (kvar != NULL && kvar->getType() != finExecVariable::TP_NULL &&
+         (kvar != nullptr && kvar->getType() != finExecVariable::TP_NULL &&
                           kvar->getType() != finExecVariable::TP_NUMERIC) )
         return finErrorKits::EC_INVALID_PARAM;
 
     double t = tvar->getNumericValue();
     double a = avar->getNumericValue();
     double b = bvar->getNumericValue();
-    double h = ((hvar != NULL && hvar->getType() == finExecVariable::TP_NUMERIC) ?
+    double h = ((hvar != nullptr && hvar->getType() == finExecVariable::TP_NUMERIC) ?
                 hvar->getNumericValue() : 0.0);
-    double k = ((kvar != NULL && kvar->getType() == finExecVariable::TP_NUMERIC) ?
+    double k = ((kvar != nullptr && kvar->getType() == finExecVariable::TP_NUMERIC) ?
                 kvar->getNumericValue() : 0.0);
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->preallocArrayLength(2);
     retitemx = retvar->getVariableItemAt(0);
     retitemy = retvar->getVariableItemAt(1);
-    if ( retitemx == NULL || retitemy == NULL ) {
+    if ( retitemx == nullptr || retitemy == nullptr ) {
         delete retvar;
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
@@ -791,7 +791,7 @@ static finErrorCode _sysfunc_parm_hyperbola_rational(finExecFunction *self, finE
 {
     finExecVariable *tvar, *avar, *bvar, *hvar, *kvar, *retvar, *retitemx, *retitemy;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
@@ -799,35 +799,35 @@ static finErrorCode _sysfunc_parm_hyperbola_rational(finExecFunction *self, finE
     bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
     hvar = finExecVariable::transLinkTarget(env->findVariable("h"));
     kvar = finExecVariable::transLinkTarget(env->findVariable("k"));
-    if ( tvar == NULL || avar == NULL || bvar == NULL )
+    if ( tvar == nullptr || avar == nullptr || bvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
          avar->getType() != finExecVariable::TP_NUMERIC ||
          bvar->getType() != finExecVariable::TP_NUMERIC ||
-         (hvar != NULL && hvar->getType() != finExecVariable::TP_NULL &&
+         (hvar != nullptr && hvar->getType() != finExecVariable::TP_NULL &&
                           hvar->getType() != finExecVariable::TP_NUMERIC) ||
-         (kvar != NULL && kvar->getType() != finExecVariable::TP_NULL &&
+         (kvar != nullptr && kvar->getType() != finExecVariable::TP_NULL &&
                           kvar->getType() != finExecVariable::TP_NUMERIC) )
         return finErrorKits::EC_INVALID_PARAM;
 
     double t = tvar->getNumericValue();
     double a = avar->getNumericValue();
     double b = bvar->getNumericValue();
-    double h = ((hvar != NULL && hvar->getType() == finExecVariable::TP_NUMERIC) ?
+    double h = ((hvar != nullptr && hvar->getType() == finExecVariable::TP_NUMERIC) ?
                 hvar->getNumericValue() : 0.0);
-    double k = ((kvar != NULL && kvar->getType() == finExecVariable::TP_NUMERIC) ?
+    double k = ((kvar != nullptr && kvar->getType() == finExecVariable::TP_NUMERIC) ?
                 kvar->getNumericValue() : 0.0);
     double t2 = t * t;
     double ratio = 1.0 - t2;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->preallocArrayLength(2);
     retitemx = retvar->getVariableItemAt(0);
     retitemy = retvar->getVariableItemAt(1);
-    if ( retitemx == NULL || retitemy == NULL ) {
+    if ( retitemx == nullptr || retitemy == nullptr ) {
         delete retvar;
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
@@ -858,12 +858,12 @@ static finErrorCode _sysfunc_parm_astroid(finExecFunction *self, finExecEnvironm
 {
     finExecVariable *tvar, *avar, *retvar, *retitemx, *retitemy;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
     avar = finExecVariable::transLinkTarget(env->findVariable("a"));
-    if ( tvar == NULL || avar == NULL )
+    if ( tvar == nullptr || avar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
          avar->getType() != finExecVariable::TP_NUMERIC )
@@ -873,13 +873,13 @@ static finErrorCode _sysfunc_parm_astroid(finExecFunction *self, finExecEnvironm
     double a = avar->getNumericValue();
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->preallocArrayLength(2);
     retitemx = retvar->getVariableItemAt(0);
     retitemy = retvar->getVariableItemAt(1);
-    if ( retitemx == NULL || retitemy == NULL ) {
+    if ( retitemx == nullptr || retitemy == nullptr ) {
         delete retvar;
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
@@ -911,7 +911,7 @@ static finErrorCode _sysfunc_parm_lissajous(finExecFunction *self, finExecEnviro
 {
     finExecVariable *tvar, *avar, *bvar, *kxvar, *kyvar, *retvar, *retitemx, *retitemy;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
@@ -919,7 +919,7 @@ static finErrorCode _sysfunc_parm_lissajous(finExecFunction *self, finExecEnviro
     bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
     kxvar = finExecVariable::transLinkTarget(env->findVariable("kx"));
     kyvar = finExecVariable::transLinkTarget(env->findVariable("ky"));
-    if ( tvar == NULL || avar == NULL || bvar == NULL || kxvar == NULL || kyvar == NULL )
+    if ( tvar == nullptr || avar == nullptr || bvar == nullptr || kxvar == nullptr || kyvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
          avar->getType() != finExecVariable::TP_NUMERIC ||
@@ -935,13 +935,13 @@ static finErrorCode _sysfunc_parm_lissajous(finExecFunction *self, finExecEnviro
     double ky = kyvar->getNumericValue();
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->preallocArrayLength(2);
     retitemx = retvar->getVariableItemAt(0);
     retitemy = retvar->getVariableItemAt(1);
-    if ( retitemx == NULL || retitemy == NULL ) {
+    if ( retitemx == nullptr || retitemy == nullptr ) {
         delete retvar;
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
@@ -972,12 +972,12 @@ static finErrorCode _sysfunc_parm_involute(finExecFunction *self, finExecEnviron
 {
     finExecVariable *tvar, *rvar, *retvar, *retitemx, *retitemy;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
     rvar = finExecVariable::transLinkTarget(env->findVariable("r"));
-    if ( tvar == NULL || rvar == NULL )
+    if ( tvar == nullptr || rvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
          rvar->getType() != finExecVariable::TP_NUMERIC )
@@ -987,13 +987,13 @@ static finErrorCode _sysfunc_parm_involute(finExecFunction *self, finExecEnviron
     double r = rvar->getNumericValue();
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->preallocArrayLength(2);
     retitemx = retvar->getVariableItemAt(0);
     retitemy = retvar->getVariableItemAt(1);
-    if ( retitemx == NULL || retitemy == NULL ) {
+    if ( retitemx == nullptr || retitemy == nullptr ) {
         delete retvar;
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
@@ -1024,12 +1024,12 @@ static finErrorCode _sysfunc_parm_cycloid(finExecFunction *self, finExecEnvironm
 {
     finExecVariable *tvar, *rvar, *retvar, *retitemx, *retitemy;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
     rvar = finExecVariable::transLinkTarget(env->findVariable("r"));
-    if ( tvar == NULL || rvar == NULL )
+    if ( tvar == nullptr || rvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
          rvar->getType() != finExecVariable::TP_NUMERIC )
@@ -1039,13 +1039,13 @@ static finErrorCode _sysfunc_parm_cycloid(finExecFunction *self, finExecEnvironm
     double r = rvar->getNumericValue();
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->preallocArrayLength(2);
     retitemx = retvar->getVariableItemAt(0);
     retitemy = retvar->getVariableItemAt(1);
-    if ( retitemx == NULL || retitemy == NULL ) {
+    if ( retitemx == nullptr || retitemy == nullptr ) {
         delete retvar;
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
@@ -1076,14 +1076,14 @@ static finErrorCode _sysfunc_parm_hypotrochoid(finExecFunction *self, finExecEnv
 {
     finExecVariable *tvar, *Rvar, *rvar, *dvar, *retvar, *retitemx, *retitemy;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
     Rvar = finExecVariable::transLinkTarget(env->findVariable("R"));
     rvar = finExecVariable::transLinkTarget(env->findVariable("r"));
     dvar = finExecVariable::transLinkTarget(env->findVariable("d"));
-    if ( tvar == NULL || Rvar == NULL || rvar == NULL || dvar == NULL )
+    if ( tvar == nullptr || Rvar == nullptr || rvar == nullptr || dvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( tvar->getType() != finExecVariable::TP_NUMERIC ||
          Rvar->getType() != finExecVariable::TP_NUMERIC ||
@@ -1099,13 +1099,13 @@ static finErrorCode _sysfunc_parm_hypotrochoid(finExecFunction *self, finExecEnv
     double ratio = t * (R - r) / r;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->preallocArrayLength(2);
     retitemx = retvar->getVariableItemAt(0);
     retitemy = retvar->getVariableItemAt(1);
-    if ( retitemx == NULL || retitemy == NULL ) {
+    if ( retitemx == nullptr || retitemy == nullptr ) {
         delete retvar;
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
@@ -1136,11 +1136,11 @@ static finErrorCode _sysfunc_parm_butterfly(finExecFunction *self, finExecEnviro
 {
     finExecVariable *tvar, *retvar, *retitemx, *retitemy;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     tvar = finExecVariable::transLinkTarget(env->findVariable("t"));
-    if ( tvar == NULL )
+    if ( tvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( tvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
@@ -1152,13 +1152,13 @@ static finErrorCode _sysfunc_parm_butterfly(finExecFunction *self, finExecEnviro
     double ratio = pow(M_E, cost) - 2 * cos(4.0 * t) - sin2td12 * sin2td12 * sintd12;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->preallocArrayLength(2);
     retitemx = retvar->getVariableItemAt(0);
     retitemy = retvar->getVariableItemAt(1);
-    if ( retitemx == NULL || retitemy == NULL ) {
+    if ( retitemx == nullptr || retitemy == nullptr ) {
         delete retvar;
         return finErrorKits::EC_OUT_OF_MEMORY;
     }
@@ -1189,13 +1189,13 @@ static finErrorCode _sysfunc_eq2d_circle(finExecFunction *self, finExecEnvironme
 {
     finExecVariable *xvar, *yvar, *rvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     xvar = finExecVariable::transLinkTarget(env->findVariable("x"));
     yvar = finExecVariable::transLinkTarget(env->findVariable("y"));
     rvar = finExecVariable::transLinkTarget(env->findVariable("r"));
-    if ( xvar == NULL || yvar == NULL || rvar == NULL )
+    if ( xvar == nullptr || yvar == nullptr || rvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( xvar->getType() != finExecVariable::TP_NUMERIC ||
          yvar->getType() != finExecVariable::TP_NUMERIC ||
@@ -1207,7 +1207,7 @@ static finErrorCode _sysfunc_eq2d_circle(finExecFunction *self, finExecEnvironme
     double r = rvar->getNumericValue();
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -1234,14 +1234,14 @@ static finErrorCode _sysfunc_eq2d_ellipse(finExecFunction *self, finExecEnvironm
 {
     finExecVariable *xvar, *yvar, *avar, *bvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     xvar = finExecVariable::transLinkTarget(env->findVariable("x"));
     yvar = finExecVariable::transLinkTarget(env->findVariable("y"));
     avar = finExecVariable::transLinkTarget(env->findVariable("a"));
     bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
-    if ( xvar == NULL || yvar == NULL || avar == NULL || bvar == NULL )
+    if ( xvar == nullptr || yvar == nullptr || avar == nullptr || bvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( xvar->getType() != finExecVariable::TP_NUMERIC ||
          yvar->getType() != finExecVariable::TP_NUMERIC ||
@@ -1256,7 +1256,7 @@ static finErrorCode _sysfunc_eq2d_ellipse(finExecFunction *self, finExecEnvironm
     double a2 = a * a, b2 = b * b;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -1283,14 +1283,14 @@ static finErrorCode _sysfunc_eq2d_hyperbola(finExecFunction *self, finExecEnviro
 {
     finExecVariable *xvar, *yvar, *avar, *bvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     xvar = finExecVariable::transLinkTarget(env->findVariable("x"));
     yvar = finExecVariable::transLinkTarget(env->findVariable("y"));
     avar = finExecVariable::transLinkTarget(env->findVariable("a"));
     bvar = finExecVariable::transLinkTarget(env->findVariable("b"));
-    if ( xvar == NULL || yvar == NULL || avar == NULL || bvar == NULL )
+    if ( xvar == nullptr || yvar == nullptr || avar == nullptr || bvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( xvar->getType() != finExecVariable::TP_NUMERIC ||
          yvar->getType() != finExecVariable::TP_NUMERIC ||
@@ -1305,7 +1305,7 @@ static finErrorCode _sysfunc_eq2d_hyperbola(finExecFunction *self, finExecEnviro
     double a2 = a * a, b2 = b * b;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_NUMERIC);
@@ -1362,7 +1362,7 @@ static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
     _funcRegItem_eq2d_ellipse,
     _funcRegItem_eq2d_hyperbola,
 
-    { QString(), QString(), NULL }
+    { QString(), QString(), nullptr }
 };
 
 finErrorCode finExecFunction::registSysFuncMath()

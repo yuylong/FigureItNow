@@ -16,6 +16,12 @@
 #include "finErrorCode.h"
 #include "finExecVariable.h"
 
+/*! \class finExecAlg
+ *  \brief Algorithm function collection for FIN-Script execution.
+ *
+ * Class finExecAlg defines all the complicated algorithm implementations to support the computation in FIN-script
+ * execution, which includes data type translation, string parsing, analytic geometry computing, and so on.
+ */
 class finExecAlg
 {
 public:
