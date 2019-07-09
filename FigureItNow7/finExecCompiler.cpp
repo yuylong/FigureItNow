@@ -34,7 +34,7 @@ finErrorCode finExecCompiler::setScriptCode(const QString &script)
 finSyntaxTree *finExecCompiler::compile()
 {
     finErrorCode errcode;
-    finSyntaxTree *rettree = NULL;
+    finSyntaxTree *rettree = nullptr;
 
     if ( this->_scriptCode.length() == 0 )
         return this->buildErrorTree(QString());
@@ -57,7 +57,7 @@ finSyntaxTree *finExecCompiler::compile()
     }
 
     rettree = this->_synReader.getSyntaxTree();
-    if ( rettree == NULL )
+    if ( rettree == nullptr )
         rettree = this->buildErrorTree(QString("Cannot build syntax tree."));
 
     this->_synReader.stopRead();
@@ -67,8 +67,8 @@ finSyntaxTree *finExecCompiler::compile()
 finSyntaxTree *finExecCompiler::buildErrorTree(const QString &errstr) const
 {
     finSyntaxTree *rettree = new finSyntaxTree();
-    if ( rettree == NULL )
-        return NULL;
+    if ( rettree == nullptr )
+        return nullptr;
 
     if ( errstr.length() <= 0 )
         return rettree;

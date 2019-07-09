@@ -14,7 +14,7 @@ finExecFlowControl::finExecFlowControl()
 {
     this->_type = finExecFlowControl::TP_NEXT;
     this->_label = QString();
-    this->_retVar = NULL;
+    this->_retVar = nullptr;
 }
 
 void finExecFlowControl::resetFlowControl()
@@ -26,7 +26,7 @@ void finExecFlowControl::resetFlowControl()
 
 finErrorCode finExecFlowControl::copyFlowControl(finExecFlowControl *srcfc)
 {
-    if ( this->_retVar != NULL )
+    if ( this->_retVar != nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     this->_type = srcfc->getType();
@@ -66,7 +66,7 @@ finExecVariable *finExecFlowControl::getReturnVariable()
 finExecVariable *finExecFlowControl::pickReturnVariable()
 {
     finExecVariable *retvar = this->_retVar;
-    this->_retVar = NULL;
+    this->_retVar = nullptr;
     return retvar;
 }
 
@@ -91,19 +91,19 @@ finErrorCode
 finExecFlowControl::checkFlowForExpress(bool *goon, finLexNode *lexnode, finExecMachine *machine)
 {
     if ( this->_type == finExecFlowControl::TP_NEXT ) {
-        if ( goon != NULL )
+        if ( goon != nullptr )
             *goon = true;
         this->directPass();
         return finErrorKits::EC_SUCCESS;
     } else if ( this->_type == finExecFlowControl::TP_EXIT ) {
-        if ( goon != NULL )
+        if ( goon != nullptr )
             *goon = false;
         this->directPass();
         return finErrorKits::EC_NORMAL_WARN;
     } else {
-        if ( goon != NULL )
+        if ( goon != nullptr )
             *goon = false;
-        if ( lexnode != NULL && machine != NULL )
+        if ( lexnode != nullptr && machine != nullptr )
             machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
 
         this->releaseReturnVariable();
@@ -115,7 +115,7 @@ finErrorCode
 finExecFlowControl::checkFlowForStatement(bool *goon, finLexNode *lexnode, finExecMachine *machine)
 {
     if ( this->_type == finExecFlowControl::TP_NEXT ) {
-        if ( goon != NULL )
+        if ( goon != nullptr )
             *goon = true;
         this->directPass();
         return finErrorKits::EC_SUCCESS;
@@ -124,14 +124,14 @@ finExecFlowControl::checkFlowForStatement(bool *goon, finLexNode *lexnode, finEx
                 this->_type == finExecFlowControl::TP_GOTO ||
                 this->_type == finExecFlowControl::TP_BREAK ||
                 this->_type == finExecFlowControl::TP_CONTINUE ) {
-        if ( goon != NULL )
+        if ( goon != nullptr )
             *goon = false;
         this->directPass();
         return finErrorKits::EC_NORMAL_WARN;
     } else {
-        if ( goon != NULL )
+        if ( goon != nullptr )
             *goon = false;
-        if ( lexnode != NULL && machine != NULL )
+        if ( lexnode != nullptr && machine != nullptr )
             machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
 
         this->releaseReturnVariable();
@@ -143,24 +143,24 @@ finErrorCode
 finExecFlowControl::checkFlowForProgram(bool *goon, finLexNode *lexnode, finExecMachine *machine)
 {
     if ( this->_type == finExecFlowControl::TP_NEXT ) {
-        if ( goon != NULL )
+        if ( goon != nullptr )
             *goon = true;
         this->directPass();
         return finErrorKits::EC_SUCCESS;
     } else if ( this->_type == finExecFlowControl::TP_RETURN ) {
-        if ( goon != NULL )
+        if ( goon != nullptr )
             *goon = false;
         this->setFlowNext();
         return finErrorKits::EC_SUCCESS;
     } else if ( this->_type == finExecFlowControl::TP_EXIT ) {
-        if ( goon != NULL )
+        if ( goon != nullptr )
             *goon = false;
         this->directPass();
         return finErrorKits::EC_NORMAL_WARN;
     } else {
-        if ( goon != NULL )
+        if ( goon != nullptr )
             *goon = false;
-        if ( lexnode != NULL && machine != NULL )
+        if ( lexnode != nullptr && machine != nullptr )
             machine->appendExecutionError(lexnode, QString("Encounter unhandlable flow control."));
 
         this->releaseReturnVariable();
@@ -196,7 +196,7 @@ finErrorCode finExecFlowControl::setGotoAndLabel(const QString &label)
 
 finErrorCode finExecFlowControl::setReturnVariable(finExecVariable *retvar)
 {
-    if ( this->_retVar != NULL )
+    if ( this->_retVar != nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     this->_retVar = retvar;
@@ -218,7 +218,7 @@ finErrorCode finExecFlowControl::buildLinkedLeftVar()
 void finExecFlowControl::releaseReturnVariable()
 {
     finExecVariable::releaseNonLeftVariable(this->_retVar);
-    this->_retVar = NULL;
+    this->_retVar = nullptr;
 }
 
 

@@ -75,128 +75,128 @@ finExecVariable *
 finExecEnvironment::getVariableHere(const QString &varname)
 {
     if ( varname.isEmpty() )
-        return NULL;
+        return nullptr;
 
-    return this->_varList.value(varname, NULL);
+    return this->_varList.value(varname, nullptr);
 }
 
 finExecVariable *
 finExecEnvironment::findVariable(const QString &varname)
 {
     finExecVariable *retvar = this->getVariableHere(varname);
-    if ( retvar != NULL )
+    if ( retvar != nullptr )
         return retvar;
 
-    if ( this->_prevEnv != NULL )
+    if ( this->_prevEnv != nullptr )
         return this->_prevEnv->findVariable(varname);
     else
-        return NULL;
+        return nullptr;
 }
 
 finExecVariable *
 finExecEnvironment::findVariableUntil(const QString &varname, const QString &envname)
 {
     finExecVariable *retvar = this->getVariableHere(varname);
-    if ( retvar != NULL )
+    if ( retvar != nullptr )
         return retvar;
 
-    if ( QString::compare(this->_envName, envname) != 0 && this->_prevEnv != NULL )
+    if ( QString::compare(this->_envName, envname) != 0 && this->_prevEnv != nullptr )
         return this->_prevEnv->findVariableUntil(varname, envname);
     else
-        return NULL;
+        return nullptr;
 }
 
 finExecVariable *
 finExecEnvironment::findVariableUntil(const QString &varname, finExecFunction *blngfunc)
 {
     finExecVariable *retvar = this->getVariableHere(varname);
-    if ( retvar != NULL )
+    if ( retvar != nullptr )
         return retvar;
 
-    if ( blngfunc != this->_belongFunc && this->_prevEnv != NULL )
+    if ( blngfunc != this->_belongFunc && this->_prevEnv != nullptr )
         return this->_prevEnv->findVariableUntil(varname, blngfunc);
     else
-        return NULL;
+        return nullptr;
 }
 
 finExecVariable *
 finExecEnvironment::findVariableUntil(const QString &varname, int envlevel)
 {
     if ( envlevel < 0 )
-        return NULL;
+        return nullptr;
 
     finExecVariable *retvar = this->getVariableHere(varname);
-    if ( retvar != NULL )
+    if ( retvar != nullptr )
         return retvar;
 
-    if ( envlevel > 0 && this->_prevEnv != NULL )
+    if ( envlevel > 0 && this->_prevEnv != nullptr )
         return this->_prevEnv->findVariableUntil(varname, envlevel - 1);
     else
-        return NULL;
+        return nullptr;
 }
 
 finExecFunction *
 finExecEnvironment::getFunctionHere(const QString &funcname)
 {
     if ( funcname.isEmpty() )
-        return NULL;
+        return nullptr;
 
-    return this->_funcList.value(funcname, NULL);
+    return this->_funcList.value(funcname, nullptr);
 }
 
 finExecFunction *
 finExecEnvironment::findFunction(const QString &funcname)
 {
     finExecFunction *retfunc = this->getFunctionHere(funcname);
-    if ( retfunc != NULL )
+    if ( retfunc != nullptr )
         return retfunc;
 
-    if ( this->_prevEnv != NULL )
+    if ( this->_prevEnv != nullptr )
         return this->_prevEnv->findFunction(funcname);
     else
-        return NULL;
+        return nullptr;
 }
 
 finExecFunction *
 finExecEnvironment::findFunctionUntil(const QString &funcname, const QString &envname)
 {
     finExecFunction *retfunc = this->getFunctionHere(funcname);
-    if ( retfunc != NULL )
+    if ( retfunc != nullptr )
         return retfunc;
 
-    if ( QString::compare(this->_envName, envname) != 0 && this->_prevEnv != NULL )
+    if ( QString::compare(this->_envName, envname) != 0 && this->_prevEnv != nullptr )
         return this->_prevEnv->findFunctionUntil(funcname, envname);
     else
-        return NULL;
+        return nullptr;
 }
 
 finExecFunction *
 finExecEnvironment::findFunctionUntil(const QString &funcname, finExecFunction *blngfunc)
 {
     finExecFunction *retfunc = this->getFunctionHere(funcname);
-    if ( retfunc != NULL )
+    if ( retfunc != nullptr )
         return retfunc;
 
-    if ( blngfunc != this->_belongFunc && this->_prevEnv != NULL )
+    if ( blngfunc != this->_belongFunc && this->_prevEnv != nullptr )
         return this->_prevEnv->findFunctionUntil(funcname, blngfunc);
     else
-        return NULL;
+        return nullptr;
 }
 
 finExecFunction *
 finExecEnvironment::findFunctionUntil(const QString &funcname, int envlevel)
 {
     if ( envlevel < 0 )
-        return NULL;
+        return nullptr;
 
     finExecFunction *retfunc = this->getFunctionHere(funcname);
-    if ( retfunc != NULL )
+    if ( retfunc != nullptr )
         return retfunc;
 
-    if ( envlevel > 0 && this->_prevEnv != NULL )
+    if ( envlevel > 0 && this->_prevEnv != nullptr )
         return this->_prevEnv->findFunctionUntil(funcname, envlevel - 1);
     else
-        return NULL;
+        return nullptr;
 }
 
 bool finExecEnvironment::isVariableInEnv(finExecVariable *var)
@@ -225,7 +225,7 @@ bool finExecEnvironment::isFunctionInEnv(finExecFunction *func)
 finErrorCode
 finExecEnvironment::addVariable(finExecVariable *var)
 {
-    if ( var == NULL )
+    if ( var == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( !var->isLeftValue() )
         return finErrorKits::EC_STATE_ERROR;
@@ -234,7 +234,7 @@ finExecEnvironment::addVariable(finExecVariable *var)
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *oldvar = this->getVariableHere(var->getName());
-    if ( oldvar != NULL )
+    if ( oldvar != nullptr )
         return finErrorKits::EC_CONTENTION;
 
     this->_varList.insert(var->getName(), var);
@@ -244,13 +244,13 @@ finExecEnvironment::addVariable(finExecVariable *var)
 finErrorCode
 finExecEnvironment::addFunction(finExecFunction *func)
 {
-    if ( func == NULL )
+    if ( func == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( func->getFunctionName().isEmpty() )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecFunction *oldfunc = this->getFunctionHere(func->getFunctionName());
-    if ( oldfunc != NULL )
+    if ( oldfunc != nullptr )
         return finErrorKits::EC_CONTENTION;
 
     this->_funcList.insert(func->getFunctionName(), func);
@@ -259,9 +259,9 @@ finExecEnvironment::addFunction(finExecFunction *func)
 
 finErrorCode finExecEnvironment::removeVariable(finExecVariable *var)
 {
-    if ( var == NULL )
+    if ( var == nullptr )
         return finErrorKits::EC_NULL_POINTER;
-    finExecVariable *envvar = this->_varList.value(var->getName(), NULL);
+    finExecVariable *envvar = this->_varList.value(var->getName(), nullptr);
     if ( envvar != var )
         return finErrorKits::EC_NOT_FOUND;
 
@@ -271,9 +271,9 @@ finErrorCode finExecEnvironment::removeVariable(finExecVariable *var)
 
 finErrorCode finExecEnvironment::removeFunction(finExecFunction *func)
 {
-    if ( func == NULL )
+    if ( func == nullptr )
         return finErrorKits::EC_NULL_POINTER;
-    finExecFunction *envfunc = this->_funcList.value(func->getFunctionName(), NULL);
+    finExecFunction *envfunc = this->_funcList.value(func->getFunctionName(), nullptr);
     if ( envfunc != func )
         return finErrorKits::EC_NOT_FOUND;
 
@@ -298,13 +298,13 @@ finExecFunction *finExecEnvironment::getBelongFunctionHere() const
 
 finExecFunction *finExecEnvironment::getBelongFunction() const
 {
-    if ( this->_belongFunc != NULL )
+    if ( this->_belongFunc != nullptr )
         return this->_belongFunc;
 
-    if ( this->_prevEnv != NULL )
+    if ( this->_prevEnv != nullptr )
         return this->_prevEnv->getBelongFunction();
     else
-        return NULL;
+        return nullptr;
 }
 
 finExecFunction *finExecEnvironment::getPreviousBelongFunction() const
@@ -314,13 +314,13 @@ finExecFunction *finExecEnvironment::getPreviousBelongFunction() const
 
 finExecFunction *finExecEnvironment::getPreviousBelongFunction(int level) const
 {
-    if ( level == 0 && this->_belongFunc != NULL )
+    if ( level == 0 && this->_belongFunc != nullptr )
         return this->_belongFunc;
 
-    if ( this->_prevEnv == NULL )
-        return NULL;
+    if ( this->_prevEnv == nullptr )
+        return nullptr;
 
-    if ( this->_belongFunc != NULL )
+    if ( this->_belongFunc != nullptr )
         return this->_prevEnv->getPreviousBelongFunction(level - 1);
     else
         return this->_prevEnv->getPreviousBelongFunction(level);
@@ -328,10 +328,10 @@ finExecFunction *finExecEnvironment::getPreviousBelongFunction(int level) const
 
 int finExecEnvironment::getBelongFuncEvnLevelIn(int curlevel) const
 {
-    if ( this->_belongFunc != NULL )
+    if ( this->_belongFunc != nullptr )
         return curlevel;
 
-    if ( this->_prevEnv == NULL )
+    if ( this->_prevEnv == nullptr )
         return -1;
 
     return this->_prevEnv->getBelongFuncEvnLevelIn(curlevel + 1);
@@ -344,13 +344,13 @@ int finExecEnvironment::getBelongFunctionEnvLevelIdx() const
 
 int finExecEnvironment::getPrevBelongFuncEnvLevelIn(int level, int curlevel) const
 {
-    if ( level == 0 && this->_belongFunc != NULL )
+    if ( level == 0 && this->_belongFunc != nullptr )
         return curlevel;
 
-    if ( this->_prevEnv == NULL )
+    if ( this->_prevEnv == nullptr )
         return -1;
 
-    if ( this->_belongFunc != NULL )
+    if ( this->_belongFunc != nullptr )
         return this->_prevEnv->getPrevBelongFuncEnvLevelIn(level - 1, curlevel + 1);
     else
         return this->_prevEnv->getPrevBelongFuncEnvLevelIn(level, curlevel + 1);
@@ -368,13 +368,13 @@ int finExecEnvironment::getPreviousBelongFunctionEnvLevelIdx(int level) const
 
 int finExecEnvironment::getTotalFucnLevelCountIn(int curlevel) const
 {
-    if ( this->_prevEnv == NULL ) {
-        if ( this->_belongFunc != NULL )
+    if ( this->_prevEnv == nullptr ) {
+        if ( this->_belongFunc != nullptr )
             return curlevel + 1;
         else
             return curlevel;
     } else {
-        if ( this->_belongFunc != NULL )
+        if ( this->_belongFunc != nullptr )
             return this->_prevEnv->getTotalFucnLevelCountIn(curlevel + 1);
         else
             return this->_prevEnv->getTotalFucnLevelCountIn(curlevel);
@@ -388,10 +388,10 @@ int finExecEnvironment::getTotalBelongFunctionLevelCount() const
 
 finErrorCode finExecEnvironment::getBelongFunctionList(QStringList *funcnamelist) const
 {
-    if ( this->_belongFunc != NULL )
+    if ( this->_belongFunc != nullptr )
         funcnamelist->append(this->_belongFunc->getFunctionName());
 
-    if ( this->_prevEnv == NULL )
+    if ( this->_prevEnv == nullptr )
         return finErrorKits::EC_SUCCESS;
 
     return this->_prevEnv->getBelongFunctionList(funcnamelist);
@@ -415,10 +415,10 @@ finExecEnvironment::getParentEnvironment(int envlevel)
     if ( envlevel == 0 )
         return this;
     else if ( envlevel < 0 )
-        return NULL;
+        return nullptr;
 
-    if ( this->_prevEnv == NULL )
-        return NULL;
+    if ( this->_prevEnv == nullptr )
+        return nullptr;
     else
         return this->_prevEnv->getParentEnvironment(envlevel - 1);
 }
@@ -431,7 +431,7 @@ finErrorCode finExecEnvironment::setBelongFunction(finExecFunction *func)
 
 int finExecEnvironment::getTotalEnvLevelCountIn(int curlevel)
 {
-    if ( this->_prevEnv == NULL )
+    if ( this->_prevEnv == nullptr )
         return curlevel + 1;
     else
         return this->_prevEnv->getTotalEnvLevelCountIn(curlevel + 1);
@@ -456,23 +456,23 @@ finExecEnvironment::setParentEnvironment(finExecEnvironment *prevenv)
     return finErrorKits::EC_SUCCESS;
 }
 
-finExecEnvironment *finExecEnvironment::_rootEnv = NULL;
+finExecEnvironment *finExecEnvironment::_rootEnv = nullptr;
 
 finErrorCode
 finExecEnvironment::setupRootEnvironment()
 {
-    if ( _rootEnv != NULL )
+    if ( _rootEnv != nullptr )
         return finErrorKits::EC_DUPLICATE_OP;
 
     _rootEnv = new finExecEnvironment();
-    if ( _rootEnv == NULL )
+    if ( _rootEnv == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     _rootEnv->setEnvironmentName(QString("root"));
     finExecVariable::installSystemVariables(_rootEnv);
     finExecFunction::installSystemFunctions(_rootEnv);
-    _rootEnv->setFigureContainer(NULL);
-    _rootEnv->setParentEnvironment(NULL);
+    _rootEnv->setFigureContainer(nullptr);
+    _rootEnv->setParentEnvironment(nullptr);
 
     return finErrorKits::EC_SUCCESS;
 }
@@ -480,18 +480,18 @@ finExecEnvironment::setupRootEnvironment()
 finErrorCode
 finExecEnvironment::disposeRootEnvironment()
 {
-    if ( _rootEnv == NULL )
+    if ( _rootEnv == nullptr )
         return finErrorKits::EC_DUPLICATE_OP;
 
     delete _rootEnv;
-    _rootEnv = NULL;
+    _rootEnv = nullptr;
     return finErrorKits::EC_SUCCESS;
 }
 
 finExecEnvironment *
 finExecEnvironment::getRootEnvironment()
 {
-    if ( _rootEnv == NULL )
+    if ( _rootEnv == nullptr )
         finExecEnvironment::setupRootEnvironment();
 
     return _rootEnv;

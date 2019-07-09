@@ -84,7 +84,7 @@ finErrorCode finExecAlg::stringListToArrayVar(const QStringList &strlist, finExe
 
 static inline finErrorCode _appendNumVarToStrList(finExecVariable *invar, QStringList *strlist)
 {
-    if ( invar == NULL || invar->getType() == finExecVariable::TP_NULL ) {
+    if ( invar == nullptr || invar->getType() == finExecVariable::TP_NULL ) {
         strlist->append(QString());
         return finErrorKits::EC_NORMAL_WARN;
     } else if ( invar->getType() == finExecVariable::TP_STRING || invar->getType() == finExecVariable::TP_IMAGE ) {
@@ -101,7 +101,7 @@ static inline finErrorCode _appendNumVarToStrList(finExecVariable *invar, QStrin
 finErrorCode finExecAlg::numArrayVarToStringList(finExecVariable *invar, QStringList *strlist)
 {
     strlist->clear();
-    if ( invar == NULL || invar->getType() != finExecVariable::TP_ARRAY )
+    if ( invar == nullptr || invar->getType() != finExecVariable::TP_ARRAY )
         return _appendNumVarToStrList(invar, strlist);
 
     int itemcnt = invar->getArrayLength();
@@ -114,7 +114,7 @@ finErrorCode finExecAlg::numArrayVarToStringList(finExecVariable *invar, QString
 
 static inline finErrorCode _appendVarToStrList(finExecVariable *invar, QStringList *strlist)
 {
-    if ( invar == NULL || invar->getType() == finExecVariable::TP_NULL ||
+    if ( invar == nullptr || invar->getType() == finExecVariable::TP_NULL ||
          invar->getType() == finExecVariable::TP_IMAGE ) {
         strlist->append(QString());
         return finErrorKits::EC_NORMAL_WARN;
@@ -132,7 +132,7 @@ static inline finErrorCode _appendVarToStrList(finExecVariable *invar, QStringLi
 finErrorCode finExecAlg::arrayVarToStringList(finExecVariable *invar, QStringList *strlist)
 {
     strlist->clear();
-    if ( invar == NULL || invar->getType() != finExecVariable::TP_ARRAY )
+    if ( invar == nullptr || invar->getType() != finExecVariable::TP_ARRAY )
         return _appendVarToStrList(invar, strlist);
 
     int itemcnt = invar->getArrayLength();
@@ -198,7 +198,7 @@ QString finExecAlg::arrayVarToCsString(finExecVariable *invar)
 
 static inline finErrorCode _appendVarToNumList(finExecVariable *invar, QList<double> *list)
 {
-    if ( invar == NULL || invar->getType() == finExecVariable::TP_NULL ) {
+    if ( invar == nullptr || invar->getType() == finExecVariable::TP_NULL ) {
         return finErrorKits::EC_NORMAL_WARN;
     } else if ( invar->getType() == finExecVariable::TP_STRING || invar->getType() == finExecVariable::TP_IMAGE ) {
         list->append(0.0);
@@ -214,7 +214,7 @@ static inline finErrorCode _appendVarToNumList(finExecVariable *invar, QList<dou
 finErrorCode finExecAlg::numArrayVarToList(finExecVariable *invar, QList<double> *list)
 {
     list->clear();
-    if ( invar == NULL || invar->getType() != finExecVariable::TP_ARRAY )
+    if ( invar == nullptr || invar->getType() != finExecVariable::TP_ARRAY )
         return _appendVarToNumList(invar, list);
 
     int itemcnt = invar->getArrayLength();
@@ -228,7 +228,7 @@ finErrorCode finExecAlg::numArrayVarToList(finExecVariable *invar, QList<double>
 finErrorCode finExecAlg::numMatVarToList(finExecVariable *invar, QList<QList<double>> *list)
 {
     list->clear();
-    if ( invar == NULL || invar->getType() != finExecVariable::TP_ARRAY ) {
+    if ( invar == nullptr || invar->getType() != finExecVariable::TP_ARRAY ) {
         QList<double> tmplist;
         finErrorCode errcode = _appendVarToNumList(invar, &tmplist);
         list->append(tmplist);
@@ -276,7 +276,7 @@ finErrorCode finExecAlg::listToNumMatVar(const QList<QList<double>> &list, finEx
 
 finErrorCode finExecAlg::listMatrixToArray(const QList< QList<double> > &inlist, QList<double> *outlist)
 {
-    if ( outlist == NULL )
+    if ( outlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     outlist->clear();
@@ -290,7 +290,7 @@ finErrorCode finExecAlg::listMatrixToArray(const QList< QList<double> > &inlist,
 
 static finErrorCode _appendSubVar(finExecVariable *outvar, finExecVariable *subvar, int startpos, int *endpos)
 {
-    if ( subvar == NULL || subvar->getType() == finExecVariable::TP_NULL ) {
+    if ( subvar == nullptr || subvar->getType() == finExecVariable::TP_NULL ) {
         *endpos = startpos;
         return finErrorKits::EC_NORMAL_WARN;
     }
@@ -298,7 +298,7 @@ static finErrorCode _appendSubVar(finExecVariable *outvar, finExecVariable *subv
     if ( subvar->getType() != finExecVariable::TP_ARRAY ) {
         outvar->preallocArrayLength(startpos + 1);
         finExecVariable *outitem = outvar->getVariableItemAt(startpos);
-        if ( outitem == NULL )
+        if ( outitem == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
 
         outitem->copyVariable(subvar);
@@ -312,7 +312,7 @@ static finErrorCode _appendSubVar(finExecVariable *outvar, finExecVariable *subv
     for ( int i = 0; i < sublen; i++ ) {
         finExecVariable *initem = subvar->getVariableItemAt(i);
         finExecVariable *outitem = outvar->getVariableItemAt(startpos + i);
-        if ( initem == NULL || outitem == NULL )
+        if ( initem == nullptr || outitem == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
 
         errcode = outitem->copyVariable(initem);
@@ -325,7 +325,7 @@ static finErrorCode _appendSubVar(finExecVariable *outvar, finExecVariable *subv
 
 finErrorCode finExecAlg::varMatrixToArray(finExecVariable *invar, finExecVariable *outvar)
 {
-    if ( invar == NULL || outvar == NULL )
+    if ( invar == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     int pos = 0;
@@ -347,7 +347,7 @@ finErrorCode finExecAlg::varMatrixToArray(finExecVariable *invar, finExecVariabl
 
 finErrorCode finExecAlg::varArrayCut(finExecVariable *invar, int from, int to, finExecVariable *outvar)
 {
-    if ( invar == NULL || outvar == NULL )
+    if ( invar == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( invar->getType() != finExecVariable::TP_ARRAY )
         return finErrorKits::EC_INVALID_PARAM;
@@ -364,7 +364,7 @@ finErrorCode finExecAlg::varArrayCut(finExecVariable *invar, int from, int to, f
     for (int outi = 0, ini = from; ini < to; outi++, ini++) {
         finExecVariable *initem = invar->getVariableItemAt(ini);
         finExecVariable *outitem = outvar->getVariableItemAt(outi);
-        if ( initem == NULL || outitem == NULL )
+        if ( initem == nullptr || outitem == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
 
         errcode = outitem->copyVariable(initem);
@@ -376,7 +376,7 @@ finErrorCode finExecAlg::varArrayCut(finExecVariable *invar, int from, int to, f
 
 finErrorCode finExecAlg::varArrayJoin(const QList<finExecVariable *> &invarlist, finExecVariable *outvar)
 {
-    if ( outvar == NULL )
+    if ( outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     int pos = 0;
@@ -391,7 +391,7 @@ finErrorCode finExecAlg::varArrayJoin(const QList<finExecVariable *> &invarlist,
 
 finErrorCode finExecAlg::listArrayNeg(const QList<double> &inlist, QList<double> *outlist)
 {
-    if ( outlist == NULL )
+    if ( outlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     outlist->clear();
@@ -404,7 +404,7 @@ finErrorCode finExecAlg::listArrayNeg(const QList<double> &inlist, QList<double>
 finErrorCode finExecAlg::listArrayAdd(const QList<double> &inlist1, const QList<double> &inlist2,
                                       QList<double> *outlist)
 {
-    if ( outlist == NULL )
+    if ( outlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( inlist1.length() != inlist2.length() )
         return finErrorKits::EC_INVALID_PARAM;
@@ -422,7 +422,7 @@ finErrorCode finExecAlg::listArrayAdd(const QList<double> &inlist1, const QList<
 finErrorCode finExecAlg::listArraySub(const QList<double> &inlist1, const QList<double> &inlist2,
                                       QList<double> *outlist)
 {
-    if ( outlist == NULL )
+    if ( outlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( inlist1.length() != inlist2.length() )
         return finErrorKits::EC_INVALID_PARAM;
@@ -439,7 +439,7 @@ finErrorCode finExecAlg::listArraySub(const QList<double> &inlist1, const QList<
 
 finErrorCode finExecAlg::listArraySum(const QList<double> &inlist, double *outval)
 {
-    if ( outval == NULL )
+    if ( outval == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     double sumval = 0.0;
@@ -452,7 +452,7 @@ finErrorCode finExecAlg::listArraySum(const QList<double> &inlist, double *outva
 
 finErrorCode finExecAlg::listArrayAvg(const QList<double> &inlist, double *outval)
 {
-    if ( outval == NULL )
+    if ( outval == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( inlist.length() == 0 ) {
         *outval = 0.0;
@@ -470,7 +470,7 @@ finErrorCode finExecAlg::listArrayAvg(const QList<double> &inlist, double *outva
 
 finErrorCode finExecAlg::listVectorNorm(const QList<double> &inlist, double *outval)
 {
-    if ( outval == NULL )
+    if ( outval == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     double norm2 = 0.0;
@@ -483,7 +483,7 @@ finErrorCode finExecAlg::listVectorNorm(const QList<double> &inlist, double *out
 
 finErrorCode finExecAlg::listVectorNorm1(const QList<double> &inlist, double *outval)
 {
-    if ( outval == NULL )
+    if ( outval == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     double norm = 0.0;
@@ -496,7 +496,7 @@ finErrorCode finExecAlg::listVectorNorm1(const QList<double> &inlist, double *ou
 
 finErrorCode finExecAlg::listVectorNormP(const QList<double> &inlist, double p, double *outval)
 {
-    if ( outval == NULL )
+    if ( outval == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     double normp = 0.0;
@@ -509,7 +509,7 @@ finErrorCode finExecAlg::listVectorNormP(const QList<double> &inlist, double p, 
 
 finErrorCode finExecAlg::listVectorNormInf(const QList<double> &inlist, double *outval)
 {
-    if ( outval == NULL )
+    if ( outval == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     double normmax = 0.0;
@@ -523,7 +523,7 @@ finErrorCode finExecAlg::listVectorNormInf(const QList<double> &inlist, double *
 
 finErrorCode finExecAlg::listVectorNormalize(const QList<double> &inlist, QList<double> *outlist)
 {
-    if ( outlist == NULL )
+    if ( outlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     double norm = 1.0;
@@ -540,7 +540,7 @@ finErrorCode finExecAlg::listVectorNormalize(const QList<double> &inlist, QList<
 
 finErrorCode finExecAlg::listVectorDot(const QList<double> &inlist1, const QList<double> &inlist2, double *outval)
 {
-    if ( outval == NULL )
+    if ( outval == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     int len = inlist1.length();
@@ -559,7 +559,7 @@ finErrorCode finExecAlg::listVectorDot(const QList<double> &inlist1, const QList
 
 finErrorCode finExecAlg::varArrayNeg(finExecVariable *invar, finExecVariable *outvar)
 {
-    if ( invar == NULL || outvar == NULL )
+    if ( invar == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( !invar->isNumericArray() )
         return finErrorKits::EC_INVALID_PARAM;
@@ -576,7 +576,7 @@ finErrorCode finExecAlg::varArrayNeg(finExecVariable *invar, finExecVariable *ou
 
 finErrorCode finExecAlg::varArrayAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
 {
-    if ( invar1 == NULL || invar2 == NULL || outvar == NULL )
+    if ( invar1 == nullptr || invar2 == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     int varlen1 = 0, varlen2 = 0;
@@ -600,7 +600,7 @@ finErrorCode finExecAlg::varArrayAdd(finExecVariable *invar1, finExecVariable *i
 
 finErrorCode finExecAlg::varArraySub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
 {
-    if ( invar1 == NULL || invar2 == NULL || outvar == NULL )
+    if ( invar1 == nullptr || invar2 == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     int varlen1 = 0, varlen2 = 0;
@@ -624,7 +624,7 @@ finErrorCode finExecAlg::varArraySub(finExecVariable *invar1, finExecVariable *i
 
 finErrorCode finExecAlg::varArraySum(finExecVariable *invar, finExecVariable *outvar)
 {
-    if ( invar == NULL || outvar == NULL )
+    if ( invar == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( !invar->isNumericArray() )
         return finErrorKits::EC_INVALID_PARAM;
@@ -644,7 +644,7 @@ finErrorCode finExecAlg::varArraySum(finExecVariable *invar, finExecVariable *ou
 
 finErrorCode finExecAlg::varArrayAvg(finExecVariable *invar, finExecVariable *outvar)
 {
-    if ( invar == NULL || outvar == NULL )
+    if ( invar == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( !invar->isNumericArray() )
         return finErrorKits::EC_INVALID_PARAM;
@@ -664,7 +664,7 @@ finErrorCode finExecAlg::varArrayAvg(finExecVariable *invar, finExecVariable *ou
 
 finErrorCode finExecAlg::varVectorNorm(finExecVariable *invar, finExecVariable *outvar)
 {
-    if ( invar == NULL || outvar == NULL )
+    if ( invar == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( !invar->isNumericArray() )
         return finErrorKits::EC_INVALID_PARAM;
@@ -684,7 +684,7 @@ finErrorCode finExecAlg::varVectorNorm(finExecVariable *invar, finExecVariable *
 
 finErrorCode finExecAlg::varVectorNorm1(finExecVariable *invar, finExecVariable *outvar)
 {
-    if ( invar == NULL || outvar == NULL )
+    if ( invar == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( !invar->isNumericArray() )
         return finErrorKits::EC_INVALID_PARAM;
@@ -704,7 +704,7 @@ finErrorCode finExecAlg::varVectorNorm1(finExecVariable *invar, finExecVariable 
 
 finErrorCode finExecAlg::varVectorNormP(finExecVariable *invar, finExecVariable *pvar, finExecVariable *outvar)
 {
-    if ( invar == NULL || pvar == NULL || outvar == NULL )
+    if ( invar == nullptr || pvar == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( !invar->isNumericArray() )
         return finErrorKits::EC_INVALID_PARAM;
@@ -727,7 +727,7 @@ finErrorCode finExecAlg::varVectorNormP(finExecVariable *invar, finExecVariable 
 
 finErrorCode finExecAlg::varVectorNormInf(finExecVariable *invar, finExecVariable *outvar)
 {
-    if ( invar == NULL || outvar == NULL )
+    if ( invar == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( !invar->isNumericArray() )
         return finErrorKits::EC_INVALID_PARAM;
@@ -747,7 +747,7 @@ finErrorCode finExecAlg::varVectorNormInf(finExecVariable *invar, finExecVariabl
 
 finErrorCode finExecAlg::varVectorNormalize(finExecVariable *invar, finExecVariable *outvar)
 {
-    if ( invar == NULL || outvar == NULL )
+    if ( invar == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( !invar->isNumericArray() )
         return finErrorKits::EC_INVALID_PARAM;
@@ -764,7 +764,7 @@ finErrorCode finExecAlg::varVectorNormalize(finExecVariable *invar, finExecVaria
 
 finErrorCode finExecAlg::varVectorDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
 {
-    if ( invar1 == NULL || invar2 == NULL || outvar == NULL )
+    if ( invar1 == nullptr || invar2 == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     int varlen1 = 0, varlen2 = 0;
@@ -791,7 +791,7 @@ finErrorCode finExecAlg::varVectorDot(finExecVariable *invar1, finExecVariable *
 
 finErrorCode finExecAlg::listMatTranspose(const QList<QList<double>> &inlist, QList<QList<double>> *outlist)
 {
-    if ( outlist == NULL )
+    if ( outlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     int outrow = 0, outcol = inlist.length();
@@ -819,7 +819,7 @@ finErrorCode finExecAlg::listMatTranspose(const QList<QList<double>> &inlist, QL
 finErrorCode finExecAlg::listMatAdd(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
                                     QList<QList<double>> *outlist)
 {
-    if ( outlist == NULL )
+    if ( outlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( inlist1.length() != inlist2.length() )
         return finErrorKits::EC_INVALID_PARAM;
@@ -843,7 +843,7 @@ finErrorCode finExecAlg::listMatAdd(const QList<QList<double>> &inlist1, const Q
 finErrorCode finExecAlg::listMatSub(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
                                     QList<QList<double>> *outlist)
 {
-    if ( outlist == NULL )
+    if ( outlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( inlist1.length() != inlist2.length() )
         return finErrorKits::EC_INVALID_PARAM;
@@ -867,7 +867,7 @@ finErrorCode finExecAlg::listMatSub(const QList<QList<double>> &inlist1, const Q
 finErrorCode finExecAlg::listMatDot(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
                                     QList<QList<double>> *outlist)
 {
-    if ( outlist == NULL )
+    if ( outlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finErrorCode errcode;
@@ -899,7 +899,7 @@ finErrorCode finExecAlg::listMatDot(const QList<QList<double>> &inlist1, const Q
 
 finErrorCode finExecAlg::varMatTranspose(finExecVariable *invar, finExecVariable *outvar)
 {
-    if ( invar == NULL || outvar == NULL )
+    if ( invar == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( !invar->isNumericMatrix() )
         return finErrorKits::EC_INVALID_PARAM;
@@ -916,7 +916,7 @@ finErrorCode finExecAlg::varMatTranspose(finExecVariable *invar, finExecVariable
 
 finErrorCode finExecAlg::varMatAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
 {
-    if ( invar1 == NULL || invar2 == NULL || outvar == NULL )
+    if ( invar1 == nullptr || invar2 == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     int varrow1 = 0, varcol1 = 0, varrow2 = 0, varcol2 = 0;
@@ -940,7 +940,7 @@ finErrorCode finExecAlg::varMatAdd(finExecVariable *invar1, finExecVariable *inv
 
 finErrorCode finExecAlg::varMatSub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
 {
-    if ( invar1 == NULL || invar2 == NULL || outvar == NULL )
+    if ( invar1 == nullptr || invar2 == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     int varrow1 = 0, varcol1 = 0, varrow2 = 0, varcol2 = 0;
@@ -964,7 +964,7 @@ finErrorCode finExecAlg::varMatSub(finExecVariable *invar1, finExecVariable *inv
 
 finErrorCode finExecAlg::varMatDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
 {
-    if ( invar1 == NULL || invar2 == NULL || outvar == NULL )
+    if ( invar1 == nullptr || invar2 == nullptr || outvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     int varrow1 = 0, varcol1 = 0, varrow2 = 0, varcol2 = 0;
