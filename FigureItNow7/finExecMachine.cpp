@@ -59,7 +59,7 @@ QString finExecMachine::getScriptCode() const
 
 QString finExecMachine::getCompiledScriptCode() const
 {
-    if ( this->_synTree == NULL )
+    if ( this->_synTree == nullptr )
         return QString();
 
     return this->_synTree->getScriptCode();
@@ -90,15 +90,15 @@ finErrorCode finExecMachine::initEnvironment(finExecEnvironment *prevenv)
 {
     finErrorCode errcode;
 
-    if ( prevenv == NULL )
+    if ( prevenv == nullptr )
         return this->initEnvironmentFromRoot();
 
-    if ( this->_baseEnv != NULL )
+    if ( this->_baseEnv != nullptr )
         return finErrorKits::EC_DUPLICATE_OP;
 
     errcode = prevenv->buildChildEnvironment(&this->_baseEnv);
     if ( finErrorKits::isErrorResult(errcode) ) {
-        this->_baseEnv = NULL;
+        this->_baseEnv = nullptr;
         return errcode;
     }
 
@@ -110,15 +110,15 @@ finErrorCode finExecMachine::initEnvironmentFromRoot()
 {
     finErrorCode errcode;
 
-    if ( finExecEnvironment::getRootEnvironment() == NULL )
+    if ( finExecEnvironment::getRootEnvironment() == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
-    if ( this->_baseEnv != NULL )
+    if ( this->_baseEnv != nullptr )
         return finErrorKits::EC_DUPLICATE_OP;
 
     errcode = finExecEnvironment::buildRootChildEnvironment(&this->_baseEnv);
     if ( finErrorKits::isErrorResult(errcode) ) {
-        this->_baseEnv = NULL;
+        this->_baseEnv = nullptr;
         return errcode;
     }
 
@@ -129,7 +129,7 @@ finErrorCode finExecMachine::initEnvironmentFromRoot()
 finErrorCode finExecMachine::setFigureContainer(finFigureContainer *figcontainer)
 {
     this->_baseFigContainer = figcontainer;
-    if ( this->_baseEnv != NULL )
+    if ( this->_baseEnv != nullptr )
         this->_baseEnv->setFigureContainer(figcontainer);
     return finErrorKits::EC_SUCCESS;
 }
@@ -142,17 +142,17 @@ finErrorCode finExecMachine::setScriptCode(const QString &script)
 
 bool finExecMachine::isCompiled() const
 {
-    return (this->_synTree != NULL);
+    return (this->_synTree != nullptr);
 }
 
 finErrorCode finExecMachine::compile()
 {
-    if ( this->_synTree != NULL )
+    if ( this->_synTree != nullptr )
         delete this->_synTree;
 
     this->_synTree = this->_compiler.compile();
 
-    if ( this->_synTree == NULL )
+    if ( this->_synTree == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
     if ( this->_synTree->getErrorCount() > 0 )
         return finErrorKits::EC_NORMAL_WARN;
@@ -162,9 +162,9 @@ finErrorCode finExecMachine::compile()
 
 finErrorCode finExecMachine::execute()
 {
-    if ( this->_baseEnv == NULL || this->_baseFigContainer == NULL )
+    if ( this->_baseEnv == nullptr || this->_baseFigContainer == nullptr )
         return finErrorKits::EC_STATE_ERROR;
-    if ( this->_synTree == NULL )
+    if ( this->_synTree == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     this->disposeExecutionError();
@@ -186,50 +186,50 @@ void finExecMachine::disposeExecutionError()
 finErrorCode
 finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    if ( synnode == NULL || env == NULL || flowctl == NULL )
+    if ( synnode == nullptr || env == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finSyntaxNodeType syntype = synnode->getType();
     switch ( syntype ) {
       case finSyntaxNode::TP_SINGLE:
         return this->instExecSingle(synnode, env, flowctl);
-        break;
+        //break;
 
       case finSyntaxNode::TP_DECLARE:
         return this->instExecDeclare(synnode, env, flowctl);
-        break;
+        //break;
 
       case finSyntaxNode::TP_STATEMENT:
         return this->instExecStatement(synnode, env, flowctl);
-        break;
+        //break;
 
       case finSyntaxNode::TP_EXPRESS:
         return this->instExecExpress(synnode, env, flowctl);
-        break;
+        //break;
 
       case finSyntaxNode::TP_FUNCTION:
         return this->instExecFunction(synnode, env, flowctl);
-        break;
+        //break;
 
       case finSyntaxNode::TP_BRANCH:
         return this->instExecBranch(synnode, env, flowctl);
-        break;
+        //break;
 
       case finSyntaxNode::TP_LOOP:
         return this->instExecLoop(synnode, env, flowctl);
-        break;
+        //break;
 
       case finSyntaxNode::TP_LABEL:
         return this->instExecLabel(synnode, env, flowctl);
-        break;
+        //break;
 
       case finSyntaxNode::TP_JUMP:
         return this->instExecJump(synnode, env, flowctl);
-        break;
+        //break;
 
       case finSyntaxNode::TP_PROGRAM:
         return this->instExecProgram(synnode, env, flowctl);
-        break;
+        //break;
 
       default:
         this->appendExecutionError(synnode->getCommandLexNode(), QString("Unimplemented syntax type."));
@@ -249,7 +249,7 @@ finExecMachine::appendExecutionError(finLexNode *lexnode, const QString &errinfo
 finErrorCode
 finExecMachine::instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    if ( synnode == NULL || env == NULL || flowctl == NULL )
+    if ( synnode == nullptr || env == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -269,7 +269,7 @@ finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment
     }
 
     finExecVariable *newvar = new finExecVariable();
-    if ( newvar == NULL )
+    if ( newvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     newvar->setName(lexnode->getString());
@@ -313,7 +313,7 @@ finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironme
         return finErrorKits::EC_READ_ERROR;
     }
 
-    if ( env->getVariableHere(varname_lexnode->getString()) != NULL ) {
+    if ( env->getVariableHere(varname_lexnode->getString()) != nullptr ) {
         this->appendExecutionError(lexnode, QString("Variable has already existed."));
         return finErrorKits::EC_CONTENTION;
     }
@@ -328,7 +328,7 @@ finExecMachine::instExecDeclareAssigned(finSyntaxNode *synnode, finExecEnvironme
         return errcode;
 
     finExecVariable *initvar = finExecVariable::buildCopyLeftVariable(flowctl->pickReturnVariable());
-    if ( initvar == NULL ) {
+    if ( initvar == nullptr ) {
         flowctl->resetFlowControl();
         return this->instExecDeclareDirect(varname_synnode, env, flowctl);
     }
@@ -478,7 +478,7 @@ err:
 
 finErrorCode finExecMachine::instExecExprNull(finExecFlowControl *flowctl)
 {
-    finExecVariable *retvar = NULL;
+    finExecVariable *retvar = nullptr;
 
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
@@ -492,7 +492,7 @@ finExecMachine::instExecExprVar(finSyntaxNode *synnode, finExecEnvironment *env,
     finLexNode *lexnode = synnode->getCommandLexNode();
 
     retvar = env->findVariable(lexnode->getString());
-    if ( retvar == NULL ) {
+    if ( retvar == nullptr ) {
         this->appendExecutionError(lexnode, QString("Cannot find variable."));
         return finErrorKits::EC_NOT_FOUND;
     }
@@ -506,7 +506,7 @@ finErrorCode
 finExecMachine::instExecExprNum(finSyntaxNode *synnode, finExecFlowControl *flowctl)
 {
     finExecVariable *retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -524,7 +524,7 @@ finErrorCode
 finExecMachine::instExecExprStr(finSyntaxNode *synnode, finExecFlowControl *flowctl)
 {
     finExecVariable *retvar = new finExecVariable();;
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -559,7 +559,7 @@ finExecMachine::instExecExprFunc(finSyntaxNode *synnode, finExecEnvironment *env
     }
     QString funcname = fnlexn->getString();
     finExecFunction *func = env->findFunction(funcname);
-    if ( func == NULL ) {
+    if ( func == nullptr ) {
         this->appendExecutionError(fnlexn, QString("Function name not found."));
         return finErrorKits::EC_NOT_FOUND;
     }
@@ -628,7 +628,7 @@ finExecMachine::instExecExpress(finSyntaxNode *synnode, finExecEnvironment *env,
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
     finLexNodeType lextype = finLexNode::TP_DUMMY;
-    if ( lexnode != NULL )
+    if ( lexnode != nullptr )
         lextype = lexnode->getType();
 
     if ( lextype == finLexNode::TP_DUMMY ) {
@@ -662,7 +662,7 @@ finExecMachine::instExecFuncName(finSyntaxNode *synnode, finExecEnvironment *env
     }
 
     QString funcname = lexnode->getString();
-    if ( env->getFunctionHere(funcname) != NULL ) {
+    if ( env->getFunctionHere(funcname) != nullptr ) {
         this->appendExecutionError(lexnode, QString("Function is redefined."));
         return finErrorKits::EC_CONTENTION;
     }
@@ -763,7 +763,7 @@ finExecMachine::instExecFunction(finSyntaxNode *synnode, finExecEnvironment *env
     finSyntaxNode *fnbody_syn = synnode->getSubSyntaxNode(2);
 
     finExecFunction *newfunc = new finExecFunction();
-    if ( newfunc == NULL )
+    if ( newfunc == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     finErrorCode errcode;
@@ -803,7 +803,7 @@ finErrorCode finExecMachine::instExecBrCondVoid(bool *retblval, finExecFlowContr
 finErrorCode finExecMachine::instExecBrCond(finSyntaxNode *synnode, finExecEnvironment *env,
                                             bool *retblval, finExecFlowControl *flowctl)
 {
-    if ( synnode == NULL )
+    if ( synnode == nullptr )
         return this->instExecBrCondVoid(retblval, flowctl);
 
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -882,7 +882,7 @@ finErrorCode finExecMachine::instExecLoopCondVoid(bool *retblval, finExecFlowCon
 finErrorCode finExecMachine::instExecLoopCond(finSyntaxNode *synnode, finExecEnvironment *env,
                                               bool *retblval, finExecFlowControl *flowctl)
 {
-    if ( synnode == NULL )
+    if ( synnode == nullptr )
         return this->instExecLoopCondVoid(retblval, flowctl);
 
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -1005,7 +1005,7 @@ finErrorCode finExecMachine::instExecLoopForHead(finSyntaxNode *synnode,
         return finErrorKits::EC_READ_ERROR;
     }
     if ( (*condhead)->getSubListCount() < 1 ) {
-        *condhead = NULL;
+        *condhead = nullptr;
     } else {
         *condhead = (*condhead)->getSubSyntaxNode(0);
         condheadlex = (*condhead)->getCommandLexNode();
@@ -1018,7 +1018,7 @@ finErrorCode finExecMachine::instExecLoopForHead(finSyntaxNode *synnode,
     if ( headsn->getSubListCount() >= 3 )
         *stephead = headsn->getSubSyntaxNode(2);
     else
-        *stephead = NULL;
+        *stephead = nullptr;
 
     *loopbody = synnode->getSubSyntaxNode(1);
     if ( !finSyntaxNode::isStatementLevelType((*loopbody)->getType()) ) {
@@ -1040,9 +1040,9 @@ finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env,
     errcode = this->instExecLoopForHead(synnode, &inithead, &condhead, &stephead, &loopbody);
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
-    finLexNode *condheadlex = (condhead == NULL ? lexnode : condhead->getCommandLexNode());
+    finLexNode *condheadlex = (condhead == nullptr ? lexnode : condhead->getCommandLexNode());
 
-    if ( inithead == NULL || loopbody == NULL )
+    if ( inithead == nullptr || loopbody == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     errcode = this->instantExecute(inithead, env, flowctl);
@@ -1084,7 +1084,7 @@ finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env,
             return errcode;
 
       loopstep:
-        if ( stephead != NULL ) {
+        if ( stephead != nullptr ) {
             flowctl->resetFlowControl();
             errcode = this->instantExecute(stephead, env, flowctl);
             if ( finErrorKits::isErrorResult(errcode) )
@@ -1117,7 +1117,7 @@ finExecMachine::instExecLoop(finSyntaxNode *synnode, finExecEnvironment *env, fi
 finErrorCode
 finExecMachine::instExecLabel(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
-    if ( synnode == NULL || env == NULL || flowctl == NULL )
+    if ( synnode == nullptr || env == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -1180,6 +1180,7 @@ finErrorCode
 finExecMachine::instExecJumpRet(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     finLexNode *lexnode = synnode->getCommandLexNode();
+    finErrorCode errcode;
 
     if ( synnode->getSubListCount() < 1 )
         return this->instExecJumpRetVoid(flowctl);
@@ -1198,10 +1199,13 @@ finExecMachine::instExecJumpRet(finSyntaxNode *synnode, finExecEnvironment *env,
 
         basesn = basesn->getSubSyntaxNode(0);
     }
-    return this->instExecJumpRetVal(basesn, env, flowctl);
+    errcode = this->instExecJumpRetVal(basesn, env, flowctl);
+    if ( errcode != finErrorCode::EC_SUCCESS ) {
+        this->appendExecutionError(lexnode, QString("ERROR: Script execution reaches a wrong path."));
+        return errcode;
+    }
 
-    this->appendExecutionError(lexnode, QString("ERROR: Script execution reaches a wrong path."));
-    return finErrorKits::EC_READ_ERROR;
+    return finErrorCode::EC_SUCCESS;
 }
 
 finErrorCode finExecMachine::instExecJumpExitVoid(finSyntaxNode *synnode, finExecFlowControl *flowctl)
