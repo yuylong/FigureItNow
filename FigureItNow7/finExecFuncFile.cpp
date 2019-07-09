@@ -35,7 +35,7 @@ static finErrorCode _sysfunc_load_image(finExecFunction *self, finExecEnvironmen
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     QString filename = fnvar->getStringValue();
@@ -67,17 +67,17 @@ static finErrorCode _sysfunc_load_numerical_csv(finExecFunction *self, finExecEn
 {
     finExecVariable *fnvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     fnvar = finExecVariable::transLinkTarget(env->findVariable("fn"));
-    if ( fnvar == NULL )
+    if ( fnvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( fnvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     QString filename = fnvar->getStringValue();
@@ -120,17 +120,17 @@ static finErrorCode _sysfunc_load_string_csv(finExecFunction *self, finExecEnvir
 {
     finExecVariable *fnvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     fnvar = finExecVariable::transLinkTarget(env->findVariable("fn"));
-    if ( fnvar == NULL )
+    if ( fnvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( fnvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     QString filename = fnvar->getStringValue();
@@ -172,17 +172,17 @@ static finErrorCode _sysfunc_load_auto_csv(finExecFunction *self, finExecEnviron
 {
     finExecVariable *fnvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     fnvar = finExecVariable::transLinkTarget(env->findVariable("fn"));
-    if ( fnvar == NULL )
+    if ( fnvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( fnvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     QString filename = fnvar->getStringValue();
@@ -227,12 +227,12 @@ static finErrorCode _sysfunc_save_numerical_csv(finExecFunction *self, finExecEn
 {
     finExecVariable *fnvar, *aryvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     fnvar = finExecVariable::transLinkTarget(env->findVariable("fn"));
     aryvar = finExecVariable::transLinkTarget(env->findVariable("ary"));
-    if ( fnvar == NULL || aryvar == NULL )
+    if ( fnvar == nullptr || aryvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( fnvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
@@ -273,12 +273,12 @@ static finErrorCode _sysfunc_save_auto_csv(finExecFunction *self, finExecEnviron
 {
     finExecVariable *fnvar, *aryvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     fnvar = finExecVariable::transLinkTarget(env->findVariable("fn"));
     aryvar = finExecVariable::transLinkTarget(env->findVariable("ary"));
-    if ( fnvar == NULL || aryvar == NULL )
+    if ( fnvar == nullptr || aryvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( fnvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
@@ -334,7 +334,7 @@ static struct finExecSysFuncRegItem _finSysFuncFileList[] = {
     _funcRegItem_save_string_csv,
     _funcRegItem_save_auto_csv,
 
-    { QString(), QString(), NULL }
+    { QString(), QString(), nullptr }
 };
 
 finErrorCode finExecFunction::registSysFuncFile()
