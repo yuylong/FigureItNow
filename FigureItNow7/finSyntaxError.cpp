@@ -23,10 +23,22 @@ finSyntaxError::finSyntaxError(const finSyntaxError &src)
 
 finErrorCode finSyntaxError::copySyntaxError(const finSyntaxError *src)
 {
+    this->_level = src->_level;
+    this->_stage = src->_stage;
     this->_row = src->getRow();
     this->_column = src->getColumn();
     this->_errString = src->getErrorString();
     return finErrorKits::EC_SUCCESS;
+}
+
+finSyntaxError::Level finSyntaxError::getLevel() const
+{
+    return this->_level;
+}
+
+finSyntaxError::Stage finSyntaxError::getStage() const
+{
+    return this->_stage;
 }
 
 unsigned int finSyntaxError::getRow() const
@@ -42,6 +54,18 @@ unsigned int finSyntaxError::getColumn() const
 QString finSyntaxError::getErrorString() const
 {
     return this->_errString;
+}
+
+finErrorCode finSyntaxError::setLevel(finSyntaxError::Level level)
+{
+    this->_level = level;
+    return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finSyntaxError::setStage(finSyntaxError::Stage stage)
+{
+    this->_stage = stage;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finSyntaxError::setRow(unsigned int row)
@@ -65,7 +89,7 @@ finErrorCode finSyntaxError::setErrorString(const QString &errstr)
 finErrorCode finSyntaxError::appendExecutionError(const finLexNode *lexnode, QList<finSyntaxError> *errlist,
                                                   const QString &errinfo)
 {
-    if ( lexnode == NULL || errlist == NULL )
+    if ( lexnode == nullptr || errlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finSyntaxError synerr;
