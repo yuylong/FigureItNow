@@ -40,6 +40,9 @@ public:
     void clearAllErrorList();
 
     finErrorCode dumpList(QTextStream *ts, finSyntaxError::Level fromlevel) const;
+    finErrorCode dumpList(QTextStream *ts) const;
+    finErrorCode dumpList(finSyntaxError::Level fromlevel) const;
+    finErrorCode dumpList() const;
 };
 
 #endif // FINSYNTAXERRORLIST_H

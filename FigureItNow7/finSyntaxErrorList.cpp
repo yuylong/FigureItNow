@@ -11,6 +11,8 @@
 finSyntaxErrorList::finSyntaxErrorList()
 {
     this->_list.clear();
+    this->_ts = nullptr;
+    this->_fromLevel = finSyntaxError::LV_WARNING;
 }
 
 int finSyntaxErrorList::getEntryCountFromLevel(finSyntaxError::Level level) const
@@ -87,7 +89,33 @@ void finSyntaxErrorList::clearAllErrorList()
     this->_list.clear();
 }
 
-finErrorCode finSyntaxErrorList::dumpList(QTextStream *ts, finSyntaxError::Level dumplevel) const
+finErrorCode finSyntaxErrorList::dumpList(QTextStream *ts, finSyntaxError::Level fromlevel) const
 {
+    finErrorCode errcode = finErrorKits::EC_SUCCESS;
+    if ( ts == nullptr )
+        return finErrorKits::EC_NULL_POINTER;
 
+    foreach ( const finSyntaxError &entry, this->_list ) {
+        if ( entry.getLevel() >= fromlevel ) {
+            errcode = entry.dumpErrorInfo(ts);
+            if ( finErrorKits::isErrorResult(errcode) )
+                continue;
+        }
+    }
+    return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finSyntaxErrorList::dumpList(QTextStream *ts) const
+{
+    return this->dumpList(ts, this->_fromLevel);
+}
+
+finErrorCode finSyntaxErrorList::dumpList(finSyntaxError::Level fromlevel) const
+{
+    return this->dumpList(this->_ts, fromlevel);
+}
+
+finErrorCode finSyntaxErrorList::dumpList() const
+{
+    return this->dumpList(this->_ts, this->_fromLevel);
 }

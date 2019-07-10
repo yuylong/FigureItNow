@@ -98,7 +98,7 @@ finErrorCode finSyntaxError::dumpErrorInfo(QTextStream *ts) const
     (*ts) << "<" << getLevelName(this->_level) << "> "
           << getStageName(this->_stage) << " "
           << "[" << this->_row << ":" << this->_column << "] "
-          << this->_errString;
+          << this->_errString << endl;
     return finErrorKits::EC_SUCCESS;
 }
 
