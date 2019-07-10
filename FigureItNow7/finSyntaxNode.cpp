@@ -25,7 +25,7 @@ finErrorCode finSyntaxNode::copyNode(const finSyntaxNode *srcnode)
     finErrorCode errcode;
     this->disposeAll();
 
-    if ( srcnode == NULL )
+    if ( srcnode == nullptr )
         return finErrorKits::EC_SUCCESS;
 
     this->_type = srcnode->getType();
@@ -36,7 +36,7 @@ finErrorCode finSyntaxNode::copyNode(const finSyntaxNode *srcnode)
 
     for ( int i = 0; i < srcnode->getSubListCount(); i++ ) {
         finSyntaxNode *synnode = new finSyntaxNode();
-        if ( synnode == NULL )
+        if ( synnode == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
 
         errcode = synnode->copyNode(srcnode->getSubSyntaxNode(i));
@@ -64,7 +64,7 @@ finSyntaxNodeType finSyntaxNode::getType() const
 const finLexNode *finSyntaxNode::getCommandLexNode() const
 {
     if ( this->_cmdLexNode.getType() == finLexNode::TP_DUMMY )
-        return NULL;
+        return nullptr;
     else
         return &this->_cmdLexNode;
 }
@@ -72,7 +72,7 @@ const finLexNode *finSyntaxNode::getCommandLexNode() const
 finLexNode *finSyntaxNode::getCommandLexNode()
 {
     if ( this->_cmdLexNode.getType() == finLexNode::TP_DUMMY )
-        return NULL;
+        return nullptr;
     else
         return &this->_cmdLexNode;
 }
@@ -121,7 +121,7 @@ finErrorCode finSyntaxNode::prependSubSyntaxNode(finSyntaxNode *synnode)
 finSyntaxNode *finSyntaxNode::pickSubSyntaxNode(int idx)
 {
     if ( idx < 0 || idx >= this->_subSyntaxList.count() )
-        return NULL;
+        return nullptr;
 
     finSyntaxNode *retnode = this->_subSyntaxList.at(idx);
     this->_subSyntaxList.removeAt(idx);
@@ -203,9 +203,9 @@ void finSyntaxNode::dumpLeveled(int level) const
     for (int i = 0; i < level; i++)
         printf("  ");
 
-    printf("* type=%d, ", (int)this->getType());
-    if ( cmdlex != NULL ) {
-        printf("lex=%d, str=%s, ", (int)cmdlex->getType(), cmdlex->getString().toLatin1().data());
+    printf("* type=%d, ", static_cast<int>(this->getType()));
+    if ( cmdlex != nullptr ) {
+        printf("lex=%d, str=%s, ", static_cast<int>(cmdlex->getType()), cmdlex->getString().toLatin1().data());
     } else {
         printf("lex=NULL, ");
     }

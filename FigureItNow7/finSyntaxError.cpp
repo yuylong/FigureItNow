@@ -6,12 +6,16 @@
  * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
  */
 
+#include <QObject>
+
 #include "finSyntaxError.h"
 
 
 finSyntaxError::finSyntaxError()
     : _errString()
 {
+    this->_level = LV_DUMMY;
+    this->_stage = ST_DUMMY;
     this->_row = 0;
     this->_column = 0;
 }
@@ -84,6 +88,23 @@ finErrorCode finSyntaxError::setErrorString(const QString &errstr)
 {
     this->_errString = errstr;
     return finErrorKits::EC_SUCCESS;
+}
+
+const finSyntaxError &finSyntaxError::dummySyntaxError()
+{
+    static finSyntaxError retval;
+    static bool retval_isset = false;
+
+    if ( !retval_isset ) {
+        retval._level = LV_DUMMY;
+        retval._stage = ST_DUMMY;
+        retval._row = 0;
+        retval._column = 0;
+        retval._errString = QObject::tr("Invalid syntax error entry.");
+        retval_isset = true;
+    }
+
+    return retval;
 }
 
 finErrorCode finSyntaxError::appendExecutionError(const finLexNode *lexnode, QList<finSyntaxError> *errlist,

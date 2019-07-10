@@ -67,7 +67,7 @@ finSyntaxError finSyntaxTree::getSyntaxError(int idx) const
 
 finErrorCode finSyntaxTree::setRootNode(const finSyntaxNode *rtnode)
 {
-    if ( rtnode == NULL)
+    if ( rtnode == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     if ( rtnode->getType() != finSyntaxNode::TP_PROGRAM )
@@ -80,14 +80,14 @@ finErrorCode finSyntaxTree::setRootNode(const finSyntaxNode *rtnode)
 
 finErrorCode finSyntaxTree::appendSyntaxNode(const finSyntaxNode *synnode)
 {
-    if ( synnode == NULL)
+    if ( synnode == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     //if ( !finSyntaxNode::isStatementLevelType(synnode->getType()) )
     //    return finErrorKits::EC_INVALID_PARAM;
 
     finSyntaxNode *mynode = new finSyntaxNode();
-    if ( mynode == NULL )
+    if ( mynode == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     finErrorCode errcode = mynode->copyNode(synnode);

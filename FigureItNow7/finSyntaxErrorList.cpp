@@ -10,5 +10,47 @@
 
 finSyntaxErrorList::finSyntaxErrorList()
 {
+    this->_list.clear();
+}
 
+const finSyntaxError &finSyntaxErrorList::getEntryAt(int index) const
+{
+    if ( index < 0 || index >= this->_list.count() )
+        return finSyntaxError::dummySyntaxError();
+
+    return this->_list.at(index);
+}
+
+finErrorCode finSyntaxErrorList::appendEntry(finSyntaxError::Level level, finSyntaxError::Stage stage,
+                                             finLexNode *lexnode, QString info)
+{
+    finSyntaxError entry;
+
+    entry.setLevel(level);
+    entry.setStage(stage);
+    if ( lexnode != nullptr ) {
+        entry.setRow(lexnode->getRow());
+        entry.setColumn(lexnode->getColumn());
+    }else{
+        entry.setRow(0);
+        entry.setColumn(0);
+    }
+    entry.setErrorString(info);
+
+    this->_list.append(entry);
+    return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finSyntaxErrorList::removeEntryAt(int index)
+{
+    if ( index < 0 || index >= this->_list.count() )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    this->_list.removeAt(index);
+    return finErrorKits::EC_SUCCESS;
+}
+
+void finSyntaxErrorList::clearAllErrorList()
+{
+    this->_list.clear();
 }

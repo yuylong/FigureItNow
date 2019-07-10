@@ -10,8 +10,11 @@
 #define FINSYNTAXERRORLIST_H
 
 #include <QList>
+#include <QString>
 #include <QTextStream>
 
+#include "finErrorCode.h"
+#include "finLexNode.h"
 #include "finSyntaxError.h"
 
 
@@ -22,6 +25,13 @@ protected:
 
 public:
     finSyntaxErrorList();
+
+    const finSyntaxError &getEntryAt(int index) const;
+
+    finErrorCode appendEntry(finSyntaxError::Level level, finSyntaxError::Stage stage,
+                             finLexNode *lexnode, QString info);
+    finErrorCode removeEntryAt(int index);
+    void clearAllErrorList();
 };
 
 #endif // FINSYNTAXERRORLIST_H

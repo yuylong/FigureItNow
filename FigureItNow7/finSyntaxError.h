@@ -17,8 +17,9 @@
 
 class finSyntaxError
 {
-private:
+public:
     enum Level {
+        LV_DUMMY,
         LV_DEBUG,
         LV_INFO,
         LV_WARNING,
@@ -26,6 +27,7 @@ private:
     };
 
     enum Stage {
+        ST_DUMMY,
         ST_COMPILE,
         ST_EXECUTE,
     };
@@ -54,6 +56,8 @@ public:
     finErrorCode setRow(unsigned int row);
     finErrorCode setColumn(unsigned int col);
     finErrorCode setErrorString(const QString &errstr);
+
+    static const finSyntaxError &dummySyntaxError();
 
     static finErrorCode appendExecutionError(const finLexNode *lexnode, QList<finSyntaxError> *errlist,
                                              const QString &errinfo);
