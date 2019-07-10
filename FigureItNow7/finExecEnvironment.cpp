@@ -21,9 +21,9 @@ finExecEnvironment::finExecEnvironment()
     this->_envName = QString("");
     this->_varList.clear();
     this->_funcList.clear();
-    this->_belongFunc = NULL;
-    this->_figContainer = NULL;
-    this->_prevEnv = NULL;
+    this->_belongFunc = nullptr;
+    this->_figContainer = nullptr;
+    this->_prevEnv = nullptr;
 }
 
 finExecEnvironment::~finExecEnvironment()
@@ -43,14 +43,14 @@ finExecEnvironment::~finExecEnvironment()
 finErrorCode
 finExecEnvironment::buildChildEnvironment(finExecEnvironment **chdenv)
 {
-    if ( chdenv == NULL )
+    if ( chdenv == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finExecEnvironment *newchdenv = new finExecEnvironment();
-    if ( newchdenv == NULL )
+    if ( newchdenv == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    newchdenv->_belongFunc = NULL;
+    newchdenv->_belongFunc = nullptr;
     newchdenv->_figContainer = this->_figContainer;
     newchdenv->_prevEnv = this;
 

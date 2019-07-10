@@ -90,6 +90,31 @@ finErrorCode finSyntaxError::setErrorString(const QString &errstr)
     return finErrorKits::EC_SUCCESS;
 }
 
+finErrorCode finSyntaxError::dumpErrorInfo(QTextStream *ts) const
+{
+    if ( ts == nullptr )
+        return finErrorKits::EC_NULL_POINTER;
+
+    (*ts) << "<" << getLevelName(this->_level) << "> "
+          << getStageName(this->_stage) << " "
+          << "[" << this->_row << ":" << this->_column << "] "
+          << this->_errString;
+    return finErrorKits::EC_SUCCESS;
+}
+
+QString finSyntaxError::makeErrorInfoString() const
+{
+    finErrorCode errcode = finErrorKits::EC_SUCCESS;
+    QString retstr = "";
+    QTextStream ts(&retstr);
+
+    errcode = dumpErrorInfo(&ts);
+    if ( finErrorKits::isErrorResult(errcode) )
+        return "";
+
+    return retstr;
+}
+
 const finSyntaxError &finSyntaxError::dummySyntaxError()
 {
     static finSyntaxError retval;
@@ -105,6 +130,37 @@ const finSyntaxError &finSyntaxError::dummySyntaxError()
     }
 
     return retval;
+}
+
+QString finSyntaxError::getLevelName(Level level)
+{
+    switch ( level ) {
+      case LV_DEBUG:
+        return QObject::tr("Debug");
+
+      case LV_WARNING:
+        return QObject::tr("Warning");
+
+      case LV_ERROR:
+        return QObject::tr("Error");
+
+      default:
+        return QObject::tr("Dummy");
+    }
+}
+
+QString finSyntaxError::getStageName(Stage stage)
+{
+    switch ( stage ) {
+      case ST_COMPILE:
+        return QObject::tr("Compile");
+
+      case ST_EXECUTE:
+        return QObject::tr("Execute");
+
+      default:
+        return QObject::tr("Dummy");
+    }
 }
 
 finErrorCode finSyntaxError::appendExecutionError(const finLexNode *lexnode, QList<finSyntaxError> *errlist,

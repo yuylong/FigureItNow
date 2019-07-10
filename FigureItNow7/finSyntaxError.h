@@ -9,11 +9,12 @@
 #ifndef FINSYNTAXERROR_H
 #define FINSYNTAXERROR_H
 
-
 #include <QString>
+#include <QTextStream>
 
 #include "finErrorCode.h"
 #include "finLexNode.h"
+
 
 class finSyntaxError
 {
@@ -57,7 +58,13 @@ public:
     finErrorCode setColumn(unsigned int col);
     finErrorCode setErrorString(const QString &errstr);
 
+    finErrorCode dumpErrorInfo(QTextStream *ts) const;
+    QString makeErrorInfoString() const;
+
     static const finSyntaxError &dummySyntaxError();
+
+    static QString getLevelName(Level level);
+    static QString getStageName(Stage stage);
 
     static finErrorCode appendExecutionError(const finLexNode *lexnode, QList<finSyntaxError> *errlist,
                                              const QString &errinfo);

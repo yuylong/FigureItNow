@@ -22,16 +22,24 @@ class finSyntaxErrorList
 {
 protected:
     QList<finSyntaxError> _list;
+    QTextStream *_ts;
+    finSyntaxError::Level _fromLevel;
 
 public:
     finSyntaxErrorList();
 
+    int getEntryCountFromLevel(finSyntaxError::Level level) const;
+    int getEntryCountFromLevel() const;
+    int getEntryCountAtLevel(finSyntaxError::Level level) const;
+    int getEntryCount() const;
     const finSyntaxError &getEntryAt(int index) const;
 
     finErrorCode appendEntry(finSyntaxError::Level level, finSyntaxError::Stage stage,
                              finLexNode *lexnode, QString info);
     finErrorCode removeEntryAt(int index);
     void clearAllErrorList();
+
+    finErrorCode dumpList(QTextStream *ts, finSyntaxError::Level fromlevel) const;
 };
 
 #endif // FINSYNTAXERRORLIST_H

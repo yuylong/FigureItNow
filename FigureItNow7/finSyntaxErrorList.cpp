@@ -13,6 +13,38 @@ finSyntaxErrorList::finSyntaxErrorList()
     this->_list.clear();
 }
 
+int finSyntaxErrorList::getEntryCountFromLevel(finSyntaxError::Level level) const
+{
+    int retcnt = 0;
+    foreach (const finSyntaxError &entry, this->_list){
+        if ( entry.getLevel() >= level )
+            retcnt++;
+    }
+
+    return retcnt;
+}
+
+int finSyntaxErrorList::getEntryCountFromLevel() const
+{
+    return getEntryCountFromLevel(this->_fromLevel);
+}
+
+int finSyntaxErrorList::getEntryCountAtLevel(finSyntaxError::Level level) const
+{
+    int retcnt = 0;
+    foreach (const finSyntaxError &entry, this->_list){
+        if ( entry.getLevel() == level )
+            retcnt++;
+    }
+
+    return retcnt;
+}
+
+int finSyntaxErrorList::getEntryCount() const
+{
+    return this->_list.count();
+}
+
 const finSyntaxError &finSyntaxErrorList::getEntryAt(int index) const
 {
     if ( index < 0 || index >= this->_list.count() )
@@ -53,4 +85,9 @@ finErrorCode finSyntaxErrorList::removeEntryAt(int index)
 void finSyntaxErrorList::clearAllErrorList()
 {
     this->_list.clear();
+}
+
+finErrorCode finSyntaxErrorList::dumpList(QTextStream *ts, finSyntaxError::Level dumplevel) const
+{
+
 }
