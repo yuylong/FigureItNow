@@ -55,6 +55,21 @@ const finSyntaxError &finSyntaxErrorList::getEntryAt(int index) const
     return this->_list.at(index);
 }
 
+bool finSyntaxErrorList::isRealtimeDump() const
+{
+    return this->_rtDump;
+}
+
+QTextStream *finSyntaxErrorList::getDumpTextStream() const
+{
+    return this->_ts;
+}
+
+finSyntaxError::Level finSyntaxErrorList::getDumpFromLevel() const
+{
+    return this->_fromLevel;
+}
+
 finErrorCode finSyntaxErrorList::appendEntry(finSyntaxError::Level level, finSyntaxError::Stage stage,
                                              finLexNode *lexnode, QString info)
 {
@@ -72,6 +87,9 @@ finErrorCode finSyntaxErrorList::appendEntry(finSyntaxError::Level level, finSyn
     entry.setErrorString(info);
 
     this->_list.append(entry);
+
+    if ( this->_rtDump && this->_ts != nullptr && level >= this->_fromLevel )
+        entry.dumpErrorInfo(this->_ts);
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -87,6 +105,24 @@ finErrorCode finSyntaxErrorList::removeEntryAt(int index)
 void finSyntaxErrorList::clearAllErrorList()
 {
     this->_list.clear();
+}
+
+finErrorCode finSyntaxErrorList::setIsRealtimeDump(bool rtdump)
+{
+    this->_rtDump = rtdump;
+    return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finSyntaxErrorList::setDumpTextStream(QTextStream *ts)
+{
+    this->_ts = ts;
+    return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finSyntaxErrorList::setDumpFromLevel(finSyntaxError::Level level)
+{
+    this->_fromLevel = level;
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finSyntaxErrorList::dumpList(QTextStream *ts, finSyntaxError::Level fromlevel) const

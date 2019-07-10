@@ -22,6 +22,8 @@ class finSyntaxErrorList
 {
 protected:
     QList<finSyntaxError> _list;
+
+    bool _rtDump;
     QTextStream *_ts;
     finSyntaxError::Level _fromLevel;
 
@@ -34,10 +36,18 @@ public:
     int getEntryCount() const;
     const finSyntaxError &getEntryAt(int index) const;
 
+    bool isRealtimeDump() const;
+    QTextStream *getDumpTextStream() const;
+    finSyntaxError::Level getDumpFromLevel() const;
+
     finErrorCode appendEntry(finSyntaxError::Level level, finSyntaxError::Stage stage,
                              finLexNode *lexnode, QString info);
     finErrorCode removeEntryAt(int index);
     void clearAllErrorList();
+
+    finErrorCode setIsRealtimeDump(bool rtdump);
+    finErrorCode setDumpTextStream(QTextStream *ts);
+    finErrorCode setDumpFromLevel(finSyntaxError::Level level);
 
     finErrorCode dumpList(QTextStream *ts, finSyntaxError::Level fromlevel) const;
     finErrorCode dumpList(QTextStream *ts) const;
