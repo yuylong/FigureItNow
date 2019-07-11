@@ -24,6 +24,7 @@
 #include "finLexNode.h"
 #include "finSyntaxReader.h"
 #include "finSyntaxError.h"
+#include "finSyntaxErrorList.h"
 #include "finSyntaxTree.h"
 
 class finExecVariable;
@@ -41,7 +42,7 @@ protected:
 
     finExecCompiler _compiler;
     finSyntaxTree *_synTree;
-    QList<finSyntaxError> _errList;
+    finSyntaxErrorList _errList;
 
 public:
     finExecMachine();

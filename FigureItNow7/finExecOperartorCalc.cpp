@@ -18,7 +18,7 @@ finExecOperartorClac::finExecOperartorClac()
 
 bool finExecOperartorClac::varLogicValue(finExecVariable *var)
 {
-    if ( var == NULL )
+    if ( var == nullptr )
         return false;
 
     bool retval = false;
@@ -32,13 +32,13 @@ bool finExecOperartorClac::varLogicValue(finExecVariable *var)
 finExecVariable *finExecOperartorClac::buildStdLogicVar(bool blval)
 {
     finExecVariable *retvar = new finExecVariable();
-    if ( retvar == NULL )
-        return NULL;
+    if ( retvar == nullptr )
+        return nullptr;
 
     finErrorCode errcode = retvar->setupBoolValue(blval);
     if ( finErrorKits::isErrorResult(errcode) ) {
         delete retvar;
-        return NULL;
+        return nullptr;
     }
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -124,10 +124,10 @@ finErrorCode
 finExecOperartorClac::execOpCalc(
         finLexOperatorType optype, QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
-    if ( oprands == NULL || retval == NULL )
+    if ( oprands == nullptr || retval == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
-    struct finExecOperartorClacDatabase *curitem = NULL;
+    struct finExecOperartorClacDatabase *curitem = nullptr;
     bool found = false;
     for ( int i = 0; i < _glOperatorCalcDbCnt; i++ ) {
         curitem = &_glOperatorCalcDb[i];
@@ -136,7 +136,7 @@ finExecOperartorClac::execOpCalc(
             break;
         }
     }
-    if ( !found || curitem->_opcall == NULL )
+    if ( !found || curitem->_opcall == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
     if ( oprands->count() < curitem->_oprandCnt )
@@ -149,7 +149,7 @@ static finErrorCode
 _brcktOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     if ( oprands->empty() ) {
-        *retval = NULL;
+        *retval = nullptr;
         return finErrorKits::EC_NORMAL_WARN;
     }
 
@@ -164,11 +164,11 @@ _addOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand1 = finExecVariable::transLinkTarget(oprands->at(0));
     finExecVariable *oprand2 = finExecVariable::transLinkTarget(oprands->at(1));
-    if ( oprand1 == NULL || oprand2 == NULL )
+    if ( oprand1 == nullptr || oprand2 == nullptr )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *tmpretval = new finExecVariable();
-    if ( tmpretval == NULL )
+    if ( tmpretval == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     if ( oprand1->getType() == finExecVariable::TP_NUMERIC &&
@@ -204,11 +204,11 @@ _subOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand1 = finExecVariable::transLinkTarget(oprands->at(0));
     finExecVariable *oprand2 = finExecVariable::transLinkTarget(oprands->at(1));
-    if ( oprand1 == NULL || oprand2 == NULL )
+    if ( oprand1 == nullptr || oprand2 == nullptr )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *tmpretval = new finExecVariable();
-    if ( tmpretval == NULL )
+    if ( tmpretval == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     if ( oprand1->getType() == finExecVariable::TP_NUMERIC &&
@@ -232,11 +232,11 @@ _mulOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand1 = finExecVariable::transLinkTarget(oprands->at(0));
     finExecVariable *oprand2 = finExecVariable::transLinkTarget(oprands->at(1));
-    if ( oprand1 == NULL || oprand2 == NULL )
+    if ( oprand1 == nullptr || oprand2 == nullptr )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *tmpretval = new finExecVariable();
-    if ( tmpretval == NULL )
+    if ( tmpretval == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     if ( oprand1->getType() == finExecVariable::TP_NUMERIC &&
@@ -260,11 +260,11 @@ _divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand1 = finExecVariable::transLinkTarget(oprands->at(0));
     finExecVariable *oprand2 = finExecVariable::transLinkTarget(oprands->at(1));
-    if ( oprand1 == NULL || oprand2 == NULL )
+    if ( oprand1 == nullptr || oprand2 == nullptr )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *tmpretval = new finExecVariable();
-    if ( tmpretval == NULL )
+    if ( tmpretval == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     if ( oprand1->getType() == finExecVariable::TP_NUMERIC &&
@@ -286,11 +286,11 @@ _divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 static finErrorCode _pstvOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand = finExecVariable::transLinkTarget(oprands->at(0));
-    if ( oprand == NULL )
+    if ( oprand == nullptr )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *tmpretval = new finExecVariable();
-    if ( tmpretval == NULL )
+    if ( tmpretval == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     if ( oprand->getType() == finExecVariable::TP_NUMERIC ) {
@@ -310,11 +310,11 @@ static finErrorCode _pstvOpCall(QList<finExecVariable *> *oprands, finExecVariab
 static finErrorCode _ngtvOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand = finExecVariable::transLinkTarget(oprands->at(0));
-    if ( oprand == NULL )
+    if ( oprand == nullptr )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *tmpretval = new finExecVariable();
-    if ( tmpretval == NULL )
+    if ( tmpretval == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     if ( oprand->getType() == finExecVariable::TP_NUMERIC ) {
@@ -335,7 +335,7 @@ static finErrorCode
 _psAccumOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand = finExecVariable::transLinkTarget(oprands->at(0));
-    if ( oprand == NULL )
+    if ( oprand == nullptr )
         return finErrorKits::EC_INVALID_PARAM;
 
     if ( !oprand->isLeftValue() || oprand->isWriteProtected() )
@@ -362,7 +362,7 @@ static finErrorCode
 _prAccumOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand = finExecVariable::transLinkTarget(oprands->at(0));
-    if ( oprand == NULL )
+    if ( oprand == nullptr )
         return finErrorKits::EC_INVALID_PARAM;
 
     if ( !oprand->isLeftValue() || oprand->isWriteProtected() )
@@ -385,7 +385,7 @@ static finErrorCode
 _psDescdOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand = finExecVariable::transLinkTarget(oprands->at(0));
-    if ( oprand == NULL )
+    if ( oprand == nullptr )
         return finErrorKits::EC_INVALID_PARAM;
 
     if ( !oprand->isLeftValue() || oprand->isWriteProtected() )
@@ -412,7 +412,7 @@ static finErrorCode
 _prDescdOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand = finExecVariable::transLinkTarget(oprands->at(0));
-    if ( oprand == NULL )
+    if ( oprand == nullptr )
         return finErrorKits::EC_INVALID_PARAM;
 
     if ( !oprand->isLeftValue() || oprand->isWriteProtected() )
@@ -436,7 +436,7 @@ _modOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand1 = finExecVariable::transLinkTarget(oprands->at(0));
     finExecVariable *oprand2 = finExecVariable::transLinkTarget(oprands->at(1));
-    if ( oprand1 == NULL || oprand2 == NULL )
+    if ( oprand1 == nullptr || oprand2 == nullptr )
         return finErrorKits::EC_INVALID_PARAM;
 
     double opnum1, opnum2;
@@ -453,7 +453,7 @@ _modOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     double modres = opnum1 - (divint * opnum2);
 
     finExecVariable *tmpretval = new finExecVariable();
-    if ( tmpretval == NULL )
+    if ( tmpretval == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     tmpretval->setType(finExecVariable::TP_NUMERIC);

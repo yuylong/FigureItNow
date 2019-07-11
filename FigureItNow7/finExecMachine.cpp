@@ -72,12 +72,12 @@ finSyntaxTree *finExecMachine::getSyntaxTree()
 
 int finExecMachine::getExecuteErrorCount() const
 {
-    return this->_errList.count();
+    return this->_errList.getEntryCount();
 }
 
 finSyntaxError finExecMachine::getExecuteErrorAt(int idx) const
 {
-    return this->_errList.at(idx);
+    return this->_errList.getEntryAt(idx);
 }
 
 finErrorCode finExecMachine::setName(const QString &name)
@@ -180,7 +180,7 @@ finErrorCode finExecMachine::execute()
 
 void finExecMachine::disposeExecutionError()
 {
-    this->_errList.clear();
+    this->_errList.clearAllErrorList();
 }
 
 finErrorCode
@@ -236,14 +236,15 @@ finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, 
         return finErrorKits::EC_NON_IMPLEMENT;
     }
 
-    this->appendExecutionError(synnode->getCommandLexNode(), QString("Reach unreachable path."));
-    return finErrorKits::EC_UNKNOWN_ERROR;
+    //this->appendExecutionError(synnode->getCommandLexNode(), QString("Reach unreachable path."));
+    //return finErrorKits::EC_UNKNOWN_ERROR;
 }
 
 finErrorCode
 finExecMachine::appendExecutionError(finLexNode *lexnode, const QString &errinfo)
 {
-    return finSyntaxError::appendExecutionError(lexnode, &this->_errList, errinfo);
+    return this->_errList.appendEntry(finSyntaxError::LV_ERROR, finSyntaxError::ST_EXECUTE,
+                                      lexnode, errinfo);
 }
 
 finErrorCode
@@ -253,7 +254,7 @@ finExecMachine::instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, 
         return finErrorKits::EC_NULL_POINTER;
 
     finLexNode *lexnode = synnode->getCommandLexNode();
-    this->appendExecutionError(lexnode, QString("Unrecognized symbol."));
+    this->appendExecutionError(lexnode, QObject::tr("Unrecognized symbol."));
 
     return finErrorKits::EC_READ_ERROR;
 }
@@ -264,7 +265,7 @@ finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment
     finLexNode *lexnode = synnode->getCommandLexNode();
 
     if ( lexnode->getType() != finLexNode::TP_VARIABLE ) {
-        this->appendExecutionError(lexnode, QString("Variable name is not recognized."));
+        this->appendExecutionError(lexnode, QObject::tr("Variable name is not recognized."));
         return finErrorKits::EC_READ_ERROR;
     }
 
@@ -281,9 +282,9 @@ finExecMachine::instExecDeclareDirect(finSyntaxNode *synnode, finExecEnvironment
     errcode = env->addVariable(newvar);
     if ( finErrorKits::isErrorResult(errcode) ) {
         if ( errcode == finErrorKits::EC_CONTENTION )
-            this->appendExecutionError(lexnode, QString("Variable has already existed."));
+            this->appendExecutionError(lexnode, QObject::tr("Variable has already existed."));
         else
-            this->appendExecutionError(lexnode, QString("Environment reject the variable."));
+            this->appendExecutionError(lexnode, QObject::tr("Environment reject the variable."));
         delete newvar;
         return errcode;
     }
