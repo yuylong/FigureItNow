@@ -574,7 +574,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
         finUiScriptEditor *cureditor = this->getEditorAt(0);
         if ( cureditor == preveditor ) {
             QMessageBox::StandardButton resbtn = QMessageBox::Ignore;
-            QMessageBox::critical(this, QString("Error"),  QString("Error while closing script files!"),
+            QMessageBox::critical(this, tr("Error"),  tr("Error while closing script files!"),
                                   QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Abort,
                                   QMessageBox::Retry);
 

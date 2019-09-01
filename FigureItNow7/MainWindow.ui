@@ -61,7 +61,7 @@
      <x>0</x>
      <y>0</y>
      <width>792</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="mnuFile">
@@ -146,7 +146,7 @@
    <property name="minimumSize">
     <size>
      <width>172</width>
-     <height>38</height>
+     <height>128</height>
     </size>
    </property>
    <property name="allowedAreas">
@@ -159,6 +159,18 @@
     <number>1</number>
    </attribute>
    <widget class="finUiSysFuncList" name="dwcSysFuncList"/>
+  </widget>
+  <widget class="QDockWidget" name="dckCompilerOutput">
+   <property name="allowedAreas">
+    <set>Qt::BottomDockWidgetArea|Qt::TopDockWidgetArea</set>
+   </property>
+   <property name="windowTitle">
+    <string>Compiler Output</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QPlainTextEdit" name="dwcCompilerOutput"/>
   </widget>
   <action name="actNew">
    <property name="icon">
