@@ -43,8 +43,8 @@ MainWindow::~MainWindow()
 
 finUiScriptEditor *MainWindow::getCurrentEditor() const
 {
-    if ( ui->tbwDocumentList->currentWidget() == NULL )
-        return NULL;
+    if ( ui->tbwDocumentList->currentWidget() == nullptr )
+        return nullptr;
 
     return qobject_cast<finUiScriptEditor *>(ui->tbwDocumentList->currentWidget());
 }
@@ -52,7 +52,7 @@ finUiScriptEditor *MainWindow::getCurrentEditor() const
 finUiScriptEditor *MainWindow::getEditorAt(int idx) const
 {
     if ( idx < 0 || idx >= ui->tbwDocumentList->count() )
-        return NULL;
+        return nullptr;
 
     return qobject_cast<finUiScriptEditor *>(ui->tbwDocumentList->widget(idx));
 }
@@ -70,7 +70,7 @@ int MainWindow::findEditorIndex(finUiScriptEditor *editor) const
 finErrorCode MainWindow::openScriptFile(const QString &filepath)
 {
     finUiScriptEditor *neweditor = new finUiScriptEditor();
-    if ( neweditor == NULL )
+    if ( neweditor == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     finErrorCode errcode = neweditor->openFile(filepath);
@@ -92,7 +92,7 @@ finErrorCode MainWindow::openScriptFile(const QString &filepath)
 finErrorCode MainWindow::createNewScriptFile()
 {
     finUiScriptEditor *neweditor = new finUiScriptEditor();
-    if ( neweditor == NULL )
+    if ( neweditor == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     neweditor->applyFigureConfig(&this->_defFigConfig);
@@ -107,7 +107,7 @@ finErrorCode MainWindow::createNewScriptFile()
 
 bool MainWindow::saveScriptFile(finUiScriptEditor *editor)
 {
-    if ( editor == NULL )
+    if ( editor == nullptr )
         return true;
 
     if ( !editor->isFileOpened() )
@@ -127,7 +127,7 @@ bool MainWindow::saveScriptFile(finUiScriptEditor *editor)
 
 bool MainWindow::saveAsScriptFile(finUiScriptEditor *editor)
 {
-    if ( editor == NULL )
+    if ( editor == nullptr )
         return true;
 
     QString defpath = this->_fileDirPath;
@@ -166,7 +166,7 @@ finErrorCode MainWindow::removeEditorAt(int idx)
 
     finUiScriptEditor *editor = this->getEditorAt(idx);
     bool saveres = true;
-    if ( editor == NULL ) {
+    if ( editor == nullptr ) {
         ui->tbwDocumentList->removeTab(idx);
         return finErrorKits::EC_SUCCESS;
     }
@@ -187,12 +187,12 @@ finErrorCode MainWindow::removeEditorAt(int idx)
 
       case QMessageBox::No:
         goto out;
-        break;
+        //break;
 
       case QMessageBox::Cancel:
       default:
         return finErrorKits::EC_UNREADY_WARN;
-        break;
+        //break;
     }
 
 out:
@@ -206,7 +206,7 @@ finErrorCode MainWindow::refreshSysFuncList()
     ui->dwcSysFuncList->clearList();
 
     finExecEnvironment *rootenv = finExecEnvironment::getRootEnvironment();
-    if ( rootenv == NULL )
+    if ( rootenv == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     return ui->dwcSysFuncList->installFunctionList();
@@ -242,7 +242,7 @@ void MainWindow::on_actOpen_triggered()
 void MainWindow::on_actSave_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
 
     this->saveScriptFile(cureditor);
@@ -251,7 +251,7 @@ void MainWindow::on_actSave_triggered()
 void MainWindow::on_actSaveAs_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
 
     this->saveAsScriptFile(cureditor);
@@ -260,7 +260,7 @@ void MainWindow::on_actSaveAs_triggered()
 void MainWindow::on_actPrint_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
 
     QPrintDialog printdlg;
@@ -287,7 +287,7 @@ void MainWindow::on_actQuit_triggered()
 void MainWindow::on_actUndo_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
 
     cureditor->scriptUndo();
@@ -296,7 +296,7 @@ void MainWindow::on_actUndo_triggered()
 void MainWindow::on_actRedo_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
 
     cureditor->scriptRedo();
@@ -305,7 +305,7 @@ void MainWindow::on_actRedo_triggered()
 void MainWindow::on_actCut_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
 
     cureditor->cutScript();
@@ -314,7 +314,7 @@ void MainWindow::on_actCut_triggered()
 void MainWindow::on_actCopy_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
 
     cureditor->copyScript();
@@ -323,7 +323,7 @@ void MainWindow::on_actCopy_triggered()
 void MainWindow::on_actPaste_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
 
     cureditor->pasteScript();
@@ -342,7 +342,7 @@ void MainWindow::on_actDefFigConfig_triggered()
 
     for ( int i = 0; i < ui->tbwDocumentList->count(); i++ ) {
         finUiScriptEditor *editor = this->getEditorAt(i);
-        if ( editor == NULL )
+        if ( editor == nullptr )
             continue;
 
         editor->applyFigureConfig(&this->_defFigConfig);
@@ -362,7 +362,7 @@ void MainWindow::on_actDefGraphConfig_triggered()
 
     for ( int i = 0; i < ui->tbwDocumentList->count(); i++ ) {
         finUiScriptEditor *editor = this->getEditorAt(i);
-        if ( editor == NULL )
+        if ( editor == nullptr )
             continue;
 
         editor->applyGraphConfig(&this->_defGraphConfig);
@@ -372,7 +372,7 @@ void MainWindow::on_actDefGraphConfig_triggered()
 void MainWindow::on_actDraw_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
 
     cureditor->applyFigureConfig(&this->_defFigConfig);
@@ -398,7 +398,7 @@ bool MainWindow::checkExportWarning(finUiScriptEditor *editor)
 void MainWindow::on_actExportPDF_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
     if ( !checkExportWarning(cureditor) )
         return;
@@ -424,7 +424,7 @@ void MainWindow::on_actExportPDF_triggered()
 void MainWindow::on_actExportImage_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
     if ( !checkExportWarning(cureditor) )
         return;
@@ -456,7 +456,7 @@ void MainWindow::on_actExportImage_triggered()
 void MainWindow::on_actExportSVG_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
     if ( !checkExportWarning(cureditor) )
         return;
@@ -482,7 +482,7 @@ void MainWindow::on_actExportSVG_triggered()
 void MainWindow::on_actCopyFig_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
 
     cureditor->copyFigure();
@@ -491,7 +491,7 @@ void MainWindow::on_actCopyFig_triggered()
 void MainWindow::on_actPrintFig_triggered()
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
     if ( !checkExportWarning(cureditor) )
         return;
@@ -526,7 +526,7 @@ void MainWindow::on_actAbout_triggered()
 void MainWindow::scriptEditor_scriptModificationChanged(bool)
 {
     finUiScriptEditor *cureditor = qobject_cast<finUiScriptEditor *>(sender());
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
 
     int tabidx = this->findEditorIndex(cureditor);
@@ -547,7 +547,7 @@ void MainWindow::on_tbwDocumentList_tabCloseRequested(int index)
 void MainWindow::on_tbwDocumentList_currentChanged(int)
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL ) {
+    if ( cureditor == nullptr ) {
         this->setWindowTitle("FigureItNow");
     } else {
         this->setWindowTitle(cureditor->getWindowTitle() + QString(" - FigureItNow"));
@@ -557,7 +557,7 @@ void MainWindow::on_tbwDocumentList_currentChanged(int)
 void MainWindow::on_dwcSysFuncList_itemTriggerred(const QString &, const QMap<QString, QVariant> &propmap)
 {
     finUiScriptEditor *cureditor = this->getCurrentEditor();
-    if ( cureditor == NULL )
+    if ( cureditor == nullptr )
         return;
 
     QVariant value = propmap.value("Prototype");
@@ -569,7 +569,7 @@ void MainWindow::on_dwcSysFuncList_itemTriggerred(const QString &, const QMap<QS
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    finUiScriptEditor *preveditor = NULL;
+    finUiScriptEditor *preveditor = nullptr;
     while ( ui->tbwDocumentList->count() > 0 ) {
         finUiScriptEditor *cureditor = this->getEditorAt(0);
         if ( cureditor == preveditor ) {
@@ -586,13 +586,13 @@ void MainWindow::closeEvent(QCloseEvent *event)
                 ui->tbwDocumentList->removeTab(0);
                 delete cureditor;
                 continue;
-                break;
+                //break;
 
               case QMessageBox::Abort:
               default:
                 event->accept();
                 return;
-                break;
+                //break;
             }
         }
 

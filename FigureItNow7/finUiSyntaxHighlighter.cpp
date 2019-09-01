@@ -163,7 +163,7 @@ int finUiSyntaxHighlighter::searchTypedIndex(finUiSyntaxHighlighter::Type type, 
 int finUiSyntaxHighlighter::findCommentAndString(finUiSyntaxHighlighter::Type *type,
                                                  const QString &text, int startpos)
 {
-    if ( type == NULL )
+    if ( type == nullptr )
         return -1;
     int minidx = -1, curidx;
 

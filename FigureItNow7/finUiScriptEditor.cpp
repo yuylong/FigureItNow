@@ -51,7 +51,7 @@ finUiScriptEditor::finUiScriptEditor(QWidget *parent) :
 
 finUiScriptEditor::~finUiScriptEditor()
 {
-    if ( this->_syntaxHighlighter != NULL )
+    if ( this->_syntaxHighlighter != nullptr )
         delete this->_syntaxHighlighter;
 
     delete ui;
@@ -90,7 +90,7 @@ bool finUiScriptEditor::isFileOpened() const
 bool finUiScriptEditor::isScriptModified() const
 {
     QTextDocument *scriptdoc = ui->pteScriptCode->document();
-    if ( scriptdoc == NULL )
+    if ( scriptdoc == nullptr )
         return false;
 
     return scriptdoc->isModified();
@@ -211,7 +211,7 @@ void finUiScriptEditor::insertTextAtCurrentPos(const QString &text)
 
 finErrorCode finUiScriptEditor::getFigureImage(QImage *outimg)
 {
-    if ( outimg == NULL )
+    if ( outimg == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finGraphConfig *graphcfg = this->_figContainer.getGraphConfig();
@@ -232,7 +232,7 @@ finErrorCode finUiScriptEditor::getFigureImage(QImage *outimg)
 
 finErrorCode finUiScriptEditor::getFigureSVGImage(QSvgGenerator *svggen)
 {
-    if ( svggen == NULL )
+    if ( svggen == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finGraphConfig *graphcfg = this->_figContainer.getGraphConfig();
@@ -255,11 +255,11 @@ finErrorCode finUiScriptEditor::getFigureSVGImage(QSvgGenerator *svggen)
 void finUiScriptEditor::copyFigure()
 {
     QClipboard *clipboard = QGuiApplication::clipboard();
-    if ( clipboard == NULL )
+    if ( clipboard == nullptr )
         return;
 
     QMimeData *md = new QMimeData();
-    if ( md == NULL )
+    if ( md == nullptr )
         return;
 
     QImage outimg;
@@ -301,7 +301,7 @@ bool finUiScriptEditor::containsFigureObjects() const
 
 finErrorCode finUiScriptEditor::drawOnPanel()
 {
-    if ( ui->gvwGraphPanel->scene() == NULL )
+    if ( ui->gvwGraphPanel->scene() == nullptr )
         ui->gvwGraphPanel->setScene(&this->_figScene);
 
     finErrorCode errcode;

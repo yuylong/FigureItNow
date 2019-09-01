@@ -45,12 +45,12 @@ static inline double _rad_to_lf_deg(double rad)
 
 static inline int _rad_to_deg(double rad)
 {
-    return (int)floor(_rad_to_lf_deg(rad));
+    return static_cast<int>(floor(_rad_to_lf_deg(rad)));
 }
 
 static inline double _deg_to_rad(int deg)
 {
-    return (double)deg * M_PI / 180.0;
+    return static_cast<double>(deg) * M_PI / 180.0;
 }
 
 void finUiGraphConfigDlg::fillFromGraphConfig(const finGraphConfig *graphcfg)
@@ -60,13 +60,13 @@ void finUiGraphConfigDlg::fillFromGraphConfig(const finGraphConfig *graphcfg)
 
     double pw = graphcfg->getPanelPixelWidth();
     double ph = graphcfg->getPanelPixelHeight();
-    ui->spbPanelWidth->setValue((int)floor(pw));
-    ui->spbPanelHeight->setValue((int)floor(ph));
+    ui->spbPanelWidth->setValue(static_cast<int>(floor(pw)));
+    ui->spbPanelHeight->setValue(static_cast<int>(floor(ph)));
     this->_whRatio = pw / ph;
 
     QPointF origpt = graphcfg->getOriginPixelPoint();
-    ui->spbOriginPtX->setValue((int)floor(origpt.x()));
-    ui->spbOriginPtY->setValue((int)floor(origpt.y()));
+    ui->spbOriginPtX->setValue(static_cast<int>(floor(origpt.x())));
+    ui->spbOriginPtY->setValue(static_cast<int>(floor(origpt.y())));
     this->_origXPosRatio = origpt.x() / pw;
     this->_origYPosRatio = origpt.y() / ph;
 
@@ -81,9 +81,9 @@ void finUiGraphConfigDlg::fillFromGraphConfig(const finGraphConfig *graphcfg)
     finGraphTrans *trans = graphcfg->getTransform();
     this->resetAllTransArgs();
     if ( transtype == finGraphTrans::TP_RECT )
-        this->fillRectTransArgs((finGraphTransRect *)trans);
+        this->fillRectTransArgs(static_cast<finGraphTransRect *>(trans));
     else if ( transtype == finGraphTrans::TP_AFFINE )
-        this->fillAffineTransArgs((finGraphTransAffine *)trans);
+        this->fillAffineTransArgs(static_cast<finGraphTransAffine *>(trans));
 
     this->_inFilling = false;
 }
@@ -138,16 +138,16 @@ void finUiGraphConfigDlg::fillAffineTransArgs(const finGraphTransAffine *affinet
 
 void finUiGraphConfigDlg::applyToGraphConfig(finGraphConfig *graphcfg) const
 {
-    if ( graphcfg == NULL )
+    if ( graphcfg == nullptr )
         return /*finErrorKits::EC_NULL_POINTER*/;
 
     graphcfg->setBackgroundColor(ui->lblBgColor->color());
-    graphcfg->setPanelPixelWidth((double)ui->spbPanelWidth->value());
-    graphcfg->setPanelPixelHeight((double)ui->spbPanelHeight->value());
-    graphcfg->setOriginPixelPointX((double)ui->spbOriginPtX->value());
-    graphcfg->setOriginPixelPointY((double)ui->spbOriginPtY->value());
+    graphcfg->setPanelPixelWidth(static_cast<double>(ui->spbPanelWidth->value()));
+    graphcfg->setPanelPixelHeight(static_cast<double>(ui->spbPanelHeight->value()));
+    graphcfg->setOriginPixelPointX(static_cast<double>(ui->spbOriginPtX->value()));
+    graphcfg->setOriginPixelPointY(static_cast<double>(ui->spbOriginPtY->value()));
 
-    graphcfg->setAxisUnitPixelSize((double)ui->dsbAxisUnitSize->value());
+    graphcfg->setAxisUnitPixelSize(static_cast<double>(ui->dsbAxisUnitSize->value()));
     graphcfg->setAxisRadZ(_deg_to_rad(ui->spbAxisZDeg->value()));
     graphcfg->setAxisScaleZ(ui->dsbAxisZRatio->value());
 
@@ -157,14 +157,14 @@ void finUiGraphConfigDlg::applyToGraphConfig(finGraphConfig *graphcfg) const
 
     finGraphTrans *trans = graphcfg->getTransform();
     if ( transtype == finGraphTrans::TP_RECT )
-        this->applyRectTransArgs((finGraphTransRect *)trans);
+        this->applyRectTransArgs(static_cast<finGraphTransRect *>(trans));
     else if ( transtype == finGraphTrans::TP_AFFINE )
-        this->applyAffineTransArgs((finGraphTransAffine *)trans);
+        this->applyAffineTransArgs(static_cast<finGraphTransAffine *>(trans));
 }
 
 void finUiGraphConfigDlg::applyRectTransArgs(finGraphTransRect *recttrans) const
 {
-    if ( recttrans == NULL )
+    if ( recttrans == nullptr )
         return /*finErrorKits::EC_NULL_POINTER*/;
 
     double zoomx = ui->dsbTransRectZoomX->value();
@@ -183,7 +183,7 @@ void finUiGraphConfigDlg::applyRectTransArgs(finGraphTransRect *recttrans) const
 
 void finUiGraphConfigDlg::applyAffineTransArgs(finGraphTransAffine *affinetrans) const
 {
-    if ( affinetrans == NULL )
+    if ( affinetrans == nullptr )
         return /*finErrorKits::EC_NULL_POINTER*/;
 
     affinetrans->reset();
@@ -193,20 +193,20 @@ void finUiGraphConfigDlg::applyAffineTransArgs(finGraphTransAffine *affinetrans)
         double arg1 = 0.0, arg2 = 0.0;
 
         tblitem = ui->tbwTransAffineActList->item(rowidx, 0);
-        if ( tblitem != NULL )
+        if ( tblitem != nullptr )
             acttype = finGraphTransAffine::parseAffineTransAction(tblitem->text());
 
         tblitem = ui->tbwTransAffineActList->item(rowidx, 1);
-        if ( tblitem != NULL )
+        if ( tblitem != nullptr )
             arg1 = tblitem->text().toDouble();
 
         tblitem = ui->tbwTransAffineActList->item(rowidx, 2);
-        if ( tblitem != NULL )
+        if ( tblitem != nullptr )
             arg2 = tblitem->text().toDouble();
 
         switch ( acttype ) {
           case finGraphTransAffine::AT_ROTATE:
-            affinetrans->appendRotate(_deg_to_rad((int)floor(arg1)));
+            affinetrans->appendRotate(_deg_to_rad(static_cast<int>(floor(arg1))));
             break;
 
           case finGraphTransAffine::AT_SCALE:
@@ -305,16 +305,16 @@ void finUiGraphConfigDlg::on_spbPanelWidth_valueChanged(int value)
         return;
 
     this->_inFilling = true;
-    double pw = (double)value;
+    double pw = static_cast<double>(value);
     double ph = 0.0;
     if ( ui->ckbPanelSizeRatio->isChecked() ) {
         ph = pw / this->_whRatio;
-        ui->spbPanelHeight->setValue((int)floor(ph));
+        ui->spbPanelHeight->setValue(static_cast<int>(floor(ph)));
     }
     if ( ui->ckbOriginPtRatio->isChecked() ) {
-        ui->spbOriginPtX->setValue((int)floor(pw * this->_origXPosRatio));
+        ui->spbOriginPtX->setValue(static_cast<int>(floor(pw * this->_origXPosRatio)));
         if ( ui->ckbPanelSizeRatio->isChecked() )
-            ui->spbOriginPtY->setValue((int)floor(ph * this->_origYPosRatio));
+            ui->spbOriginPtY->setValue(static_cast<int>(floor(ph * this->_origYPosRatio)));
     }
     this->_inFilling = false;
 }
@@ -325,16 +325,16 @@ void finUiGraphConfigDlg::on_spbPanelHeight_valueChanged(int value)
         return;
 
     this->_inFilling = true;
-    double ph = (double)value;
+    double ph = static_cast<double>(value);
     double pw = 0.0;
     if ( ui->ckbPanelSizeRatio->isChecked() ) {
         pw = ph * this->_whRatio;
-        ui->spbPanelWidth->setValue((int)floor(pw));
+        ui->spbPanelWidth->setValue(static_cast<int>(floor(pw)));
     }
     if ( ui->ckbOriginPtRatio->isChecked() ) {
-        ui->spbOriginPtY->setValue((int)floor(ph * this->_origYPosRatio));
+        ui->spbOriginPtY->setValue(static_cast<int>(floor(ph * this->_origYPosRatio)));
         if ( ui->ckbPanelSizeRatio->isChecked() )
-            ui->spbOriginPtX->setValue((int)floor(pw * this->_origXPosRatio));
+            ui->spbOriginPtX->setValue(static_cast<int>(floor(pw * this->_origXPosRatio)));
     }
     this->_inFilling = false;
 }
@@ -344,8 +344,8 @@ void finUiGraphConfigDlg::on_ckbPanelSizeRatio_stateChanged(int state)
     if ( state != Qt::Checked )
         return;
 
-    double pw = (double)ui->spbPanelWidth->value();
-    double ph = (double)ui->spbPanelHeight->value();
+    double pw = static_cast<double>(ui->spbPanelWidth->value());
+    double ph = static_cast<double>(ui->spbPanelHeight->value());
     this->_whRatio = pw / ph;
 }
 
@@ -354,8 +354,8 @@ void finUiGraphConfigDlg::on_ckbOriginPtRatio_stateChanged(int state)
     if ( state != Qt::Checked )
         return;
 
-    double pw = (double)ui->spbPanelWidth->value();
-    double ph = (double)ui->spbPanelHeight->value();
+    double pw = static_cast<double>(ui->spbPanelWidth->value());
+    double ph = static_cast<double>(ui->spbPanelHeight->value());
     this->_origXPosRatio = ui->spbOriginPtX->value() / pw;
     this->_origYPosRatio = ui->spbOriginPtY->value() / ph;
 }
@@ -367,8 +367,8 @@ void finUiGraphConfigDlg::on_spbOriginPtX_valueChanged(int value)
 
     this->_inFilling = true;
     if ( ui->ckbOriginPtRatio->isChecked() ) {
-        double pw = (double)ui->spbPanelWidth->value();
-        this->_origXPosRatio = (double)value / pw;
+        double pw = static_cast<double>(ui->spbPanelWidth->value());
+        this->_origXPosRatio = static_cast<double>(value) / pw;
     }
     this->_inFilling = false;
 }
@@ -380,8 +380,8 @@ void finUiGraphConfigDlg::on_spbOriginPtY_valueChanged(int value)
 
     this->_inFilling = true;
     if ( ui->ckbOriginPtRatio->isChecked() ) {
-        double ph = (double)ui->spbPanelHeight->value();
-        this->_origYPosRatio = (double)value / ph;
+        double ph = static_cast<double>(ui->spbPanelHeight->value());
+        this->_origYPosRatio = static_cast<double>(value) / ph;
     }
     this->_inFilling = false;
 }

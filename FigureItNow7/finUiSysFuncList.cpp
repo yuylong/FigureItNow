@@ -57,7 +57,7 @@ QTreeWidgetItem *finUiSysFuncList::findCategoryItem(const QString &ctgstr)
 
     QList<QTreeWidgetItem *> itemlist = ui->trwFuncList->findItems(searchstr, Qt::MatchFixedString);
     if ( itemlist.isEmpty() )
-        return NULL;
+        return nullptr;
 
     return itemlist.first();
 }
@@ -65,7 +65,7 @@ QTreeWidgetItem *finUiSysFuncList::findCategoryItem(const QString &ctgstr)
 QTreeWidgetItem *finUiSysFuncList::findAndCreateCategoryItem(const QString &ctgstr)
 {
     QTreeWidgetItem *retitem = this->findCategoryItem(ctgstr);
-    if ( retitem != NULL )
+    if ( retitem != nullptr )
         return retitem;
 
     return this->createCategoryItem(ctgstr);
@@ -74,7 +74,7 @@ QTreeWidgetItem *finUiSysFuncList::findAndCreateCategoryItem(const QString &ctgs
 finErrorCode finUiSysFuncList::installFunction(const finExecSysFuncRegItem *func)
 {
     QTreeWidgetItem *ctgitem = this->findAndCreateCategoryItem(func->_category);
-    if ( ctgitem == NULL )
+    if ( ctgitem == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     QMap<QString, QVariant> propmap;
@@ -156,7 +156,8 @@ void finUiSysFuncList::on_trwFuncList_itemSelectionChanged()
 
 void finUiSysFuncList::on_trwFuncList_itemActivated(QTreeWidgetItem *item, int column)
 {
-    if ( item == NULL )
+    Q_UNUSED(column);
+    if ( item == nullptr )
         return;
 
     QString itemname = item->text(0);
