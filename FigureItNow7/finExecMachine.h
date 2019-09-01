@@ -24,6 +24,7 @@
 #include "finLexNode.h"
 #include "finSyntaxReader.h"
 #include "finSyntaxError.h"
+#include "finSyntaxErrorDump.h"
 #include "finSyntaxErrorList.h"
 #include "finSyntaxTree.h"
 
@@ -55,6 +56,7 @@ public:
     QString getScriptCode() const;
     QString getCompiledScriptCode() const;
     finSyntaxTree *getSyntaxTree();
+    finSyntaxErrorDump *getExecuteErrorDumper() const;
     int getExecuteErrorCount() const;
     finSyntaxError getExecuteErrorAt(int idx) const;
 
@@ -65,6 +67,7 @@ public:
 
     finErrorCode setFigureContainer(finFigureContainer *figcontainer);
     finErrorCode setScriptCode(const QString &script);
+    finErrorCode setExecuteErrorDumper(finSyntaxErrorDump *dumper);
 
     bool isCompiled() const;
     finErrorCode compile();

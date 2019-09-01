@@ -41,6 +41,7 @@ finUiScriptEditor::finUiScriptEditor(QWidget *parent) :
         qDebug() << "ERROR: Cannot init the execution machine for script code!";
 
     this->_machine.setFigureContainer(&this->_figContainer);
+    this->_machine.setExecuteErrorDumper(&this->_compilerOutput);
     this->_scenePainter.setScene(&this->_figScene);
 
     ui->setupUi(this);
@@ -55,6 +56,16 @@ finUiScriptEditor::~finUiScriptEditor()
         delete this->_syntaxHighlighter;
 
     delete ui;
+}
+
+QPlainTextEdit *finUiScriptEditor::getCompilerOutput() const
+{
+    return this->_compilerOutput.getWidget();
+}
+
+finErrorCode finUiScriptEditor::setCompilerOutput(QPlainTextEdit *pte)
+{
+    return this->_compilerOutput.setWidget(pte);
 }
 
 const QString &finUiScriptEditor::getFilePath() const

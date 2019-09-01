@@ -16,22 +16,22 @@
 finExecMachine::finExecMachine()
 {
     this->_name = QString();
-    this->_baseEnv = NULL;
-    this->_baseFigContainer = NULL;
-    this->_synTree = NULL;
+    this->_baseEnv = nullptr;
+    this->_baseFigContainer = nullptr;
+    this->_synTree = nullptr;
 }
 
 finExecMachine::finExecMachine(const QString &name)
 {
     this->_name = name;
-    this->_baseEnv = NULL;
-    this->_baseFigContainer = NULL;
-    this->_synTree = NULL;
+    this->_baseEnv = nullptr;
+    this->_baseFigContainer = nullptr;
+    this->_synTree = nullptr;
 }
 
 finExecMachine::~finExecMachine()
 {
-    if ( this->_baseEnv != NULL )
+    if ( this->_baseEnv != nullptr )
         delete this->_baseEnv;
 
     this->disposeExecutionError();
@@ -68,6 +68,11 @@ QString finExecMachine::getCompiledScriptCode() const
 finSyntaxTree *finExecMachine::getSyntaxTree()
 {
     return this->_synTree;
+}
+
+finSyntaxErrorDump *finExecMachine::getExecuteErrorDumper() const
+{
+    return this->_errList.getDumper();
 }
 
 int finExecMachine::getExecuteErrorCount() const
@@ -138,6 +143,17 @@ finErrorCode finExecMachine::setScriptCode(const QString &script)
 {
     this->_compiler.setScriptCode(script);
     return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode finExecMachine::setExecuteErrorDumper(finSyntaxErrorDump *dumper)
+{
+    finErrorCode errcode;
+    errcode = this->_errList.setDumper(dumper);
+    if ( finErrorKits::isErrorResult(errcode) )
+        return errcode;
+
+    this->_errList.setIsRealtimeDump(dumper != nullptr);
+    return errcode;
 }
 
 bool finExecMachine::isCompiled() const

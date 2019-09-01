@@ -22,6 +22,7 @@
 #include "finFigureConfig.h"
 #include "finGraphPanelScene.h"
 #include "finGraphConfig.h"
+#include "finSyntaxErrorDump.h"
 #include "finUiSyntaxHighlighter.h"
 
 
@@ -39,13 +40,17 @@ protected:
     finFigureContainer _figContainer;
     finGraphPanelScene _scenePainter;
     QGraphicsScene _figScene;
+    finSyntaxErrorDumpGUIPlainText _compilerOutput;
 
     QString _filepath;
     QString _filename;
 
 public:
-    explicit finUiScriptEditor(QWidget *parent = 0);
+    explicit finUiScriptEditor(QWidget *parent = nullptr);
     ~finUiScriptEditor();
+
+    QPlainTextEdit *getCompilerOutput() const;
+    finErrorCode setCompilerOutput(QPlainTextEdit *pte);
 
     const QString &getFilePath() const;
     const QString &getFilename() const;

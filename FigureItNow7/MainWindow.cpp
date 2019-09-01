@@ -81,6 +81,7 @@ finErrorCode MainWindow::openScriptFile(const QString &filepath)
 
     neweditor->applyFigureConfig(&this->_defFigConfig);
     neweditor->applyGraphConfig(&this->_defGraphConfig);
+    neweditor->setCompilerOutput(ui->dwcCompilerOutput);
     QObject::connect(neweditor, SIGNAL(scriptModificationChanged(bool)),
                      this, SLOT(scriptEditor_scriptModificationChanged(bool)));
 
@@ -97,6 +98,7 @@ finErrorCode MainWindow::createNewScriptFile()
 
     neweditor->applyFigureConfig(&this->_defFigConfig);
     neweditor->applyGraphConfig(&this->_defGraphConfig);
+    neweditor->setCompilerOutput(ui->dwcCompilerOutput);
     QObject::connect(neweditor, SIGNAL(scriptModificationChanged(bool)),
                      this, SLOT(scriptEditor_scriptModificationChanged(bool)));
 
