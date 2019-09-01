@@ -18,6 +18,7 @@ SOURCES += main.cpp\
     finFigureObject.cpp \
     finLexNode.cpp \
     finLexReader.cpp \
+    finSyntaxErrorDump.cpp \
     finSyntaxErrorList.cpp \
     finSyntaxNode.cpp \
     finSyntaxReader.cpp \
@@ -72,6 +73,7 @@ HEADERS  += MainWindow.h \
     finFigureObject.h \
     finLexNode.h \
     finLexReader.h \
+    finSyntaxErrorDump.h \
     finSyntaxErrorList.h \
     finSyntaxNode.h \
     finSyntaxReader.h \

@@ -102,6 +102,16 @@ finErrorCode finSyntaxError::dumpErrorInfo(QTextStream *ts) const
     return finErrorKits::EC_SUCCESS;
 }
 
+finErrorCode finSyntaxError::dumpErrorInfo(finSyntaxErrorDump *dumper) const
+{
+    QString errinfo = this->makeErrorInfoString();
+    if ( errinfo.isEmpty() )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    dumper->dumpText(errinfo);
+    return finErrorKits::EC_SUCCESS;
+}
+
 QString finSyntaxError::makeErrorInfoString() const
 {
     finErrorCode errcode = finErrorKits::EC_SUCCESS;

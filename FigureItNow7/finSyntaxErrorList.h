@@ -14,6 +14,7 @@
 #include <QTextStream>
 
 #include "finErrorCode.h"
+#include "finSyntaxErrorDump.h"
 #include "finLexNode.h"
 #include "finSyntaxError.h"
 
@@ -24,8 +25,8 @@ protected:
     QList<finSyntaxError> _list;
 
     bool _rtDump;
-    QTextStream *_ts;
-    finSyntaxError::Level _fromLevel;
+    finSyntaxErrorDump *_dumper;
+    finSyntaxError::Level _startingLevel;
 
 public:
     finSyntaxErrorList();
@@ -37,8 +38,8 @@ public:
     const finSyntaxError &getEntryAt(int index) const;
 
     bool isRealtimeDump() const;
-    QTextStream *getDumpTextStream() const;
-    finSyntaxError::Level getDumpFromLevel() const;
+    finSyntaxErrorDump *getDumper() const;
+    finSyntaxError::Level getDumpStartingLevel() const;
 
     finErrorCode appendEntry(finSyntaxError::Level level, finSyntaxError::Stage stage,
                              finLexNode *lexnode, QString info);
@@ -46,12 +47,11 @@ public:
     void clearAllErrorList();
 
     finErrorCode setIsRealtimeDump(bool rtdump);
-    finErrorCode setDumpTextStream(QTextStream *ts);
-    finErrorCode setDumpFromLevel(finSyntaxError::Level level);
+    finErrorCode setDumper(finSyntaxErrorDump *dumper);
+    finErrorCode setDumpStartingLevel(finSyntaxError::Level level);
 
-    finErrorCode dumpList(QTextStream *ts, finSyntaxError::Level fromlevel) const;
-    finErrorCode dumpList(QTextStream *ts) const;
-    finErrorCode dumpList(finSyntaxError::Level fromlevel) const;
+    finErrorCode dumpList(finSyntaxErrorDump *dumper, finSyntaxError::Level startinglevel) const;
+    finErrorCode dumpList(finSyntaxError::Level startinglevel) const;
     finErrorCode dumpList() const;
 };
 

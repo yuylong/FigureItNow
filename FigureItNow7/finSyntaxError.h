@@ -13,6 +13,7 @@
 #include <QTextStream>
 
 #include "finErrorCode.h"
+#include "finSyntaxErrorDump.h"
 #include "finLexNode.h"
 
 
@@ -59,6 +60,7 @@ public:
     finErrorCode setErrorString(const QString &errstr);
 
     finErrorCode dumpErrorInfo(QTextStream *ts) const;
+    finErrorCode dumpErrorInfo(finSyntaxErrorDump *dumper) const;
     QString makeErrorInfoString() const;
 
     static const finSyntaxError &dummySyntaxError();
