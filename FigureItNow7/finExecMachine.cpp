@@ -232,19 +232,30 @@ finExecMachine::instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, 
         //break;
 
       default:
-        this->appendExecutionError(synnode->getCommandLexNode(), QString("Unimplemented syntax type."));
+        this->appendExecutionError(synnode->getCommandLexNode(), QObject::tr("Unimplemented syntax type."));
         return finErrorKits::EC_NON_IMPLEMENT;
     }
 
-    //this->appendExecutionError(synnode->getCommandLexNode(), QString("Reach unreachable path."));
+    //this->appendExecutionError(synnode->getCommandLexNode(), QObject::tr("Reach unreachable path."));
     //return finErrorKits::EC_UNKNOWN_ERROR;
 }
 
-finErrorCode
+void
+finExecMachine::appendExecutionOutput(finSyntaxError::Level level, finLexNode *lexnode, const QString &errinfo)
+{
+    this->_errList.appendEntry(level, finSyntaxError::ST_EXECUTE, lexnode, errinfo);
+}
+
+void
 finExecMachine::appendExecutionError(finLexNode *lexnode, const QString &errinfo)
 {
-    return this->_errList.appendEntry(finSyntaxError::LV_ERROR, finSyntaxError::ST_EXECUTE,
-                                      lexnode, errinfo);
+    this->appendExecutionOutput(finSyntaxError::LV_ERROR, lexnode, errinfo);
+}
+
+void
+finExecMachine::appendExecutionWarning(finLexNode *lexnode, const QString &errinfo)
+{
+    this->appendExecutionOutput(finSyntaxError::LV_WARNING, lexnode, errinfo);
 }
 
 finErrorCode

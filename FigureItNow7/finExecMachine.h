@@ -72,7 +72,10 @@ public:
     void disposeExecutionError();
 
     finErrorCode instantExecute(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
-    finErrorCode appendExecutionError(finLexNode *lexnode, const QString &errinfo);
+
+    void appendExecutionOutput(finSyntaxError::Level level, finLexNode *lexnode, const QString &errinfo);
+    void appendExecutionError(finLexNode *lexnode, const QString &errinfo);
+    void appendExecutionWarning(finLexNode *lexnode, const QString &errinfo);
 
 private:
     finErrorCode instExecSingle(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl);
