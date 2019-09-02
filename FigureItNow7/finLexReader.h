@@ -36,6 +36,7 @@ public:
     finErrorCode getNextLexNode(finLexNode *retnode);
 
 private:
+    unsigned long scriptLength() const;
     QChar getScriptCharAt(unsigned long pos) const;
     QChar getScriptChar() const;
     QString getScriptSubAt(unsigned long pos, unsigned long len) const;
