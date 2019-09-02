@@ -367,7 +367,7 @@ finErrorCode finSyntaxReader::processArithOperator(finLexNode *lexnode)
         prevtoken = this->_syntaxStack.at(0);
 
     bool prev_is_express = false;
-    if ( prevtoken != NULL && prevtoken->getType() == finSyntaxNode::TP_EXPRESS )
+    if ( prevtoken != nullptr && prevtoken->getType() == finSyntaxNode::TP_EXPRESS )
         prev_is_express = true;
 
     if ( bfparamcnt > 0 && !prev_is_express ) {
@@ -584,7 +584,7 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
 
         if ( this->_syntaxStack.count() > 0 )
             presynnode = this->_syntaxStack.at(0);
-        if ( presynnode != NULL && presynnode->getType() == finSyntaxNode::TP_EXPRESS ) {
+        if ( presynnode != nullptr && presynnode->getType() == finSyntaxNode::TP_EXPRESS ) {
             synnode->appendSubSyntaxNode(presynnode);
             this->_syntaxStack.removeFirst();
         }
@@ -600,7 +600,7 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
         if ( this->_syntaxStack.count() > 0 )
             presynnode = this->_syntaxStack.at(0);
 
-        if ( presynnode == NULL || presynnode->getType() != finSyntaxNode::TP_EXPRESS )
+        if ( presynnode == nullptr || presynnode->getType() != finSyntaxNode::TP_EXPRESS )
             return finErrorKits::EC_READ_ERROR;
         if ( presynnode->getCommandLexNode()->getType() != finLexNode::TP_VARIABLE )
             return finErrorKits::EC_READ_ERROR;
