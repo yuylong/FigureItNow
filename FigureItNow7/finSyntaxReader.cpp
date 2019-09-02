@@ -107,16 +107,16 @@ finErrorCode finSyntaxReader::readNextToken()
 finSyntaxTree *finSyntaxReader::getSyntaxTree()
 {
     if ( !this->isReading() )
-        return NULL;
+        return nullptr;
 
     finSyntaxTree *syntree = new finSyntaxTree();
-    if ( syntree == NULL )
-        return NULL;
+    if ( syntree == nullptr )
+        return nullptr;
 
     finErrorCode errcode = syntree->appendSyntaxNodeStack(&this->_syntaxStack);
     if ( finErrorKits::isErrorResult(errcode) ) {
         delete syntree;
-        return NULL;
+        return nullptr;
     }
 
     syntree->setScriptCode(this->_lexReader.getString());
@@ -174,7 +174,7 @@ finErrorCode finSyntaxReader::processInstanceToken(finLexNode *lexnode)
 
 finErrorCode finSyntaxReader::processVirtualToken(finLexNode *lexnode)
 {
-    if ( lexnode == NULL )
+    if ( lexnode == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     // Do nothing with the lex node, and release the memory merely.
@@ -259,11 +259,12 @@ static struct _finSynLexOpTableItem {
 
 static struct _finSynLexOpTableItem *getLexOpTableItem(finLexOperatorType type)
 {
-    for ( int i = 0; i < (int)(sizeof (_finLexOpTable) / sizeof (struct _finSynLexOpTableItem)); i++ ) {
+    int tblitemcnt = static_cast<int>(sizeof (_finLexOpTable) / sizeof (struct _finSynLexOpTableItem));
+    for ( int i = 0; i < tblitemcnt; i++ ) {
         if ( _finLexOpTable[i].type == type )
             return &_finLexOpTable[i];
     }
-    return NULL;
+    return nullptr;
 }
 
 int finSyntaxReader::getOperatorBfParamCnt(finLexNode *lexnode)
@@ -272,7 +273,7 @@ int finSyntaxReader::getOperatorBfParamCnt(finLexNode *lexnode)
         return -1;
 
     struct _finSynLexOpTableItem *tblinfo = getLexOpTableItem(lexnode->getOperator());
-    if ( tblinfo == NULL )
+    if ( tblinfo == nullptr )
         return -1;
 
     return tblinfo->bfParamCnt;
@@ -284,7 +285,7 @@ int finSyntaxReader::getOperatorAfParamCnt(finLexNode *lexnode)
         return -1;
 
     struct _finSynLexOpTableItem *tblinfo = getLexOpTableItem(lexnode->getOperator());
-    if ( tblinfo == NULL )
+    if ( tblinfo == nullptr )
         return -1;
 
     return tblinfo->afParamCnt;
@@ -296,7 +297,7 @@ finErrorCode finSyntaxReader::transformOpToNonBfParamOp(finLexNode *lexnode)
         return finErrorKits::EC_READ_ERROR;
 
     struct _finSynLexOpTableItem *tblinfo = getLexOpTableItem(lexnode->getOperator());
-    if ( tblinfo == NULL )
+    if ( tblinfo == nullptr )
         return finErrorKits::EC_READ_ERROR;
     if ( tblinfo->zpTransOp == finLexNode::OP_DUMMY)
         return finErrorKits::EC_INVALID_PARAM;
@@ -311,7 +312,7 @@ int finSyntaxReader::getOperatorPriority(finLexNode *lexnode)
         return 0x0;
 
     struct _finSynLexOpTableItem *tblinfo = getLexOpTableItem(lexnode->getOperator());
-    if ( tblinfo == NULL )
+    if ( tblinfo == nullptr )
         return 0x0;
 
     return tblinfo->priority;
@@ -320,13 +321,13 @@ int finSyntaxReader::getOperatorPriority(finLexNode *lexnode)
 int finSyntaxReader::getOperatorMeshDir(finLexNode *lexnode)
 {
     if (lexnode->getType() != finLexNode::TP_OPERATOR)
-        return (int)_finSynLexOpTableItem::FIN_MD_L2R;
+        return static_cast<int>(_finSynLexOpTableItem::FIN_MD_L2R);
 
     struct _finSynLexOpTableItem *tblinfo = getLexOpTableItem(lexnode->getOperator());
-    if ( tblinfo == NULL )
-        return (int)_finSynLexOpTableItem::FIN_MD_L2R;
+    if ( tblinfo == nullptr )
+        return static_cast<int>(_finSynLexOpTableItem::FIN_MD_L2R);
 
-    return (int)tblinfo->meshDir;
+    return static_cast<int>(tblinfo->meshDir);
 }
 
 bool finSyntaxReader::isArithOperator(finLexNode *lexnode)
@@ -335,7 +336,7 @@ bool finSyntaxReader::isArithOperator(finLexNode *lexnode)
         return false;
 
     struct _finSynLexOpTableItem *tblinfo = getLexOpTableItem(lexnode->getOperator());
-    if ( tblinfo == NULL )
+    if ( tblinfo == nullptr )
         return false;
     else
         return true;
@@ -361,7 +362,7 @@ finErrorCode finSyntaxReader::processArithOperator(finLexNode *lexnode)
     if ( bfparamcnt < 0 || afparamcnt < 0 )
         return finErrorKits::EC_READ_ERROR;
 
-    finSyntaxNode *prevtoken = NULL;
+    finSyntaxNode *prevtoken = nullptr;
     if ( this->_syntaxStack.count() > 0 )
         prevtoken = this->_syntaxStack.at(0);
 
@@ -379,17 +380,17 @@ finErrorCode finSyntaxReader::processArithOperator(finLexNode *lexnode)
     }
 
     while ( true ) {
-        finLexNode *prevop = NULL;
+        finLexNode *prevop = nullptr;
         if ( this->_syntaxStack.count() > bfparamcnt ) {
             finSyntaxNode *preopsn = this->_syntaxStack.at(bfparamcnt);
             if ( preopsn->getType() == finSyntaxNode::TP_SINGLE ) {
                 prevop = preopsn->getCommandLexNode();
                 if ( prevop->getType() != finLexNode::TP_OPERATOR )
-                    prevop = NULL;
+                    prevop = nullptr;
             }
         }
 
-        if ( prevop == NULL )
+        if ( prevop == nullptr )
             break;
         if ( compareOperators (prevop, lexnode) < 0 )
             break;
@@ -492,7 +493,7 @@ finErrorCode finSyntaxReader::processRightBracket(finLexNode *lexnode)
         return errcode;
 
     finSyntaxNode *meshednode = new finSyntaxNode();
-    if ( meshednode == NULL )
+    if ( meshednode == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     meshednode->setType(finSyntaxNode::TP_EXPRESS);
@@ -566,7 +567,7 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    finSyntaxNode *presynnode = NULL, *synnode = NULL;
+    finSyntaxNode *presynnode = nullptr, *synnode = nullptr;
 
     switch ( lexnode->getOperator() ) {
       // Process S <- E; and S <- ; (empty statement)
@@ -576,7 +577,7 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
             return errcode;
 
         synnode = new finSyntaxNode();
-        if ( synnode == NULL )
+        if ( synnode == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
         synnode->setType(finSyntaxNode::TP_STATEMENT);
         synnode->setCommandLexNode(lexnode);
@@ -609,7 +610,7 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
 
       default:
         synnode = new finSyntaxNode();
-        if ( synnode == NULL )
+        if ( synnode == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
 
         synnode->setType(finSyntaxNode::TP_SINGLE);
@@ -623,7 +624,7 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
 finErrorCode finSyntaxReader::pushSingleLexNode(finLexNode *lexnode, finSyntaxNodeType tktype)
 {
     finSyntaxNode *synnode = new finSyntaxNode();
-    if ( synnode == NULL )
+    if ( synnode == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     finErrorCode errcode;
@@ -648,9 +649,9 @@ finErrorCode finSyntaxReader::meshArithExpress()
     token0 = this->_syntaxStack.at(0);
     token1 = this->_syntaxStack.at(1);
 
-    finSyntaxNode *optoken = NULL;
-    finLexNode *oplex = NULL;
-    finSyntaxNode *oprand1 = NULL, *oprand2 = NULL;
+    finSyntaxNode *optoken = nullptr;
+    finLexNode *oplex = nullptr;
+    finSyntaxNode *oprand1 = nullptr, *oprand2 = nullptr;
 
     int afpcnt1, afpcnt2;
     if ( token0->getType() == finSyntaxNode::TP_SINGLE ) {
@@ -667,7 +668,7 @@ finErrorCode finSyntaxReader::meshArithExpress()
     }
 
     oplex = optoken->getCommandLexNode();
-    if ( oplex == NULL )
+    if ( oplex == nullptr )
         return finErrorKits::EC_READ_ERROR;
 
     afpcnt2 = getOperatorAfParamCnt(oplex);
@@ -691,9 +692,9 @@ finErrorCode finSyntaxReader::meshArithExpress()
 
     optoken->setType(finSyntaxNode::TP_EXPRESS);
     //optoken->setCommandLexNode(oplex);
-    if ( bfpcnt > 0 && oprand1 != NULL )
+    if ( bfpcnt > 0 && oprand1 != nullptr )
         optoken->appendSubSyntaxNode(oprand1);
-    if ( afpcnt1 > 0 && oprand2 != NULL )
+    if ( afpcnt1 > 0 && oprand2 != nullptr )
         optoken->appendSubSyntaxNode(oprand2);
     this->_syntaxStack.prepend(optoken);
 
@@ -712,8 +713,8 @@ finSyntaxNode *finSyntaxReader::createDummyExpress()
     dmyexplex.setType(finLexNode::TP_DUMMY);
 
     finSyntaxNode *dmyexpsyn = new finSyntaxNode();
-    if ( dmyexpsyn == NULL )
-        return NULL;
+    if ( dmyexpsyn == nullptr )
+        return nullptr;
 
     dmyexpsyn->setType(finSyntaxNode::TP_EXPRESS);
     dmyexpsyn->setCommandLexNode(&dmyexplex);
@@ -749,7 +750,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
     lexnode.setString(QString(","));
 
     finSyntaxNode *synnode = new finSyntaxNode();
-    if ( synnode == NULL )
+    if ( synnode == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
     synnode->setType(finSyntaxNode::TP_EXPRESS);
     synnode->setCommandLexNode(&lexnode);
@@ -771,7 +772,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
                     curlex->getOperator() == finLexNode::OP_COMMA ) {
             if ( !hasinst ) {
                 finSyntaxNode *dmyexpsyn = createDummyExpress();
-                if ( dmyexpsyn == NULL )
+                if ( dmyexpsyn == nullptr )
                     return finErrorKits::EC_OUT_OF_MEMORY;
                 synnode->prependSubSyntaxNode(dmyexpsyn);
             }
@@ -786,7 +787,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
 
     if ( !hasinst ) {
         finSyntaxNode *dmyexpsyn = createDummyExpress();
-        if ( dmyexpsyn == NULL )
+        if ( dmyexpsyn == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
         synnode->prependSubSyntaxNode(dmyexpsyn);
     }
@@ -836,7 +837,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
         }
 
         if ( handleelse ) {
-            finSyntaxNode *condtk = NULL;
+            finSyntaxNode *condtk = nullptr;
             if ( prevtk->getSubListCount() > 0 )
                 condtk = prevtk->pickSubSyntaxNode(0);
 
@@ -852,7 +853,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
             if ( prevtk->getSubListCount() % 2 != 0 )
                 return finErrorKits::EC_READ_ERROR;
 
-            if ( condtk != NULL )
+            if ( condtk != nullptr )
                 prevtk->appendSubSyntaxNode(condtk);
             prevtk->appendSubSyntaxNode(stttk);
             return finErrorKits::EC_SUCCESS;
@@ -988,7 +989,7 @@ finErrorCode finSyntaxReader::meshFlowerBracket()
     finSyntaxNode *prevtk = this->_syntaxStack.at(1);
     finLexNode *prevlex = prevtk->getCommandLexNode();
     if ( prevtk->getType() == finSyntaxNode::TP_EXPRESS &&
-         prevlex != NULL &&
+         prevlex != nullptr &&
          prevlex->getType() == finLexNode::TP_OPERATOR &&
          prevlex->getOperator() == finLexNode::OP_FUNCTION ) {
 
@@ -1035,7 +1036,7 @@ finErrorCode finSyntaxReader::meshRoundBracket()
         meshedlex.setOperator(finLexNode::OP_FUNCTION);
 
         finSyntaxNode *meshedtk = new finSyntaxNode();
-        if ( meshedtk == NULL )
+        if ( meshedtk == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
         meshedtk->setType(finSyntaxNode::TP_EXPRESS);
         meshedtk->setCommandLexNode(&meshedlex);
@@ -1113,7 +1114,7 @@ finErrorCode finSyntaxReader::meshSquareBracket()
         meshedlex.setOperator(finLexNode::OP_ACCESS);
 
         finSyntaxNode *meshedtk = new finSyntaxNode();
-        if ( meshedtk == NULL )
+        if ( meshedtk == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
         meshedtk->setType(finSyntaxNode::TP_EXPRESS);
         meshedtk->setCommandLexNode(&meshedlex);
