@@ -47,8 +47,8 @@ private:
     finErrorCode moveToNextNonblank();
 
     enum finLexReaderOrder {
-        FIN_LR_ORD_NUMBER_FIRST,
-        FIN_LR_ORD_OPERATOR_FIRST
+        ORD_NUMBER_FIRST,
+        ORD_OPERATOR_FIRST
     };
 
     finLexReaderOrder _nextReadOrder;
@@ -64,8 +64,8 @@ private:
     finErrorCode tryGetString(finLexNode *retnode);
     finErrorCode tryGetOperator(finLexNode *retnode);
 
-    bool isVariableStartChar(const QChar &ch);
-    bool isVariableChar(const QChar &ch);
+    static bool isVariableStartChar(const QChar &ch);
+    static bool isVariableChar(const QChar &ch);
 };
 
 #endif // FINLEXREADER_H
