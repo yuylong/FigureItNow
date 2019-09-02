@@ -36,8 +36,13 @@ public:
     finErrorCode getNextLexNode(finLexNode *retnode);
 
 private:
+    QChar getScriptCharAt(unsigned long pos) const;
+    QChar getScriptChar() const;
+    QString getScriptSubAt(unsigned long pos, unsigned long len) const;
+    QString getScriptSub(unsigned long len) const;
 
     finErrorCode moveReadPos();
+    finErrorCode moveReadPosWith(unsigned long detpos);
     finErrorCode moveToNextNonblank();
 
     enum finLexReaderOrder {
