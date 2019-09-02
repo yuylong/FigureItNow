@@ -46,6 +46,8 @@ private:
     finErrorCode moveReadPosWith(unsigned long detpos);
     finErrorCode moveToNextNonblank();
 
+    finErrorCode buildLexNode(finLexNode *retnode, finLexNodeType type, unsigned long endpos);
+
     enum finLexReaderOrder {
         ORD_NUMBER_FIRST,
         ORD_OPERATOR_FIRST

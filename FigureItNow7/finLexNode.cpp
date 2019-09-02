@@ -38,7 +38,7 @@ finErrorCode finLexNode::reset()
 
 finErrorCode finLexNode::copyNode(const finLexNode *srcnode)
 {
-    if ( srcnode == NULL )
+    if ( srcnode == nullptr )
         return this->reset();
 
     this->_string = srcnode->getString();
@@ -76,7 +76,7 @@ QString finLexNode::getString() const
 double finLexNode::getFloatValue() const
 {
     if ( this->_type != TP_DECIMAL )
-        return 0.0f;
+        return 0.0;
 
     return this->_u._floatValue;
 }

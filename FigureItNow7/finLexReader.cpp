@@ -31,17 +31,20 @@ finLexReader::finLexReader(const QString &inputstr)
     this->_nextReadOrder = ORD_NUMBER_FIRST;
 }
 
-QString finLexReader::getString() const
+QString
+finLexReader::getString() const
 {
     return this->_inputStr;
 }
 
-unsigned long finLexReader::getCurrentPosition() const
+unsigned long
+finLexReader::getCurrentPosition() const
 {
     return this->_posIdx;
 }
 
-finErrorCode finLexReader::setString(const QString &instr)
+finErrorCode
+finLexReader::setString(const QString &instr)
 {
     if ( !this->_inputStr.isEmpty() && this->_posIdx != 0 )
         return finErrorKits::EC_STATE_ERROR;
@@ -55,7 +58,8 @@ finErrorCode finLexReader::setString(const QString &instr)
 }
 
 
-finErrorCode finLexReader::resetPosition()
+finErrorCode
+finLexReader::resetPosition()
 {
     if ( this->_inputStr.isEmpty() )
         return finErrorKits::EC_UNREADY_WARN;
@@ -68,7 +72,8 @@ finErrorCode finLexReader::resetPosition()
     return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finLexReader::getNextLexNode(finLexNode *retnode)
+finErrorCode
+finLexReader::getNextLexNode(finLexNode *retnode)
 {   
     finErrorCode ret;
     int typeordernum;
@@ -97,12 +102,14 @@ finErrorCode finLexReader::getNextLexNode(finLexNode *retnode)
     return ret;
 }
 
-unsigned long finLexReader::scriptLength() const
+unsigned long
+finLexReader::scriptLength() const
 {
     return static_cast<unsigned long>(this->_inputStr.length());
 }
 
-QChar finLexReader::getScriptCharAt(unsigned long pos) const
+QChar
+finLexReader::getScriptCharAt(unsigned long pos) const
 {
     if ( pos >= this->scriptLength() )
         return QChar::Null;
@@ -110,12 +117,14 @@ QChar finLexReader::getScriptCharAt(unsigned long pos) const
     return this->_inputStr.at(static_cast<int>(pos));
 }
 
-QChar finLexReader::getScriptChar() const
+QChar
+finLexReader::getScriptChar() const
 {
     return this->getScriptCharAt(this->_posIdx);
 }
 
-QString finLexReader::getScriptSubAt(unsigned long pos, unsigned long len) const
+QString
+finLexReader::getScriptSubAt(unsigned long pos, unsigned long len) const
 {
     unsigned long strlength = this->scriptLength();
     if ( pos >= strlength )
@@ -128,12 +137,14 @@ QString finLexReader::getScriptSubAt(unsigned long pos, unsigned long len) const
     return this->_inputStr.mid(static_cast<int>(pos), static_cast<int>(endpos - pos));
 }
 
-QString finLexReader::getScriptSub(unsigned long len) const
+QString
+finLexReader::getScriptSub(unsigned long len) const
 {
     return getScriptSubAt(this->_posIdx, len);
 }
 
-finErrorCode finLexReader::moveReadPos()
+finErrorCode
+finLexReader::moveReadPos()
 {
     this->_posIdx++;
 
@@ -152,7 +163,8 @@ finErrorCode finLexReader::moveReadPos()
     return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finLexReader::moveReadPosWith(unsigned long detpos)
+finErrorCode
+finLexReader::moveReadPosWith(unsigned long detpos)
 {
     finErrorCode errcode = finErrorKits::EC_SUCCESS;
 
@@ -164,7 +176,8 @@ finErrorCode finLexReader::moveReadPosWith(unsigned long detpos)
     return errcode;
 }
 
-finErrorCode finLexReader::moveToNextNonblank()
+finErrorCode
+finLexReader::moveToNextNonblank()
 {
     finErrorCode errcode = finErrorKits::EC_SUCCESS;
 
@@ -177,7 +190,24 @@ finErrorCode finLexReader::moveToNextNonblank()
     return errcode;
 }
 
-finErrorCode finLexReader::getLexTypeOrder(const finLexNodeType **typeorder, int *typenum)
+finErrorCode
+finLexReader::buildLexNode(finLexNode *retnode, finLexNodeType type, unsigned long endpos)
+{
+    if ( endpos <= this->_posIdx )
+        return finErrorKits::EC_INVALID_PARAM;
+
+    unsigned long detpos = endpos - this->_posIdx;
+    retnode->setType(type);
+    retnode->setString(this->getScriptSub(detpos));
+    retnode->setRow(this->_curRow);
+    retnode->setColumn(this->_curCol);
+
+    this->moveReadPosWith(detpos);
+    return finErrorKits::EC_SUCCESS;
+}
+
+finErrorCode
+finLexReader::getLexTypeOrder(const finLexNodeType **typeorder, int *typenum)
 {
     return this->getLexTypeOrder(this->_nextReadOrder, typeorder, typenum);
 }
@@ -303,13 +333,7 @@ finErrorCode finLexReader::tryGetNote(finLexNode *retnode)
         return finErrorKits::EC_NOT_FOUND;
     }
 
-    unsigned long detpos = trypos - this->_posIdx;
-    retnode->setType(finLexNode::TP_NOTE);
-    retnode->setString(this->getScriptSub(detpos));
-    retnode->setRow(this->_curRow);
-    retnode->setColumn(this->_curCol);
-
-    this->moveReadPosWith(detpos);
+    this->buildLexNode(retnode, finLexNode::TP_NOTE, trypos);
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -347,13 +371,7 @@ finErrorCode finLexReader::tryGetVariable(finLexNode *retnode)
         trypos++;
     }
 
-    unsigned long detpos = trypos - this->_posIdx;
-    retnode->setType(finLexNode::TP_VARIABLE);
-    retnode->setString(this->getScriptSub(detpos));
-    retnode->setRow(this->_curRow);
-    retnode->setColumn(this->_curCol);
-
-    this->moveReadPosWith(detpos);
+    this->buildLexNode(retnode, finLexNode::TP_VARIABLE, trypos);
     this->tryRecogKeyword(retnode);
 
     this->_lastNodeType = retnode->getType();
@@ -415,7 +433,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
                 basesign = true;
                 curstate = _IN_NUMST_INTEG1;
             } else if ( curchar.isDigit() ) {
-                basenum = (double)curchar.digitValue();
+                basenum = static_cast<double>(curchar.digitValue());
                 curstate = _IN_NUMST_INTEG;
             } else {
                 return finErrorKits::EC_NOT_FOUND;
@@ -424,7 +442,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
 
         case _IN_NUMST_INTEG1:
             if ( curchar.isDigit() ) {
-                basenum = (double)curchar.digitValue();
+                basenum = static_cast<double>(curchar.digitValue());
                 curstate = _IN_NUMST_INTEG;
             } else {
                 return finErrorKits::EC_NOT_FOUND;
@@ -447,7 +465,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
         case _IN_NUMST_FLOAT1:
             if ( curchar.isDigit() ) {
                 basestep = 0.1;
-                basenum += basestep * (double)curchar.digitValue();
+                basenum += basestep * static_cast<double>(curchar.digitValue());
                 curstate = _IN_NUMST_FLOAT;
             } else {
                 return finErrorKits::EC_NOT_FOUND;
@@ -458,7 +476,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
             if ( curchar.toLower() == QChar('e') )
                 curstate = _IN_NUMST_EX_INIT;
             else if ( curchar.isDigit() )
-                basenum += (basestep /= 10.0) * (double)curchar.digitValue();
+                basenum += (basestep /= 10.0) * static_cast<double>(curchar.digitValue());
             else if ( curchar.isLetter() )
                 return finErrorKits::EC_NOT_FOUND;
             else
@@ -510,12 +528,7 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
          curstate == _IN_NUMST_EX_INIT || curstate == _IN_NUMST_EX_INTEG1 )
         return finErrorKits::EC_NOT_FOUND;
 
-    unsigned long detpos = trypos - this->_posIdx;
-    retnode->setType(finLexNode::TP_DECIMAL);
-    retnode->setString(this->getScriptSub(detpos));
-    retnode->setRow(this->_curRow);
-    retnode->setColumn(this->_curCol);
-    this->moveReadPosWith(detpos);
+    this->buildLexNode(retnode, finLexNode::TP_DECIMAL, trypos);
 
     basenum = (basesign ? basenum : -basenum);
     basestep = (expsign ? 10.0 : 0.1);
@@ -576,11 +589,8 @@ finErrorCode finLexReader::tryGetString(finLexNode *retnode)
         trypos++;
     }
 
-    unsigned long detpos = trypos - this->_posIdx;
-    retnode->setType(finLexNode::TP_STRING);
-    retnode->setString(this->getScriptSub(detpos));
+    this->buildLexNode(retnode, finLexNode::TP_STRING, trypos);
     retnode->setStringValue(retstr);
-    this->moveReadPosWith(detpos);
 
     this->_lastNodeType = finLexNode::TP_STRING;
     this->_nextReadOrder = ORD_OPERATOR_FIRST;
@@ -750,12 +760,9 @@ finErrorCode finLexReader::tryGetOperator(finLexNode *retnode)
     if ( optype == finLexNode::OP_DUMMY )
         return finErrorKits::EC_NOT_FOUND;
 
-    unsigned long detpos = trypos - this->_posIdx;
-    retnode->setType(finLexNode::TP_OPERATOR);
-    retnode->setString(this->getScriptSub(detpos));
+    this->buildLexNode(retnode, finLexNode::TP_OPERATOR, trypos);
     retnode->setOperator(optype);
 
-    this->moveReadPosWith(detpos);
     this->_lastNodeType = finLexNode::TP_OPERATOR;
     return finErrorKits::EC_SUCCESS;
 }
