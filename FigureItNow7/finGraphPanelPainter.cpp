@@ -15,7 +15,7 @@
 
 finGraphPanelPainter::finGraphPanelPainter()
 {
-    this->_painter = NULL;
+    this->_painter = nullptr;
 }
 
 QPainter *finGraphPanelPainter::getPainter() const
@@ -31,7 +31,7 @@ finErrorCode finGraphPanelPainter::setPainter(QPainter *painter)
 
 finErrorCode finGraphPanelPainter::draw()
 {
-    if ( this->_painter == NULL )
+    if ( this->_painter == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     return finGraphPanelBase::draw();

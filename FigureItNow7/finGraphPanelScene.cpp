@@ -14,7 +14,7 @@
 
 finGraphPanelScene::finGraphPanelScene()
 {
-    this->_scene = NULL;
+    this->_scene = nullptr;
 }
 
 QGraphicsScene *finGraphPanelScene::getScene() const
@@ -30,7 +30,7 @@ finErrorCode finGraphPanelScene::setScene(QGraphicsScene *scene)
 
 finErrorCode finGraphPanelScene::draw()
 {
-    if ( this->_scene == NULL )
+    if ( this->_scene == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     return finGraphPanelBase::draw();
@@ -38,7 +38,7 @@ finErrorCode finGraphPanelScene::draw()
 
 void finGraphPanelScene::clearScene() const
 {
-    if ( this->_scene == NULL )
+    if ( this->_scene == nullptr )
         return;
 
     QList<QGraphicsItem *> items = this->_scene->items();
@@ -52,7 +52,7 @@ void finGraphPanelScene::clearScene() const
 
 finErrorCode finGraphPanelScene::applyGraphConfig() const
 {
-    if ( this->_scene == NULL )
+    if ( this->_scene == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     this->clearScene();
@@ -69,7 +69,7 @@ finErrorCode finGraphPanelScene::applyGraphConfig() const
 
 finErrorCode finGraphPanelScene::drawFigurePath(const finFigurePath &path) const
 {
-    if ( this->_scene == NULL )
+    if ( this->_scene == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     this->_scene->addPath(path.getPath(), path.getPen(), path.getBrush());

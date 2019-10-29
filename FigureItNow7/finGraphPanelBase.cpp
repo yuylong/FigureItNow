@@ -51,7 +51,7 @@ finErrorCode finGraphPanelBase::clearFigurePathList()
 
 finErrorCode finGraphPanelBase::setFigureContainer(finFigureContainer *figcontainer)
 {
-    if ( figcontainer == NULL )
+    if ( figcontainer == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     this->_pathList.clear();
@@ -83,7 +83,7 @@ finErrorCode finGraphPanelBase::setFigureContainer(finFigureContainer *figcontai
 
 finErrorCode finGraphPanelBase::appendFigureObject(finFigureObject *obj)
 {
-    if ( obj == NULL )
+    if ( obj == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     return obj->getPixelFigurePath(&this->_pathList, &this->_config);

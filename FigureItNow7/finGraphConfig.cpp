@@ -28,7 +28,7 @@ finGraphConfig::finGraphConfig()
 
 finGraphConfig::~finGraphConfig()
 {
-    if ( this->_transform != NULL )
+    if ( this->_transform != nullptr )
         delete this->_transform;
 }
 
@@ -126,7 +126,7 @@ bool finGraphConfig::isOriginPointOnPanel() const
 
 finGraphTransType finGraphConfig::getTransformType() const
 {
-    if ( this->_transform == NULL || this->_transform->getTransformType() == finGraphTrans::TP_NONE )
+    if ( this->_transform == nullptr || this->_transform->getTransformType() == finGraphTrans::TP_NONE )
         return finGraphTrans::TP_NONE;
     else
         return this->_transform->getTransformType();
@@ -139,7 +139,7 @@ finGraphTrans *finGraphConfig::getTransform() const
 
 bool finGraphConfig::isLinearTransform() const
 {
-    if ( this->_transform == NULL || this->_transform->getTransformType() == finGraphTrans::TP_NONE )
+    if ( this->_transform == nullptr || this->_transform->getTransformType() == finGraphTrans::TP_NONE )
         return true;
     else
         return this->_transform->isLinear();
@@ -229,17 +229,17 @@ finErrorCode finGraphConfig::setTransformType(finGraphTransType type)
     if ( this->getTransformType() == type )
         return finErrorKits::EC_DUPLICATE_OP;
 
-    finGraphTrans *newtrans = NULL;
+    finGraphTrans *newtrans = nullptr;
     switch ( type ) {
       case finGraphTrans::TP_RECT:
         newtrans = new finGraphTransRect();
-        if ( newtrans == NULL )
+        if ( newtrans == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
         break;
 
       case finGraphTrans::TP_AFFINE:
         newtrans = new finGraphTransAffine();
-        if ( newtrans == NULL )
+        if ( newtrans == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
         break;
 
@@ -249,14 +249,14 @@ finErrorCode finGraphConfig::setTransformType(finGraphTransType type)
 
     finGraphTrans *oldtrans = this->_transform;
     this->_transform = newtrans;
-    if ( oldtrans != NULL )
+    if ( oldtrans != nullptr )
         delete oldtrans;
     return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::cloneTransform(const finGraphTrans *srctrans)
 {
-    if ( srctrans == NULL || srctrans->getTransformType() == finGraphTrans::TP_NONE )
+    if ( srctrans == nullptr || srctrans->getTransformType() == finGraphTrans::TP_NONE )
         return this->setTransformType(finGraphTrans::TP_NONE);
 
     finErrorCode errcode = this->setTransformType(srctrans->getTransformType());
@@ -264,7 +264,7 @@ finErrorCode finGraphConfig::cloneTransform(const finGraphTrans *srctrans)
         return errcode;
 
     finGraphTrans *mytrans = this->getTransform();
-    if ( mytrans == NULL )
+    if ( mytrans == nullptr )
         return finErrorKits::EC_SUCCESS;
 
     errcode = mytrans->cloneTransform(srctrans);
@@ -309,7 +309,7 @@ QPointF finGraphConfig::transformPixelPoint3D(const finFigurePoint3D &pt) const
 QPointF finGraphConfig::transformPixelPoint(const QPointF &srcpt) const
 {
     QPointF midpt;
-    if ( this->_transform != NULL && this->_transform->getTransformType() != finGraphTrans::TP_NONE )
+    if ( this->_transform != nullptr && this->_transform->getTransformType() != finGraphTrans::TP_NONE )
         midpt = this->_transform->transPoint(srcpt);
     else
         midpt = srcpt;
@@ -324,7 +324,7 @@ QPointF finGraphConfig::arcTransformPixelPoint(const QPointF &srcpt) const
     midpt = (midpt - this->_originPoint) / this->_axisUnitSize;
     midpt.setY(-midpt.y());
 
-    if ( this->_transform != NULL && this->_transform->getTransformType() != finGraphTrans::TP_NONE )
+    if ( this->_transform != nullptr && this->_transform->getTransformType() != finGraphTrans::TP_NONE )
         return this->_transform->arcTransPoint(midpt);
     else
         return midpt;
