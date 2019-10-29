@@ -25,11 +25,11 @@ static finErrorCode _sysfunc_load_image(finExecFunction *self, finExecEnvironmen
 {
     finExecVariable *fnvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     fnvar = finExecVariable::transLinkTarget(env->findVariable("fn"));
-    if ( fnvar == NULL )
+    if ( fnvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( fnvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
