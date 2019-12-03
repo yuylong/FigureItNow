@@ -154,7 +154,7 @@ finLexReader::moveReadPos()
         return finErrorKits::EC_REACH_BOTTOM;
     }
 
-    if ( this->getScriptChar() == QChar::Separator_Line) {
+    if ( this->getScriptChar() == QChar::LineFeed ) {
         this->_curRow++;
         this->_curCol = 0;
     } else {
