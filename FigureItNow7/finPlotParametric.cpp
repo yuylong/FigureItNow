@@ -24,10 +24,10 @@ finPlotParametric::finPlotParametric()
     this->_fromT = 0.0;
     this->_toT = 0.0;
     this->_tIdx = 0;
-    this->_callArgList = NULL;
-    this->_environment = NULL;
-    this->_machine = NULL;
-    this->_flowctl = NULL;
+    this->_callArgList = nullptr;
+    this->_environment = nullptr;
+    this->_machine = nullptr;
+    this->_flowctl = nullptr;
     this->_stmPlot.setFigureContainer(NULL);
     this->_stmPlot.clearPoints();
     this->_stmPlot.clearBreakPoints();
@@ -135,8 +135,8 @@ bool finPlotParametric::checkValid() const
 {
     if ( this->_funcname.isEmpty() )
         return false;
-    if ( this->_callArgList == NULL || this->_environment == NULL || this->_machine == NULL ||
-         this->_flowctl == NULL || this->_stmPlot.getFigureContainer() == NULL )
+    if ( this->_callArgList == nullptr || this->_environment == nullptr || this->_machine == nullptr ||
+         this->_flowctl == nullptr || this->_stmPlot.getFigureContainer() == nullptr )
         return false;
     if ( this->_tIdx < 0 || this->_tIdx > this->_callArgList->count() )
         return false;
@@ -147,22 +147,22 @@ bool finPlotParametric::checkValid() const
 double finPlotParametric::getBaseStep() const
 {
     double step = 0.1;
-    if ( this->_stmPlot.getFigureContainer() == NULL )
+    if ( this->_stmPlot.getFigureContainer() == nullptr )
         return step;
 
     finGraphConfig *graphcfg = this->_stmPlot.getFigureContainer()->getGraphConfig();
-    if ( graphcfg != NULL )
+    if ( graphcfg != nullptr )
         step = 6.0 / graphcfg->getAxisUnitPixelSize();
     return step;
 }
 
 finErrorCode finPlotParametric::buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **tvar)
 {
-    if ( varlist == NULL || tvar == NULL )
+    if ( varlist == nullptr || tvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     *tvar = new finExecVariable();
-    if ( *tvar == NULL )
+    if ( *tvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     (*tvar)->setName(QString());
@@ -192,7 +192,7 @@ double finPlotParametric::getCurrentStep(double basestep, double detlen, double 
 finErrorCode finPlotParametric::calcAPoint(double t, finExecFunction *func, QList<finExecVariable *> *varlist,
                                            finExecVariable *tvar, QPointF *pt, bool *goon)
 {
-    if ( varlist == NULL || tvar == NULL || pt == NULL || goon == NULL )
+    if ( varlist == nullptr || tvar == nullptr || pt == nullptr || goon == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finErrorCode errcode;
@@ -202,13 +202,13 @@ finErrorCode finPlotParametric::calcAPoint(double t, finExecFunction *func, QLis
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    errcode = this->_flowctl->checkFlowForExpress(goon, NULL, this->_machine);
+    errcode = this->_flowctl->checkFlowForExpress(goon, nullptr, this->_machine);
     if ( finErrorKits::isErrorResult(errcode) || !(*goon) )
         return errcode;
 
     finExecVariable *retvar = this->_flowctl->pickReturnVariable();
     int retvararylen = 0;
-    if ( retvar == NULL || !retvar->isNumericArray(&retvararylen) ) {
+    if ( retvar == nullptr || !retvar->isNumericArray(&retvararylen) ) {
         finExecVariable::releaseNonLeftVariable(retvar);
         return finErrorKits::EC_INVALID_PARAM;
     }
@@ -258,7 +258,7 @@ finErrorCode finPlotParametric::plot()
     double basestep = this->getBaseStep();
 
     finExecFunction *func = this->_environment->findFunction(this->_funcname);
-    if ( func == NULL )
+    if ( func == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
     QList<finExecVariable *> funcarglist;

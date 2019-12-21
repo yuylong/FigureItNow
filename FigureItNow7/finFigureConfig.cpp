@@ -9,7 +9,7 @@
 #include "finFigureConfig.h"
 
 
-finFigureConfig *finFigureConfig::_defFigCfg = NULL;
+finFigureConfig *finFigureConfig::_defFigCfg = nullptr;
 
 finFigureConfig::finFigureConfig()
     : _borderPen(Qt::black, 1), _fillBrush(Qt::transparent), _startArrow(), _endArrow(),
@@ -265,7 +265,7 @@ finErrorCode finFigureConfig::setFontColor(const QColor &color)
 
 finErrorCode finFigureConfig::cloneFigureConfig(finFigureConfig *outcfg) const
 {
-    if ( outcfg == NULL )
+    if ( outcfg == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     outcfg->_borderPen = this->_borderPen;
@@ -280,7 +280,7 @@ finErrorCode finFigureConfig::cloneFigureConfig(finFigureConfig *outcfg) const
 
 finFigureConfig *finFigureConfig::getDefaultFigureConfig()
 {
-    if ( finFigureConfig::_defFigCfg == NULL )
+    if ( finFigureConfig::_defFigCfg == nullptr )
         finFigureConfig::_defFigCfg = new finFigureConfig();
 
     return finFigureConfig::_defFigCfg;
@@ -288,7 +288,7 @@ finFigureConfig *finFigureConfig::getDefaultFigureConfig()
 
 finErrorCode finFigureConfig::releaseDefaultFigureConfig()
 {
-    if ( finFigureConfig::_defFigCfg == NULL )
+    if ( finFigureConfig::_defFigCfg == nullptr )
         return finErrorKits::EC_DUPLICATE_OP;
 
     return finErrorKits::EC_SUCCESS;

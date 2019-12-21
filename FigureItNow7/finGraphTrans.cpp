@@ -40,7 +40,7 @@ finGraphTransType finGraphTrans::parseTransformType(const QString &name)
 
 finErrorCode finGraphTrans::fillTypesInComboBox(QComboBox *cmbox)
 {
-    if ( cmbox == NULL )
+    if ( cmbox == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     cmbox->addItem(QString("None"), QVariant(QString("none")));
@@ -51,7 +51,7 @@ finErrorCode finGraphTrans::fillTypesInComboBox(QComboBox *cmbox)
 
 int finGraphTrans::getComboBoxIndexForType(QComboBox *cmbox, finGraphTransType type)
 {
-    if ( cmbox == NULL )
+    if ( cmbox == nullptr )
         return -1;
 
     QString typestr = finGraphTrans::getTransformTypeName(type);
@@ -85,7 +85,7 @@ finGraphTrans::~finGraphTrans()
 
 finErrorCode finGraphTrans::cloneTransform(const finGraphTrans *trans)
 {
-    if ( trans == NULL || trans->getTransformType() != this->_type )
+    if ( trans == nullptr || trans->getTransformType() != this->_type )
         return finErrorKits::EC_INVALID_PARAM;
 
     return finErrorKits::EC_SUCCESS;
@@ -220,7 +220,7 @@ finGraphTransAffine::ActionType finGraphTransAffine::parseAffineTransAction(cons
 
 finErrorCode finGraphTransAffine::fillAffineTransActionsInComboBox(QComboBox *cmbox)
 {
-    if ( cmbox == NULL )
+    if ( cmbox == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     cmbox->addItem(QString("Rotate"), QVariant(QString("rotate")));

@@ -26,10 +26,10 @@ finPlotPolar::finPlotPolar()
     this->_fromRad = 0.0;
     this->_toRad = 0.0;
     this->_radIdx = 0;
-    this->_callArgList = NULL;
-    this->_environment = NULL;
-    this->_machine = NULL;
-    this->_flowctl = NULL;
+    this->_callArgList = nullptr;
+    this->_environment = nullptr;
+    this->_machine = nullptr;
+    this->_flowctl = nullptr;
     this->_stmPlot.setFigureContainer(NULL);
     this->_stmPlot.clearPoints();
     this->_stmPlot.clearBreakPoints();
@@ -140,8 +140,8 @@ bool finPlotPolar::checkValid() const
 {
     if ( this->_funcname.isEmpty() )
         return false;
-    if ( this->_callArgList == NULL || this->_environment == NULL || this->_machine == NULL ||
-         this->_flowctl == NULL || this->_stmPlot.getFigureContainer() == NULL )
+    if ( this->_callArgList == nullptr || this->_environment == nullptr || this->_machine == nullptr ||
+         this->_flowctl == nullptr || this->_stmPlot.getFigureContainer() == nullptr )
         return false;
     if ( this->_radIdx < 0 || this->_radIdx > this->_callArgList->count() )
         return false;
@@ -163,7 +163,7 @@ double finPlotPolar::getBaseStep() const
 {
     double axisstep = 0.1;
     finFigureContainer *figcontainer = this->_stmPlot.getFigureContainer();
-    if ( figcontainer != NULL && figcontainer->getGraphConfig() != NULL )
+    if ( figcontainer != nullptr && figcontainer->getGraphConfig() != nullptr )
         axisstep = 3.0 / figcontainer->getGraphConfig()->getAxisUnitPixelSize();
 
     double radstep = atan(axisstep);
@@ -172,11 +172,11 @@ double finPlotPolar::getBaseStep() const
 
 finErrorCode finPlotPolar::buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **radvar)
 {
-    if ( varlist == NULL || radvar == NULL )
+    if ( varlist == nullptr || radvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     *radvar = new finExecVariable();
-    if ( *radvar == NULL )
+    if ( *radvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     (*radvar)->setName(QString());
@@ -193,7 +193,7 @@ finErrorCode finPlotPolar::buildFuncArgList(QList<finExecVariable *> *varlist, f
 finErrorCode finPlotPolar::calcAPoint(double rad, finExecFunction *func, QList<finExecVariable *> *varlist,
                                       finExecVariable *radvar, double *retrlen, QPointF *pt, bool *goon)
 {
-    if ( varlist == NULL || radvar == NULL || pt == NULL || goon == NULL )
+    if ( varlist == nullptr || radvar == nullptr || pt == nullptr || goon == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finErrorCode errcode;
@@ -203,12 +203,12 @@ finErrorCode finPlotPolar::calcAPoint(double rad, finExecFunction *func, QList<f
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    errcode = this->_flowctl->checkFlowForExpress(goon, NULL, this->_machine);
+    errcode = this->_flowctl->checkFlowForExpress(goon, nullptr, this->_machine);
     if ( finErrorKits::isErrorResult(errcode) || !(*goon) )
         return errcode;
 
     finExecVariable *retvar = this->_flowctl->pickReturnVariable();
-    if ( retvar == NULL || retvar->getType() != finExecVariable::TP_NUMERIC ) {
+    if ( retvar == nullptr || retvar->getType() != finExecVariable::TP_NUMERIC ) {
         finExecVariable::releaseNonLeftVariable(retvar);
         return finErrorKits::EC_INVALID_PARAM;
     }
@@ -216,7 +216,7 @@ finErrorCode finPlotPolar::calcAPoint(double rad, finExecFunction *func, QList<f
     double rlen = retvar->getNumericValue();
     pt->setX(rlen * cos(rad));
     pt->setY(rlen * sin(rad));
-    if ( retrlen != NULL )
+    if ( retrlen != nullptr )
         *retrlen = rlen;
     finExecVariable::releaseNonLeftVariable(retvar);
     return finErrorKits::EC_SUCCESS;
@@ -240,7 +240,7 @@ finErrorCode finPlotPolar::plot()
     double basestep = this->getBaseStep();
 
     finExecFunction *func = this->_environment->findFunction(this->_funcname);
-    if ( func == NULL )
+    if ( func == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
     QList<finExecVariable *> funcarglist;

@@ -41,7 +41,7 @@ finFigureArrowType finFigureArrow::parseTypeString(const QString &str)
 
 finErrorCode finFigureArrow::fillTypesInComboBox(QComboBox *cmbox)
 {
-    if ( cmbox == NULL )
+    if ( cmbox == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     cmbox->setEditable(false);
@@ -146,7 +146,7 @@ QBrush finFigureArrow::getArrowBrush(const finFigureConfig *cfg) const
 QPointF
 finFigureArrow::lineShrinkPoint(const QPointF &arwpt, const QPointF &prevpt, const finFigureConfig *cfg) const
 {
-    if ( cfg == NULL )
+    if ( cfg == nullptr )
         return arwpt;
 
     switch ( this->_type ) {
@@ -168,7 +168,7 @@ finErrorCode finFigureArrow::getPixelPath(QList<finFigurePath> *pathlist,
                                           const QPointF &arwpt, const QPointF &prevpt,
                                           const finFigureConfig *cfg) const
 {
-    if ( pathlist == NULL || cfg == NULL )
+    if ( pathlist == nullptr || cfg == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     switch ( this->_type ) {

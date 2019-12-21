@@ -20,7 +20,7 @@ QString finExecFunction::_extArgPrefix("__ext_arg_");
 finExecFunction::finExecFunction()
 {
     this->_type = TP_DUMMY;
-    this->_u._rawPointer = NULL;
+    this->_u._rawPointer = nullptr;
 }
 
 finExecFunctionType finExecFunction::getFunctionType() const
@@ -63,7 +63,7 @@ finErrorCode finExecFunction::setFunctionType(finExecFunctionType type)
         return finErrorKits::EC_DUPLICATE_OP;
 
     this->_type = type;
-    this->_u._rawPointer = NULL;
+    this->_u._rawPointer = nullptr;
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -187,7 +187,7 @@ finErrorCode
 finExecFunction::processArgsInSubEnv(finSyntaxNode *argnode, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( argnode == NULL )
+    if ( argnode == nullptr )
         return finErrorKits::EC_SUCCESS;
 
     finLexNode *lexnode = argnode->getCommandLexNode();
@@ -242,7 +242,7 @@ finExecFunction::appendArgToSubenv(int idx, finSyntaxNode *argnode, finExecEnvir
 
     flowctl->buildLinkedLeftVar();
     argvar = flowctl->pickReturnVariable();
-    if ( argvar == NULL )
+    if ( argvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
     argvar->setName(this->getParameterName(idx));
 
@@ -269,7 +269,7 @@ finExecFunction::execFunction(QList<finExecVariable *> *arglist, finExecEnvironm
     subenv->setEnvironmentName(this->_funcName);
     subenv->setBelongFunction(this);
 
-    if ( arglist != NULL ) {
+    if ( arglist != nullptr ) {
         errcode = processArgsInSubEnv(arglist, subenv);
         if ( finErrorKits::isErrorResult(errcode) ) {
             delete subenv;
@@ -290,7 +290,7 @@ finExecFunction::execFunction(QList<finExecVariable *> *arglist, finExecEnvironm
         return errcode;
     }
 
-    errcode = flowctl->checkFlowForProgram(NULL, NULL, machine);
+    errcode = flowctl->checkFlowForProgram(NULL, nullptr, machine);
     if ( finErrorKits::isErrorResult(errcode) ) {
         delete subenv;
         return errcode;
@@ -307,7 +307,7 @@ finExecFunction::processArgsInSubEnv(QList<finExecVariable *> *arglist, finExecE
 
     for ( int i = 0; i < arglist->count(); i++ ) {
         finExecVariable *argvar = new finExecVariable();
-        if ( argvar == NULL )
+        if ( argvar == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
 
         errcode = argvar->setLinkTarget(arglist->at(i));
@@ -355,12 +355,12 @@ QString finExecFunction::getExtArgName(int idx)
 
 int finExecFunction::getExtendArgCountHere(finExecEnvironment *env)
 {
-    finExecVariable *extargvar = NULL;
+    finExecVariable *extargvar = nullptr;
     int idx = 0;
 
     do {
         extargvar = finExecFunction::getExtendArgAt(env, idx);
-        if ( extargvar == NULL )
+        if ( extargvar == nullptr )
             break;
         idx++;
     } while ( true );
@@ -381,7 +381,7 @@ int finExecFunction::getExtendArgCount(finExecEnvironment *env)
         return -1;
 
     finExecEnvironment *funcenv = env->getParentEnvironment(envlevel);
-    if ( funcenv == NULL )
+    if ( funcenv == nullptr )
         return -1;
 
     return finExecFunction::getExtendArgCountHere(funcenv);
@@ -391,11 +391,11 @@ finExecVariable *finExecFunction::getExtendArgAt(finExecEnvironment *env, int id
 {
     int envlevel = env->getBelongFunctionEnvLevelIdx();
     if ( envlevel < 0 )
-        return NULL;
+        return nullptr;
 
     finExecEnvironment *funcenv = env->getParentEnvironment(envlevel);
-    if ( funcenv == NULL )
-        return NULL;
+    if ( funcenv == nullptr )
+        return nullptr;
 
     return finExecFunction::getExtendArgHereAt(funcenv, idx);
 }
@@ -407,7 +407,7 @@ QList<finExecVariable *> finExecFunction::getExtendArgList(finExecEnvironment *e
     int idx = 0;
     while ( true ) {
         argvar = finExecFunction::getExtendArgAt(env, idx);
-        if ( argvar == NULL )
+        if ( argvar == nullptr )
             break;
 
         arglist.append(argvar);
@@ -423,7 +423,7 @@ int finExecFunction::getPreviousExtendArgCount(finExecEnvironment *env)
         return -1;
 
     finExecEnvironment *funcenv = env->getParentEnvironment(envlevel);
-    if ( funcenv == NULL )
+    if ( funcenv == nullptr )
         return -1;
 
     return finExecFunction::getExtendArgCountHere(funcenv);
@@ -433,11 +433,11 @@ finExecVariable *finExecFunction::getPreviousExtendArgAt(finExecEnvironment *env
 {
     int envlevel = env->getPreviousBelongFunctionEnvLevelIdx();
     if ( envlevel < 0 )
-        return NULL;
+        return nullptr;
 
     finExecEnvironment *funcenv = env->getParentEnvironment(envlevel);
-    if ( funcenv == NULL )
-        return NULL;
+    if ( funcenv == nullptr )
+        return nullptr;
 
     return finExecFunction::getExtendArgHereAt(funcenv, idx);
 }
@@ -449,7 +449,7 @@ int finExecFunction::getPreviousExtendArgCount(finExecEnvironment *env, int leve
         return -1;
 
     finExecEnvironment *funcenv = env->getParentEnvironment(envlevel);
-    if ( funcenv == NULL )
+    if ( funcenv == nullptr )
         return -1;
 
     return finExecFunction::getExtendArgCountHere(funcenv);
@@ -459,11 +459,11 @@ finExecVariable *finExecFunction::getPreviousExtendArgAt(finExecEnvironment *env
 {
     int envlevel = env->getPreviousBelongFunctionEnvLevelIdx(level);
     if ( envlevel < 0 )
-        return NULL;
+        return nullptr;
 
     finExecEnvironment *funcenv = env->getParentEnvironment(envlevel);
-    if ( funcenv == NULL )
-        return NULL;
+    if ( funcenv == nullptr )
+        return nullptr;
 
     return finExecFunction::getExtendArgHereAt(funcenv, idx);
 }
@@ -526,7 +526,7 @@ finExecFunction::installSystemFunctions (finExecEnvironment *rootenv)
     finErrorCode errcode;
     int i, succcnt = 0;
 
-    if ( rootenv == NULL )
+    if ( rootenv == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     errcode = finExecFunction::registSysFuncAll();
@@ -538,7 +538,7 @@ finExecFunction::installSystemFunctions (finExecEnvironment *rootenv)
 
         QStringList paramlist;
         finExecFunction *curfunc = new finExecFunction();
-        if ( curfunc == NULL )
+        if ( curfunc == nullptr )
             goto item_bad;
 
         errcode = curfunc->setFunctionType(finExecFunction::TP_SYSTEM);
@@ -571,7 +571,7 @@ finExecFunction::installSystemFunctions (finExecEnvironment *rootenv)
         continue;
 
 item_bad:
-        if ( curfunc != NULL )
+        if ( curfunc != nullptr )
             delete curfunc;
     }
 

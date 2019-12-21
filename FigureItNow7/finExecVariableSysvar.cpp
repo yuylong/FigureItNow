@@ -137,7 +137,7 @@ _finSysvarGencall _finSysvarGencallList[] = {
     _sysvar_app_prime_version,
     _sysvar_app_version,
     _sysvar_app_author,
-    NULL
+    nullptr
 };
 
 finErrorCode
@@ -146,9 +146,9 @@ finExecVariable::installSystemVariables(finExecEnvironment *rootenv)
     finErrorCode errcode;
     int success = 0, failed = 0;
 
-    for ( int i = 0; _finSysvarGencallList[i] != NULL; i++ ) {
+    for ( int i = 0; _finSysvarGencallList[i] != nullptr; i++ ) {
         finExecVariable *curvar = _finSysvarGencallList[i]();
-        if ( curvar == NULL )
+        if ( curvar == nullptr )
             goto item_bad;
 
         errcode = rootenv->addVariable(curvar);
@@ -159,7 +159,7 @@ finExecVariable::installSystemVariables(finExecEnvironment *rootenv)
         continue;
 
 item_bad:
-        if ( curvar != NULL )
+        if ( curvar != nullptr )
             delete curvar;
         failed++;
     }
@@ -178,8 +178,8 @@ static finExecVariable *_sysvar_nil()
 {
     finErrorCode errcode;
     finExecVariable *retvar = new finExecVariable();
-    if ( retvar == NULL )
-        return NULL;
+    if ( retvar == nullptr )
+        return nullptr;
 
     errcode = retvar->setName(QString("NIL"));
     if ( finErrorKits::isErrorResult(errcode) )
@@ -201,7 +201,7 @@ static finExecVariable *_sysvar_nil()
 
 err:
     delete retvar;
-    return NULL;
+    return nullptr;
 }
 
 static inline finExecVariable *
@@ -209,8 +209,8 @@ _sysvar_gen_num_var(const QString &name, double val)
 {
     finErrorCode errcode;
     finExecVariable *retvar = new finExecVariable();
-    if ( retvar == NULL )
-        return NULL;
+    if ( retvar == nullptr )
+        return nullptr;
 
     errcode = retvar->setName(name);
     if ( finErrorKits::isErrorResult(errcode) )
@@ -236,7 +236,7 @@ _sysvar_gen_num_var(const QString &name, double val)
 
 err:
     delete retvar;
-    return NULL;
+    return nullptr;
 }
 
 static inline finExecVariable *
@@ -244,8 +244,8 @@ _sysvar_gen_str_var(const QString &name, const QString &val)
 {
     finErrorCode errcode;
     finExecVariable *retvar = new finExecVariable();
-    if ( retvar == NULL )
-        return NULL;
+    if ( retvar == nullptr )
+        return nullptr;
 
     errcode = retvar->setName(name);
     if ( finErrorKits::isErrorResult(errcode) )
@@ -271,7 +271,7 @@ _sysvar_gen_str_var(const QString &name, const QString &val)
 
 err:
     delete retvar;
-    return NULL;
+    return nullptr;
 }
 
 static finExecVariable *_sysvar_pi()

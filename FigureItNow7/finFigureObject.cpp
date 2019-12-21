@@ -47,7 +47,7 @@ finFigureConfig *finFigureObject::getFigureConfig()
 
 finErrorCode finFigureObject::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    if ( pathlist == NULL || cfg == NULL )
+    if ( pathlist == nullptr || cfg == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     return finErrorKits::EC_NON_IMPLEMENT;
@@ -94,7 +94,7 @@ finErrorCode finFigureObjectDot::setPoint(double ptx, double pty)
 
 finErrorCode finFigureObjectDot::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    if ( pathlist == NULL || cfg == NULL )
+    if ( pathlist == nullptr || cfg == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     QPointF pixpt = cfg->transformPixelPoint(this->_point);
@@ -188,7 +188,7 @@ finErrorCode finFigureObjectLine::setIgnoreArrow(bool blval)
 
 finErrorCode finFigureObjectLine::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    if ( pathlist == NULL || cfg == NULL )
+    if ( pathlist == nullptr || cfg == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     QPointF pt1 = cfg->transformPixelPoint(this->_pt1);
@@ -296,7 +296,7 @@ QList<QPointF> finFigureObjectPolyline::getTransformedPointList(finGraphConfig *
 
 finErrorCode finFigureObjectPolyline::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    if ( pathlist == NULL || cfg == NULL )
+    if ( pathlist == nullptr || cfg == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     int ptcnt = this->_ptList.count();
@@ -476,7 +476,7 @@ QPolygonF finFigureObjectRect::getPolygonInstance() const
 
 finErrorCode finFigureObjectRect::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    if ( pathlist == NULL || cfg == NULL )
+    if ( pathlist == nullptr || cfg == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     QPolygonF polygon = this->getPolygonInstance();
@@ -561,7 +561,7 @@ QPolygonF finFigureObjectPolygon::getPolygonInstance() const
 finErrorCode
 finFigureObjectPolygon::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    if ( pathlist == NULL || cfg == NULL )
+    if ( pathlist == nullptr || cfg == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( this->_ptList.count() < 2 )
         return finErrorKits::EC_NORMAL_WARN;
@@ -681,7 +681,7 @@ QPointF finFigureObjectEllipse::getEllipsePointAtRad(double rad) const
 
 finErrorCode finFigureObjectEllipse::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    if ( pathlist == NULL || cfg == NULL )
+    if ( pathlist == nullptr || cfg == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     QPainterPath path;
@@ -894,7 +894,7 @@ QPainterPath finFigureObjectText::getUnpinnedPixelTextPath(finGraphConfig *cfg) 
 
 QPainterPath finFigureObjectText::getPixelTextPath(finGraphConfig *cfg) const
 {
-    if ( cfg == NULL || this->_text.isEmpty() )
+    if ( cfg == nullptr || this->_text.isEmpty() )
         return QPainterPath();
 
     if ( this->_isPinned )
@@ -906,7 +906,7 @@ QPainterPath finFigureObjectText::getPixelTextPath(finGraphConfig *cfg) const
 finErrorCode
 finFigureObjectText::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    if ( pathlist == NULL || cfg == NULL )
+    if ( pathlist == nullptr || cfg == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( this->_text.isEmpty() )
         return finErrorKits::EC_NORMAL_WARN;
@@ -1167,7 +1167,7 @@ finErrorCode finFigureObjectImage::getPinnedPixelFigurePath(QList<finFigurePath>
 finErrorCode
 finFigureObjectImage::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    if ( pathlist == NULL || cfg == NULL )
+    if ( pathlist == nullptr || cfg == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( this->_img.isNull() )
         return finErrorKits::EC_NORMAL_WARN;
@@ -1853,7 +1853,7 @@ finErrorCode finFigureObjectAxis::getTitlePath(QList<finFigurePath> *pathlist, f
 finErrorCode finFigureObjectAxis::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
     finErrorCode errcode;
-    if ( pathlist == NULL || cfg == NULL )
+    if ( pathlist == nullptr || cfg == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     QList<QPointF> polygon = cfg->getCornerAxisPoints();
@@ -1958,7 +1958,7 @@ finErrorCode finFigureObjectLine3D::setPoint2(double ptx, double pty, double ptz
 finErrorCode
 finFigureObjectLine3D::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
 {
-    if ( pathlist == NULL || cfg == NULL )
+    if ( pathlist == nullptr || cfg == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     QPainterPath path;

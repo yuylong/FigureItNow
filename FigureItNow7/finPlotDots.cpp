@@ -16,7 +16,7 @@
 finPlotDots::finPlotDots()
     : _ptList()
 {
-    this->_figcontainer = NULL;
+    this->_figcontainer = nullptr;
 }
 
 finPlotDots::~finPlotDots()
@@ -96,12 +96,12 @@ finErrorCode finPlotDots::setFigureContainer(finFigureContainer *figcontainer)
 
 finErrorCode finPlotDots::plot()
 {
-    if ( this->_figcontainer == NULL )
+    if ( this->_figcontainer == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     for ( int i = 0; i < this->_ptList.count(); i++ ) {
         finFigureObjectDot *fodot = new finFigureObjectDot();
-        if ( fodot == NULL )
+        if ( fodot == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
 
         fodot->setPoint(this->_ptList.at(i));
@@ -126,7 +126,7 @@ finPlotDotsLine::~finPlotDotsLine()
 
 finErrorCode finPlotDotsLine::plot()
 {
-    if ( this->_figcontainer == NULL )
+    if ( this->_figcontainer == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     finErrorCode errcode;
@@ -134,7 +134,7 @@ finErrorCode finPlotDotsLine::plot()
         return finErrorKits::EC_SUCCESS;
     } else if ( this->_ptList.count() == 1 ) {
         finFigureObjectDot *fodot = new finFigureObjectDot();
-        if ( fodot == NULL )
+        if ( fodot == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
 
         fodot->setPoint(this->_ptList.first());
@@ -147,7 +147,7 @@ finErrorCode finPlotDotsLine::plot()
     }
 
     finFigureObjectPolyline *fopln = new finFigureObjectPolyline();
-    if ( fopln == NULL )
+    if ( fopln == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     fopln->setIgnoreArrow(true);
@@ -191,7 +191,7 @@ const QPointF &finPlotDotsStream::getBreakPointAt(int idx) const
 bool finPlotDotsStream::checkBreakPointFrom(const QPointF &pt, int fromidx, int *nextidx) const
 {
     if ( fromidx >= this->_breakPtList.count() ) {
-        if ( nextidx != NULL )
+        if ( nextidx != nullptr )
             *nextidx = fromidx;
         return false;
     } else if ( fromidx < 0 ) {
@@ -200,19 +200,19 @@ bool finPlotDotsStream::checkBreakPointFrom(const QPointF &pt, int fromidx, int 
 
     for ( int idx = fromidx; idx < this->_breakPtList.count(); idx++ ) {
         if ( this->_breakPtList.at(idx) == pt ) {
-            if ( nextidx != NULL )
+            if ( nextidx != nullptr )
                 *nextidx = idx + 1;
             return true;
         }
     }
-    if ( nextidx != NULL )
+    if ( nextidx != nullptr )
         *nextidx = fromidx;
     return false;
 }
 
 bool finPlotDotsStream::checkBreakPoint(const QPointF &pt) const
 {
-    return this->checkBreakPointFrom(pt, 0, NULL);
+    return this->checkBreakPointFrom(pt, 0, nullptr);
 }
 
 finErrorCode finPlotDotsStream::appendBreakPoint(const QPointF &pt)
@@ -257,7 +257,7 @@ bool finPlotDotsStream::isNanPoint(const QPointF &pt)
 
 finErrorCode finPlotDotsStream::plot()
 {
-    if ( this->_figcontainer == NULL )
+    if ( this->_figcontainer == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     if ( this->_ptList.count() == 0 )
@@ -361,7 +361,7 @@ int finPlotDotsScatter::findNearestPoint(const QPointF &chkpt, const QList<QPoin
     if ( nearestidx < 0 )
         return -1;
 
-    if ( outpt != NULL )
+    if ( outpt != nullptr )
         *outpt = ptlist.at(nearestidx);
     return nearestidx;
 }
@@ -397,7 +397,7 @@ int finPlotDotsScatter::findNearestPointWithRad(const QPointF &chkpt, const QPoi
     if ( nearestidx < 0 )
         return -1;
 
-    if ( outpt != NULL )
+    if ( outpt != nullptr )
         *outpt = ptlist.at(nearestidx);
     return nearestidx;
 }
@@ -448,7 +448,7 @@ finErrorCode finPlotDotsScatter::handleEnclosePoint(
 
 finErrorCode finPlotDotsScatter::plot()
 {
-    if ( this->_figcontainer == NULL )
+    if ( this->_figcontainer == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     QList<QPointF> pendpt = this->_ptList;

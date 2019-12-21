@@ -21,7 +21,7 @@ finGraphConfig::finGraphConfig()
     this->_axisRadZ = (-3.0 / 4.0) * M_PI;
     this->_axisScaleZ = 0.618;
 
-    this->_transform = NULL;
+    this->_transform = nullptr;
 
     this->_renderHints = QPainter::Antialiasing | QPainter::SmoothPixmapTransform;
 }

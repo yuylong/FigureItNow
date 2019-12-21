@@ -106,14 +106,14 @@ finErrorCode finSyntaxTree::appendSyntaxNode(const finSyntaxNode *synnode)
 
 finErrorCode finSyntaxTree::prependSyntaxNode(const finSyntaxNode *synnode)
 {
-    if ( synnode == NULL)
+    if ( synnode == nullptr)
         return finErrorKits::EC_NULL_POINTER;
 
     //if ( !finSyntaxNode::isStatementLevelType(synnode->getType()) )
     //    return finErrorKits::EC_INVALID_PARAM;
 
     finSyntaxNode *mynode = new finSyntaxNode();
-    if ( mynode == NULL )
+    if ( mynode == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     finErrorCode errcode = mynode->copyNode(synnode);
@@ -132,7 +132,7 @@ finErrorCode finSyntaxTree::prependSyntaxNode(const finSyntaxNode *synnode)
 
 finErrorCode finSyntaxTree::appendSyntaxNodeList(const QList<finSyntaxNode *> *list)
 {
-    if ( list == NULL )
+    if ( list == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     for ( int i = 0; i < list->count(); i++ ) {
@@ -147,7 +147,7 @@ finErrorCode finSyntaxTree::appendSyntaxNodeList(const QList<finSyntaxNode *> *l
 
 finErrorCode finSyntaxTree::appendSyntaxNodeStack(const QList<finSyntaxNode *> *list)
 {
-    if ( list == NULL )
+    if ( list == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     for ( int i = list->count() - 1; i >= 0; i-- ) {

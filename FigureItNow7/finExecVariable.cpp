@@ -25,8 +25,8 @@ finExecVariable::finExecVariable()
     this->_numVal = 0.0;
     this->_strVal = QString();
     this->_image = QImage();
-    this->_linkTarget = NULL;
-    this->_parentVar = NULL;
+    this->_linkTarget = nullptr;
+    this->_parentVar = nullptr;
 }
 
 finExecVariable::finExecVariable(const QString &name)
@@ -38,8 +38,8 @@ finExecVariable::finExecVariable(const QString &name)
     this->_numVal = 0.0;
     this->_strVal = QString();
     this->_image = QImage();
-    this->_linkTarget = NULL;
-    this->_parentVar = NULL;
+    this->_linkTarget = nullptr;
+    this->_parentVar = nullptr;
 }
 
 finExecVariable::~finExecVariable()
@@ -210,7 +210,7 @@ finErrorCode finExecVariable::preallocArrayLength(int len)
 
     while ( this->_itemList.count() < len ) {
         finExecVariable *subvar = new finExecVariable();
-        if ( subvar == NULL )
+        if ( subvar == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
 
         subvar->_writeProtect = this->_writeProtect;
@@ -224,10 +224,10 @@ finErrorCode finExecVariable::preallocArrayLength(int len)
 finExecVariable *finExecVariable::getVariableItemAt(int idx) const
 {
     if ( this->_type != TP_ARRAY )
-        return NULL;
+        return nullptr;
 
     if ( idx < 0 || idx >= this->_itemList.count() )
-        return NULL;
+        return nullptr;
 
     return this->_itemList.at(idx);
 }
@@ -235,19 +235,19 @@ finExecVariable *finExecVariable::getVariableItemAt(int idx) const
 finExecVariable *finExecVariable::getVariableItemAt(int idx)
 {
     if ( this->_type != TP_ARRAY && this->_type != TP_NULL )
-        return NULL;
+        return nullptr;
 
     if ( this->_type == TP_NULL )
         this->_type = TP_ARRAY;
     if ( idx < 0 )
-        return NULL;
+        return nullptr;
 
     if ( idx < this->_itemList.count() )
         return this->_itemList.at(idx);
 
     finErrorCode errcode = this->preallocArrayLength(idx + 1);
     if ( finErrorKits::isErrorResult(errcode) )
-        return NULL;
+        return nullptr;
 
     return this->_itemList.at(idx);
 }
@@ -287,7 +287,7 @@ finErrorCode finExecVariable::clearArrayItems()
 
 bool finExecVariable::isInArray() const
 {
-    return (this->_parentVar != NULL);
+    return (this->_parentVar != nullptr);
 }
 
 finExecVariable *finExecVariable::getParentVariable() const
@@ -297,7 +297,7 @@ finExecVariable *finExecVariable::getParentVariable() const
 
 finErrorCode finExecVariable::removeFromArray()
 {
-    if ( this->_parentVar == NULL )
+    if ( this->_parentVar == nullptr )
         return finErrorKits::EC_DUPLICATE_OP;
 
     for ( int i = 0; i < this->_parentVar->_itemList.count(); i++ ) {
@@ -306,7 +306,7 @@ finErrorCode finExecVariable::removeFromArray()
             break;
         }
     }
-    this->_parentVar = NULL;
+    this->_parentVar = nullptr;
 
     this->clearLeftValue();
     return finErrorKits::EC_SUCCESS;
@@ -336,9 +336,9 @@ bool finExecVariable::isNumericMatrix(int *rowcnt, int *colcnt) const
         }
     }
 
-    if ( rowcnt != NULL )
+    if ( rowcnt != nullptr )
         *rowcnt = this->_itemList.count();
-    if ( colcnt != NULL )
+    if ( colcnt != nullptr )
         *colcnt = pcolcnt;
     return true;
 }
@@ -354,7 +354,7 @@ bool finExecVariable::isNumericArray(int *cnt) const
             return false;
     }
 
-    if ( cnt != NULL )
+    if ( cnt != nullptr )
         *cnt = this->_itemList.count();
     return true;
 }
@@ -370,7 +370,7 @@ bool finExecVariable::isStringArray(int *cnt) const
             return false;
     }
 
-    if ( cnt != NULL )
+    if ( cnt != nullptr )
         *cnt = this->_itemList.count();
     return true;
 }
@@ -407,7 +407,7 @@ const finExecVariable *finExecVariable::getLinkTarget() const
         return this;
 
     finExecVariable *target = this->_linkTarget;
-    while ( target != NULL && target->getType() == finExecVariable::TP_LINK ) {
+    while ( target != nullptr && target->getType() == finExecVariable::TP_LINK ) {
         target = target->_linkTarget;
     }
     return target;
@@ -419,7 +419,7 @@ finExecVariable *finExecVariable::getLinkTarget()
         return this;
 
     finExecVariable *target = this->_linkTarget;
-    while ( target != NULL && target->getType() == finExecVariable::TP_LINK ) {
+    while ( target != nullptr && target->getType() == finExecVariable::TP_LINK ) {
         target = target->_linkTarget;
     }
     return target;
@@ -427,8 +427,8 @@ finExecVariable *finExecVariable::getLinkTarget()
 
 finExecVariable *finExecVariable::transLinkTarget(finExecVariable *var)
 {
-    if ( var == NULL )
-        return NULL;
+    if ( var == nullptr )
+        return nullptr;
     else
         return var->getLinkTarget();
 }
@@ -443,7 +443,7 @@ finErrorCode finExecVariable::setLinkTarget(finExecVariable *target)
         return errcode;
 
     this->_linkTarget = target;
-    if ( target != NULL )
+    if ( target != nullptr )
         target->_linkedList.append(this);
     return finErrorKits::EC_SUCCESS;
 }
@@ -455,24 +455,24 @@ finErrorCode finExecVariable::unsetLinkTarget()
 
     if ( this->_type == finExecVariable::TP_NULL ) {
         this->_type = finExecVariable::TP_LINK;
-        this->_linkTarget = NULL;
+        this->_linkTarget = nullptr;
         return finErrorKits::EC_SUCCESS;
     }
 
-    if ( this->_linkTarget == NULL )
+    if ( this->_linkTarget == nullptr )
         return finErrorKits::EC_DUPLICATE_OP;
 
     for ( int i = this->_linkTarget->_linkedList.count() - 1; i >= 0; i-- ) {
         if ( this->_linkTarget->_linkedList.at(i) == this )
             this->_linkTarget->_linkedList.removeAt(i);
     }
-    this->_linkTarget = NULL;
+    this->_linkTarget = nullptr;
     return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecVariable::readBoolValue(bool *blval) const
 {
-    if ( blval == NULL )
+    if ( blval == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     switch ( this->getType() ) {
@@ -521,7 +521,7 @@ finErrorCode finExecVariable::setupBoolValue(bool blval)
 
 finErrorCode finExecVariable::readColorValue(QColor *color) const
 {
-    if ( color == NULL )
+    if ( color == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     int arylen = 0;
@@ -578,7 +578,7 @@ finErrorCode finExecVariable::setupColorValue(const QColor &color)
 
 finErrorCode finExecVariable::copyVariableValueIn(finExecVariable *srcvar)
 {
-    if ( srcvar == NULL )
+    if ( srcvar == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     if ( this->_type != TP_NULL && this->_type != srcvar->getType() )
@@ -629,9 +629,9 @@ bool finExecVariable::isSameValue(finExecVariable *var)
     finExecVariable *var1 = this->getLinkTarget();
     finExecVariable *var2 = var->getLinkTarget();
 
-    if ( var1 == NULL && var2 == NULL )
+    if ( var1 == nullptr && var2 == nullptr )
         return true;
-    else if ( var1 == NULL || var2 == NULL )
+    else if ( var1 == nullptr || var2 == nullptr )
         return false;
     else if ( var1 == var2 )
         return true;
@@ -700,7 +700,7 @@ finErrorCode finExecVariable::copyVariableValue(finExecVariable *srcvar)
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    if ( srcvar == NULL )
+    if ( srcvar == nullptr )
         return finErrorKits::EC_NORMAL_WARN;
 
     errcode = this->copyVariableValueIn(srcvar);
@@ -721,7 +721,7 @@ finErrorCode finExecVariable::smartCopyVariableValue(finExecVariable *srcvar)
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    if ( srcvar == NULL )
+    if ( srcvar == nullptr )
         return finErrorKits::EC_NORMAL_WARN;
 
     if ( srcvar->getType() == finExecVariable::TP_ARRAY &&
@@ -820,10 +820,10 @@ finErrorCode finExecVariable::clearLinkedVariables()
 
 finErrorCode finExecVariable::transToPointListArray(finExecVariable *aryvar, QList<QPointF> *ptlist)
 {
-    if ( ptlist == NULL )
+    if ( ptlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
-    if ( aryvar == NULL || aryvar->getType() == finExecVariable::TP_NULL ) {
+    if ( aryvar == nullptr || aryvar->getType() == finExecVariable::TP_NULL ) {
         ptlist->clear();
         return finErrorKits::EC_SUCCESS;
     }
@@ -844,10 +844,10 @@ finErrorCode finExecVariable::transToPointListArray(finExecVariable *aryvar, QLi
 
 finErrorCode finExecVariable::transToPointListMatrix(finExecVariable *matvar, QList<QPointF> *ptlist)
 {
-    if ( ptlist == NULL )
+    if ( ptlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
-    if ( matvar == NULL || matvar->getType() == finExecVariable::TP_NULL ) {
+    if ( matvar == nullptr || matvar->getType() == finExecVariable::TP_NULL ) {
         ptlist->clear();
         return finErrorKits::EC_SUCCESS;
     }
@@ -871,10 +871,10 @@ finErrorCode finExecVariable::transToPointListMatrix(finExecVariable *matvar, QL
 
 finErrorCode finExecVariable::transToPointList(finExecVariable *var, QList<QPointF> *ptlist)
 {
-    if ( ptlist == NULL )
+    if ( ptlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
-    if ( var == NULL || var->getType() == finExecVariable::TP_NULL ) {
+    if ( var == nullptr || var->getType() == finExecVariable::TP_NULL ) {
         ptlist->clear();
         return finErrorKits::EC_SUCCESS;
     }
@@ -891,11 +891,11 @@ finErrorCode finExecVariable::transToPointList(finExecVariable *var, QList<QPoin
 finErrorCode finExecVariable::transToPointList(
         finExecVariable *xvar, finExecVariable *yvar, QList<QPointF> *ptlist)
 {
-    if ( ptlist == NULL )
+    if ( ptlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
-    if ( yvar == NULL || yvar->getType() == finExecVariable::TP_NULL ) {
-        if ( xvar == NULL || xvar->getType() == finExecVariable::TP_NULL ) {
+    if ( yvar == nullptr || yvar->getType() == finExecVariable::TP_NULL ) {
+        if ( xvar == nullptr || xvar->getType() == finExecVariable::TP_NULL ) {
             ptlist->clear();
             return finErrorKits::EC_SUCCESS;
         } else {
@@ -921,24 +921,24 @@ finErrorCode finExecVariable::transToPointList(
 
 finExecVariable *finExecVariable::buildNonLeftVariable(finExecVariable *var)
 {
-    if ( var == NULL )
-        return NULL;
+    if ( var == nullptr )
+        return nullptr;
 
     finExecVariable *realvar = var->getLinkTarget();
-    if ( realvar != NULL )
+    if ( realvar != nullptr )
         var = realvar;
 
     if ( !var->isLeftValue() && !var->isInArray() )
         return var;
 
     finExecVariable *retvar = new finExecVariable();
-    if ( retvar == NULL )
-        return NULL;
+    if ( retvar == nullptr )
+        return nullptr;
 
     finErrorCode errcode = retvar->copyVariableValueIn(var);
     if ( finErrorKits::isErrorResult(errcode) ) {
         delete retvar;
-        return NULL;
+        return nullptr;
     }
 
     retvar->setWriteProtected();
@@ -948,15 +948,15 @@ finExecVariable *finExecVariable::buildNonLeftVariable(finExecVariable *var)
 
 finExecVariable *finExecVariable::buildCopyLeftVariable(finExecVariable *var)
 {
-    if ( var == NULL ) {
+    if ( var == nullptr ) {
         var = new finExecVariable();
-        if ( var == NULL )
-            return NULL;
+        if ( var == nullptr )
+            return nullptr;
         var->clearLeftValue();
     }
 
     finExecVariable *realvar = var->getLinkTarget();
-    if ( realvar != NULL )
+    if ( realvar != nullptr )
         var = realvar;
 
     if ( !var->isLeftValue() ) {
@@ -968,13 +968,13 @@ finExecVariable *finExecVariable::buildCopyLeftVariable(finExecVariable *var)
     }
 
     finExecVariable *retvar = new finExecVariable();
-    if ( retvar == NULL )
-        return NULL;
+    if ( retvar == nullptr )
+        return nullptr;
 
     finErrorCode errcode = retvar->copyVariableValueIn(var);
     if ( finErrorKits::isErrorResult(errcode) ) {
         delete retvar;
-        return NULL;
+        return nullptr;
     }
 
     retvar->setLeftValue();
@@ -984,28 +984,28 @@ finExecVariable *finExecVariable::buildCopyLeftVariable(finExecVariable *var)
 
 finExecVariable *finExecVariable::buildLinkLeftVariable(finExecVariable *var)
 {
-    if ( var == NULL ) {
+    if ( var == nullptr ) {
         var = new finExecVariable();
-        if ( var == NULL )
-            return NULL;
+        if ( var == nullptr )
+            return nullptr;
         var->clearLeftValue();
     }
 
     finExecVariable *realvar = var->getLinkTarget();
-    if ( realvar != NULL )
+    if ( realvar != nullptr )
         var = realvar;
 
     if ( !var->isLeftValue() )
         return buildCopyLeftVariable(var);
 
     finExecVariable *retvar = new finExecVariable();
-    if ( retvar == NULL )
-        return NULL;
+    if ( retvar == nullptr )
+        return nullptr;
 
     finErrorCode errcode = retvar->setLinkTarget(var);
     if ( finErrorKits::isErrorResult(errcode) ) {
         delete retvar;
-        return NULL;
+        return nullptr;
     }
 
     retvar->setLeftValue();
@@ -1015,11 +1015,11 @@ finExecVariable *finExecVariable::buildLinkLeftVariable(finExecVariable *var)
 
 finExecVariable *finExecVariable::buildFuncReturnVariable(finExecVariable *var, finExecEnvironment *env)
 {
-    if ( var == NULL )
-        return NULL;
+    if ( var == nullptr )
+        return nullptr;
 
     finExecVariable *realvar = var->getLinkTarget();
-    if ( realvar != NULL )
+    if ( realvar != nullptr )
         var = realvar;
 
     finErrorCode errcode;
@@ -1047,8 +1047,8 @@ finExecVariable *finExecVariable::buildFuncReturnVariable(finExecVariable *var, 
 
 copy_var:
     finExecVariable *clonevar = new finExecVariable();
-    if ( clonevar == NULL )
-        return NULL;
+    if ( clonevar == nullptr )
+        return nullptr;
 
     clonevar->copyVariableValue(var);
     clonevar->setWriteProtected();
@@ -1058,7 +1058,7 @@ copy_var:
 
 void finExecVariable::releaseNonLeftVariable(finExecVariable *var)
 {
-    if ( var == NULL )
+    if ( var == nullptr )
         return;
 
     if ( !var->isLeftValue() )

@@ -22,7 +22,7 @@ static struct {
 } _optFuncList[] = {
     { QString("test"), _testOptFunc },
 
-    { QString(),       NULL         },
+    { QString(),       nullptr      },
 };
 
 static QMap<QString, finSynOptFunc> _optFuncMap = QMap<QString, finSynOptFunc>();
@@ -33,7 +33,7 @@ static finErrorCode _installOptFuncMap()
     if ( _isOptFuncMapInstalled )
         return finErrorKits::EC_DUPLICATE_OP;
 
-    for ( int i = 0; _optFuncList[i]._func != NULL; i++ ) {
+    for ( int i = 0; _optFuncList[i]._func != nullptr; i++ ) {
         _optFuncMap.insert(_optFuncList[i]._optName, _optFuncList[i]._func);
     }
     _isOptFuncMapInstalled = true;
@@ -45,8 +45,8 @@ static QList<finSynOptFunc> _getOptFuncFromOptions(const QStringList &options)
     QList<finSynOptFunc> retlist;
 
     foreach ( QString optname, options ) {
-        finSynOptFunc optfunc = _optFuncMap.value(optname, NULL);
-        if ( optfunc == NULL )
+        finSynOptFunc optfunc = _optFuncMap.value(optname, nullptr);
+        if ( optfunc == nullptr )
             continue;
 
         retlist.append(optfunc);
@@ -57,7 +57,7 @@ static QList<finSynOptFunc> _getOptFuncFromOptions(const QStringList &options)
 finSyntaxOptimzer::finSyntaxOptimzer()
     : _optOptions()
 {
-    this->_synTree = NULL;
+    this->_synTree = nullptr;
 
     // Install the optimzer function list on the first instance constructed.
     _installOptFuncMap();
@@ -87,7 +87,7 @@ finErrorCode finSyntaxOptimzer::setOption(const QStringList &options)
 
 finErrorCode finSyntaxOptimzer::optimize()
 {
-    if ( this->_synTree == NULL )
+    if ( this->_synTree == nullptr )
         return finErrorKits::EC_NULL_POINTER;
     if ( this->_synTree->getErrorCount() > 0 )
         return finErrorKits::EC_STATE_ERROR;
@@ -100,7 +100,7 @@ finErrorCode finSyntaxOptimzer::optimize()
     unsigned funccnt = 0, failedcnt = 0;
 
     foreach ( finSynOptFunc func, optfunclist ) {
-        if ( func == NULL )
+        if ( func == nullptr )
             continue;
 
         funccnt++;
@@ -119,7 +119,7 @@ finErrorCode finSyntaxOptimzer::optimize()
 
 static finErrorCode _testOptFunc(finSyntaxNode *synnode)
 {
-    if ( synnode == NULL )
+    if ( synnode == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     return finErrorKits::EC_SUCCESS;
