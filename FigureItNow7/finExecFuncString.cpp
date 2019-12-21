@@ -22,17 +22,17 @@ static finErrorCode _sysfunc_str_len(finExecFunction *self, finExecEnvironment *
 {
     finExecVariable *strvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
-    if ( strvar == NULL )
+    if ( strvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( strvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     QString str = strvar->getStringValue();
@@ -61,12 +61,12 @@ static finErrorCode _sysfunc_str_left(finExecFunction *self, finExecEnvironment 
 {
     finExecVariable *strvar, *lenvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
     lenvar = finExecVariable::transLinkTarget(env->findVariable("len"));
-    if ( strvar == NULL || lenvar == NULL )
+    if ( strvar == nullptr || lenvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( strvar->getType() != finExecVariable::TP_STRING ||
          lenvar->getType() != finExecVariable::TP_NUMERIC )
@@ -76,7 +76,7 @@ static finErrorCode _sysfunc_str_left(finExecFunction *self, finExecEnvironment 
     int len = (int)floor(lenvar->getNumericValue());
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_STRING);
@@ -107,12 +107,12 @@ static finErrorCode _sysfunc_str_right(finExecFunction *self, finExecEnvironment
 {
     finExecVariable *strvar, *lenvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
     lenvar = finExecVariable::transLinkTarget(env->findVariable("len"));
-    if ( strvar == NULL || lenvar == NULL )
+    if ( strvar == nullptr || lenvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( strvar->getType() != finExecVariable::TP_STRING ||
          lenvar->getType() != finExecVariable::TP_NUMERIC )
@@ -122,7 +122,7 @@ static finErrorCode _sysfunc_str_right(finExecFunction *self, finExecEnvironment
     int len = (int)floor(lenvar->getNumericValue());
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_STRING);
@@ -153,13 +153,13 @@ static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *
 {
     finExecVariable *strvar, *posvar, *lenvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
     posvar = finExecVariable::transLinkTarget(env->findVariable("pos"));
     lenvar = finExecVariable::transLinkTarget(env->findVariable("len"));
-    if ( strvar == NULL || posvar == NULL || lenvar == NULL )
+    if ( strvar == nullptr || posvar == nullptr || lenvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( strvar->getType() != finExecVariable::TP_STRING ||
          posvar->getType() != finExecVariable::TP_NUMERIC ||
@@ -171,7 +171,7 @@ static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *
     int len = (int)floor(lenvar->getNumericValue());
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     retvar->setType(finExecVariable::TP_STRING);
@@ -204,34 +204,34 @@ static finErrorCode _sysfunc_str_find(finExecFunction *self, finExecEnvironment 
     finExecVariable *strvar, *substrvar, *fromvar, *casevar, *retvar;
     finErrorCode errcode;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
     substrvar = finExecVariable::transLinkTarget(env->findVariable("substr"));
     fromvar = finExecVariable::transLinkTarget(env->findVariable("from"));
     casevar = finExecVariable::transLinkTarget(env->findVariable("case"));
-    if ( strvar == NULL || substrvar == NULL )
+    if ( strvar == nullptr || substrvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( strvar->getType() != finExecVariable::TP_STRING ||
          substrvar->getType() != finExecVariable::TP_STRING ||
-         (fromvar != NULL && fromvar->getType() != finExecVariable::TP_NUMERIC) )
+         (fromvar != nullptr && fromvar->getType() != finExecVariable::TP_NUMERIC) )
         return finErrorKits::EC_INVALID_PARAM;
 
     QString str = strvar->getStringValue();
     QString substr = substrvar->getStringValue();
     int from = 0;
     bool casecare = true;
-    if ( fromvar != NULL )
+    if ( fromvar != nullptr )
         from = (int)floor(fromvar->getNumericValue());
-    if ( casevar != NULL ) {
+    if ( casevar != nullptr ) {
         errcode = casevar->readBoolValue(&casecare);
         if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
     }
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     int retidx = str.indexOf(substr, from, casecare ? Qt::CaseSensitive : Qt::CaseInsensitive);
@@ -263,34 +263,34 @@ static finErrorCode _sysfunc_str_bk_find(finExecFunction *self, finExecEnvironme
     finExecVariable *strvar, *substrvar, *fromvar, *casevar, *retvar;
     finErrorCode errcode;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
     substrvar = finExecVariable::transLinkTarget(env->findVariable("substr"));
     fromvar = finExecVariable::transLinkTarget(env->findVariable("from"));
     casevar = finExecVariable::transLinkTarget(env->findVariable("case"));
-    if ( strvar == NULL || substrvar == NULL )
+    if ( strvar == nullptr || substrvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( strvar->getType() != finExecVariable::TP_STRING ||
          substrvar->getType() != finExecVariable::TP_STRING ||
-         (fromvar != NULL && fromvar->getType() != finExecVariable::TP_NUMERIC) )
+         (fromvar != nullptr && fromvar->getType() != finExecVariable::TP_NUMERIC) )
         return finErrorKits::EC_INVALID_PARAM;
 
     QString str = strvar->getStringValue();
     QString substr = substrvar->getStringValue();
     int from = 0;
     bool casecare = true;
-    if ( fromvar != NULL )
+    if ( fromvar != nullptr )
         from = (int)floor(fromvar->getNumericValue());
-    if ( casevar != NULL ) {
+    if ( casevar != nullptr ) {
         errcode = casevar->readBoolValue(&casecare);
         if ( finErrorKits::isErrorResult(errcode) )
             return errcode;
     }
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     int retidx = str.lastIndexOf(substr, from, casecare ? Qt::CaseSensitive : Qt::CaseInsensitive);
@@ -321,17 +321,17 @@ static finErrorCode _sysfunc_str_trim(finExecFunction *self, finExecEnvironment 
 {
     finExecVariable *strvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     strvar = finExecVariable::transLinkTarget(env->findVariable("str"));
-    if ( strvar == NULL )
+    if ( strvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( strvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     QString str = strvar->getStringValue();
@@ -361,17 +361,17 @@ static finErrorCode _sysfunc_chr_unicode(finExecFunction *self, finExecEnvironme
 {
     finExecVariable *chrvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     chrvar = finExecVariable::transLinkTarget(env->findVariable("chr"));
-    if ( chrvar == NULL )
+    if ( chrvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( chrvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     QString str = chrvar->getStringValue();
@@ -402,17 +402,17 @@ static finErrorCode _sysfunc_chr_ascii(finExecFunction *self, finExecEnvironment
 {
     finExecVariable *chrvar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     chrvar = finExecVariable::transLinkTarget(env->findVariable("chr"));
-    if ( chrvar == NULL )
+    if ( chrvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( chrvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     QString str = chrvar->getStringValue();
@@ -443,17 +443,17 @@ static finErrorCode _sysfunc_unicode_chr(finExecFunction *self, finExecEnvironme
 {
     finExecVariable *codevar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     codevar = finExecVariable::transLinkTarget(env->findVariable("code"));
-    if ( codevar == NULL )
+    if ( codevar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( codevar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     ushort code = (ushort)codevar->getNumericValue();
@@ -483,17 +483,17 @@ static finErrorCode _sysfunc_ascii_chr(finExecFunction *self, finExecEnvironment
 {
     finExecVariable *codevar, *retvar;
 
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     codevar = finExecVariable::transLinkTarget(env->findVariable("code"));
-    if ( codevar == NULL )
+    if ( codevar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( codevar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     char chr = (char)codevar->getNumericValue();
@@ -531,7 +531,7 @@ static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
     _funcRegItem_unicode_chr,
     _funcRegItem_ascii_chr,
 
-    { QString(), QString(), NULL }
+    { QString(), QString(), nullptr }
 };
 
 finErrorCode finExecFunction::registSysFuncString()

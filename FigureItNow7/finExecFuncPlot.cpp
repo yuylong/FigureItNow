@@ -55,7 +55,7 @@ static finExecSysFuncRegItem _finSysFuncPlotList[] = {
     { QString("plot_parametric"),   QString("t1,t2,func"),           _sysfunc_plot_parametric    },
     { QString("plot_equation"),     QString("x1,x2,y1,y2,func"),     _sysfunc_plot_equation      },
 
-    { QString(), QString(), NULL }
+    { QString(), QString(), nullptr }
 };
 
 finErrorCode finExecFunction::registSysFuncPlot()
@@ -66,9 +66,9 @@ finErrorCode finExecFunction::registSysFuncPlot()
 static finErrorCode _sysfunc_plot_dots(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
-    if ( env->getFigureContainer() == NULL )
+    if ( env->getFigureContainer() == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
@@ -93,9 +93,9 @@ static finErrorCode _sysfunc_plot_dots(finExecFunction *self, finExecEnvironment
 static finErrorCode _sysfunc_plot_line(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
-    if ( env->getFigureContainer() == NULL )
+    if ( env->getFigureContainer() == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
@@ -120,9 +120,9 @@ static finErrorCode _sysfunc_plot_line(finExecFunction *self, finExecEnvironment
 static finErrorCode _sysfunc_plot_stream(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
-    if ( env->getFigureContainer() == NULL )
+    if ( env->getFigureContainer() == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
@@ -147,20 +147,20 @@ static finErrorCode _sysfunc_plot_stream(finExecFunction *self, finExecEnvironme
 static finErrorCode _sysfunc_plot_scatter(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
-    if ( env->getFigureContainer() == NULL )
+    if ( env->getFigureContainer() == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *dislmtvar = finExecVariable::transLinkTarget(env->findVariable("dl"));
     finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
     finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
-    if ( dislmtvar != NULL && dislmtvar->getType() != finExecVariable::TP_NULL &&
+    if ( dislmtvar != nullptr && dislmtvar->getType() != finExecVariable::TP_NULL &&
                               dislmtvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
     double dislmt = 0.1;
-    if ( dislmtvar != NULL && dislmtvar->getType() == finExecVariable::TP_NUMERIC )
+    if ( dislmtvar != nullptr && dislmtvar->getType() == finExecVariable::TP_NUMERIC )
         dislmt = dislmtvar->getNumericValue();
 
     QList<QPointF> ptlist;
@@ -183,20 +183,20 @@ static finErrorCode _sysfunc_plot_scatter(finExecFunction *self, finExecEnvironm
 static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
-    if ( env->getFigureContainer() == NULL )
+    if ( env->getFigureContainer() == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *funcvar;
     funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
-    if ( funcvar == NULL || funcvar->getType() != finExecVariable::TP_STRING )
+    if ( funcvar == nullptr || funcvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *x1var, *x2var;
     x1var = finExecVariable::transLinkTarget(env->findVariable("x1"));
     x2var = finExecVariable::transLinkTarget(env->findVariable("x2"));
-    if ( x1var == NULL || x2var == NULL ||
+    if ( x1var == nullptr || x2var == nullptr ||
          x1var->getType() != finExecVariable::TP_NUMERIC ||
          x2var->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
@@ -231,20 +231,20 @@ static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnviron
 static finErrorCode _sysfunc_plot_polar(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
-    if ( env->getFigureContainer() == NULL )
+    if ( env->getFigureContainer() == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *funcvar;
     funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
-    if ( funcvar == NULL || funcvar->getType() != finExecVariable::TP_STRING )
+    if ( funcvar == nullptr || funcvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *rad1var, *rad2var;
     rad1var = finExecVariable::transLinkTarget(env->findVariable("rad1"));
     rad2var = finExecVariable::transLinkTarget(env->findVariable("rad2"));
-    if ( rad1var == NULL || rad2var == NULL ||
+    if ( rad1var == nullptr || rad2var == nullptr ||
          rad1var->getType() != finExecVariable::TP_NUMERIC ||
          rad2var->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
@@ -279,20 +279,20 @@ static finErrorCode _sysfunc_plot_polar(finExecFunction *self, finExecEnvironmen
 static finErrorCode _sysfunc_plot_parametric(finExecFunction *self, finExecEnvironment *env,
                                              finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
-    if ( env->getFigureContainer() == NULL )
+    if ( env->getFigureContainer() == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *funcvar;
     funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
-    if ( funcvar == NULL || funcvar->getType() != finExecVariable::TP_STRING )
+    if ( funcvar == nullptr || funcvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *t1var, *t2var;
     t1var = finExecVariable::transLinkTarget(env->findVariable("t1"));
     t2var = finExecVariable::transLinkTarget(env->findVariable("t2"));
-    if ( t1var == NULL || t2var == NULL ||
+    if ( t1var == nullptr || t2var == nullptr ||
          t1var->getType() != finExecVariable::TP_NUMERIC ||
          t2var->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
@@ -327,14 +327,14 @@ static finErrorCode _sysfunc_plot_parametric(finExecFunction *self, finExecEnvir
 static finErrorCode _sysfunc_plot_equation(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
-    if ( env->getFigureContainer() == NULL )
+    if ( env->getFigureContainer() == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
     finExecVariable *funcvar;
     funcvar = finExecVariable::transLinkTarget(env->findVariable("func"));
-    if ( funcvar == NULL || funcvar->getType() != finExecVariable::TP_STRING )
+    if ( funcvar == nullptr || funcvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
     finExecVariable *x1var, *x2var, *y1var, *y2var;
@@ -342,7 +342,7 @@ static finErrorCode _sysfunc_plot_equation(finExecFunction *self, finExecEnviron
     x2var = finExecVariable::transLinkTarget(env->findVariable("x2"));
     y1var = finExecVariable::transLinkTarget(env->findVariable("y1"));
     y2var = finExecVariable::transLinkTarget(env->findVariable("y2"));
-    if ( x1var == NULL || x2var == NULL || y1var == NULL || y2var == NULL ||
+    if ( x1var == nullptr || x2var == nullptr || y1var == nullptr || y2var == nullptr ||
          x1var->getType() != finExecVariable::TP_NUMERIC ||
          x2var->getType() != finExecVariable::TP_NUMERIC ||
          y1var->getType() != finExecVariable::TP_NUMERIC ||
