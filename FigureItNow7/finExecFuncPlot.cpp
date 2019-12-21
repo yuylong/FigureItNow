@@ -27,6 +27,8 @@
 #include "finPlotEquation2D.h"
 
 
+static QString _defFuncCtg("Plotting");
+
 static finErrorCode _sysfunc_plot_dots(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_plot_line(finExecFunction *self, finExecEnvironment *env,
@@ -55,7 +57,7 @@ static finExecSysFuncRegItem _finSysFuncPlotList[] = {
     { QString("plot_parametric"),   QString("t1,t2,func"),           _sysfunc_plot_parametric    },
     { QString("plot_equation"),     QString("x1,x2,y1,y2,func"),     _sysfunc_plot_equation      },
 
-    { QString(), QString(), nullptr }
+    { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
 };
 
 finErrorCode finExecFunction::registSysFuncPlot()

@@ -1362,7 +1362,7 @@ static struct finExecSysFuncRegItem _finSysFuncMathList[] = {
     _funcRegItem_eq2d_ellipse,
     _funcRegItem_eq2d_hyperbola,
 
-    { QString(), QString(), nullptr }
+    { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
 };
 
 finErrorCode finExecFunction::registSysFuncMath()

@@ -21,11 +21,11 @@ static QString _defFuncCtg("System");
 static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finExecVariable *fnvar = finExecVariable::transLinkTarget(env->findVariable("funcname"));
-    if ( fnvar == NULL )
+    if ( fnvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( fnvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
@@ -33,7 +33,7 @@ static finErrorCode _sysfunc_run_function(finExecFunction *self, finExecEnvironm
     QString funcname = fnvar->getStringValue();
 
     finExecFunction *func = env->findFunction(funcname);
-    if ( func == NULL )
+    if ( func == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
     QList<finExecVariable *> arglist = finExecFunction::getExtendArgList(env);
@@ -54,11 +54,11 @@ static struct finExecSysFuncRegItem _funcRegItem_run_function = {
 static finErrorCode _sysfunc_ext_arg(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finExecVariable *idxvar = finExecVariable::transLinkTarget(env->findVariable("idx"));
-    if ( idxvar == NULL )
+    if ( idxvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
     if ( idxvar->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
@@ -85,11 +85,11 @@ static struct finExecSysFuncRegItem _funcRegItem_ext_arg = {
 static finErrorCode _sysfunc_ext_arg_count(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finExecVariable *retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     int extargcnt = finExecFunction::getPreviousExtendArgCount(env);
@@ -115,11 +115,11 @@ static struct finExecSysFuncRegItem _funcRegItem_ext_arg_count = {
 static finErrorCode _sysfunc_call_stack_count(finExecFunction *self, finExecEnvironment *env,
                                               finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finExecVariable *retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     /* Kick out the current 'call_stack' function from count. */
@@ -146,11 +146,11 @@ static struct finExecSysFuncRegItem _funcRegItem_call_stack_count = {
 static finErrorCode _sysfunc_call_stack(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finExecVariable *retvar = new finExecVariable();
-    if ( retvar == NULL )
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
     retvar->setType(finExecVariable::TP_ARRAY);
 
@@ -168,7 +168,7 @@ static finErrorCode _sysfunc_call_stack(finExecFunction *self, finExecEnvironmen
 
     for ( int i = 0; i < funcnamelist.count(); i++ ) {
         finExecVariable *subvar = retvar->getVariableItemAt(i);
-        if ( subvar == NULL ) {
+        if ( subvar == nullptr ) {
             errcode = finErrorKits::EC_OUT_OF_MEMORY;
             goto err;
         }
@@ -226,7 +226,7 @@ static inline QDebug _sysfunc_print_base_getOutStream(_finDebugLevel dbglevel)
 
 static inline finErrorCode _sysfunc_print_base_printProcess(QDebug &outstm, finExecVariable *var)
 {
-    if ( var == NULL )
+    if ( var == nullptr )
         return finErrorKits::EC_NORMAL_WARN;
 
     switch ( var->getType() ) {
@@ -265,7 +265,7 @@ static inline finErrorCode _sysfunc_print_base_printProcess(QDebug &outstm, finE
 static finErrorCode _sysfunc_print_base(_finDebugLevel dbglevel, finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    if ( self == NULL || env == NULL || machine == NULL || flowctl == NULL )
+    if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     QDebug outstm = _sysfunc_print_base_getOutStream(dbglevel);
@@ -358,7 +358,7 @@ static struct finExecSysFuncRegItem _finSysFuncSystemList[] = {
     _funcRegItem_print_warn,
     _funcRegItem_print_err,
 
-    { QString(), QString(), NULL }
+    { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
 };
 
 finErrorCode finExecFunction::registSysFuncSystem()

@@ -1450,7 +1450,7 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString("read_graph_config"),  QString("cfgname"),                     _sysfunc_read_graph_config  },
     { QString("write_graph_config"), QString("cfgname,value"),               _sysfunc_write_graph_config },
 
-    { QString(), QString(), nullptr }
+    { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
 };
 
 finErrorCode finExecFunction::registSysFuncFiguring()

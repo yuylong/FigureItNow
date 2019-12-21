@@ -15,6 +15,8 @@
 #include "finExecEnvironment.h"
 #include "finExecMachine.h"
 
+static QString _defFuncCtg("Matrix");
+
 static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *env,
                                    finExecMachine *machine, finExecFlowControl *flowctl);
 static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *env,
@@ -97,7 +99,7 @@ static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
     { QString("mat_sub"),          QString("mat1,mat2"),   _sysfunc_mat_sub       },
     { QString("mat_dot"),          QString("mat1,mat2"),   _sysfunc_mat_dot       },
 
-    { QString(), QString(), nullptr }
+    { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
 };
 
 

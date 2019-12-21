@@ -334,7 +334,7 @@ static struct finExecSysFuncRegItem _finSysFuncFileList[] = {
     _funcRegItem_save_string_csv,
     _funcRegItem_save_auto_csv,
 
-    { QString(), QString(), nullptr }
+    { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
 };
 
 finErrorCode finExecFunction::registSysFuncFile()

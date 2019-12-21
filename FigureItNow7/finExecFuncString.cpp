@@ -531,7 +531,7 @@ static struct finExecSysFuncRegItem _finSysFuncStringList[] = {
     _funcRegItem_unicode_chr,
     _funcRegItem_ascii_chr,
 
-    { QString(), QString(), nullptr }
+    { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
 };
 
 finErrorCode finExecFunction::registSysFuncString()
