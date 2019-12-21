@@ -30,42 +30,6 @@
 static QString _defFuncCtg("Plotting");
 
 static finErrorCode _sysfunc_plot_dots(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_plot_line(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_plot_stream(finExecFunction *self, finExecEnvironment *env,
-                                         finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_plot_scatter(finExecFunction *self, finExecEnvironment *env,
-                                          finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnvironment *env,
-                                           finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_plot_polar(finExecFunction *self, finExecEnvironment *env,
-                                        finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_plot_parametric(finExecFunction *self, finExecEnvironment *env,
-                                             finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_plot_equation(finExecFunction *self, finExecEnvironment *env,
-                                           finExecMachine *machine, finExecFlowControl *flowctl);
-
-static finExecSysFuncRegItem _finSysFuncPlotList[] = {
-    { QString("plot_dots"),         QString("xary,yary"),            _sysfunc_plot_dots          },
-    { QString("plot_line"),         QString("xary,yary"),            _sysfunc_plot_line          },
-    { QString("plot_stream"),       QString("xary,yary"),            _sysfunc_plot_stream        },
-    { QString("plot_scatter"),      QString("dl,xary,yary"),         _sysfunc_plot_scatter       },
-
-    { QString("plot_function"),     QString("x1,x2,func"),           _sysfunc_plot_function      },
-    { QString("plot_polar"),        QString("rad1,rad2,func"),       _sysfunc_plot_polar         },
-    { QString("plot_parametric"),   QString("t1,t2,func"),           _sysfunc_plot_parametric    },
-    { QString("plot_equation"),     QString("x1,x2,y1,y2,func"),     _sysfunc_plot_equation      },
-
-    { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
-};
-
-finErrorCode finExecFunction::registSysFuncPlot()
-{
-    return finExecFunction::registSysFuncFromArray(_finSysFuncPlotList, QString("Plotting"));
-}
-
-static finErrorCode _sysfunc_plot_dots(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -92,8 +56,17 @@ static finErrorCode _sysfunc_plot_dots(finExecFunction *self, finExecEnvironment
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_plot_dots = {
+    /*._funcName     =*/ QString("plot_dots"),
+    /*._paramCsvList =*/ QString("xary,yary"),
+    /*._funcCall     =*/ _sysfunc_plot_dots,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("plot_dots (xary, yary)"),
+    /*._description  =*/ QString("Plot the dots on graph panel with the given point list."),
+};
+
 static finErrorCode _sysfunc_plot_line(finExecFunction *self, finExecEnvironment *env,
-                                          finExecMachine *machine, finExecFlowControl *flowctl)
+                                       finExecMachine *machine, finExecFlowControl *flowctl)
 {
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
@@ -118,6 +91,15 @@ static finErrorCode _sysfunc_plot_line(finExecFunction *self, finExecEnvironment
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_plot_line = {
+    /*._funcName     =*/ QString("plot_line"),
+    /*._paramCsvList =*/ QString("xary,yary"),
+    /*._funcCall     =*/ _sysfunc_plot_line,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("plot_line (xary, yary)"),
+    /*._description  =*/ QString("Plot the continuous lines on graph panel with the given point list."),
+};
 
 static finErrorCode _sysfunc_plot_stream(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl)
@@ -145,6 +127,16 @@ static finErrorCode _sysfunc_plot_stream(finExecFunction *self, finExecEnvironme
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_plot_stream = {
+    /*._funcName     =*/ QString("plot_stream"),
+    /*._paramCsvList =*/ QString("xary,yary"),
+    /*._funcCall     =*/ _sysfunc_plot_stream,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("plot_stream (xary, yary)"),
+    /*._description  =*/ QString("Plot the continuous lines on graph panel with the given point list. The generated "
+                                 "lines will be spitted by the invalid points."),
+};
 
 static finErrorCode _sysfunc_plot_scatter(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
@@ -181,6 +173,16 @@ static finErrorCode _sysfunc_plot_scatter(finExecFunction *self, finExecEnvironm
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_plot_scatter = {
+    /*._funcName     =*/ QString("plot_scatter"),
+    /*._paramCsvList =*/ QString("xary,yary"),
+    /*._funcCall     =*/ _sysfunc_plot_scatter,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("plot_scatter (xary, yary)"),
+    /*._description  =*/ QString("Plot the continuous lines on graph panel with the given point list. The lines are "
+                                 "generated by connecting the adjacent points on the geometrical positions."),
+};
 
 static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
@@ -229,6 +231,19 @@ static finErrorCode _sysfunc_plot_function(finExecFunction *self, finExecEnviron
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_plot_function = {
+    /*._funcName     =*/ QString("plot_function"),
+    /*._paramCsvList =*/ QString("x1,x2,func"),
+    /*._funcCall     =*/ _sysfunc_plot_function,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("plot_function (x1, x2, func, ...)"),
+    /*._description  =*/ QString("Plot the function figure on graph panel between the given two virables (x1 and x2). "
+                                 "The function is given by its name as a string, which can be internal function or "
+                                 "defined in script code. It requires that the first argument of the plotted function "
+                                 "is the plotting variable x, and other arguments of the plotted function is given "
+                                 "following the function name in the argument list."),
+};
 
 static finErrorCode _sysfunc_plot_polar(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
@@ -380,4 +395,23 @@ static finErrorCode _sysfunc_plot_equation(finExecFunction *self, finExecEnviron
     // Because all extended arguments are left values, we do not release the memory for arglist.
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
+}
+
+static finExecSysFuncRegItem _finSysFuncPlotList[] = {
+    _funcRegItem_plot_dots,
+    _funcRegItem_plot_line,
+    _funcRegItem_plot_stream,
+    _funcRegItem_plot_scatter,
+
+    _funcRegItem_plot_function,
+    { QString("plot_polar"),        QString("rad1,rad2,func"),       _sysfunc_plot_polar         },
+    { QString("plot_parametric"),   QString("t1,t2,func"),           _sysfunc_plot_parametric    },
+    { QString("plot_equation"),     QString("x1,x2,y1,y2,func"),     _sysfunc_plot_equation      },
+
+    { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
+};
+
+finErrorCode finExecFunction::registSysFuncPlot()
+{
+    return finExecFunction::registSysFuncFromArray(_finSysFuncPlotList, QString("Plotting"));
 }
