@@ -209,6 +209,24 @@ static finErrorCode _sysfunc_matrix2array(finExecFunction *self, finExecEnvironm
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_matrix2array = {
+    /*._funcName     =*/ QString("matrix2array"),
+    /*._paramCsvList =*/ QString("mat"),
+    /*._funcCall     =*/ _sysfunc_matrix2array,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("matrix2array (mat)"),
+    /*._description  =*/ QString("Convert the given matrix into an array/vector."),
+};
+
+static struct finExecSysFuncRegItem _funcRegItem_matrix2vector = {
+    /*._funcName     =*/ QString("matrix2vector"),
+    /*._paramCsvList =*/ QString("mat"),
+    /*._funcCall     =*/ _sysfunc_matrix2array,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("matrix2vector (mat)"),
+    /*._description  =*/ QString("Convert the given matrix into a vector/array."),
+};
+
 static finErrorCode _sysfunc_array_cut(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -251,6 +269,24 @@ static finErrorCode _sysfunc_array_cut(finExecFunction *self, finExecEnvironment
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_array_cut = {
+    /*._funcName     =*/ QString("array_cut"),
+    /*._paramCsvList =*/ QString("ary,from,to"),
+    /*._funcCall     =*/ _sysfunc_array_cut,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("array_cut (ary, from, to)"),
+    /*._description  =*/ QString("Pick a sub-array form the given array."),
+};
+
+static struct finExecSysFuncRegItem _funcRegItem_vector_cut = {
+    /*._funcName     =*/ QString("vector_cut"),
+    /*._paramCsvList =*/ QString("ary,from,to"),
+    /*._funcCall     =*/ _sysfunc_array_cut,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("vector_cut (vec, from, to)"),
+    /*._description  =*/ QString("Get a lower dimensioned vector from the given vector."),
+};
 
 static finErrorCode _sysfunc_array_join(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
@@ -812,10 +848,10 @@ static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
     _funcRegItem_array,
     _funcRegItem_vector,
     _funcRegItem_matrix,
-    { QString("matrix_to_array"),  QString("mat"),         _sysfunc_matrix2array  },
-    { QString("matrix_to_vector"), QString("mat"),         _sysfunc_matrix2array  },
-    { QString("array_cut"),        QString("ary,from,to"), _sysfunc_array_cut     },
-    { QString("vector_cut"),       QString("ary,from,to"), _sysfunc_array_cut     },
+    _funcRegItem_matrix2array,
+    _funcRegItem_matrix2vector,
+    _funcRegItem_array_cut,
+    _funcRegItem_vector_cut,
     { QString("array_join"),       QString("ary"),         _sysfunc_array_join    },
     { QString("vector_join"),      QString("ary"),         _sysfunc_array_join    },
 
