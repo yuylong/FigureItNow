@@ -562,6 +562,15 @@ static finErrorCode _sysfunc_array_sum(finExecFunction *self, finExecEnvironment
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_array_sum = {
+    ._funcName     = QString("array_sum"),
+    ._paramCsvList = QString("ary"),
+    ._funcCall     = _sysfunc_array_sum,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("array_sum (ary)"),
+    ._description  = QString("Returns the summation of all elements in the given array."),
+};
+
 static finErrorCode _sysfunc_array_avg(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -591,6 +600,15 @@ static finErrorCode _sysfunc_array_avg(finExecFunction *self, finExecEnvironment
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_array_avg = {
+    ._funcName     = QString("array_avg"),
+    ._paramCsvList = QString("ary"),
+    ._funcCall     = _sysfunc_array_avg,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("array_avg (ary)"),
+    ._description  = QString("Returns the average value of all elements in the given array."),
+};
 
 static finErrorCode _sysfunc_vec_dim(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
@@ -622,6 +640,15 @@ static finErrorCode _sysfunc_vec_dim(finExecFunction *self, finExecEnvironment *
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_vec_dim = {
+    ._funcName     = QString("vec_dim"),
+    ._paramCsvList = QString("ary"),
+    ._funcCall     = _sysfunc_vec_dim,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("vec_dim (vec)"),
+    ._description  = QString("Returns the dimension of the given vector."),
+};
 
 finErrorCode _sysfunc_vec_norm(finExecFunction *self, finExecEnvironment *env,
                                finExecMachine *machine, finExecFlowControl *flowctl)
@@ -943,10 +970,10 @@ static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
     _funcRegItem_array_neg,
     _funcRegItem_array_add,
     _funcRegItem_array_sub,
-    { QString("array_sum"),        QString("ary"),         _sysfunc_array_sum     },
-    { QString("array_avg"),        QString("ary"),         _sysfunc_array_avg     },
+    _funcRegItem_array_sum,
+    _funcRegItem_array_avg,
 
-    { QString("vec_dim"),          QString("ary"),         _sysfunc_vec_dim       },
+    _funcRegItem_vec_dim,
     _funcRegItem_vec_neg,
     _funcRegItem_vec_add,
     _funcRegItem_vec_sub,
