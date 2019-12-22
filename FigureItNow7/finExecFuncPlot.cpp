@@ -365,7 +365,7 @@ static struct finExecSysFuncRegItem _funcRegItem_plot_parametric = {
                                  "function, whose return value is an array return two numerical value from each sub-"
                                  "function. The plotted function is given by its name as a string, which can be "
                                  "internal function or defined in script code. It requires that the first argument of "
-                                 "the plotted polar function is the plotting radian, and other arguments of the "
+                                 "the plotted function is the plotting parameter variable, and other arguments of the "
                                  "plotted function is given following the function name in the argument list."),
 };
 
@@ -434,8 +434,8 @@ static struct finExecSysFuncRegItem _funcRegItem_plot_equation = {
     /*._description  =*/ QString("Plot the 2D equation figure on graph panel in an rectangle region (x1, y1)-(x2, y2). "
                                  "The figure shows the curve whose points satisfy the equation func(x, y) = 0. The "
                                  "plotted function is given by its name as a string, which can be internal function or "
-                                 "defined in script code. It requires that the first argument of the plotted polar "
-                                 "function is the plotting radian, and other arguments of the plotted function is "
+                                 "defined in script code. It requires that the first two arguments of the plotted "
+                                 "function are the plotting variables, and other arguments of the plotted function is "
                                  "given following the function name in the argument list."),
 };
 

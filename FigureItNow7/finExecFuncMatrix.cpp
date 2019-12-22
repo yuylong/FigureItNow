@@ -18,97 +18,6 @@
 static QString _defFuncCtg("Matrix");
 
 static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *env,
-                                   finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *env,
-                                    finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_matrix2array(finExecFunction *self, finExecEnvironment *env,
-                                          finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_array_cut(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_array_join(finExecFunction *self, finExecEnvironment *env,
-                                        finExecMachine *machine, finExecFlowControl *flowctl);
-
-static finErrorCode _sysfunc_array_size(finExecFunction *self, finExecEnvironment *env,
-                                        finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_array_neg(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_array_add(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_array_sub(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_array_sum(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_array_avg(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
-
-static finErrorCode _sysfunc_vec_dim(finExecFunction *self, finExecEnvironment *env,
-                                     finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_vec_norm(finExecFunction *self, finExecEnvironment *env,
-                                      finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_vec_norm_1(finExecFunction *self, finExecEnvironment *env,
-                                        finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_vec_norm_p(finExecFunction *self, finExecEnvironment *env,
-                                        finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_vec_norm_inf(finExecFunction *self, finExecEnvironment *env,
-                                          finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_vec_normalize(finExecFunction *self, finExecEnvironment *env,
-                                           finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_vec_dot(finExecFunction *self, finExecEnvironment *env,
-                                     finExecMachine *machine, finExecFlowControl *flowctl);
-
-static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnvironment *env,
-                                           finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *env,
-                                     finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_mat_sub(finExecFunction *self, finExecEnvironment *env,
-                                     finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *env,
-                                     finExecMachine *machine, finExecFlowControl *flowctl);
-
-static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
-    { QString("array"),            QString("n"),           _sysfunc_array         },
-    { QString("vector"),           QString("n"),           _sysfunc_array         },
-    { QString("matrix"),           QString("row,col"),     _sysfunc_matrix        },
-    { QString("matrix_to_array"),  QString("mat"),         _sysfunc_matrix2array  },
-    { QString("matrix_to_vector"), QString("mat"),         _sysfunc_matrix2array  },
-    { QString("array_cut"),        QString("ary,from,to"), _sysfunc_array_cut     },
-    { QString("vector_cut"),       QString("ary,from,to"), _sysfunc_array_cut     },
-    { QString("array_join"),       QString("ary"),         _sysfunc_array_join    },
-    { QString("vector_join"),      QString("ary"),         _sysfunc_array_join    },
-
-    { QString("array_size"),       QString("ary"),         _sysfunc_array_size    },
-    { QString("array_neg"),        QString("ary"),         _sysfunc_array_neg     },
-    { QString("array_add"),        QString("ary1,ary2"),   _sysfunc_array_add     },
-    { QString("array_sub"),        QString("ary1,ary2"),   _sysfunc_array_sub     },
-    { QString("array_sum"),        QString("ary"),         _sysfunc_array_sum     },
-    { QString("array_avg"),        QString("ary"),         _sysfunc_array_avg     },
-
-    { QString("vec_dim"),          QString("ary"),         _sysfunc_vec_dim       },
-    { QString("vec_neg"),          QString("ary"),         _sysfunc_array_neg     },
-    { QString("vec_add"),          QString("ary1,ary2"),   _sysfunc_array_add     },
-    { QString("vec_sub"),          QString("ary1,ary2"),   _sysfunc_array_sub     },
-    { QString("vec_norm"),         QString("ary"),         _sysfunc_vec_norm      },
-    { QString("vec_norm_1"),       QString("ary"),         _sysfunc_vec_norm_1    },
-    { QString("vec_norm_p"),       QString("ary,p"),       _sysfunc_vec_norm_p    },
-    { QString("vec_norm_inf"),     QString("ary"),         _sysfunc_vec_norm_inf  },
-    { QString("vec_normalize"),    QString("ary"),         _sysfunc_vec_normalize },
-    { QString("vec_dot"),          QString("ary1,ary2"),   _sysfunc_vec_dot       },
-
-    { QString("mat_transpose"),    QString("mat"),         _sysfunc_mat_transpose },
-    { QString("mat_add"),          QString("mat1,mat2"),   _sysfunc_mat_add       },
-    { QString("mat_sub"),          QString("mat1,mat2"),   _sysfunc_mat_sub       },
-    { QString("mat_dot"),          QString("mat1,mat2"),   _sysfunc_mat_dot       },
-
-    { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
-};
-
-
-finErrorCode finExecFunction::registSysFuncMatrix()
-{
-    return finExecFunction::registSysFuncFromArray(_finSysFuncMatrixList, QString("Matrix"));
-}
-
-static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *env,
                                    finExecMachine *machine, finExecFlowControl *flowctl)
 {
     finErrorCode errcode;
@@ -163,6 +72,25 @@ out:
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_array = {
+    /*._funcName     =*/ QString("array"),
+    /*._paramCsvList =*/ QString("n"),
+    /*._funcCall     =*/ _sysfunc_array,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("array (n, ...)"),
+    /*._description  =*/ QString("Generate an N-dimension array/vector with the given arguments."),
+};
+
+static struct finExecSysFuncRegItem _funcRegItem_vector = {
+    /*._funcName     =*/ QString("vector"),
+    /*._paramCsvList =*/ QString("n"),
+    /*._funcCall     =*/ _sysfunc_array,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("vector (n, ...)"),
+    /*._description  =*/ QString("Generate an N-dimension vector/array with the given arguments."),
+};
+
 
 static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl)
@@ -240,6 +168,16 @@ out:
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_matrix = {
+    /*._funcName     =*/ QString("matrix"),
+    /*._paramCsvList =*/ QString("row,col"),
+    /*._funcCall     =*/ _sysfunc_matrix,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("matrix (row, col, ...)"),
+    /*._description  =*/ QString("Generate a matrix whose size is (row x col). The elements are given in the argument "
+                                 "list following row and col."),
+};
 
 static finErrorCode _sysfunc_matrix2array(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
@@ -868,4 +806,47 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
+}
+
+static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
+    _funcRegItem_array,
+    _funcRegItem_vector,
+    _funcRegItem_matrix,
+    { QString("matrix_to_array"),  QString("mat"),         _sysfunc_matrix2array  },
+    { QString("matrix_to_vector"), QString("mat"),         _sysfunc_matrix2array  },
+    { QString("array_cut"),        QString("ary,from,to"), _sysfunc_array_cut     },
+    { QString("vector_cut"),       QString("ary,from,to"), _sysfunc_array_cut     },
+    { QString("array_join"),       QString("ary"),         _sysfunc_array_join    },
+    { QString("vector_join"),      QString("ary"),         _sysfunc_array_join    },
+
+    { QString("array_size"),       QString("ary"),         _sysfunc_array_size    },
+    { QString("array_neg"),        QString("ary"),         _sysfunc_array_neg     },
+    { QString("array_add"),        QString("ary1,ary2"),   _sysfunc_array_add     },
+    { QString("array_sub"),        QString("ary1,ary2"),   _sysfunc_array_sub     },
+    { QString("array_sum"),        QString("ary"),         _sysfunc_array_sum     },
+    { QString("array_avg"),        QString("ary"),         _sysfunc_array_avg     },
+
+    { QString("vec_dim"),          QString("ary"),         _sysfunc_vec_dim       },
+    { QString("vec_neg"),          QString("ary"),         _sysfunc_array_neg     },
+    { QString("vec_add"),          QString("ary1,ary2"),   _sysfunc_array_add     },
+    { QString("vec_sub"),          QString("ary1,ary2"),   _sysfunc_array_sub     },
+    { QString("vec_norm"),         QString("ary"),         _sysfunc_vec_norm      },
+    { QString("vec_norm_1"),       QString("ary"),         _sysfunc_vec_norm_1    },
+    { QString("vec_norm_p"),       QString("ary,p"),       _sysfunc_vec_norm_p    },
+    { QString("vec_norm_inf"),     QString("ary"),         _sysfunc_vec_norm_inf  },
+    { QString("vec_normalize"),    QString("ary"),         _sysfunc_vec_normalize },
+    { QString("vec_dot"),          QString("ary1,ary2"),   _sysfunc_vec_dot       },
+
+    { QString("mat_transpose"),    QString("mat"),         _sysfunc_mat_transpose },
+    { QString("mat_add"),          QString("mat1,mat2"),   _sysfunc_mat_add       },
+    { QString("mat_sub"),          QString("mat1,mat2"),   _sysfunc_mat_sub       },
+    { QString("mat_dot"),          QString("mat1,mat2"),   _sysfunc_mat_dot       },
+
+    { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
+};
+
+
+finErrorCode finExecFunction::registSysFuncMatrix()
+{
+    return finExecFunction::registSysFuncFromArray(_finSysFuncMatrixList, QString("Matrix"));
 }

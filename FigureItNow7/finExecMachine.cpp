@@ -631,7 +631,7 @@ finExecMachine::instExecExprOper(finSyntaxNode *synnode, finExecEnvironment *env
         oprands.append(oprand);
     }
 
-    errcode = finExecOperartorClac::execOpCalc(lexnode->getOperator(), &oprands, &retvar);
+    errcode = finExecOperartorCalc::execOpCalc(lexnode->getOperator(), &oprands, &retvar);
     if ( finErrorKits::isErrorResult(errcode) ) {
         this->appendExecutionError(lexnode, QString("Invalid expression."));
         goto out;
@@ -858,7 +858,7 @@ finErrorCode finExecMachine::instExecBrCond(finSyntaxNode *synnode, finExecEnvir
     if ( finErrorKits::isErrorResult(errcode) || !goon )
         return errcode;
 
-    *retblval = finExecOperartorClac::varLogicValue(flowctl->getReturnVariable());
+    *retblval = finExecOperartorCalc::varLogicValue(flowctl->getReturnVariable());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -937,7 +937,7 @@ finErrorCode finExecMachine::instExecLoopCond(finSyntaxNode *synnode, finExecEnv
     if ( finErrorKits::isErrorResult(errcode) || !goon )
         return errcode;
 
-    *retblval = finExecOperartorClac::varLogicValue(flowctl->getReturnVariable());
+    *retblval = finExecOperartorCalc::varLogicValue(flowctl->getReturnVariable());
     return finErrorKits::EC_SUCCESS;
 }
 

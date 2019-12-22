@@ -22,10 +22,10 @@
 #include "finExecVariable.h"
 
 
-class finExecOperartorClac
+class finExecOperartorCalc
 {
 public:
-    finExecOperartorClac();
+    finExecOperartorCalc();
 
     static bool varLogicValue(finExecVariable *var);
     static finExecVariable *buildStdLogicVar(bool blval);

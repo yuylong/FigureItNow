@@ -11,12 +11,12 @@
 #include <QtMath>
 
 
-finExecOperartorClac::finExecOperartorClac()
+finExecOperartorCalc::finExecOperartorCalc()
 {
     return;
 }
 
-bool finExecOperartorClac::varLogicValue(finExecVariable *var)
+bool finExecOperartorCalc::varLogicValue(finExecVariable *var)
 {
     if ( var == nullptr )
         return false;
@@ -29,7 +29,7 @@ bool finExecOperartorClac::varLogicValue(finExecVariable *var)
     return retval;
 }
 
-finExecVariable *finExecOperartorClac::buildStdLogicVar(bool blval)
+finExecVariable *finExecOperartorCalc::buildStdLogicVar(bool blval)
 {
     finExecVariable *retvar = new finExecVariable();
     if ( retvar == nullptr )
@@ -45,7 +45,7 @@ finExecVariable *finExecOperartorClac::buildStdLogicVar(bool blval)
     return retvar;
 }
 
-struct finExecOperartorClacDatabase {
+struct finExecOperartorCalcDatabase {
     finLexOperatorType _optype;
     int _oprandCnt;
     finErrorCode (*_opcall)(QList<finExecVariable *> *oprands, finExecVariable **retval);
@@ -83,7 +83,7 @@ static finErrorCode _bitAndOpCall(QList<finExecVariable *> *oprands, finExecVari
 static finErrorCode _bitOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 static finErrorCode _bitXorOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval);
 
-static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
+static struct finExecOperartorCalcDatabase _glOperatorCalcDb[] = {
     { finLexNode::OP_L_RND_BRCKT, 0, _brcktOpCall    },
     { finLexNode::OP_ADD,         2, _addOpCall      },
     { finLexNode::OP_SUB,         2, _subOpCall      },
@@ -118,16 +118,16 @@ static struct finExecOperartorClacDatabase _glOperatorCalcDb[] = {
     { finLexNode::OP_BIT_XOR,     2, _bitXorOpCall   },
 };
 static const int _glOperatorCalcDbCnt =
-        sizeof (_glOperatorCalcDb) / sizeof (struct finExecOperartorClacDatabase);
+        sizeof (_glOperatorCalcDb) / sizeof (struct finExecOperartorCalcDatabase);
 
 finErrorCode
-finExecOperartorClac::execOpCalc(
+finExecOperartorCalc::execOpCalc(
         finLexOperatorType optype, QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     if ( oprands == nullptr || retval == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
-    struct finExecOperartorClacDatabase *curitem = nullptr;
+    struct finExecOperartorCalcDatabase *curitem = nullptr;
     bool found = false;
     for ( int i = 0; i < _glOperatorCalcDbCnt; i++ ) {
         curitem = &_glOperatorCalcDb[i];
@@ -564,7 +564,7 @@ _eqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
         opssame = false;
     else
         opssame = oprand1->isSameValue(oprand2);
-    *retval = finExecOperartorClac::buildStdLogicVar(opssame);
+    *retval = finExecOperartorCalc::buildStdLogicVar(opssame);
     if ( *retval == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
@@ -588,7 +588,7 @@ _grtOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
         return finErrorKits::EC_INVALID_PARAM;
     }
 
-    *retval = finExecOperartorClac::buildStdLogicVar(blval);
+    *retval = finExecOperartorCalc::buildStdLogicVar(blval);
     if ( *retval == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
@@ -612,7 +612,7 @@ _lesOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
         return finErrorKits::EC_INVALID_PARAM;
     }
 
-    *retval = finExecOperartorClac::buildStdLogicVar(blval);
+    *retval = finExecOperartorCalc::buildStdLogicVar(blval);
     if ( *retval == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
@@ -632,7 +632,7 @@ _neqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
         opssame = false;
     else
         opssame = oprand1->isSameValue(oprand2);
-    *retval = finExecOperartorClac::buildStdLogicVar(!opssame);
+    *retval = finExecOperartorCalc::buildStdLogicVar(!opssame);
     if ( *retval == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
@@ -656,7 +656,7 @@ _gteqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
         return finErrorKits::EC_INVALID_PARAM;
     }
 
-    *retval = finExecOperartorClac::buildStdLogicVar(blval);
+    *retval = finExecOperartorCalc::buildStdLogicVar(blval);
     if ( *retval == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
@@ -680,7 +680,7 @@ _lseqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
         return finErrorKits::EC_INVALID_PARAM;
     }
 
-    *retval = finExecOperartorClac::buildStdLogicVar(blval);
+    *retval = finExecOperartorCalc::buildStdLogicVar(blval);
     if ( *retval == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
@@ -694,8 +694,8 @@ _logicNotOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     if ( oprand == NULL )
         return finErrorKits::EC_INVALID_PARAM;
 
-    bool blval = finExecOperartorClac::varLogicValue(oprand);
-    *retval = finExecOperartorClac::buildStdLogicVar(!blval);
+    bool blval = finExecOperartorCalc::varLogicValue(oprand);
+    *retval = finExecOperartorCalc::buildStdLogicVar(!blval);
     if ( *retval == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
@@ -710,9 +710,9 @@ _logicAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     if ( oprand1 == NULL || oprand2 == NULL )
         return finErrorKits::EC_INVALID_PARAM;
 
-    bool blval1 = finExecOperartorClac::varLogicValue(oprand1);
-    bool blval2 = finExecOperartorClac::varLogicValue(oprand2);
-    *retval = finExecOperartorClac::buildStdLogicVar(blval1 && blval2);
+    bool blval1 = finExecOperartorCalc::varLogicValue(oprand1);
+    bool blval2 = finExecOperartorCalc::varLogicValue(oprand2);
+    *retval = finExecOperartorCalc::buildStdLogicVar(blval1 && blval2);
     if ( *retval == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
@@ -727,9 +727,9 @@ _logicOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     if ( oprand1 == NULL || oprand2 == NULL )
         return finErrorKits::EC_INVALID_PARAM;
 
-    bool blval1 = finExecOperartorClac::varLogicValue(oprand1);
-    bool blval2 = finExecOperartorClac::varLogicValue(oprand2);
-    *retval = finExecOperartorClac::buildStdLogicVar(blval1 || blval2);
+    bool blval1 = finExecOperartorCalc::varLogicValue(oprand1);
+    bool blval2 = finExecOperartorCalc::varLogicValue(oprand2);
+    *retval = finExecOperartorCalc::buildStdLogicVar(blval1 || blval2);
     if ( *retval == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
@@ -744,9 +744,9 @@ _logicXorOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     if ( oprand1 == NULL || oprand2 == NULL )
         return finErrorKits::EC_INVALID_PARAM;
 
-    bool blval1 = finExecOperartorClac::varLogicValue(oprand1);
-    bool blval2 = finExecOperartorClac::varLogicValue(oprand2);
-    *retval = finExecOperartorClac::buildStdLogicVar(blval1 == blval2 ? false : true);
+    bool blval1 = finExecOperartorCalc::varLogicValue(oprand1);
+    bool blval2 = finExecOperartorCalc::varLogicValue(oprand2);
+    *retval = finExecOperartorCalc::buildStdLogicVar(blval1 == blval2 ? false : true);
     if ( *retval == NULL )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
