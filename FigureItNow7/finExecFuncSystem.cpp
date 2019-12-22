@@ -198,23 +198,23 @@ static struct finExecSysFuncRegItem _funcRegItem_call_stack = {
 };
 
 enum _finDebugLevel {
-    FIN_DBGLVL_INFO,
-    FIN_DBGLVL_WARNING,
-    FIN_DBGLVL_ERROR,
+    _DBGLVL_INFO,
+    _DBGLVL_WARNING,
+    _DBGLVL_ERROR,
 };
 
 static inline QDebug _sysfunc_print_base_getOutStream(_finDebugLevel dbglevel)
 {
     switch ( dbglevel ) {
-      case FIN_DBGLVL_INFO:
+      case _DBGLVL_INFO:
         return qInfo().noquote();
         break;
 
-      case FIN_DBGLVL_WARNING:
+      case _DBGLVL_WARNING:
         return qWarning().noquote();
         break;
 
-      case FIN_DBGLVL_ERROR:
+      case _DBGLVL_ERROR:
         return qCritical().noquote();
         break;
 
@@ -287,63 +287,63 @@ static finErrorCode _sysfunc_print_base(_finDebugLevel dbglevel, finExecFunction
 static finErrorCode _sysfunc_print_info(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    return _sysfunc_print_base(FIN_DBGLVL_INFO, self, env, machine, flowctl);
+    return _sysfunc_print_base(_DBGLVL_INFO, self, env, machine, flowctl);
 }
 
 static struct finExecSysFuncRegItem _funcRegItem_print = {
-    /*._funcName     =*/ QString("print"),
-    /*._paramCsvList =*/ QString(""),
-    /*._funcCall     =*/ _sysfunc_print_info,
-    /*._category     =*/ _defFuncCtg,
-    /*._prototype    =*/ QString("print (...)"),
-    /*._description  =*/ QString("Output the strings, numbers, or arrays into the standard output device. Each print "
-                                 "will create a singal line in output, and is allowed contains multiple variables to "
-                                 "print. The default print is under the output level \'INFO\'."),
+    ._funcName     = QString("print"),
+    ._paramCsvList = QString(""),
+    ._funcCall     = _sysfunc_print_info,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("print (...)"),
+    ._description  = QString("Output the strings, numbers, or arrays into the standard output device. Each print "
+                             "will create a singal line in output, and is allowed contains multiple variables to "
+                             "print. The default print is under the output level \'INFO\'."),
 };
 
 static struct finExecSysFuncRegItem _funcRegItem_print_info = {
-    /*._funcName     =*/ QString("print_info"),
-    /*._paramCsvList =*/ QString(""),
-    /*._funcCall     =*/ _sysfunc_print_info,
-    /*._category     =*/ _defFuncCtg,
-    /*._prototype    =*/ QString("print_info (...)"),
-    /*._description  =*/ QString("Output the strings, numbers, or arrays into the standard output device under the "
-                                 "output level \'INFO\'. Each print will create a singal line in output, and is "
-                                 "allowed contains multiple variables to print."),
+    ._funcName     = QString("print_info"),
+    ._paramCsvList = QString(""),
+    ._funcCall     = _sysfunc_print_info,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("print_info (...)"),
+    ._description  = QString("Output the strings, numbers, or arrays into the standard output device under the "
+                             "output level \'INFO\'. Each print will create a singal line in output, and is "
+                             "allowed contains multiple variables to print."),
 };
 
 static finErrorCode _sysfunc_print_warn(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    return _sysfunc_print_base(FIN_DBGLVL_WARNING, self, env, machine, flowctl);
+    return _sysfunc_print_base(_DBGLVL_WARNING, self, env, machine, flowctl);
 }
 
 static struct finExecSysFuncRegItem _funcRegItem_print_warn = {
-    /*._funcName     =*/ QString("print_warn"),
-    /*._paramCsvList =*/ QString(""),
-    /*._funcCall     =*/ _sysfunc_print_warn,
-    /*._category     =*/ _defFuncCtg,
-    /*._prototype    =*/ QString("print_warn (...)"),
-    /*._description  =*/ QString("Output the strings, numbers, or arrays into the standard output device under the "
-                                 "output level \'WARN\'. Each print will create a singal line in output, and is "
-                                 "allowed contains multiple variables to print."),
+    ._funcName     = QString("print_warn"),
+    ._paramCsvList = QString(""),
+    ._funcCall     = _sysfunc_print_warn,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("print_warn (...)"),
+    ._description  = QString("Output the strings, numbers, or arrays into the standard output device under the "
+                             "output level \'WARN\'. Each print will create a singal line in output, and is "
+                             "allowed contains multiple variables to print."),
 };
 
 static finErrorCode _sysfunc_print_err(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    return _sysfunc_print_base(FIN_DBGLVL_ERROR, self, env, machine, flowctl);
+    return _sysfunc_print_base(_DBGLVL_ERROR, self, env, machine, flowctl);
 }
 
 static struct finExecSysFuncRegItem _funcRegItem_print_err = {
-    /*._funcName     =*/ QString("print_err"),
-    /*._paramCsvList =*/ QString(""),
-    /*._funcCall     =*/ _sysfunc_print_err,
-    /*._category     =*/ _defFuncCtg,
-    /*._prototype    =*/ QString("print_err (...)"),
-    /*._description  =*/ QString("Output the strings, numbers, or arrays into the standard error output device under "
-                                 "the output level \'ERROR\'. Each print will create a singal line in output, and is "
-                                 "allowed contains multiple variables to print."),
+    ._funcName     = QString("print_err"),
+    ._paramCsvList = QString(""),
+    ._funcCall     = _sysfunc_print_err,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("print_err (...)"),
+    ._description  = QString("Output the strings, numbers, or arrays into the standard error output device under "
+                             "the output level \'ERROR\'. Each print will create a singal line in output, and is "
+                             "allowed contains multiple variables to print."),
 };
 
 static struct finExecSysFuncRegItem _finSysFuncSystemList[] = {

@@ -271,20 +271,20 @@ static finErrorCode _sysfunc_array_cut(finExecFunction *self, finExecEnvironment
 }
 
 static struct finExecSysFuncRegItem _funcRegItem_array_cut = {
-    /*._funcName     =*/ QString("array_cut"),
-    /*._paramCsvList =*/ QString("ary,from,to"),
-    /*._funcCall     =*/ _sysfunc_array_cut,
-    /*._category     =*/ _defFuncCtg,
-    /*._prototype    =*/ QString("array_cut (ary, from, to)"),
-    /*._description  =*/ QString("Pick a sub-array form the given array."),
-};
-
-static struct finExecSysFuncRegItem _funcRegItem_vector_cut = {
-    ._funcName     = QString("vector_cut"),
+    ._funcName     = QString("array_cut"),
     ._paramCsvList = QString("ary,from,to"),
     ._funcCall     = _sysfunc_array_cut,
     ._category     = _defFuncCtg,
-    ._prototype    = QString("vector_cut (vec, from, to)"),
+    ._prototype    = QString("array_cut (ary, from, to)"),
+    ._description  = QString("Pick a sub-array form the given array."),
+};
+
+static struct finExecSysFuncRegItem _funcRegItem_vec_cut = {
+    ._funcName     = QString("vec_cut"),
+    ._paramCsvList = QString("ary,from,to"),
+    ._funcCall     = _sysfunc_array_cut,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("vec_cut (vec, from, to)"),
     ._description  = QString("Get a lower dimensioned vector from the given vector."),
 };
 
@@ -327,21 +327,21 @@ static finErrorCode _sysfunc_array_join(finExecFunction *self, finExecEnvironmen
 }
 
 static struct finExecSysFuncRegItem _funcRegItem_array_join = {
-    /*._funcName     =*/ QString("array_join"),
-    /*._paramCsvList =*/ QString("ary"),
-    /*._funcCall     =*/ _sysfunc_array_join,
-    /*._category     =*/ _defFuncCtg,
-    /*._prototype    =*/ QString("array_join (ary, ...)"),
-    /*._description  =*/ QString("Join several arrays/vectors into a unified one."),
+    ._funcName     = QString("array_join"),
+    ._paramCsvList = QString("ary"),
+    ._funcCall     = _sysfunc_array_join,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("array_join (ary, ...)"),
+    ._description  = QString("Join several arrays/vectors into a unified one."),
 };
 
-static struct finExecSysFuncRegItem _funcRegItem_vector_join = {
-    /*._funcName     =*/ QString("vector_join"),
-    /*._paramCsvList =*/ QString("ary"),
-    /*._funcCall     =*/ _sysfunc_array_join,
-    /*._category     =*/ _defFuncCtg,
-    /*._prototype    =*/ QString("vector_join (vec, ...)"),
-    /*._description  =*/ QString("Join several vectors/arrays into a unified one."),
+static struct finExecSysFuncRegItem _funcRegItem_vec_join = {
+    ._funcName     = QString("vec_join"),
+    ._paramCsvList = QString("ary"),
+    ._funcCall     = _sysfunc_array_join,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("vec_join (vec, ...)"),
+    ._description  = QString("Join several vectors/arrays into a unified one."),
 };
 
 static finErrorCode _sysfunc_array_size(finExecFunction *self, finExecEnvironment *env,
@@ -374,6 +374,15 @@ static finErrorCode _sysfunc_array_size(finExecFunction *self, finExecEnvironmen
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_array_size = {
+    ._funcName     = QString("array_size"),
+    ._paramCsvList = QString("ary"),
+    ._funcCall     = _sysfunc_array_size,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("array_size (ary)"),
+    ._description  = QString("Get the size of the given array."),
+};
+
 static finErrorCode _sysfunc_array_neg(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -403,6 +412,25 @@ static finErrorCode _sysfunc_array_neg(finExecFunction *self, finExecEnvironment
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_array_neg = {
+    ._funcName     = QString("array_neg"),
+    ._paramCsvList = QString("ary"),
+    ._funcCall     = _sysfunc_array_neg,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("array_neg (ary)"),
+    ._description  = QString("Returns a new array whose elements are the negative of the corresponding ones in the "
+                             "given array."),
+};
+
+static struct finExecSysFuncRegItem _funcRegItem_vec_neg = {
+    ._funcName     = QString("vec_neg"),
+    ._paramCsvList = QString("ary"),
+    ._funcCall     = _sysfunc_array_neg,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("vec_neg (vec)"),
+    ._description  = QString("Returns a reversed copy of the given vector."),
+};
 
 static finErrorCode _sysfunc_array_add(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
@@ -434,6 +462,25 @@ static finErrorCode _sysfunc_array_add(finExecFunction *self, finExecEnvironment
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_array_add = {
+    ._funcName     = QString("array_add"),
+    ._paramCsvList = QString("ary1,ary2"),
+    ._funcCall     = _sysfunc_array_add,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("array_add (ary1, ary2)"),
+    ._description  = QString("Returns a new array whose elements are the summation of the corresponding elements of "
+                             "the give two arrays."),
+};
+
+static struct finExecSysFuncRegItem _funcRegItem_vec_add = {
+    ._funcName     = QString("vec_add"),
+    ._paramCsvList = QString("ary1,ary2"),
+    ._funcCall     = _sysfunc_array_add,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("vec_add (vec1, vec2)"),
+    ._description  = QString("Returns the summation of the two given vectors."),
+};
 
 static finErrorCode _sysfunc_array_sub(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
@@ -869,20 +916,20 @@ static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
     _funcRegItem_matrix2array,
     _funcRegItem_matrix2vector,
     _funcRegItem_array_cut,
-    _funcRegItem_vector_cut,
+    _funcRegItem_vec_cut,
     _funcRegItem_array_join,
-    _funcRegItem_vector_join,
+    _funcRegItem_vec_join,
 
-    { QString("array_size"),       QString("ary"),         _sysfunc_array_size    },
-    { QString("array_neg"),        QString("ary"),         _sysfunc_array_neg     },
-    { QString("array_add"),        QString("ary1,ary2"),   _sysfunc_array_add     },
+    _funcRegItem_array_size,
+    _funcRegItem_array_neg,
+    _funcRegItem_array_add,
     { QString("array_sub"),        QString("ary1,ary2"),   _sysfunc_array_sub     },
     { QString("array_sum"),        QString("ary"),         _sysfunc_array_sum     },
     { QString("array_avg"),        QString("ary"),         _sysfunc_array_avg     },
 
     { QString("vec_dim"),          QString("ary"),         _sysfunc_vec_dim       },
-    { QString("vec_neg"),          QString("ary"),         _sysfunc_array_neg     },
-    { QString("vec_add"),          QString("ary1,ary2"),   _sysfunc_array_add     },
+    _funcRegItem_vec_neg,
+    _funcRegItem_vec_add,
     { QString("vec_sub"),          QString("ary1,ary2"),   _sysfunc_array_sub     },
     { QString("vec_norm"),         QString("ary"),         _sysfunc_vec_norm      },
     { QString("vec_norm_1"),       QString("ary"),         _sysfunc_vec_norm_1    },
