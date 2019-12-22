@@ -513,6 +513,25 @@ static finErrorCode _sysfunc_array_sub(finExecFunction *self, finExecEnvironment
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_array_sub = {
+    ._funcName     = QString("array_sub"),
+    ._paramCsvList = QString("ary1,ary2"),
+    ._funcCall     = _sysfunc_array_sub,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("array_sub (ary1, ary2)"),
+    ._description  = QString("Returns a new array whose elements are the difference of the corresponding elements of "
+                             "the give two arrays."),
+};
+
+static struct finExecSysFuncRegItem _funcRegItem_vec_sub = {
+    ._funcName     = QString("vec_sub"),
+    ._paramCsvList = QString("ary1,ary2"),
+    ._funcCall     = _sysfunc_array_sub,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("vec_sub (vec1, vec2)"),
+    ._description  = QString("Returns the difference of the two given vectors."),
+};
+
 static finErrorCode _sysfunc_array_sum(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -923,14 +942,14 @@ static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
     _funcRegItem_array_size,
     _funcRegItem_array_neg,
     _funcRegItem_array_add,
-    { QString("array_sub"),        QString("ary1,ary2"),   _sysfunc_array_sub     },
+    _funcRegItem_array_sub,
     { QString("array_sum"),        QString("ary"),         _sysfunc_array_sum     },
     { QString("array_avg"),        QString("ary"),         _sysfunc_array_avg     },
 
     { QString("vec_dim"),          QString("ary"),         _sysfunc_vec_dim       },
     _funcRegItem_vec_neg,
     _funcRegItem_vec_add,
-    { QString("vec_sub"),          QString("ary1,ary2"),   _sysfunc_array_sub     },
+    _funcRegItem_vec_sub,
     { QString("vec_norm"),         QString("ary"),         _sysfunc_vec_norm      },
     { QString("vec_norm_1"),       QString("ary"),         _sysfunc_vec_norm_1    },
     { QString("vec_norm_p"),       QString("ary,p"),       _sysfunc_vec_norm_p    },
