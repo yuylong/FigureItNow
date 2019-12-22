@@ -280,12 +280,12 @@ static struct finExecSysFuncRegItem _funcRegItem_array_cut = {
 };
 
 static struct finExecSysFuncRegItem _funcRegItem_vector_cut = {
-    /*._funcName     =*/ QString("vector_cut"),
-    /*._paramCsvList =*/ QString("ary,from,to"),
-    /*._funcCall     =*/ _sysfunc_array_cut,
-    /*._category     =*/ _defFuncCtg,
-    /*._prototype    =*/ QString("vector_cut (vec, from, to)"),
-    /*._description  =*/ QString("Get a lower dimensioned vector from the given vector."),
+    ._funcName     = QString("vector_cut"),
+    ._paramCsvList = QString("ary,from,to"),
+    ._funcCall     = _sysfunc_array_cut,
+    ._category     = _defFuncCtg,
+    ._prototype    = QString("vector_cut (vec, from, to)"),
+    ._description  = QString("Get a lower dimensioned vector from the given vector."),
 };
 
 static finErrorCode _sysfunc_array_join(finExecFunction *self, finExecEnvironment *env,
@@ -325,6 +325,24 @@ static finErrorCode _sysfunc_array_join(finExecFunction *self, finExecEnvironmen
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_array_join = {
+    /*._funcName     =*/ QString("array_join"),
+    /*._paramCsvList =*/ QString("ary"),
+    /*._funcCall     =*/ _sysfunc_array_join,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("array_join (ary, ...)"),
+    /*._description  =*/ QString("Join several arrays/vectors into a unified one."),
+};
+
+static struct finExecSysFuncRegItem _funcRegItem_vector_join = {
+    /*._funcName     =*/ QString("vector_join"),
+    /*._paramCsvList =*/ QString("ary"),
+    /*._funcCall     =*/ _sysfunc_array_join,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("vector_join (vec, ...)"),
+    /*._description  =*/ QString("Join several vectors/arrays into a unified one."),
+};
 
 static finErrorCode _sysfunc_array_size(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
@@ -852,8 +870,8 @@ static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
     _funcRegItem_matrix2vector,
     _funcRegItem_array_cut,
     _funcRegItem_vector_cut,
-    { QString("array_join"),       QString("ary"),         _sysfunc_array_join    },
-    { QString("vector_join"),      QString("ary"),         _sysfunc_array_join    },
+    _funcRegItem_array_join,
+    _funcRegItem_vector_join,
 
     { QString("array_size"),       QString("ary"),         _sysfunc_array_size    },
     { QString("array_neg"),        QString("ary"),         _sysfunc_array_neg     },
