@@ -62,7 +62,7 @@ protected:
         ST_INCOMMENT,
     };
 
-    static const QTextCharFormat &baseFormat();
+    static const QTextCharFormat &globalBaseFormat();
 
     QList<TextFormatConfig> _formatConfig;
     QMap<Type, QTextCharFormat> _formatList;
@@ -75,6 +75,10 @@ public:
     QTextCharFormat getTypedFormat(Type type) const;
 
 protected:
+    void loadDefaultConfig();
+
+    static QTextCharFormat convertConfigToFormat(TextFormatConfig config, const QTextCharFormat &basefmt);
+    int findBasicConfigIndex() const;
     void installFormatList();
     void installRegExpList();
 
