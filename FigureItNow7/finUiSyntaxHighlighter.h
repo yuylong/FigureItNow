@@ -3,12 +3,14 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2019 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINUISYNTAXHIGHLIGHTER_H
 #define FINUISYNTAXHIGHLIGHTER_H
 
+#include <QtGlobal>
+#include <QColor>
 #include <QString>
 #include <QMap>
 #include <QSyntaxHighlighter>
@@ -20,9 +22,10 @@
 
 class finUiSyntaxHighlighter : public QSyntaxHighlighter
 {
-protected:
+public:
     enum Type {
         TP_DUMMY,
+        TP_BASIC,
 
         TP_KEYWORD,
         TP_KEYFUNC,
@@ -36,25 +39,42 @@ protected:
         TP_BLOCK_COMMENT_OFF,
     };
 
+    struct TextFormatConfig {
+        Type type;
+        QString fontFamily;
+        bool fontFamilyValid;
+        qreal fontSize;
+        bool fontSizeValid;
+        int fontWeight;
+        bool fontWeightValid;
+        bool fontItalic;
+        bool fontItalicValid;
+        QColor foregroundColor;
+        bool fgColorValid;
+        QColor backgroundColor;
+        bool bgColorValid;
+    };
+
+protected:
     enum State {
         ST_DUMMY = -1,
         ST_NORMAL = 0,
         ST_INCOMMENT,
     };
 
-    QTextCharFormat _baseFormat;
+    static const QTextCharFormat &baseFormat();
+
+    QList<TextFormatConfig> _formatConfig;
     QMap<Type, QTextCharFormat> _formatList;
     QMap<Type, QRegExp> _regExpList;
 
 public:
     finUiSyntaxHighlighter(QTextDocument *parent = 0);
 
-    const QTextCharFormat &getBaseFormat() const;
-    const QTextCharFormat getTypedFormat(Type type) const;
-    finErrorCode setBaseFormat(const QTextCharFormat &format);
+    QTextCharFormat getBaseFormat() const;
+    QTextCharFormat getTypedFormat(Type type) const;
 
 protected:
-    void buildBaseFormat();
     void installFormatList();
     void installRegExpList();
 
