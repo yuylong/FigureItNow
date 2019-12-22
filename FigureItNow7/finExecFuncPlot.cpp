@@ -293,6 +293,19 @@ static finErrorCode _sysfunc_plot_polar(finExecFunction *self, finExecEnvironmen
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_plot_polar = {
+    /*._funcName     =*/ QString("plot_polar"),
+    /*._paramCsvList =*/ QString("rad1,rad2,func"),
+    /*._funcCall     =*/ _sysfunc_plot_polar,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("plot_polar (rad1, rad2, func, ...)"),
+    /*._description  =*/ QString("Plot the polar function figure on graph panel between the given two radians (rad1 "
+                                 "and rad2). The polar function is given by its name as a string, which can be "
+                                 "internal function or defined in script code. It requires that the first argument of "
+                                 "the plotted polar function is the plotting radian, and other arguments of the "
+                                 "plotted function is given following the function name in the argument list."),
+};
+
 static finErrorCode _sysfunc_plot_parametric(finExecFunction *self, finExecEnvironment *env,
                                              finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -340,6 +353,21 @@ static finErrorCode _sysfunc_plot_parametric(finExecFunction *self, finExecEnvir
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_plot_parametric = {
+    /*._funcName     =*/ QString("plot_parametric"),
+    /*._paramCsvList =*/ QString("t1,t2,func"),
+    /*._funcCall     =*/ _sysfunc_plot_parametric,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("plot_parametric (t1, t2, func, ...)"),
+    /*._description  =*/ QString("Plot the parametric function group figure on graph panel between the given two "
+                                 "parameter values (t1 and t2). The parametric function group is formatted as a script "
+                                 "function, whose return value is an array return two numerical value from each sub-"
+                                 "function. The plotted function is given by its name as a string, which can be "
+                                 "internal function or defined in script code. It requires that the first argument of "
+                                 "the plotted polar function is the plotting radian, and other arguments of the "
+                                 "plotted function is given following the function name in the argument list."),
+};
 
 static finErrorCode _sysfunc_plot_equation(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
@@ -397,6 +425,20 @@ static finErrorCode _sysfunc_plot_equation(finExecFunction *self, finExecEnviron
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_plot_equation = {
+    /*._funcName     =*/ QString("plot_equation"),
+    /*._paramCsvList =*/ QString("x1,x2,y1,y2,func"),
+    /*._funcCall     =*/ _sysfunc_plot_equation,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("plot_equation (x1, x2, y1, y2, func, ...)"),
+    /*._description  =*/ QString("Plot the 2D equation figure on graph panel in an rectangle region (x1, y1)-(x2, y2). "
+                                 "The figure shows the curve whose points satisfy the equation func(x, y) = 0. The "
+                                 "plotted function is given by its name as a string, which can be internal function or "
+                                 "defined in script code. It requires that the first argument of the plotted polar "
+                                 "function is the plotting radian, and other arguments of the plotted function is "
+                                 "given following the function name in the argument list."),
+};
+
 static finExecSysFuncRegItem _finSysFuncPlotList[] = {
     _funcRegItem_plot_dots,
     _funcRegItem_plot_line,
@@ -404,9 +446,9 @@ static finExecSysFuncRegItem _finSysFuncPlotList[] = {
     _funcRegItem_plot_scatter,
 
     _funcRegItem_plot_function,
-    { QString("plot_polar"),        QString("rad1,rad2,func"),       _sysfunc_plot_polar         },
-    { QString("plot_parametric"),   QString("t1,t2,func"),           _sysfunc_plot_parametric    },
-    { QString("plot_equation"),     QString("x1,x2,y1,y2,func"),     _sysfunc_plot_equation      },
+    _funcRegItem_plot_polar,
+    _funcRegItem_plot_parametric,
+    _funcRegItem_plot_equation,
 
     { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
 };
