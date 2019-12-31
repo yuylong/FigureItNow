@@ -46,6 +46,7 @@ SOURCES += main.cpp\
     finGraphPanelPainter.cpp \
     finGraphPanelWidget.cpp \
     finFigurePoint3D.cpp \
+    finUiEdtrFontConfigDlg.cpp \
     finUiFigureWidget.cpp \
     finGraphPanelScene.cpp \
     finFigureAlg.cpp \
@@ -95,6 +96,7 @@ HEADERS  += MainWindow.h \
     finGraphPanelPainter.h \
     finGraphPanelWidget.h \
     finFigurePoint3D.h \
+    finUiEdtrFontConfigDlg.h \
     finUiFigureWidget.h \
     finGraphPanelScene.h \
     finFigureAlg.h \
@@ -116,6 +118,7 @@ HEADERS  += MainWindow.h \
     finUiSysFuncList.h
 
 FORMS    += MainWindow.ui \
+    finUiEdtrFontConfigDlg.ui \
     finUiFigConfigDlg.ui \
     finUiGraphConfigDlg.ui \
     finUiScriptEditor.ui \
