@@ -28,7 +28,7 @@ finPlotParametric::finPlotParametric()
     this->_environment = nullptr;
     this->_machine = nullptr;
     this->_flowctl = nullptr;
-    this->_stmPlot.setFigureContainer(NULL);
+    this->_stmPlot.setFigureContainer(nullptr);
     this->_stmPlot.clearPoints();
     this->_stmPlot.clearBreakPoints();
 }

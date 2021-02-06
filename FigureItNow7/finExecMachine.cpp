@@ -992,7 +992,8 @@ finErrorCode finExecMachine::instExecLoopForHead(finSyntaxNode *synnode,
                                                  finSyntaxNode **inithead, finSyntaxNode **condhead,
                                                  finSyntaxNode **stephead, finSyntaxNode **loopbody)
 {
-    if ( synnode == NULL || inithead == NULL || condhead == NULL || stephead == NULL || loopbody == NULL )
+    if ( synnode == nullptr || inithead == nullptr || condhead == nullptr ||
+         stephead == nullptr || loopbody == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     finLexNode *lexnode = synnode->getCommandLexNode();
@@ -1061,7 +1062,7 @@ finErrorCode
 finExecMachine::instExecLoopFor(finSyntaxNode *synnode, finExecEnvironment *env, finExecFlowControl *flowctl)
 {
     finErrorCode errcode;
-    finSyntaxNode *inithead, *condhead, *stephead, *loopbody;
+    finSyntaxNode *inithead = nullptr, *condhead = nullptr, *stephead = nullptr, *loopbody = nullptr;
     finLexNode *lexnode = synnode->getCommandLexNode();
     bool goon = true, loopcondok = true;
 
@@ -1296,7 +1297,7 @@ finExecMachine::instExecJumpExit(finSyntaxNode *synnode, finExecEnvironment *env
 
 finErrorCode finExecMachine::instExecJumpConti(finSyntaxNode *synnode, finExecFlowControl *flowctl)
 {
-    if ( synnode == NULL || flowctl == NULL)
+    if ( synnode == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     flowctl->setType(finExecFlowControl::TP_CONTINUE);
@@ -1305,7 +1306,7 @@ finErrorCode finExecMachine::instExecJumpConti(finSyntaxNode *synnode, finExecFl
 
 finErrorCode finExecMachine::instExecJumpBreak(finSyntaxNode *synnode, finExecFlowControl *flowctl)
 {
-    if ( synnode == NULL || flowctl == NULL)
+    if ( synnode == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     flowctl->setType(finExecFlowControl::TP_BREAK);

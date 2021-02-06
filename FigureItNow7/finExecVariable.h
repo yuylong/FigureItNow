@@ -117,9 +117,9 @@ public:
     finExecVariable *getParentVariable() const;
     finErrorCode removeFromArray();
 
-    bool isNumericMatrix(int *rowcnt = NULL, int *colcnt = NULL) const;
-    bool isNumericArray(int *cnt = NULL) const;
-    bool isStringArray(int *cnt = NULL) const;
+    bool isNumericMatrix(int *rowcnt = nullptr, int *colcnt = nullptr) const;
+    bool isNumericArray(int *cnt = nullptr) const;
+    bool isStringArray(int *cnt = nullptr) const;
     int maxArrayLevel() const;
     bool hasMultiLevel() const;
 

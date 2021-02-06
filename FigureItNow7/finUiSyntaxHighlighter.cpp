@@ -144,9 +144,9 @@ static finUiSyntaxHighlighter::TextFormatConfig _defTextFormatConfig[] = {
 
 const QTextCharFormat &finUiSyntaxHighlighter::globalBaseFormat()
 {
-    static QTextCharFormat *basefmt = NULL;
+    static QTextCharFormat *basefmt = nullptr;
 
-    if ( basefmt != NULL )
+    if ( basefmt != nullptr )
         return *basefmt;
 
     basefmt = new QTextCharFormat();

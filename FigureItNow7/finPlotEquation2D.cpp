@@ -27,7 +27,7 @@ finPlotEquation2D::finPlotEquation2D()
     this->_environment = nullptr;
     this->_machine = nullptr;
     this->_flowctl = nullptr;
-    this->_scrtPlot.setFigureContainer(NULL);
+    this->_scrtPlot.setFigureContainer(nullptr);
     this->_scrtPlot.clearPoints();
 }
 

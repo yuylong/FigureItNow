@@ -173,7 +173,7 @@ finExecFunction::execFunction(finSyntaxNode *argnode, finExecEnvironment *env, f
         return errcode;
     }
 
-    errcode = flowctl->checkFlowForProgram(NULL, lexnode, machine);
+    errcode = flowctl->checkFlowForProgram(nullptr, lexnode, machine);
     if ( finErrorKits::isErrorResult(errcode) ) {
         delete subenv;
         return errcode;
@@ -290,7 +290,7 @@ finExecFunction::execFunction(QList<finExecVariable *> *arglist, finExecEnvironm
         return errcode;
     }
 
-    errcode = flowctl->checkFlowForProgram(NULL, nullptr, machine);
+    errcode = flowctl->checkFlowForProgram(nullptr, nullptr, machine);
     if ( finErrorKits::isErrorResult(errcode) ) {
         delete subenv;
         return errcode;
