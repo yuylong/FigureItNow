@@ -52,7 +52,7 @@
    <item>
     <widget class="QLabel" name="lblCopyrights">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Version 0.3.712 alpha&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#000000;&quot;&gt;GNU GENERAL PUBLIC LICENSE, version 3&lt;/span&gt;&lt;br/&gt;Author: Yulong Yu&lt;/p&gt;&lt;p&gt;Copyright(c) 2015 - 2019 Yulong Yu, All Rights Reserved.&lt;/p&gt;&lt;p&gt;GUI Support: QT 5.14.0&lt;br/&gt;Adobe PDF Support: QPdfWriter in QT.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Version 0.4.716 alpha&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#000000;&quot;&gt;GNU GENERAL PUBLIC LICENSE, version 3&lt;/span&gt;&lt;br/&gt;Author: Yulong Yu&lt;/p&gt;&lt;p&gt;Copyright(c) 2015 - 2019 Yulong Yu, All Rights Reserved.&lt;/p&gt;&lt;p&gt;GUI Support: QT 6.0&lt;br/&gt;Adobe PDF Support: QPdfWriter in QT.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="margin">
       <number>8</number>

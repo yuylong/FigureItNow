@@ -15,7 +15,7 @@
 #include <QMap>
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
-#include <QRegExp>
+#include <QRegularExpression>
 
 #include "finErrorCode.h"
 
@@ -66,7 +66,7 @@ protected:
 
     QList<TextFormatConfig> _formatConfig;
     QMap<Type, QTextCharFormat> _formatList;
-    QMap<Type, QRegExp> _regExpList;
+    QMap<Type, QRegularExpression> _regExpList;
 
 public:
     finUiSyntaxHighlighter(QTextDocument *parent = 0);

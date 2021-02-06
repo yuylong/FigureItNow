@@ -38,9 +38,9 @@ QString finSyntaxTree::getScriptCode() const
     QTextStream retstm(&retstr);
 
     for ( int i = 0; i < this->_scriptCodes.count(); i++ ) {
-        retstm << this->_scriptCodes.at(i) << endl;
+        retstm << this->_scriptCodes.at(i) << Qt::endl;
     }
-    retstm << flush;
+    retstm << Qt::flush;
     return retstr;
 }
 
@@ -167,7 +167,7 @@ finErrorCode finSyntaxTree::clearSyntaxNodes()
 
 finErrorCode finSyntaxTree::setScriptCode(const QString &script)
 {
-    this->_scriptCodes = script.split(QChar::LineSeparator, QString::KeepEmptyParts);
+    this->_scriptCodes = script.split(QChar::LineSeparator, Qt::KeepEmptyParts);
     return finErrorKits::EC_NON_IMPLEMENT;
 }
 
@@ -206,16 +206,16 @@ QString finSyntaxTree::dumpSyntaxError(const finSyntaxError &synerr, int idx) co
         retstm << idx;
     else
         retstm << "err";
-    retstm << ": " << synerr.getErrorString() << endl;
+    retstm << ": " << synerr.getErrorString() << Qt::endl;
 
     int row = synerr.getRow();
     int col = synerr.getColumn();
     if ( row < this->_scriptCodes.count() ) {
-        retstm << "Code: " << this->_scriptCodes.at(synerr.getRow()) << endl;
+        retstm << "Code: " << this->_scriptCodes.at(synerr.getRow()) << Qt::endl;
         retstm << "      ";
         for ( int i = 0; i < col; i++ )
             retstm << " ";
-        retstm << "^" << flush;
+        retstm << "^" << Qt::flush;
     }
     return retstr;
 }
@@ -226,7 +226,7 @@ QString finSyntaxTree::dumpSyntaxError(int idx) const
         QString retstr;
         QTextStream retstm(&retstr);
 
-        retstm << idx << ": No such error!" << flush;
+        retstm << idx << ": No such error!" << Qt::flush;
         return retstr;
     }
 

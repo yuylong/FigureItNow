@@ -9,6 +9,7 @@
 #include "finUiSyntaxHighlighter.h"
 
 #include <QTextDocument>
+#include <QRegularExpression>
 
 
 static finUiSyntaxHighlighter::TextFormatConfig _defTextFormatConfig[] = {
@@ -126,6 +127,18 @@ static finUiSyntaxHighlighter::TextFormatConfig _defTextFormatConfig[] = {
         .bgColorValid    = false,
     }, {
         .type            = finUiSyntaxHighlighter::TP_DUMMY,
+        .fontFamily      = QString(""),
+        .fontFamilyValid = false,
+        .fontSize        = 0.0,
+        .fontSizeValid   = false,
+        .fontWeight      = 0,
+        .fontWeightValid = false,
+        .fontItalic      = false,
+        .fontItalicValid = false,
+        .foregroundColor = Qt::black,
+        .fgColorValid    = true,
+        .backgroundColor = Qt::transparent,
+        .bgColorValid    = false,
     }
 };
 
@@ -227,41 +240,41 @@ void finUiSyntaxHighlighter::installFormatList()
 
 void finUiSyntaxHighlighter::installRegExpList()
 {
-    QRegExp regexp;
+    QRegularExpression regexp;
 
     // Keyword
-    regexp = QRegExp(QString("\\b(if|elif|else|for|while|continue|break|return|exit|goto|var)\\b"));
+    regexp = QRegularExpression(QString("\\b(if|elif|else|for|while|continue|break|return|exit|goto|var)\\b"));
     this->_regExpList.insert(TP_KEYWORD, regexp);
 
     // Key functions
-    regexp = QRegExp(QString("\\b(dot|line|polyline|rect|polygon|circle|ellipse|axis|clear_fig|"
+    regexp = QRegularExpression(QString("\\b(dot|line|polyline|rect|polygon|circle|ellipse|axis|clear_fig|"
                                  "draw_(pinned_)?(text|image)|(read|write)_(fig|graph)_config|"
                                  "plot_(function|polar|parametric|equation)|named_color|"
                                  "sin|cos|tan|tg|cot|ctg|ln|log|PI|E)\\b"));
     this->_regExpList.insert(TP_KEYFUNC, regexp);
 
     // Operators
-    regexp = QRegExp(QString("(\\+|\\-|\\-|\\*|\\/|\\^|\\=|\\!|\\&|\\||\\<|\\>|\\$)"));
+    regexp = QRegularExpression(QString("(\\+|\\-|\\-|\\*|\\/|\\^|\\=|\\!|\\&|\\||\\<|\\>|\\$)"));
     this->_regExpList.insert(TP_OPERATOR, regexp);
 
     // Brackets
-    regexp = QRegExp(QString("(\\(|\\)|\\[|\\]|\\{|\\})"));
+    regexp = QRegularExpression(QString("(\\(|\\)|\\[|\\]|\\{|\\})"));
     this->_regExpList.insert(TP_BRACKET, regexp);
 
     // Decimal
-    regexp = QRegExp(QString("\\b[0-9]+(\\.[0-9]+)?([e|E][\\-\\+]?[0-9]+)?\\b"));
+    regexp = QRegularExpression(QString("\\b[0-9]+(\\.[0-9]+)?([e|E][\\-\\+]?[0-9]+)?\\b"));
     this->_regExpList.insert(TP_DECIMAL, regexp);
 
     // String
-    regexp = QRegExp(QString("\\\""));
+    regexp = QRegularExpression(QString("\\\""));
     this->_regExpList.insert(TP_STRING, regexp);
 
     // Comment
-    regexp = QRegExp(QString("\\/\\/"));
+    regexp = QRegularExpression(QString("\\/\\/"));
     this->_regExpList.insert(TP_LINE_COMMENT, regexp);
-    regexp = QRegExp(QString("\\/\\*"));
+    regexp = QRegularExpression(QString("\\/\\*"));
     this->_regExpList.insert(TP_BLOCK_COMMENT_ON, regexp);
-    regexp = QRegExp(QString("\\*\\/"));
+    regexp = QRegularExpression(QString("\\*\\/"));
     this->_regExpList.insert(TP_BLOCK_COMMENT_OFF, regexp);
 }
 
@@ -297,7 +310,7 @@ int finUiSyntaxHighlighter::searchTypedIndex(Type type, const QString &text, int
     if ( !this->_regExpList.contains(type) )
         return -1;
 
-    QRegExp expression = this->_regExpList.value(type);
+    QRegularExpression expression = this->_regExpList.value(type);
     return  text.indexOf(expression, startpos);
 }
 
@@ -334,13 +347,15 @@ int finUiSyntaxHighlighter::handleString(const QString &text, int startpos, QLis
     if ( !this->_regExpList.contains(TP_STRING) )
         return startpos + 1;
 
-    QRegExp expression = this->_regExpList.value(TP_STRING);
-    int lastidx = text.indexOf(expression, startpos + 1);
+    QRegularExpression expression = this->_regExpList.value(TP_STRING);
+    QRegularExpressionMatch expmatch;
+
+    int lastidx = text.indexOf(expression, startpos + 1, &expmatch);
     int length;
     if ( lastidx < 0 ) {
         length = text.length() - startpos;
     } else {
-        lastidx += expression.matchedLength();
+        lastidx += expmatch.capturedLength();
         length = lastidx - startpos;
     }
 
@@ -379,7 +394,7 @@ int finUiSyntaxHighlighter::handleBlockComment(const QString &text, int startpos
     if ( !this->_regExpList.contains(TP_BLOCK_COMMENT_OFF) )
         return startpos + 2;
 
-    QRegExp expression = this->_regExpList.value(TP_BLOCK_COMMENT_OFF);
+    QRegularExpression expression = this->_regExpList.value(TP_BLOCK_COMMENT_OFF);
     finUiSyntaxHighlighter::IgnoreItem newitem;
     newitem._startIdx = startpos;
 
@@ -387,14 +402,15 @@ int finUiSyntaxHighlighter::handleBlockComment(const QString &text, int startpos
     if ( this->currentBlockState() != ST_INCOMMENT )
         fromidx += 2;
 
-    int lastidx = text.indexOf(expression, fromidx);
+    QRegularExpressionMatch expmatch;
+    int lastidx = text.indexOf(expression, fromidx, &expmatch);
     int length;
     if ( lastidx < 0 ) {
         this->setCurrentBlockState(ST_INCOMMENT);
         length = text.length() - startpos;
     } else {
         this->setCurrentBlockState(ST_NORMAL);
-        lastidx += expression.matchedLength();
+        lastidx += expmatch.capturedLength();
         length = lastidx - startpos;
     }
 
@@ -453,11 +469,12 @@ void finUiSyntaxHighlighter::handleNormalType(finUiSyntaxHighlighter::Type type,
         return;
 
     QTextCharFormat format = this->getTypedFormat(type);
-    QRegExp expression = this->_regExpList.value(type);
+    QRegularExpression expression = this->_regExpList.value(type);
 
-    int index = text.indexOf(expression);
+    QRegularExpressionMatch expmatch;
+    int index = text.indexOf(expression, 0, &expmatch);
     while ( index >= 0 ) {
-        int length = expression.matchedLength();
+        int length = expmatch.capturedLength();
         if ( !this->inIgnoreRange(index, length, ignorerange) )
             this->setFormat(index, length, format);
         index = text.indexOf(expression, index + length);

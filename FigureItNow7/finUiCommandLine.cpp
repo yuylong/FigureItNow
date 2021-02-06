@@ -152,7 +152,7 @@ finErrorCode finUiCommandLine::compileAndRunScript(const QString &filename, finF
     QFile infile(filename);
     bool openok = infile.open(QIODevice::ReadOnly);
     if ( !openok ) {
-        qWarning() << "Cannot open file: " << filename << endl;
+        qWarning() << "Cannot open file: " << filename << Qt::endl;
         return finErrorKits::EC_FILE_NOT_OPEN;
     }
 

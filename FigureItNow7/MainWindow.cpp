@@ -156,8 +156,8 @@ QString MainWindow::getSaveFileQuestionString(finUiScriptEditor *editor) const
     QString str;
     QTextStream out(&str, QIODevice::WriteOnly);
 
-    out << editor->getFileDisplayPath() << QString(" is not saved.") << endl;
-    out << "Save it?" << endl;
+    out << editor->getFileDisplayPath() << QString(" is not saved.") << Qt::endl;
+    out << "Save it?" << Qt::endl;
     return str;
 }
 

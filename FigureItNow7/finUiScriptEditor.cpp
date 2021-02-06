@@ -89,7 +89,7 @@ const QString &finUiScriptEditor::getFileDisplayPath() const
 finErrorCode finUiScriptEditor::setFilename(const QString &filepath)
 {
     this->_filepath = filepath;
-    this->_filename = filepath.split(QRegExp(QString("[\\\\\\/]"))).last();
+    this->_filename = filepath.split(QRegularExpression(QString("[\\\\\\/]"))).last();
     return finErrorKits::EC_SUCCESS;
 }
 

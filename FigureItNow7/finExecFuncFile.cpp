@@ -247,10 +247,10 @@ static finErrorCode _sysfunc_save_numerical_csv(finExecFunction *self, finExecEn
         int lncnt = aryvar->getArrayLength();
         for ( int i = 0; i < lncnt; i++ ) {
             finExecVariable *rowvar = aryvar->getVariableItemAt(i);
-            tsout << finExecAlg::numArrayVarToCsString(rowvar) << endl;
+            tsout << finExecAlg::numArrayVarToCsString(rowvar) << Qt::endl;
         }
     } else {
-        tsout << finExecAlg::numArrayVarToCsString(aryvar) << endl;
+        tsout << finExecAlg::numArrayVarToCsString(aryvar) << Qt::endl;
     }
     fp.close();
 
@@ -293,10 +293,10 @@ static finErrorCode _sysfunc_save_auto_csv(finExecFunction *self, finExecEnviron
         int lncnt = aryvar->getArrayLength();
         for ( int i = 0; i < lncnt; i++ ) {
             finExecVariable *rowvar = aryvar->getVariableItemAt(i);
-            tsout << finExecAlg::arrayVarToCsString(rowvar) << endl;
+            tsout << finExecAlg::arrayVarToCsString(rowvar) << Qt::endl;
         }
     } else {
-        tsout << finExecAlg::arrayVarToCsString(aryvar) << endl;
+        tsout << finExecAlg::arrayVarToCsString(aryvar) << Qt::endl;
     }
     fp.close();
 

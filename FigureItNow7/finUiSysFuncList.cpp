@@ -114,7 +114,7 @@ void _propMapToTextStream(const QMap<QString, QVariant> &propmap, QTextStream &s
         if ( value.isNull() )
             continue;
 
-        strm << key << ": " << value.toString() << endl;
+        strm << key << ": " << value.toString() << Qt::endl;
     }
 }
 
@@ -132,8 +132,8 @@ QString finUiSysFuncList::getItemDescString(QTreeWidgetItem *item)
 
     QString retstr;
     QTextStream strm(&retstr);
-    strm << QString("Name: ") << itemname << endl;
-    strm << QString("Type: ") << type << endl;
+    strm << QString("Name: ") << itemname << Qt::endl;
+    strm << QString("Type: ") << type << Qt::endl;
 
     if ( type.compare(QString("Function")) == 0 ) {
         QStringList keylist;

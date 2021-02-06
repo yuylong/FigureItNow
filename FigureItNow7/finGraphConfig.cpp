@@ -389,7 +389,8 @@ QString finGraphConfig::getRenderHintsName(const QPainter::RenderHints &hints)
 QPainter::RenderHints finGraphConfig::parseRenderHints(const QString &name)
 {
     if ( QString::compare(name, QString("none"), Qt::CaseInsensitive) == 0 ) {
-        return 0x0;
+        // TODO: Use QFlag instead
+        return QPainter::Antialiasing;
     } else if ( QString::compare(name, QString("high_antialiasing"), Qt::CaseInsensitive) == 0 ) {
         return (QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     } else if ( QString::compare(name, QString("antialiasing"), Qt::CaseInsensitive) == 0 ) {
@@ -397,6 +398,7 @@ QPainter::RenderHints finGraphConfig::parseRenderHints(const QString &name)
     } else if ( QString::compare(name, QString("smooth_image"), Qt::CaseInsensitive) == 0 ) {
         return (QPainter::SmoothPixmapTransform);
     } else {
-        return 0x0;
+        // TODO: Use QFlag instead
+        return QPainter::Antialiasing;
     }
 }
