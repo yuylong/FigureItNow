@@ -117,6 +117,9 @@ public:
      * \see ErrorCode
      */
     static bool isErrorResult(enum ErrorCode errcode);
+
+private:
+    static QString _defErrorString;
 };
 
 /*! \typedef finErrorCode

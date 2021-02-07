@@ -8,57 +8,59 @@
 
 #include "finErrorCode.h"
 
-const static struct {
+#include <QObject>
+
+static const struct {
     finErrorCode _errCode;
     const QString _errString;
 } _finErrorCodeStringMap[] =
 {
     // Success
     { finErrorKits::EC_SUCCESS,
-        QString("No error")                                      },
+        QObject::tr("No error")                                  },
 
     // Warnings
     { finErrorKits::EC_DUPLICATE_OP,
-        QString("Duplicated operations")                         },
+        QObject::tr("Duplicated operations")                     },
     { finErrorKits::EC_REACH_BOTTOM,
-        QString("Reach accessing bottom")                        },
+        QObject::tr("Reach accessing bottom")                    },
     { finErrorKits::EC_UNREADY_WARN,
-        QString("Unready object detected")                       },
+        QObject::tr("Unready object detected")                   },
     { finErrorKits::EC_PRECISE_LOSS,
-        QString("Success with precise loss")                     },
+        QObject::tr("Success with precise loss")                 },
     { finErrorKits::EC_NORMAL_WARN,
-        QString("Success with warning")                          },
+        QObject::tr("Success with warning")                      },
 
     // Errors
     { finErrorKits::EC_NULL_POINTER,
-        QString("Access to null pointer")                        },
+        QObject::tr("Access to null pointer")                    },
     { finErrorKits::EC_FILE_NOT_OPEN,
-        QString("File does not open")                            },
+        QObject::tr("File does not open")                        },
     { finErrorKits::EC_OUT_OF_MEMORY,
-        QString("Out of memory")                                 },
+        QObject::tr("Out of memory")                             },
     { finErrorKits::EC_OVERFLOW,
-        QString("Calculation overflow")                          },
+        QObject::tr("Calculation overflow")                      },
     { finErrorKits::EC_NOT_FOUND,
-        QString("Object not found")                              },
+        QObject::tr("Object not found")                          },
     { finErrorKits::EC_READ_ERROR,
-        QString("Reading object failure")                        },
+        QObject::tr("Reading object failure")                    },
     { finErrorKits::EC_CONTENTION,
-        QString("Requested position is occupied.")               },
+        QObject::tr("Requested position is occupied.")           },
     { finErrorKits::EC_INVALID_PARAM,
-        QString("Invalid Parameter")                             },
+        QObject::tr("Invalid Parameter")                         },
     { finErrorKits::EC_STATE_ERROR,
-        QString("Operation on a wrong state")                    },
+        QObject::tr("Operation on a wrong state")                },
     { finErrorKits::EC_UNKNOWN_ERROR,
-        QString("Unkown error")                                  },
+        QObject::tr("Unkown error")                              },
     { finErrorKits::EC_NON_IMPLEMENT,
-        QString("Non-implement")                                 },
+        QObject::tr("Non-implement")                             },
 
     // Dummy End
     { finErrorKits::EC_DUMMY,
         QString("")                                              }
 };
 
-static const QString _finDefaultErrString("Unknown error");
+QString finErrorKits::_defErrorString = QObject::tr("Unknown error");
 
 finErrorKits::finErrorKits()
 {
@@ -82,7 +84,7 @@ finErrorKits::errcodeToString(enum ErrorCode errcode)
             return &_finErrorCodeStringMap[i]._errString;
         i++;
     }
-    return &_finDefaultErrString;
+    return &_defErrorString;
 }
 
 bool
