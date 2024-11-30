@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include <QByteArray>
-#include <QTextCodec>
 
 
 finSyntaxErrorDump::finSyntaxErrorDump()
@@ -35,7 +34,7 @@ finSyntaxErrorDumpCout::~finSyntaxErrorDumpCout()
 
 void finSyntaxErrorDumpCout::dumpText(const QString &text)
 {
-    QByteArray ba = QTextCodec::codecForLocale()->fromUnicode(text);
+    QByteArray ba = text.toUtf8();
     std::cout << ba.data() << std::endl;
 }
 
