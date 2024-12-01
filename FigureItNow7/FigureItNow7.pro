@@ -4,14 +4,25 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
+QT += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets svg printsupport
-#greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
+
+exists (./.git) {
+    GIT_BRANCH = $$system(git rev-parse --abbrev-ref HEAD)
+    GIT_TIME = $$system(git show --oneline --format=\"%ci%H\" -s HEAD)
+    APP_VERSION = $$system(git describe --tags --dirty HEAD)
+} else {
+    GIT_BRANCH = None
+    GIT_TIME = None
+    APP_VERSION = None
+}
+
+DEFINES += GIT_BRANCH=\"\\\"$$GIT_BRANCH\\\"\"
+DEFINES += GIT_TIME=\"\\\"$$GIT_TIME\\\"\"
+DEFINES += APP_VERSION=\"\\\"$$APP_VERSION\\\"\"
 
 TARGET = FigureItNow7
 TEMPLATE = app
-
 
 SOURCES += main.cpp\
         MainWindow.cpp \
