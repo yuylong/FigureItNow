@@ -1,5 +1,6 @@
 FigureItNow7/build
 *.user
+*.autosave
 build-FigureItNow7*
 *.user.*
 .DS_Store
