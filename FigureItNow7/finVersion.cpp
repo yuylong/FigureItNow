@@ -50,7 +50,12 @@ QString finVersionTools::versionString(quint16 major, quint16 minor, quint32 bui
 QString finVersionTools::versionString(Version ver, QString prefix, QString suffix)
 {
     QString retstr;
-    QTextStream(&retstr) << prefix << ver.major << "." << ver.minor << "." << ver.revision << "-" << suffix;
+    QTextStream retstrts = QTextStream(&retstr);
+
+    retstrts << prefix << ver.major << "." << ver.minor;
+    if (ver.revision != 0)
+        retstrts << "." << ver.revision;
+    retstrts << "-" << suffix;
     return retstr;
 }
 
