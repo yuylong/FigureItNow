@@ -26,6 +26,8 @@ public:
 
 private:
     Ui::finUiAboutDlg *ui;
+
+    void renderVersionInfo();
 };
 
 #endif // FINUIABOUTDLG_H

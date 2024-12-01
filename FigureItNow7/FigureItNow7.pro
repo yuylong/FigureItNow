@@ -7,10 +7,10 @@
 QT += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets svg printsupport
 
-exists (./.git) {
+system ("git status") {
     GIT_BRANCH = $$system(git rev-parse --abbrev-ref HEAD)
-    GIT_TIME = $$system(git show --oneline --format=\"%ci%H\" -s HEAD)
-    APP_VERSION = $$system(git describe --tags --dirty HEAD)
+    GIT_TIME = $$system(git show --oneline --format=\"%ci\" -s HEAD)
+    APP_VERSION = $$system(git describe --tags --dirty)
 } else {
     GIT_BRANCH = None
     GIT_TIME = None
