@@ -834,7 +834,7 @@ static finErrorCode _sysfunc_named_color(finExecFunction *self, finExecEnvironme
         return finErrorKits::EC_INVALID_PARAM;
 
     QString colorname = colornamevar->getStringValue();
-    if ( !QColor::isValidColor(colorname) )
+    if ( !QColor::isValidColorName(colorname) )
         return finErrorKits::EC_INVALID_PARAM;
 
     QColor color = QColor(colorname);

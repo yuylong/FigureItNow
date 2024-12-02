@@ -35,6 +35,12 @@ finErrorCode finSyntaxError::copySyntaxError(const finSyntaxError *src)
     return finErrorKits::EC_SUCCESS;
 }
 
+finSyntaxError &finSyntaxError::operator =(const finSyntaxError &src)
+{
+    copySyntaxError(&src);
+    return *this;
+}
+
 finSyntaxError::Level finSyntaxError::getLevel() const
 {
     return this->_level;

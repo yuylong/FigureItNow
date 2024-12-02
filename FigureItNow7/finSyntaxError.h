@@ -46,6 +46,7 @@ public:
     finSyntaxError(const finSyntaxError &src);
 
     finErrorCode copySyntaxError(const finSyntaxError *src);
+    finSyntaxError &operator =(const finSyntaxError &src);
 
     Level getLevel() const;
     Stage getStage() const;

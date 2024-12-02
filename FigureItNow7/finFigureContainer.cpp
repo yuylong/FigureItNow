@@ -76,7 +76,8 @@ void finFigureContainer::clearFigureObjects()
 
 void finFigureContainer::dump() const
 {
-    printf ("Figure Container (Cnt: %d)\n", this->_figList.count());
+    // FIXME: Use QT C++ stream function instead.
+    printf ("Figure Container (Cnt: %ld)\n", (long)this->_figList.count());
 
     for ( int i = 0; i < this->_figList.count(); i++ )
         this->_figList.at(i)->dump();

@@ -150,7 +150,7 @@ const QTextCharFormat &finUiSyntaxHighlighter::globalBaseFormat()
         return *basefmt;
 
     basefmt = new QTextCharFormat();
-    basefmt->setFontFamily(QString("Consolas"));
+    basefmt->setFontFamilies(QStringList(QString("Consolas")));
     basefmt->setFontPointSize(10.0);
     basefmt->setFontWeight(QFont::Normal);
     basefmt->setFontItalic(false);
@@ -177,7 +177,7 @@ QTextCharFormat finUiSyntaxHighlighter::convertConfigToFormat(TextFormatConfig c
     QTextCharFormat retfmt = basefmt;
 
     if (config.fontFamilyValid)
-        retfmt.setFontFamily(config.fontFamily);
+        retfmt.setFontFamilies(QStringList(config.fontFamily));
     if (config.fontSizeValid)
         retfmt.setFontPointSize(config.fontSize);
     if (config.fontWeightValid)
