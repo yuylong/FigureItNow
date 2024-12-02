@@ -17,7 +17,7 @@ finVersionTools::Version finVersionTools::_currentVersion = finVersionTools::ver
 QString finVersionTools::_currentVersionPrefix = QString("v");
 QString finVersionTools::_currentVersionSuffix = QString("alpha");
 QString finVersionTools::_currentGitBranch = QString(GIT_BRANCH);
-QString finVersionTools::_currentGitDate = QString(GIT_TIME);
+QString finVersionTools::_currentGitDate = QString(GIT_TIME).replace("-D", "");
 QString finVersionTools::_currentGitVersion = QString(APP_VERSION);
 
 finVersionTools::finVersionTools()
