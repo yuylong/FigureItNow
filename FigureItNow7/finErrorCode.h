@@ -15,6 +15,7 @@
 #define FINERRORCODE_H
 
 #include <QObject>
+#include <QException>
 #include <QString>
 
 
@@ -129,5 +130,22 @@ private:
  * finErrorKits::ErrorCode for short.
  */
 typedef enum finErrorKits::ErrorCode finErrorCode;
+
+class finException : QException
+{
+private:
+    finErrorCode _errCode;
+    QString _errDesc;
+
+public:
+    finException(finErrorCode errcode, QString errdesc = "");
+    finException(const finException &e);
+
+    finErrorCode getErrorCode() const;
+    const QString &getErrorDescription() const;
+
+    void raise() const override;
+    finException *clone() const override;
+};
 
 #endif // FINERRORCODE_H

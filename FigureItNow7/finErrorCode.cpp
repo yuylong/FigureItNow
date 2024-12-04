@@ -93,3 +93,31 @@ finErrorKits::isErrorResult(enum ErrorCode errcode)
     // Any error code less than 0 is recognized as an error.
     return (errcode < 0);
 }
+
+finException::finException(finErrorCode errcode, QString errdesc)
+    : _errCode(errcode), _errDesc(errdesc)
+{ /* Do Nothing */ }
+
+finException::finException(const finException &e)
+    : _errCode(e._errCode), _errDesc(e._errDesc)
+{ /* Do Nothing */ }
+
+finErrorCode finException::getErrorCode() const
+{
+    return this->_errCode;
+}
+
+const QString &finException::getErrorDescription() const
+{
+    return this->_errDesc;
+}
+
+void finException::raise() const
+{
+    throw *this;
+}
+
+finException *finException::clone() const
+{
+    return new finException(*this);
+}
