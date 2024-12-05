@@ -29,10 +29,7 @@ finErrorCode finSyntaxNode::copyNode(const finSyntaxNode *srcnode)
         return finErrorKits::EC_SUCCESS;
 
     this->_type = srcnode->getType();
-
-    errcode = this->_cmdLexNode.copyNode(srcnode->getCommandLexNode());
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    this->_cmdLexNode.copyNode(srcnode->getCommandLexNode());
 
     for ( int i = 0; i < srcnode->getSubListCount(); i++ ) {
         finSyntaxNode *synnode = new finSyntaxNode();

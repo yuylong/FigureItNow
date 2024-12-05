@@ -93,8 +93,8 @@ public:
     finLexNode();
     finLexNode(const finLexNode &src);
 
-    finErrorCode reset();
-    finErrorCode copyNode(const finLexNode *srcnode);
+    void reset();
+    void copyNode(const finLexNode *srcnode);
 
     Type getType() const;
     QString getString() const;
@@ -104,13 +104,13 @@ public:
     unsigned int getRow() const;
     unsigned int getColumn() const;
 
-    finErrorCode setType(Type type);
-    finErrorCode setString(const QString &str);
-    finErrorCode setFloatValue(double val);
-    finErrorCode setOperator(Operator optype);
-    finErrorCode setStringValue(const QString &strval);
-    finErrorCode setRow(unsigned int row);
-    finErrorCode setColumn(unsigned int column);
+    void setType(Type type);
+    void setString(const QString &str);
+    void setFloatValue(double val);
+    void setOperator(Operator optype);
+    void setStringValue(const QString &strval);
+    void setRow(unsigned int row);
+    void setColumn(unsigned int column);
 };
 
 typedef enum finLexNode::Type finLexNodeType;

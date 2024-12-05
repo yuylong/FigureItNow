@@ -25,7 +25,7 @@ finLexNode::finLexNode(const finLexNode &src)
     this->copyNode(&src);
 }
 
-finErrorCode finLexNode::reset()
+void finLexNode::reset()
 {
     this->_string = QString();
     this->_type = TP_DUMMY;
@@ -33,10 +33,9 @@ finErrorCode finLexNode::reset()
     memset(this->_u._rawData, 0, sizeof (this->_u));
     this->_row = 0;
     this->_column = 0;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finLexNode::copyNode(const finLexNode *srcnode)
+void finLexNode::copyNode(const finLexNode *srcnode)
 {
     if ( srcnode == nullptr )
         return this->reset();
@@ -60,7 +59,6 @@ finErrorCode finLexNode::copyNode(const finLexNode *srcnode)
         memset(this->_u._rawData, 0, sizeof (this->_u));
         break;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finLexNodeType finLexNode::getType() const
@@ -107,53 +105,46 @@ unsigned int finLexNode::getColumn() const
     return this->_column;
 }
 
-finErrorCode finLexNode::setType(finLexNodeType type)
+void finLexNode::setType(finLexNodeType type)
 {
     this->_type = type;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finLexNode::setString(const QString &str)
+void finLexNode::setString(const QString &str)
 {
     this->_string = str;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finLexNode::setFloatValue(double val)
+void finLexNode::setFloatValue(double val)
 {
     if ( this->_type != TP_DECIMAL )
-        return finErrorKits::EC_STATE_ERROR;
+        throw finException(finErrorKits::EC_STATE_ERROR, "Setup float value to non-numeric lex node.");
 
     this->_u._floatValue = val;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finLexNode::setOperator(finLexOperatorType optype)
+void finLexNode::setOperator(finLexOperatorType optype)
 {
     if ( this->_type != TP_OPERATOR )
-        return finErrorKits::EC_STATE_ERROR;
+        throw finException(finErrorKits::EC_STATE_ERROR, "Setup operator type to non-operator lex node.");
 
     this->_u._operator = optype;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finLexNode::setStringValue(const QString &strval)
+void finLexNode::setStringValue(const QString &strval)
 {
     if ( this->_type != TP_STRING )
-        return finErrorKits::EC_STATE_ERROR;
+        throw finException(finErrorKits::EC_STATE_ERROR, "Setup string to non-string lex node.");
 
     this->_stringValue = strval;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finLexNode::setRow(unsigned int row)
+void finLexNode::setRow(unsigned int row)
 {
     this->_row = row;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finLexNode::setColumn(unsigned int column)
+void finLexNode::setColumn(unsigned int column)
 {
     this->_column = column;
-    return finErrorKits::EC_SUCCESS;
 }
