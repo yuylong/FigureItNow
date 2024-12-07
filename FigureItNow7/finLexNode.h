@@ -14,7 +14,7 @@
 #include "finErrorCode.h"
 
 
-class finLexNode
+class finLexNode : finExceptionObject
 {
 public:
     enum Type
@@ -111,6 +111,8 @@ public:
     void setStringValue(const QString &strval);
     void setRow(unsigned int row);
     void setColumn(unsigned int column);
+
+    virtual QString dumpObjInfo() const override;
 };
 
 typedef enum finLexNode::Type finLexNodeType;

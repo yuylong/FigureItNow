@@ -18,7 +18,6 @@
 #include <QException>
 #include <QString>
 
-
 /*! \class finErrorKits
  *  \brief The globally definitions and the tools of Error Codes
  *
@@ -131,14 +130,21 @@ private:
  */
 typedef enum finErrorKits::ErrorCode finErrorCode;
 
+class finExceptionObject
+{
+public:
+    virtual QString dumpObjInfo() const = 0;
+};
+
 class finException : QException
 {
 private:
     finErrorCode _errCode;
     QString _errDesc;
+    finExceptionObject *_errObj;
 
 public:
-    finException(finErrorCode errcode, QString errdesc = "");
+    finException(finErrorCode errcode, QString errdesc = "", finExceptionObject *errobj = nullptr);
     finException(const finException &e);
 
     finErrorCode getErrorCode() const;

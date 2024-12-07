@@ -94,12 +94,12 @@ finErrorKits::isErrorResult(enum ErrorCode errcode)
     return (errcode < 0);
 }
 
-finException::finException(finErrorCode errcode, QString errdesc)
-    : _errCode(errcode), _errDesc(errdesc)
+finException::finException(finErrorCode errcode, QString errdesc, finExceptionObject *errobj)
+    : _errCode(errcode), _errDesc(errdesc), _errObj(errobj)
 { /* Do Nothing */ }
 
 finException::finException(const finException &e)
-    : _errCode(e._errCode), _errDesc(e._errDesc)
+    : _errCode(e._errCode), _errDesc(e._errDesc), _errObj(e._errObj)
 { /* Do Nothing */ }
 
 finErrorCode finException::getErrorCode() const

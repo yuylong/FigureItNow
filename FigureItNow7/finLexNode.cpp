@@ -9,6 +9,7 @@
 #include "finLexNode.h"
 
 #include <stdlib.h>
+#include <QTextStream>
 
 
 finLexNode::finLexNode() :
@@ -118,7 +119,7 @@ void finLexNode::setString(const QString &str)
 void finLexNode::setFloatValue(double val)
 {
     if ( this->_type != TP_DECIMAL )
-        throw finException(finErrorKits::EC_STATE_ERROR, "Setup float value to non-numeric lex node.");
+        throw finException(finErrorKits::EC_STATE_ERROR, "Setup float value to non-numeric lex node.", this);
 
     this->_u._floatValue = val;
 }
@@ -126,7 +127,7 @@ void finLexNode::setFloatValue(double val)
 void finLexNode::setOperator(finLexOperatorType optype)
 {
     if ( this->_type != TP_OPERATOR )
-        throw finException(finErrorKits::EC_STATE_ERROR, "Setup operator type to non-operator lex node.");
+        throw finException(finErrorKits::EC_STATE_ERROR, "Setup operator type to non-operator lex node.", this);
 
     this->_u._operator = optype;
 }
@@ -134,7 +135,7 @@ void finLexNode::setOperator(finLexOperatorType optype)
 void finLexNode::setStringValue(const QString &strval)
 {
     if ( this->_type != TP_STRING )
-        throw finException(finErrorKits::EC_STATE_ERROR, "Setup string to non-string lex node.");
+        throw finException(finErrorKits::EC_STATE_ERROR, "Setup string to non-string lex node.", this);
 
     this->_stringValue = strval;
 }
@@ -147,4 +148,22 @@ void finLexNode::setRow(unsigned int row)
 void finLexNode::setColumn(unsigned int column)
 {
     this->_column = column;
+}
+
+QString finLexNode::dumpObjInfo() const
+{
+    QString retstr;
+    QTextStream ts(&retstr);
+
+    ts << "[" << this->_row << ":" << this->_column << "] " << this->_string << "(" << this->_type << ") = ";
+    switch (this->_type) {
+    case finLexNode::TP_DECIMAL:
+        ts << this->_u._floatValue; break;
+    case finLexNode::TP_OPERATOR:
+        ts << this->_u._operator; break;
+    default:
+        ts << this->_stringValue; break;
+    }
+
+    return retstr;
 }
