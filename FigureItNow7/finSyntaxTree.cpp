@@ -90,17 +90,14 @@ finErrorCode finSyntaxTree::appendSyntaxNode(const finSyntaxNode *synnode)
     if ( mynode == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    finErrorCode errcode = mynode->copyNode(synnode);
-    if ( finErrorKits::isErrorResult(errcode) ) {
+    try {
+        mynode->copyNode(synnode);
+        this->_rootNode.appendSubSyntaxNode(mynode);
+    } catch (finException &e) {
         delete mynode;
-        return errcode;
+        throw e;
     }
 
-    errcode = this->_rootNode.appendSubSyntaxNode(mynode);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete mynode;
-        return errcode;
-    }
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -116,16 +113,12 @@ finErrorCode finSyntaxTree::prependSyntaxNode(const finSyntaxNode *synnode)
     if ( mynode == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    finErrorCode errcode = mynode->copyNode(synnode);
-    if ( finErrorKits::isErrorResult(errcode) ) {
+    try {
+        mynode->copyNode(synnode);
+        this->_rootNode.prependSubSyntaxNode(mynode);
+    } catch (finException &e) {
         delete mynode;
-        return errcode;
-    }
-
-    errcode = this->_rootNode.prependSubSyntaxNode(mynode);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete mynode;
-        return errcode;
+        throw e;
     }
     return finErrorKits::EC_SUCCESS;
 }

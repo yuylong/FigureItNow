@@ -43,12 +43,7 @@ finErrorCode finSyntaxNode::copyNode(const finSyntaxNode *srcnode)
             return errcode;
         }
 
-        errcode = this->appendSubSyntaxNode(synnode);
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            synnode->disposeAll();
-            delete synnode;
-            return errcode;
-        }
+        this->appendSubSyntaxNode(synnode);
     }
     return finErrorKits::EC_SUCCESS;
 }
@@ -84,35 +79,24 @@ finSyntaxNode *finSyntaxNode::getSubSyntaxNode(int idx) const
     return this->_subSyntaxList.at(idx);
 }
 
-finErrorCode finSyntaxNode::setType(finSyntaxNodeType type)
+void finSyntaxNode::setType(finSyntaxNodeType type)
 {
-    if ( this->_type == type )
-        return finErrorKits::EC_DUPLICATE_OP;
-
     this->_type = type;
-
-    if ( type == TP_DUMMY || type == TP_MAX )
-        return finErrorKits::EC_NORMAL_WARN;
-    else
-        return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxNode::setCommandLexNode(const finLexNode *lexnode)
+void finSyntaxNode::setCommandLexNode(const finLexNode *lexnode)
 {
     this->_cmdLexNode.copyNode(lexnode);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxNode::appendSubSyntaxNode(finSyntaxNode *synnode)
+void finSyntaxNode::appendSubSyntaxNode(finSyntaxNode *synnode)
 {
     this->_subSyntaxList.append(synnode);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxNode::prependSubSyntaxNode(finSyntaxNode *synnode)
+void finSyntaxNode::prependSubSyntaxNode(finSyntaxNode *synnode)
 {
     this->_subSyntaxList.prepend(synnode);
-    return finErrorKits::EC_SUCCESS;
 }
 
 finSyntaxNode *finSyntaxNode::pickSubSyntaxNode(int idx)
@@ -137,38 +121,27 @@ bool finSyntaxNode::isExpressLevelType(finSyntaxNodeType type)
     }
 }
 
-finErrorCode finSyntaxNode::disposeCommandLexNode()
+void finSyntaxNode::disposeCommandLexNode()
 {
     this->_cmdLexNode.setType(finLexNode::TP_DUMMY);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxNode::disposeSubSyntaxNodes()
+void finSyntaxNode::disposeSubSyntaxNodes()
 {
     if ( this->_subSyntaxList.count() == 0 )
-        return finErrorKits::EC_DUPLICATE_OP;
+        return;
 
     while ( this->_subSyntaxList.count() > 0 ) {
         finSyntaxNode *subtk = this->_subSyntaxList.at(0);
         this->_subSyntaxList.removeFirst();
         delete subtk;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxNode::disposeAll()
+void finSyntaxNode::disposeAll()
 {
-    finErrorCode errcode1, errcode2;
-
-    errcode1 = this->disposeCommandLexNode();
-    errcode2 = this->disposeSubSyntaxNodes();
-
-    if ( finErrorKits::isErrorResult(errcode1) )
-        return errcode1;
-    else if ( finErrorKits::isErrorResult(errcode2) )
-        return errcode2;
-    else
-        return finErrorKits::EC_SUCCESS;
+    this->disposeCommandLexNode();
+    this->disposeSubSyntaxNodes();
 }
 
 bool finSyntaxNode::isStatementLevelType(finSyntaxNodeType type)

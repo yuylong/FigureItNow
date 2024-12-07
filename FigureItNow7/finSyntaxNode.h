@@ -60,15 +60,15 @@ public:
 
     void dump() const;
 
-    finErrorCode setType(Type type);
-    finErrorCode setCommandLexNode(const finLexNode *lexnode);
-    finErrorCode appendSubSyntaxNode(finSyntaxNode *synnode);
-    finErrorCode prependSubSyntaxNode(finSyntaxNode *synnode);
+    void setType(Type type);
+    void setCommandLexNode(const finLexNode *lexnode);
+    void appendSubSyntaxNode(finSyntaxNode *synnode);
+    void prependSubSyntaxNode(finSyntaxNode *synnode);
     finSyntaxNode *pickSubSyntaxNode(int idx);
 
-    finErrorCode disposeCommandLexNode();
-    finErrorCode disposeSubSyntaxNodes();
-    finErrorCode disposeAll();
+    void disposeCommandLexNode();
+    void disposeSubSyntaxNodes();
+    void disposeAll();
 
     static bool isExpressLevelType(Type type);
     static bool isStatementLevelType(Type type);

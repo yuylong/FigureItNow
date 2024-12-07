@@ -627,14 +627,8 @@ finErrorCode finSyntaxReader::pushSingleLexNode(finLexNode *lexnode, finSyntaxNo
     if ( synnode == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    finErrorCode errcode;
-    errcode = synnode->setType(tktype);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
-    errcode = synnode->setCommandLexNode(lexnode);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    synnode->setType(tktype);
+    synnode->setCommandLexNode(lexnode);
 
     this->_syntaxStack.prepend(synnode);
     return finErrorKits::EC_SUCCESS;
