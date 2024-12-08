@@ -133,7 +133,8 @@ finErrorCode finPlotPolar::setFlowControl(finExecFlowControl *flowctl)
 
 finErrorCode finPlotPolar::setFigureContainer(finFigureContainer *figcontainer)
 {
-    return this->_stmPlot.setFigureContainer(figcontainer);
+    this->_stmPlot.setFigureContainer(figcontainer);
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finPlotPolar::checkValid() const

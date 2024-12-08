@@ -165,7 +165,8 @@ finErrorCode finPlotEquation2D::setFlowControl(finExecFlowControl *flowctl)
 
 finErrorCode finPlotEquation2D::setFigureContainer(finFigureContainer *figcontainer)
 {
-    return this->_scrtPlot.setFigureContainer(figcontainer);
+    this->_scrtPlot.setFigureContainer(figcontainer);
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finPlotEquation2D::checkValid() const

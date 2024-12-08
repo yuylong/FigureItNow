@@ -30,15 +30,15 @@ public:
     const QPointF &getPointAt(int idx) const;
     finFigureContainer *getFigureContainer() const;
 
-    finErrorCode appendPoint(const QPointF &pt);
-    finErrorCode appendPoint(double ptx, double pty);
-    finErrorCode appendPoints(const QList<QPointF> &ptlist);
-    finErrorCode prependPoint(const QPointF &pt);
-    finErrorCode prependPoint(double ptx, double pty);
-    finErrorCode prependPoints(const QList<QPointF> &ptlist);
-    finErrorCode clearPoints();
+    void appendPoint(const QPointF &pt);
+    void appendPoint(double ptx, double pty);
+    void appendPoints(const QList<QPointF> &ptlist);
+    void prependPoint(const QPointF &pt);
+    void prependPoint(double ptx, double pty);
+    void prependPoints(const QList<QPointF> &ptlist);
+    void clearPoints();
 
-    finErrorCode setFigureContainer(finFigureContainer *figcontainer);
+    void setFigureContainer(finFigureContainer *figcontainer);
 
     virtual finErrorCode plot();
 };
@@ -49,7 +49,7 @@ public:
     finPlotDotsLine();
     virtual ~finPlotDotsLine();
 
-    virtual finErrorCode plot();
+    virtual finErrorCode plot() override;
 };
 
 class finPlotDotsStream : public finPlotDots
@@ -69,7 +69,7 @@ public:
     finErrorCode appendBreakPoint(double ptx, double pty);
     finErrorCode clearBreakPoints();
 
-    virtual finErrorCode plot();
+    virtual finErrorCode plot() override;
 
 private:
     bool checkBreakPointFrom(const QPointF &pt, int fromidx, int *nextidx) const;
@@ -89,7 +89,7 @@ public:
     double getDistanceLimit() const;
     finErrorCode setDistanceLimit(double limit);
 
-    virtual finErrorCode plot();
+    virtual finErrorCode plot() override;
 
 private:
     bool isNaNOrInfPoint(const QPointF &pt) const;

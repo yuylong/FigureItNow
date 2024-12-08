@@ -44,54 +44,46 @@ finFigureContainer *finPlotDots::getFigureContainer() const
     return this->_figcontainer;
 }
 
-finErrorCode finPlotDots::appendPoint(const QPointF &pt)
+void finPlotDots::appendPoint(const QPointF &pt)
 {
     this->_ptList.append(pt);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotDots::appendPoint(double ptx, double pty)
+void finPlotDots::appendPoint(double ptx, double pty)
 {
     this->_ptList.append(QPointF(ptx, pty));
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotDots::appendPoints(const QList<QPointF> &ptlist)
+void finPlotDots::appendPoints(const QList<QPointF> &ptlist)
 {
     this->_ptList.append(ptlist);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotDots::prependPoint(const QPointF &pt)
+void finPlotDots::prependPoint(const QPointF &pt)
 {
     this->_ptList.prepend(pt);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotDots::prependPoint(double ptx, double pty)
+void finPlotDots::prependPoint(double ptx, double pty)
 {
     this->_ptList.prepend(QPointF(ptx, pty));
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotDots::prependPoints(const QList<QPointF> &ptlist)
+void finPlotDots::prependPoints(const QList<QPointF> &ptlist)
 {
     QList<QPointF> tmplist = ptlist;
     tmplist.append(this->_ptList);
     this->_ptList = tmplist;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotDots::clearPoints()
+void finPlotDots::clearPoints()
 {
     this->_ptList.clear();
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotDots::setFigureContainer(finFigureContainer *figcontainer)
+void finPlotDots::setFigureContainer(finFigureContainer *figcontainer)
 {
     this->_figcontainer = figcontainer;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotDots::plot()

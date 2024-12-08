@@ -131,7 +131,8 @@ finErrorCode finPlotFunction::setFlowControl(finExecFlowControl *flowctl)
 
 finErrorCode finPlotFunction::setFigureContainer(finFigureContainer *figcontainer)
 {
-    return this->_stmPlot.setFigureContainer(figcontainer);
+    this->_stmPlot.setFigureContainer(figcontainer);
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finPlotFunction::checkValid() const

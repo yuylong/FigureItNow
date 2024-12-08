@@ -8,6 +8,7 @@
 
 #include "finLexReader.h"
 
+#include <QtLogging>
 #include <QStringBuilder>
 
 
