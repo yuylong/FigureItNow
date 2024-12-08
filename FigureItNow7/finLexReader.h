@@ -30,8 +30,8 @@ public:
 
     QString getString() const;
     unsigned long getCurrentPosition() const;
-    finErrorCode setString(const QString &instr);
-    finErrorCode resetPosition();
+    void setString(const QString &instr);
+    void resetPosition();
 
     finErrorCode getNextLexNode(finLexNode *retnode);
 

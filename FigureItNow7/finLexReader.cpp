@@ -44,33 +44,35 @@ finLexReader::getCurrentPosition() const
     return this->_posIdx;
 }
 
-finErrorCode
+void
 finLexReader::setString(const QString &instr)
 {
-    if ( !this->_inputStr.isEmpty() && this->_posIdx != 0 )
-        return finErrorKits::EC_STATE_ERROR;
+    if ( !this->_inputStr.isEmpty() && this->_posIdx != 0 ) {
+        throw finException(finErrorCode::EC_STATE_ERROR,
+                           "Cannot change string for a lex reader in processing, resetPosition must be called first.");
+    }
 
     this->_inputStr.clear();
     this->_inputStr = instr;
     this->_posIdx = 0;
     this->_curRow = 0;
     this->_curCol = 0;
-    return finErrorKits::EC_SUCCESS;
 }
 
 
-finErrorCode
+void
 finLexReader::resetPosition()
 {
-    if ( this->_inputStr.isEmpty() )
-        return finErrorKits::EC_UNREADY_WARN;
-    if ( this->_posIdx == 0 )
-        return finErrorKits::EC_DUPLICATE_OP;
+    if ( this->_inputStr.isEmpty() ) {
+        qWarning() << "Reset the position to a lex reader that contains empty input string." << Qt::endl;
+    }
+    if ( this->_posIdx == 0 ) {
+        qWarning() << "Reset the position to an already reset lex reader." << Qt::endl;
+    }
 
     this->_posIdx = 0;
     this->_curRow = 0;
     this->_curCol = 0;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode

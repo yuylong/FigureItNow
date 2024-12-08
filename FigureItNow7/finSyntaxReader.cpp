@@ -35,10 +35,13 @@ finErrorCode finSyntaxReader::setScriptCode(const QString &scriptcode)
     if ( this->isReading() )
         return finErrorKits::EC_STATE_ERROR;
 
-    this->_lexReader.resetPosition();
-    finErrorCode errcode = this->_lexReader.setString(scriptcode);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    try {
+        this->_lexReader.resetPosition();
+        this->_lexReader.setString(scriptcode);
+    } catch (finException &e) {
+        // TODO: Need to re-throw the exception.
+        return e.getErrorCode();
+    }
 
     if ( this->_state == ST_DUMMY)
         this->_state = ST_READY;
@@ -61,10 +64,7 @@ finErrorCode finSyntaxReader::startRead()
         return finErrorKits::EC_STATE_ERROR;
 
     this->disposeAllRead();
-
-    finErrorCode errcode = this->_lexReader.resetPosition();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    this->_lexReader.resetPosition();
 
     this->_state = ST_READING;
     return finErrorKits::EC_SUCCESS;
