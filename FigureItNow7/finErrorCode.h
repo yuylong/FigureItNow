@@ -15,6 +15,7 @@
 #define FINERRORCODE_H
 
 #include <QObject>
+#include <QDebug>
 #include <QException>
 #include <QString>
 
@@ -134,6 +135,7 @@ class finExceptionObject
 {
 public:
     virtual QString dumpObjInfo() const = 0;
+    friend QDebug operator<<(QDebug debug, const finExceptionObject &obj);
 };
 
 class finException : QException
