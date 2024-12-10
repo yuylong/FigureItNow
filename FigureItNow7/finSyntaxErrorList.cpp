@@ -127,15 +127,12 @@ finErrorCode finSyntaxErrorList::setDumpStartingLevel(finSyntaxError::Level leve
 
 finErrorCode finSyntaxErrorList::dumpList(finSyntaxErrorDump *dumper, finSyntaxError::Level startinglevel) const
 {
-    finErrorCode errcode = finErrorKits::EC_SUCCESS;
     if ( dumper == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
     foreach ( const finSyntaxError &entry, this->_list ) {
         if ( entry.getLevel() >= startinglevel ) {
-            errcode = entry.dumpErrorInfo(dumper);
-            if ( finErrorKits::isErrorResult(errcode) )
-                continue;
+            entry.dumpErrorInfo(dumper);
         }
     }
     return finErrorKits::EC_SUCCESS;

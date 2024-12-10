@@ -66,68 +66,58 @@ QString finSyntaxError::getErrorString() const
     return this->_errString;
 }
 
-finErrorCode finSyntaxError::setLevel(finSyntaxError::Level level)
+void finSyntaxError::setLevel(finSyntaxError::Level level)
 {
     this->_level = level;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxError::setStage(finSyntaxError::Stage stage)
+void finSyntaxError::setStage(finSyntaxError::Stage stage)
 {
     this->_stage = stage;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxError::setRow(unsigned int row)
+void finSyntaxError::setRow(unsigned int row)
 {
     this->_row = row;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxError::setColumn(unsigned int col)
+void finSyntaxError::setColumn(unsigned int col)
 {
     this->_column = col;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxError::setErrorString(const QString &errstr)
+void finSyntaxError::setErrorString(const QString &errstr)
 {
     this->_errString = errstr;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxError::dumpErrorInfo(QTextStream *ts) const
+void finSyntaxError::dumpErrorInfo(QTextStream *ts) const
 {
-    if ( ts == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    if ( ts == nullptr ) {
+        throw finException(finErrorKits::EC_NULL_POINTER, "Cannot dump syntax error to a NULL text stream.");
+    }
 
     (*ts) << "<" << getLevelName(this->_level) << "> "
           << getStageName(this->_stage) << " "
           << "[" << this->_row << ":" << this->_column << "] "
           << this->_errString << Qt::endl;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxError::dumpErrorInfo(finSyntaxErrorDump *dumper) const
+void finSyntaxError::dumpErrorInfo(finSyntaxErrorDump *dumper) const
 {
     QString errinfo = this->makeErrorInfoString();
     if ( errinfo.isEmpty() )
-        return finErrorKits::EC_INVALID_PARAM;
+        return;
 
     dumper->dumpText(errinfo);
-    return finErrorKits::EC_SUCCESS;
 }
 
 QString finSyntaxError::makeErrorInfoString() const
 {
-    finErrorCode errcode = finErrorKits::EC_SUCCESS;
     QString retstr = "";
     QTextStream ts(&retstr);
 
-    errcode = dumpErrorInfo(&ts);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return "";
-
+    dumpErrorInfo(&ts);
     return retstr;
 }
 

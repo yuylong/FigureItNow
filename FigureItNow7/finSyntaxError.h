@@ -54,14 +54,14 @@ public:
     unsigned int getColumn() const;
     QString getErrorString() const;
 
-    finErrorCode setLevel(Level level);
-    finErrorCode setStage(Stage stage);
-    finErrorCode setRow(unsigned int row);
-    finErrorCode setColumn(unsigned int col);
-    finErrorCode setErrorString(const QString &errstr);
+    void setLevel(Level level);
+    void setStage(Stage stage);
+    void setRow(unsigned int row);
+    void setColumn(unsigned int col);
+    void setErrorString(const QString &errstr);
 
-    finErrorCode dumpErrorInfo(QTextStream *ts) const;
-    finErrorCode dumpErrorInfo(finSyntaxErrorDump *dumper) const;
+    void dumpErrorInfo(QTextStream *ts) const;
+    void dumpErrorInfo(finSyntaxErrorDump *dumper) const;
     QString makeErrorInfoString() const;
 
     static const finSyntaxError &dummySyntaxError();
