@@ -30,6 +30,8 @@ public:
 
     QString getString() const;
     unsigned long getCurrentPosition() const;
+    qsizetype getStringLength() const;
+    bool isReachBottom() const;
     void setString(const QString &instr);
     void resetPosition();
 
@@ -46,7 +48,7 @@ private:
     finErrorCode moveReadPosWith(unsigned long detpos);
     finErrorCode moveToNextNonblank();
 
-    finErrorCode buildLexNode(finLexNode *retnode, finLexNodeType type, unsigned long endpos);
+    void buildLexNode(finLexNode *retnode, finLexNodeType type, unsigned long endpos);
 
     enum finLexReaderOrder {
         ORD_NUMBER_FIRST,

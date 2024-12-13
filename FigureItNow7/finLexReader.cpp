@@ -44,6 +44,18 @@ finLexReader::getCurrentPosition() const
     return this->_posIdx;
 }
 
+qsizetype
+finLexReader::getStringLength() const
+{
+    return this->_inputStr.length();
+}
+
+bool
+finLexReader::isReachBottom() const
+{
+    return this->_posIdx >= this->getStringLength();
+}
+
 void
 finLexReader::setString(const QString &instr)
 {
@@ -58,7 +70,6 @@ finLexReader::setString(const QString &instr)
     this->_curRow = 0;
     this->_curCol = 0;
 }
-
 
 void
 finLexReader::resetPosition()
@@ -193,11 +204,13 @@ finLexReader::moveToNextNonblank()
     return errcode;
 }
 
-finErrorCode
+void
 finLexReader::buildLexNode(finLexNode *retnode, finLexNodeType type, unsigned long endpos)
 {
-    if ( endpos <= this->_posIdx )
-        return finErrorKits::EC_INVALID_PARAM;
+    if ( endpos <= this->_posIdx ) {
+        throw finException(finErrorKits::EC_INVALID_PARAM,
+                           QString("LexReader build LexNode with wrong pos at %1.").arg(endpos));
+    }
 
     unsigned long detpos = endpos - this->_posIdx;
     retnode->setType(type);
@@ -206,7 +219,6 @@ finLexReader::buildLexNode(finLexNode *retnode, finLexNodeType type, unsigned lo
     retnode->setColumn(this->_curCol);
 
     this->moveReadPosWith(detpos);
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode
