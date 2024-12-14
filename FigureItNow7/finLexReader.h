@@ -30,7 +30,6 @@ public:
 
     QString getString() const;
     unsigned long getCurrentPosition() const;
-    qsizetype getStringLength() const;
     bool isReachBottom() const;
     void setString(const QString &instr);
     void resetPosition();

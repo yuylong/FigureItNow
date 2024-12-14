@@ -44,16 +44,10 @@ finLexReader::getCurrentPosition() const
     return this->_posIdx;
 }
 
-qsizetype
-finLexReader::getStringLength() const
-{
-    return this->_inputStr.length();
-}
-
 bool
 finLexReader::isReachBottom() const
 {
-    return this->_posIdx >= this->getStringLength();
+    return this->_posIdx >= this->scriptLength();
 }
 
 void
