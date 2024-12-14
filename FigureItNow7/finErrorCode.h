@@ -143,10 +143,17 @@ class finException : QException
 private:
     finErrorCode _errCode;
     QString _errDesc;
+    QString _srcFile;
+    QString _srcPrettyFunction;
+    unsigned long _srcLine;
     finExceptionObject *_errObj;
 
 public:
-    finException(finErrorCode errcode, QString errdesc = "", finExceptionObject *errobj = nullptr);
+    finException(finErrorCode errcode, finExceptionObject *errobj = nullptr);
+    finException(finErrorCode errcode, const QString &errdesc, finExceptionObject *errobj = nullptr);
+    finException(finErrorCode errcode, const QString &errdesc,
+                 const QString &srcfile, const QString &srcfunc, unsigned long srcline,
+                 finExceptionObject *errobj = nullptr);
     finException(const finException &e);
 
     finErrorCode getErrorCode() const;
@@ -155,5 +162,19 @@ public:
     void raise() const override;
     finException *clone() const override;
 };
+
+#define finRaise(errcode, errdesc)  \
+    throw finException((errcode), (errdesc), __FILE__, __PRETTY_FUNCTION__, __LINE__)
+#define finRaiseObj(errcode, errdesc)  \
+    throw finException((errcode), (errdesc), __FILE__, __PRETTY_FUNCTION__, __LINE__, this)
+
+#define finDebugHead(level)  \
+    QString("[%1 (%2:%3) %4]").arg(__PRETTY_FUNCTION__).arg(__FILE__).arg(__LINE__).arg(level)
+#define finDebug    (qDebug().noquote() << finDebugHead("debug"))
+#define finInfo     (qInfo().noquote() << finDebugHead("info"))
+#define finWarning  (qWarning().noquote() << finDebugHead("warn"))
+#define finCritical (qCritical().noquote() << finDebugHead("critial"))
+#define finFatal    (qFatal().noquote() << finDebugHead("fatal"))
+
 
 #endif // FINERRORCODE_H

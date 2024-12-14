@@ -102,12 +102,24 @@ QDebug operator<<(QDebug debug, const finExceptionObject &obj)
     return debug;
 }
 
-finException::finException(finErrorCode errcode, QString errdesc, finExceptionObject *errobj)
-    : _errCode(errcode), _errDesc(errdesc), _errObj(errobj)
+finException::finException(finErrorCode errcode, finExceptionObject *errobj)
+    : _errCode(errcode), _errDesc(), _srcFile(), _srcPrettyFunction(), _srcLine(0), _errObj(errobj)
+{ /* Do Nothing */ }
+
+finException::finException(finErrorCode errcode, const QString &errdesc, finExceptionObject *errobj)
+    : _errCode(errcode), _errDesc(errdesc), _srcFile(), _srcPrettyFunction(), _srcLine(0), _errObj(errobj)
+{ /* Do Nothing */ }
+
+finException::finException(finErrorCode errcode, const QString &errdesc,
+                           const QString &srcfile, const QString &srcfunc, unsigned long srcline,
+                           finExceptionObject *errobj)
+    : _errCode(errcode), _errDesc(errdesc), _srcFile(srcfile),
+    _srcPrettyFunction(srcfunc), _srcLine(srcline), _errObj(errobj)
 { /* Do Nothing */ }
 
 finException::finException(const finException &e)
-    : _errCode(e._errCode), _errDesc(e._errDesc), _errObj(e._errObj)
+    : _errCode(e._errCode), _errDesc(e._errDesc), _srcFile(e._srcFile),
+    _srcPrettyFunction(e._srcPrettyFunction), _srcLine(e._srcLine), _errObj(e._errObj)
 { /* Do Nothing */ }
 
 finErrorCode finException::getErrorCode() const

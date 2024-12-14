@@ -70,10 +70,10 @@ void
 finLexReader::resetPosition()
 {
     if ( this->_inputStr.isEmpty() ) {
-        qWarning() << __PRETTY_FUNCTION__ << ": Reset the position to a LexReader with empty script.";
+        finWarning << "Reset the position to a LexReader with empty script.";
     }
     if ( this->_posIdx == 0 ) {
-        qWarning() << __PRETTY_FUNCTION__ << ": Reset the position to an already reset LexReader.";
+        finWarning << "Reset the position to an already reset LexReader.";
     }
 
     this->_posIdx = 0;
