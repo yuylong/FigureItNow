@@ -61,7 +61,8 @@ finLexReader::setString(const QString &instr)
 {
     if ( !this->_inputStr.isEmpty() && this->_posIdx != 0 ) {
         throw finException(finErrorCode::EC_STATE_ERROR,
-                           "Cannot change string for a lex reader in processing, resetPosition must be called first.");
+                           QString("%1: Change script is not allowed for when LexReader is in processing.")
+                               .arg(__PRETTY_FUNCTION__));
     }
 
     this->_inputStr.clear();
@@ -75,10 +76,10 @@ void
 finLexReader::resetPosition()
 {
     if ( this->_inputStr.isEmpty() ) {
-        qWarning() << "Reset the position to a lex reader that contains empty input string." << Qt::endl;
+        qWarning() << __PRETTY_FUNCTION__ << ": Reset the position to a LexReader with empty script.";
     }
     if ( this->_posIdx == 0 ) {
-        qWarning() << "Reset the position to an already reset lex reader." << Qt::endl;
+        qWarning() << __PRETTY_FUNCTION__ << ": Reset the position to an already reset LexReader.";
     }
 
     this->_posIdx = 0;
@@ -104,10 +105,7 @@ finLexReader::getNextLexNode(finLexNode *retnode)
     if ( ret == finErrorKits::EC_REACH_BOTTOM )
         return ret;
 
-    ret = this->getLexTypeOrder(&typeorder, &typeordernum);
-    if ( finErrorKits::isErrorResult(ret) )
-        return ret;
-
+    this->getLexTypeOrder(&typeorder, &typeordernum);
     for ( int i = 0; i < typeordernum; i++ ) {
         ret = this->tryGetTypedNode(retnode, typeorder[i]);
         if ( ret == finErrorKits::EC_SUCCESS )
@@ -209,7 +207,7 @@ finLexReader::buildLexNode(finLexNode *retnode, finLexNodeType type, unsigned lo
 {
     if ( endpos <= this->_posIdx ) {
         throw finException(finErrorKits::EC_INVALID_PARAM,
-                           QString("LexReader build LexNode with wrong pos at %1.").arg(endpos));
+                           QString("%1: wrong pos at %2.").arg(__PRETTY_FUNCTION__).arg(endpos));
     }
 
     unsigned long detpos = endpos - this->_posIdx;
@@ -221,14 +219,15 @@ finLexReader::buildLexNode(finLexNode *retnode, finLexNodeType type, unsigned lo
     this->moveReadPosWith(detpos);
 }
 
-finErrorCode
+void
 finLexReader::getLexTypeOrder(const finLexNodeType **typeorder, int *typenum)
 {
-    return this->getLexTypeOrder(this->_nextReadOrder, typeorder, typenum);
+    this->getLexTypeOrder(this->_nextReadOrder, typeorder, typenum);
 }
 
-finErrorCode finLexReader::getLexTypeOrder(finLexReader::finLexReaderOrder order,
-                                           const finLexNodeType **typeorder, int *typenum)
+void
+finLexReader::getLexTypeOrder(finLexReader::finLexReaderOrder order,
+                              const finLexNodeType **typeorder, int *typenum)
 {
     static const int _MaxTypeNum = 5;
     static const struct _infinLexTypeOrder {
@@ -245,8 +244,10 @@ finErrorCode finLexReader::getLexTypeOrder(finLexReader::finLexReaderOrder order
         }
     };
 
-    if ( typeorder == nullptr && typenum == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    if ( typeorder == nullptr && typenum == nullptr ) {
+        throw finException(finErrorKits::EC_NULL_POINTER,
+                           QString("%1: nullptr input is not allowed.").arg(__PRETTY_FUNCTION__));
+    }
 
     switch ( order ) {
       case ORD_NUMBER_FIRST:
@@ -262,18 +263,7 @@ finErrorCode finLexReader::getLexTypeOrder(finLexReader::finLexReaderOrder order
         if ( typenum != nullptr )
             *typenum = _typeOrderConst[1]._typeNum;
         break;
-
-#if 0
-      default:
-        if ( typeorder != nullptr )
-            *typeorder = _typeOrderConst[0]._typeOrder;
-        if ( typenum != nullptr )
-            *typenum = _typeOrderConst[0]._typeNum;
-        return finErrorKits::EC_NORMAL_WARN;
-        //break;
-#endif
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finLexReader::tryGetTypedNode(finLexNode *retnode, finLexNodeType lextype)

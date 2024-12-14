@@ -57,9 +57,9 @@ private:
 
     finLexReaderOrder _nextReadOrder;
 
-    finErrorCode getLexTypeOrder(const finLexNodeType **typeorder, int *typenum);
-    finErrorCode getLexTypeOrder(finLexReader::finLexReaderOrder order,
-                                 const finLexNodeType **typeorder, int *typenum);
+    void getLexTypeOrder(const finLexNodeType **typeorder, int *typenum);
+    void getLexTypeOrder(finLexReader::finLexReaderOrder order,
+                         const finLexNodeType **typeorder, int *typenum);
     finErrorCode tryGetTypedNode(finLexNode *retnode, finLexNodeType lextype);
     finErrorCode tryGetNote(finLexNode *retnode);
     finErrorCode tryGetVariable(finLexNode *retnode);
