@@ -169,7 +169,7 @@ QString finException::dumpInfo() const
     ts << _FIN_DEBUGHEAD(this->_srcPrettyFunction, this->_srcFile, this->_srcLine, levelName(this->_level))
        << "[EC:" << this->_errCode << "] " << this->_errDesc;
     if (this->_errObj != nullptr)
-        ts << " {" << this->_errObj->dumpObjInfo() << "}";
+        ts << " " << _FIN_DUMPOBJ(this->_errObj);
     return retstr;
 }
 

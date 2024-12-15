@@ -15,7 +15,7 @@
 #include "finLexNode.h"
 
 
-class finLexReader
+class finLexReader : finExceptionObject
 {
 private:
     QString _inputStr;
@@ -35,6 +35,8 @@ public:
     void resetPosition();
 
     finErrorCode getNextLexNode(finLexNode *retnode);
+
+    virtual QString dumpObjInfo() const override;
 
 private:
     unsigned long scriptLength() const;

@@ -54,8 +54,8 @@ void
 finLexReader::setString(const QString &instr)
 {
     if ( !this->_inputStr.isEmpty() && this->_posIdx != 0 ) {
-        finThrow(finErrorCode::EC_STATE_ERROR,
-                 QString("Change script is not allowed for when LexReader is in processing."));
+        finThrowObj(finErrorCode::EC_STATE_ERROR,
+                    QString("Change script is not allowed for when LexReader is in processing."));
     }
 
     this->_inputStr.clear();
@@ -65,13 +65,27 @@ finLexReader::setString(const QString &instr)
     this->_curCol = 0;
 }
 
+QString finLexReader::dumpObjInfo() const
+{
+    QString retstr;
+    QTextStream ts(&retstr);
+
+    ts << "Script:";
+    if (!this->_inputStr.isEmpty())
+        ts << "\"" << this->_inputStr.left(10).simplified() << "...\"(len=" << this->_inputStr.length() << ")";
+    else
+        ts << "<EMPTY>";
+    ts << ",Position:" << this->_posIdx << "(" << this->_curRow << ":" << this->_curCol << ")";
+    return retstr;
+}
+
 void
 finLexReader::resetPosition()
 {
     if ( this->_inputStr.isEmpty() )
-        finWarning << "Reset the position to a LexReader with empty script.";
+        finWarning << "Reset the position to a LexReader with empty script." << finDbgObj;
     if ( this->_posIdx == 0 )
-        finWarning << "Reset the position to an already reset LexReader.";
+        finWarning << "Reset the position to an already reset LexReader." << finDbgObj;
 
     this->_posIdx = 0;
     this->_curRow = 0;
@@ -197,8 +211,8 @@ void
 finLexReader::buildLexNode(finLexNode *retnode, finLexNodeType type, unsigned long endpos)
 {
     if ( endpos <= this->_posIdx ) {
-        throw finException(finErrorKits::EC_INVALID_PARAM,
-                           QString("%1: wrong pos at %2.").arg(__PRETTY_FUNCTION__).arg(endpos));
+        finThrowObj(finErrorKits::EC_INVALID_PARAM,
+                    QString("%1: wrong pos at %2.").arg(__PRETTY_FUNCTION__).arg(endpos));
     }
 
     unsigned long detpos = endpos - this->_posIdx;

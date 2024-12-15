@@ -183,6 +183,7 @@ public:
 
 #define _FIN_DEBUGHEAD(func,file,line,level)  \
     (QString("[%1 (%2:%3) %4]").arg(func).arg(file).arg(line).arg(level))
+#define _FIN_DUMPOBJ(pobj)  QString("{%1}").arg((pobj)->dumpObjInfo())
 
 #define finThrow(errcode, errdesc)  do { \
         throw finException((errcode), (errdesc), __FILE__, __PRETTY_FUNCTION__, __LINE__); \
@@ -206,5 +207,6 @@ public:
 #define finWarning  (qWarning().noquote() << finDebugHead("warn"))
 #define finCritical (qCritical().noquote() << finDebugHead("critial"))
 #define finFatal    (qFatal().noquote() << finDebugHead("fatal"))
+#define finDbgObj   _FIN_DUMPOBJ(this)
 
 #endif // FINERRORCODE_H
