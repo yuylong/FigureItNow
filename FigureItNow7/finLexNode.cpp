@@ -119,7 +119,7 @@ void finLexNode::setString(const QString &str)
 void finLexNode::setFloatValue(double val)
 {
     if ( this->_type != TP_DECIMAL )
-        throw finException(finErrorKits::EC_STATE_ERROR, "Setup float value to non-numeric lex node.", this);
+        finThrowObj(finErrorKits::EC_STATE_ERROR, "Setup float value to non-numeric lex node.");
 
     this->_u._floatValue = val;
 }
@@ -127,7 +127,7 @@ void finLexNode::setFloatValue(double val)
 void finLexNode::setOperator(finLexOperatorType optype)
 {
     if ( this->_type != TP_OPERATOR )
-        throw finException(finErrorKits::EC_STATE_ERROR, "Setup operator type to non-operator lex node.", this);
+        finThrowObj(finErrorKits::EC_STATE_ERROR, "Setup operator type to non-operator lex node.");
 
     this->_u._operator = optype;
 }
@@ -135,7 +135,7 @@ void finLexNode::setOperator(finLexOperatorType optype)
 void finLexNode::setStringValue(const QString &strval)
 {
     if ( this->_type != TP_STRING )
-        throw finException(finErrorKits::EC_STATE_ERROR, "Setup string to non-string lex node.", this);
+        finThrowObj(finErrorKits::EC_STATE_ERROR, "Setup string to non-string lex node.");
 
     this->_stringValue = strval;
 }

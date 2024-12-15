@@ -140,20 +140,35 @@ public:
 
 class finException : QException
 {
+public:
+    enum Level {
+        EL_DUMMY = 0,
+        EL_DEBUG,
+        EL_INFO,
+        EL_WARNING,
+        EL_CRITIAL,
+        EL_FATAL,
+        EL_MAX
+    };
+
+    static const QString &levelName(Level level);
+
 private:
     finErrorCode _errCode;
     QString _errDesc;
     QString _srcFile;
     QString _srcPrettyFunction;
     unsigned long _srcLine;
+    Level _level;
     finExceptionObject *_errObj;
 
 public:
-    finException(finErrorCode errcode, finExceptionObject *errobj = nullptr);
-    finException(finErrorCode errcode, const QString &errdesc, finExceptionObject *errobj = nullptr);
+    finException(finErrorCode errcode, Level level = EL_CRITIAL, finExceptionObject *errobj = nullptr);
+    finException(finErrorCode errcode, const QString &errdesc,
+                 Level level = EL_CRITIAL, finExceptionObject *errobj = nullptr);
     finException(finErrorCode errcode, const QString &errdesc,
                  const QString &srcfile, const QString &srcfunc, unsigned long srcline,
-                 finExceptionObject *errobj = nullptr);
+                 Level level = EL_CRITIAL, finExceptionObject *errobj = nullptr);
     finException(const finException &e);
 
     finErrorCode getErrorCode() const;
@@ -161,20 +176,35 @@ public:
 
     void raise() const override;
     finException *clone() const override;
+
+    QString dumpInfo() const;
+    void dump() const;
 };
 
-#define finRaise(errcode, errdesc)  \
-    throw finException((errcode), (errdesc), __FILE__, __PRETTY_FUNCTION__, __LINE__)
-#define finRaiseObj(errcode, errdesc)  \
-    throw finException((errcode), (errdesc), __FILE__, __PRETTY_FUNCTION__, __LINE__, this)
+#define _FIN_DEBUGHEAD(func,file,line,level)  \
+    (QString("[%1 (%2:%3) %4]").arg(func).arg(file).arg(line).arg(level))
 
-#define finDebugHead(level)  \
-    QString("[%1 (%2:%3) %4]").arg(__PRETTY_FUNCTION__).arg(__FILE__).arg(__LINE__).arg(level)
+#define finThrow(errcode, errdesc)  do { \
+        throw finException((errcode), (errdesc), __FILE__, __PRETTY_FUNCTION__, __LINE__); \
+    } while (0)
+#define finThrowObj(errcode, errdesc)  do { \
+        throw finException((errcode), (errdesc), __FILE__, __PRETTY_FUNCTION__, __LINE__, \
+                           finException::EL_CRITIAL, this); \
+    } while (0)
+#define finThrowFatal(errcode, errdesc)  do { \
+        throw finException((errcode), (errdesc), __FILE__, __PRETTY_FUNCTION__, __LINE__, \
+                           finException::EL_FATAL); \
+    } while (0)
+#define finThrowFatalObj(errcode, errdesc)  do { \
+        throw finException((errcode), (errdesc), __FILE__, __PRETTY_FUNCTION__, __LINE__, \
+                           finException::EL_FATAL, this); \
+    } while (0)
+
+#define finDebugHead(level)  _FIN_DEBUGHEAD(__PRETTY_FUNCTION__, __FILE__, __LINE__, level)
 #define finDebug    (qDebug().noquote() << finDebugHead("debug"))
 #define finInfo     (qInfo().noquote() << finDebugHead("info"))
 #define finWarning  (qWarning().noquote() << finDebugHead("warn"))
 #define finCritical (qCritical().noquote() << finDebugHead("critial"))
 #define finFatal    (qFatal().noquote() << finDebugHead("fatal"))
-
 
 #endif // FINERRORCODE_H

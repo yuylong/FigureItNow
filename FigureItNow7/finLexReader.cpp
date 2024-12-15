@@ -54,9 +54,8 @@ void
 finLexReader::setString(const QString &instr)
 {
     if ( !this->_inputStr.isEmpty() && this->_posIdx != 0 ) {
-        throw finException(finErrorCode::EC_STATE_ERROR,
-                           QString("%1: Change script is not allowed for when LexReader is in processing.")
-                               .arg(__PRETTY_FUNCTION__));
+        finThrow(finErrorCode::EC_STATE_ERROR,
+                 QString("Change script is not allowed for when LexReader is in processing."));
     }
 
     this->_inputStr.clear();
@@ -69,12 +68,10 @@ finLexReader::setString(const QString &instr)
 void
 finLexReader::resetPosition()
 {
-    if ( this->_inputStr.isEmpty() ) {
+    if ( this->_inputStr.isEmpty() )
         finWarning << "Reset the position to a LexReader with empty script.";
-    }
-    if ( this->_posIdx == 0 ) {
+    if ( this->_posIdx == 0 )
         finWarning << "Reset the position to an already reset LexReader.";
-    }
 
     this->_posIdx = 0;
     this->_curRow = 0;
