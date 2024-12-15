@@ -8,6 +8,7 @@
 
 #include "finLexReader.h"
 
+#include <QtGlobal>
 #include <QtLogging>
 #include <QStringBuilder>
 
@@ -99,9 +100,9 @@ finLexReader::getNextLexNode(finLexNode *retnode)
     int typeordernum;
     const finLexNodeType *typeorder;
 
+    Q_ASSERT(retnode != nullptr);
+
     // Check the current state of string inside the LexReader.
-    if ( retnode == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
     if ( this->_inputStr.isEmpty() )
         return finErrorKits::EC_STATE_ERROR;
 
@@ -210,10 +211,8 @@ finLexReader::moveToNextNonblank()
 void
 finLexReader::buildLexNode(finLexNode *retnode, finLexNodeType type, unsigned long endpos)
 {
-    if ( endpos <= this->_posIdx ) {
-        finThrowObj(finErrorKits::EC_INVALID_PARAM,
-                    QString("%1: wrong pos at %2.").arg(__PRETTY_FUNCTION__).arg(endpos));
-    }
+    if ( endpos <= this->_posIdx )
+        finThrowObj(finErrorKits::EC_INVALID_PARAM, QString("Wrong end pos at %1.").arg(endpos));
 
     unsigned long detpos = endpos - this->_posIdx;
     retnode->setType(type);
@@ -249,10 +248,7 @@ finLexReader::getLexTypeOrder(finLexReader::finLexReaderOrder order,
         }
     };
 
-    if ( typeorder == nullptr && typenum == nullptr ) {
-        throw finException(finErrorKits::EC_NULL_POINTER,
-                           QString("%1: nullptr input is not allowed.").arg(__PRETTY_FUNCTION__));
-    }
+    Q_ASSERT(typeorder != nullptr && typenum != nullptr);
 
     switch ( order ) {
       case ORD_NUMBER_FIRST:
@@ -273,6 +269,8 @@ finLexReader::getLexTypeOrder(finLexReader::finLexReaderOrder order,
 
 finErrorCode finLexReader::tryGetTypedNode(finLexNode *retnode, finLexNodeType lextype)
 {
+    Q_ASSERT(retnode != nullptr);
+
     switch (lextype) {
       case finLexNode::TP_NOTE:
         return this->tryGetNote(retnode);
@@ -306,6 +304,8 @@ finErrorCode finLexReader::tryGetNote(finLexNode *retnode)
 {
     unsigned long trypos = this->_posIdx;
     unsigned long strlength = this->scriptLength();
+
+    Q_ASSERT(retnode != nullptr);
 
     if ( trypos + 1 >= strlength || this->getScriptCharAt(trypos) != QChar('/') )
         return finErrorKits::EC_NOT_FOUND;
@@ -368,6 +368,8 @@ finErrorCode finLexReader::tryGetVariable(finLexNode *retnode)
     unsigned long trypos = this->_posIdx;
     unsigned long strlength = this->scriptLength();
 
+    Q_ASSERT(retnode != nullptr);
+
     // Check the first char in the string, it must be a letter.
     if ( trypos >= strlength || !isVariableStartChar(this->getScriptCharAt(trypos)) )
         return finErrorKits::EC_NOT_FOUND;
@@ -400,6 +402,8 @@ finErrorCode finLexReader::tryRecogKeyword(finLexNode *retnode)
     };
     int kwlistcnt = sizeof (kwlist) / sizeof (QString);
 
+    Q_ASSERT(retnode != nullptr);
+
     for ( int i = 0; i < kwlistcnt; i++ ) {
         if ( QString::compare(retnode->getString(), kwlist[i]) == 0 ) {
             retnode->setType(finLexNode::TP_KEYWORD);
@@ -429,6 +433,8 @@ finErrorCode finLexReader::tryGetNumber(finLexNode *retnode)
     double basenum = 0.0, basestep = 0;
     int expnum = 0;
     bool basesign = true, expsign = true;
+
+    Q_ASSERT(retnode != nullptr);
 
     while (trypos < strlength) {
         QChar curchar = this->getScriptCharAt(trypos);
@@ -557,6 +563,7 @@ finErrorCode finLexReader::tryGetString(finLexNode *retnode)
     unsigned long trypos = this->_posIdx;
     unsigned long strlength = this->scriptLength();
 
+    Q_ASSERT(retnode != nullptr);
     if ( trypos >= strlength || this->getScriptCharAt(trypos) != QChar('\"'))
         return finErrorKits::EC_NOT_FOUND;
 
@@ -611,6 +618,8 @@ finErrorCode finLexReader::tryGetOperator(finLexNode *retnode)
 {
     unsigned long trypos = this->_posIdx;
     unsigned long strlength = this->scriptLength();
+
+    Q_ASSERT(retnode != nullptr);
 
     if ( trypos >= strlength )
         return finErrorKits::EC_NOT_FOUND;
