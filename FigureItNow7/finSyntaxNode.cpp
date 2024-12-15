@@ -8,6 +8,7 @@
 
 #include "finSyntaxNode.h"
 
+#include <QtGlobal>
 
 finSyntaxNode::finSyntaxNode()
     : _cmdLexNode(), _subSyntaxList()
@@ -86,23 +87,28 @@ void finSyntaxNode::setType(finSyntaxNodeType type)
 
 void finSyntaxNode::setCommandLexNode(const finLexNode *lexnode)
 {
+    Q_ASSERT(lexnode != nullptr);
     this->_cmdLexNode.copyNode(lexnode);
 }
 
 void finSyntaxNode::appendSubSyntaxNode(finSyntaxNode *synnode)
 {
+    Q_ASSERT(synnode != nullptr);
     this->_subSyntaxList.append(synnode);
 }
 
 void finSyntaxNode::prependSubSyntaxNode(finSyntaxNode *synnode)
 {
+    Q_ASSERT(synnode != nullptr);
     this->_subSyntaxList.prepend(synnode);
 }
 
 finSyntaxNode *finSyntaxNode::pickSubSyntaxNode(int idx)
 {
-    if ( idx < 0 || idx >= this->_subSyntaxList.count() )
-        return nullptr;
+    if ( idx < 0 || idx >= this->_subSyntaxList.count() ) {
+        finThrow(finErrorCode::EC_INVALID_PARAM,
+                 QString("Idx-%1 out of range (%2).").arg(idx).arg(this->_subSyntaxList.count()));
+    }
 
     finSyntaxNode *retnode = this->_subSyntaxList.at(idx);
     this->_subSyntaxList.removeAt(idx);
@@ -182,6 +188,7 @@ void finSyntaxNode::dumpLeveled(int level) const
     printf("sublen=%d\n", this->getSubListCount());
 
     for (int i = 0; i < this->getSubListCount(); i++) {
+        Q_ASSERT(this->getSubSyntaxNode(i) != nullptr);
         this->getSubSyntaxNode(i)->dumpLeveled(level + 1);
     }
 }

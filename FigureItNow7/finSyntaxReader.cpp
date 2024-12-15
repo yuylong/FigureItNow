@@ -889,7 +889,6 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
             return finErrorKits::EC_SUCCESS;
         }
 
-
         // Process J <- J'; where J' <- return(E) | exit(E) | return | exit
         // Process J <- J'E; where J' <- return | exit
         if ( QString::compare(prevlex->getString(), QString("return")) == 0 ||
