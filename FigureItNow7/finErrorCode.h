@@ -135,7 +135,7 @@ class finExceptionObject
 {
 public:
     virtual QString dumpObjInfo() const = 0;
-    friend QDebug operator<<(QDebug debug, const finExceptionObject &obj);
+    friend QDebug &operator<<(QDebug &debug, const finExceptionObject &obj);
 };
 
 class finException : QException

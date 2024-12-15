@@ -95,7 +95,7 @@ finErrorKits::isErrorResult(enum ErrorCode errcode)
     return (errcode < 0);
 }
 
-QDebug operator<<(QDebug debug, const finExceptionObject &obj)
+QDebug &operator<<(QDebug &debug, const finExceptionObject &obj)
 {
     QDebugStateSaver saver(debug);
     debug.nospace() << obj.dumpObjInfo();
