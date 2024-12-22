@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2024 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINSYNTAXTREE_H
@@ -41,7 +41,7 @@ public:
     finErrorCode prependSyntaxNode(const finSyntaxNode *synnode);
     finErrorCode appendSyntaxNodeList(const QList<finSyntaxNode *> *list);
     finErrorCode appendSyntaxNodeStack(const QList<finSyntaxNode *> *list);
-    finErrorCode clearSyntaxNodes();
+    void clearSyntaxNodes();
 
     finErrorCode setScriptCode(const QString &script);
 
