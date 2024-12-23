@@ -12,19 +12,14 @@
 #include <QTextStream>
 
 
-finLexNode::finLexNode() :
-    _string(), _stringValue()
-{
-    this->_type = TP_DUMMY;
-    memset(this->_u._rawData, 0, sizeof (this->_u));
-    this->_row = 0;
-    this->_column = 0;
-}
+finLexNode::finLexNode()
+    : _type(TP_DUMMY), _string(), _stringValue(), _u({._rawData = { 0, }}), _row(0), _column(0)
+{ /* Do nothing */ }
 
 finLexNode::finLexNode(const finLexNode &src)
-{
-    this->copyNode(&src);
-}
+    : _type(src._type), _string(src._string), _stringValue(src._stringValue), _u(src._u),
+    _row(src._row), _column(src._column)
+{ /* Do nothing */ }
 
 void finLexNode::reset()
 {
@@ -38,8 +33,10 @@ void finLexNode::reset()
 
 void finLexNode::copyNode(const finLexNode *srcnode)
 {
-    if ( srcnode == nullptr )
+    if (srcnode == nullptr) {
+        finWarning << "Copy SynNode from null.";
         return this->reset();
+    }
 
     this->_string = srcnode->getString();
     this->_type = srcnode->getType();

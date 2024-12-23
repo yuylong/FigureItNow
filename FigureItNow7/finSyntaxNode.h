@@ -18,6 +18,7 @@
 
 #include <QList>
 
+#include "finErrorCode.h"
 #include "finLexNode.h"
 
 /*! \class finSyntaxNode

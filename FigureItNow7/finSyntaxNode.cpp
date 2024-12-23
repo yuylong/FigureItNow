@@ -11,10 +11,8 @@
 #include <QtGlobal>
 
 finSyntaxNode::finSyntaxNode()
-    : _cmdLexNode(), _subSyntaxList()
-{
-    this->_type = TP_DUMMY;
-}
+    : _type(TP_DUMMY), _cmdLexNode(), _subSyntaxList()
+{ /* Do nothing */ }
 
 finSyntaxNode::~finSyntaxNode()
 {
