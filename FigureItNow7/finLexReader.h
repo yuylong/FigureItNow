@@ -27,6 +27,7 @@ private:
 public:
     finLexReader();
     finLexReader(const QString &inputstr);
+    ~finLexReader();
 
     QString getString() const;
     unsigned long getCurrentPosition() const;

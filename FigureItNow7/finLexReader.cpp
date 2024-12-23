@@ -14,23 +14,22 @@
 
 
 finLexReader::finLexReader()
-    : _inputStr()
+    : _inputStr(), _posIdx(0), _curRow(0), _curCol(0),
+    _lastNodeType(finLexNode::TP_DUMMY), _nextReadOrder(ORD_NUMBER_FIRST)
 {
-    this->_posIdx = 0;
-    this->_curRow = 0;
-    this->_curCol = 0;
-    this->_lastNodeType = finLexNode::TP_DUMMY;
-    this->_nextReadOrder = ORD_NUMBER_FIRST;
+    finDebug << "An empty LexReader is constructed." << finDbgObj;
 }
 
 finLexReader::finLexReader(const QString &inputstr)
-    : _inputStr(inputstr)
+    : _inputStr(inputstr), _posIdx(0), _curRow(0), _curCol(0),
+    _lastNodeType(finLexNode::TP_DUMMY), _nextReadOrder(ORD_NUMBER_FIRST)
 {
-    this->_posIdx = 0;
-    this->_curRow = 0;
-    this->_curCol = 0;
-    this->_lastNodeType = finLexNode::TP_DUMMY;
-    this->_nextReadOrder = ORD_NUMBER_FIRST;
+    finDebug << "A LexReader is constructed." << finDbgObj;
+}
+
+finLexReader::~finLexReader()
+{
+    finDebug << "The LexReader is destructed." << finDbgObj;
 }
 
 QString
@@ -57,7 +56,6 @@ finLexReader::dbgScript(const QString str)
     QString retstr;
     QTextStream ts(&retstr);
 
-    ts << "Script:";
     if (!str.isEmpty())
         ts << "\"" << str.left(10).simplified() << "...\"(len=" << str.length() << ")";
     else
