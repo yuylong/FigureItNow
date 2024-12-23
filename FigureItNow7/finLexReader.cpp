@@ -51,6 +51,20 @@ finLexReader::isReachBottom() const
     return this->_posIdx >= this->scriptLength();
 }
 
+QString
+finLexReader::dbgScript(const QString str)
+{
+    QString retstr;
+    QTextStream ts(&retstr);
+
+    ts << "Script:";
+    if (!str.isEmpty())
+        ts << "\"" << str.left(10).simplified() << "...\"(len=" << str.length() << ")";
+    else
+        ts << "<EMPTY>";
+    return retstr;
+}
+
 void
 finLexReader::setString(const QString &instr)
 {
@@ -59,7 +73,7 @@ finLexReader::setString(const QString &instr)
                     QString("Change script is not allowed for when LexReader is in processing."));
     }
 
-    this->_inputStr.clear();
+    finDebug << "Setup script to LexReader [" << dbgScript(instr) << "]." << finDbgObj;
     this->_inputStr = instr;
     this->_posIdx = 0;
     this->_curRow = 0;
@@ -71,12 +85,8 @@ QString finLexReader::dumpObjInfo() const
     QString retstr;
     QTextStream ts(&retstr);
 
-    ts << "Script:";
-    if (!this->_inputStr.isEmpty())
-        ts << "\"" << this->_inputStr.left(10).simplified() << "...\"(len=" << this->_inputStr.length() << ")";
-    else
-        ts << "<EMPTY>";
-    ts << ",Position:" << this->_posIdx << "(" << this->_curRow << ":" << this->_curCol << ")";
+    ts << "Script:" << dbgScript(this->_inputStr)
+       << ",Position:" << this->_posIdx << "(" << this->_curRow << ":" << this->_curCol << ")";
     return retstr;
 }
 
