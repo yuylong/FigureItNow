@@ -36,11 +36,11 @@ public:
     int getErrorCount() const;
     finSyntaxError getSyntaxError(int idx) const;
 
-    finErrorCode setRootNode(const finSyntaxNode *rtnode);
-    finErrorCode appendSyntaxNode(const finSyntaxNode *synnode);
-    finErrorCode prependSyntaxNode(const finSyntaxNode *synnode);
-    finErrorCode appendSyntaxNodeList(const QList<finSyntaxNode *> *list);
-    finErrorCode appendSyntaxNodeStack(const QList<finSyntaxNode *> *list);
+    void setRootNode(const finSyntaxNode *rtnode);
+    void appendSyntaxNode(const finSyntaxNode *synnode);
+    void prependSyntaxNode(const finSyntaxNode *synnode);
+    void appendSyntaxNodeList(const QList<finSyntaxNode *> *list);
+    void appendSyntaxNodeStack(const QList<finSyntaxNode *> *list);
     void clearSyntaxNodes();
 
     finErrorCode setScriptCode(const QString &script);

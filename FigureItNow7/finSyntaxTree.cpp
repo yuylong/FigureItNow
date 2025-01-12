@@ -65,24 +65,21 @@ finSyntaxError finSyntaxTree::getSyntaxError(int idx) const
     return this->_errList[idx];
 }
 
-finErrorCode finSyntaxTree::setRootNode(const finSyntaxNode *rtnode)
+void finSyntaxTree::setRootNode(const finSyntaxNode *rtnode)
 {
     Q_ASSERT(rtnode != nullptr);
 
     if ( rtnode->getType() != finSyntaxNode::TP_PROGRAM )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrowObj(finErrorKits::EC_INVALID_PARAM, "Root Node must be program type.");
 
     rtnode->dump();
 
-    return this->_rootNode.copyNode(rtnode);
+    this->_rootNode.copyNode(rtnode);
 }
 
-finErrorCode finSyntaxTree::appendSyntaxNode(const finSyntaxNode *synnode)
+void finSyntaxTree::appendSyntaxNode(const finSyntaxNode *synnode)
 {
     Q_ASSERT(synnode != nullptr);
-
-    //if ( !finSyntaxNode::isStatementLevelType(synnode->getType()) )
-    //    return finErrorKits::EC_INVALID_PARAM;
 
     finSyntaxNode *mynode = new finSyntaxNode();
     if (mynode == nullptr)
@@ -95,16 +92,11 @@ finErrorCode finSyntaxTree::appendSyntaxNode(const finSyntaxNode *synnode)
         delete mynode;
         throw e;
     }
-
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxTree::prependSyntaxNode(const finSyntaxNode *synnode)
+void finSyntaxTree::prependSyntaxNode(const finSyntaxNode *synnode)
 {
     Q_ASSERT(synnode != nullptr);
-
-    //if ( !finSyntaxNode::isStatementLevelType(synnode->getType()) )
-    //    return finErrorKits::EC_INVALID_PARAM;
 
     finSyntaxNode *mynode = new finSyntaxNode();
     if (mynode == nullptr)
@@ -117,10 +109,9 @@ finErrorCode finSyntaxTree::prependSyntaxNode(const finSyntaxNode *synnode)
         delete mynode;
         throw e;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxTree::appendSyntaxNodeList(const QList<finSyntaxNode *> *list)
+void finSyntaxTree::appendSyntaxNodeList(const QList<finSyntaxNode *> *list)
 {
     Q_ASSERT(list != nullptr);
 
@@ -132,14 +123,11 @@ finErrorCode finSyntaxTree::appendSyntaxNodeList(const QList<finSyntaxNode *> *l
             continue;
         }
 
-        finErrorCode errcode = this->appendSyntaxNode(synnode);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        this->appendSyntaxNode(synnode);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxTree::appendSyntaxNodeStack(const QList<finSyntaxNode *> *list)
+void finSyntaxTree::appendSyntaxNodeStack(const QList<finSyntaxNode *> *list)
 {
     Q_ASSERT(list != nullptr);
 
@@ -151,11 +139,8 @@ finErrorCode finSyntaxTree::appendSyntaxNodeStack(const QList<finSyntaxNode *> *
             continue;
         }
 
-        finErrorCode errcode = this->appendSyntaxNode(synnode);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        this->appendSyntaxNode(synnode);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 void finSyntaxTree::clearSyntaxNodes()

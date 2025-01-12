@@ -113,12 +113,7 @@ finSyntaxTree *finSyntaxReader::getSyntaxTree()
     if ( syntree == nullptr )
         return nullptr;
 
-    finErrorCode errcode = syntree->appendSyntaxNodeStack(&this->_syntaxStack);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete syntree;
-        return nullptr;
-    }
-
+    syntree->appendSyntaxNodeStack(&this->_syntaxStack);
     syntree->setScriptCode(this->_lexReader.getString());
     syntree->appendSyntaxErrorList(&this->_errList);
     return syntree;
