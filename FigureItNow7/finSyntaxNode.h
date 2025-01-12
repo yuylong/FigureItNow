@@ -18,12 +18,13 @@
 
 #include <QList>
 
+#include "finErrorCode.h"
 #include "finLexNode.h"
 
 /*! \class finSyntaxNode
  *  \brief The finSyntaxNode class
  */
-class finSyntaxNode
+class finSyntaxNode : finExceptionObject
 {
 public:
     enum Type {
@@ -48,7 +49,7 @@ protected:
 
 public:
     finSyntaxNode();
-    ~finSyntaxNode();
+    virtual ~finSyntaxNode();
 
     finErrorCode copyNode(const finSyntaxNode *srcnode);
 
@@ -59,6 +60,7 @@ public:
     finSyntaxNode *getSubSyntaxNode(int idx) const;
 
     void dump() const;
+    virtual QString dumpObjInfo() const;
 
     void setType(Type type);
     void setCommandLexNode(const finLexNode *lexnode);

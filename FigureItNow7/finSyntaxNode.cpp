@@ -106,8 +106,8 @@ void finSyntaxNode::prependSubSyntaxNode(finSyntaxNode *synnode)
 finSyntaxNode *finSyntaxNode::pickSubSyntaxNode(int idx)
 {
     if ( idx < 0 || idx >= this->_subSyntaxList.count() ) {
-        finThrow(finErrorCode::EC_INVALID_PARAM,
-                 QString("Idx-%1 out of range (%2).").arg(idx).arg(this->_subSyntaxList.count()));
+        finThrowObj(finErrorCode::EC_INVALID_PARAM,
+                    QString("Idx-%1 out of range (%2).").arg(idx).arg(this->_subSyntaxList.count()));
     }
 
     finSyntaxNode *retnode = this->_subSyntaxList.at(idx);
@@ -191,6 +191,18 @@ void finSyntaxNode::dumpLeveled(int level) const
         Q_ASSERT(this->getSubSyntaxNode(i) != nullptr);
         this->getSubSyntaxNode(i)->dumpLeveled(level + 1);
     }
+}
+
+QString finSyntaxNode::dumpObjInfo() const
+{
+    QString retstr;
+    QTextStream ts(&retstr);
+
+    ts << "Type:" << this->_type << ";";
+    ts << "Lex={" << this->_cmdLexNode.dumpObjInfo() << "}; ";
+    ts << "SubNum=" << this->_subSyntaxList.count();
+
+    return retstr;
 }
 
 int finSyntaxNode::findLabelIdx(const QString &labelname)
