@@ -18,7 +18,7 @@
 #include "finSyntaxError.h"
 
 
-class finSyntaxTree
+class finSyntaxTree : finExceptionObject
 {
 protected:
     finSyntaxNode _rootNode;
@@ -48,6 +48,8 @@ public:
     finErrorCode appendSyntaxError(const finSyntaxError &synerr);
     finErrorCode appendSyntaxErrorList(const QList<finSyntaxError> *list);
     finErrorCode clearSyntaxErrorList();
+
+    virtual QString dumpObjInfo() const;
 
     void disposeAll();
 

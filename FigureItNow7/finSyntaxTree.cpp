@@ -49,7 +49,7 @@ QString finSyntaxTree::getCodeLine(int line) const
     if ( line < 0 || line >= this->_scriptCodes.count() )
         return QString();
 
-    return this->_scriptCodes.at(line);
+    return this->_scriptCodes[line];
 }
 
 int finSyntaxTree::getErrorCount() const
@@ -62,7 +62,7 @@ finSyntaxError finSyntaxTree::getSyntaxError(int idx) const
     if ( idx < 0 || idx >= this->_errList.count() )
         return finSyntaxError();
 
-    return this->_errList.at(idx);
+    return this->_errList[idx];
 }
 
 finErrorCode finSyntaxTree::setRootNode(const finSyntaxNode *rtnode)
@@ -86,7 +86,7 @@ finErrorCode finSyntaxTree::appendSyntaxNode(const finSyntaxNode *synnode)
 
     finSyntaxNode *mynode = new finSyntaxNode();
     if (mynode == nullptr)
-        finThrow(finErrorKits::EC_OUT_OF_MEMORY, "Alloc syntax node failed.");
+        finThrowObj(finErrorKits::EC_OUT_OF_MEMORY, "Alloc syntax node failed.");
 
     try {
         mynode->copyNode(synnode);
@@ -101,14 +101,14 @@ finErrorCode finSyntaxTree::appendSyntaxNode(const finSyntaxNode *synnode)
 
 finErrorCode finSyntaxTree::prependSyntaxNode(const finSyntaxNode *synnode)
 {
-    Q_ASSERT (synnode != nullptr);
+    Q_ASSERT(synnode != nullptr);
 
     //if ( !finSyntaxNode::isStatementLevelType(synnode->getType()) )
     //    return finErrorKits::EC_INVALID_PARAM;
 
     finSyntaxNode *mynode = new finSyntaxNode();
     if (mynode == nullptr)
-        finThrow(finErrorKits::EC_OUT_OF_MEMORY, "Alloc syntax node failed.");
+        finThrowObj(finErrorKits::EC_OUT_OF_MEMORY, "Alloc syntax node failed.");
 
     try {
         mynode->copyNode(synnode);
@@ -160,7 +160,7 @@ finErrorCode finSyntaxTree::appendSyntaxNodeStack(const QList<finSyntaxNode *> *
 
 void finSyntaxTree::clearSyntaxNodes()
 {
-    finThrow(finErrorKits::EC_NON_IMPLEMENT, "Not implemented.");
+    finThrowObj(finErrorKits::EC_NON_IMPLEMENT, "Not implemented.");
 }
 
 finErrorCode finSyntaxTree::setScriptCode(const QString &script)
@@ -185,6 +185,21 @@ finErrorCode finSyntaxTree::clearSyntaxErrorList()
 {
     this->_errList.clear();
     return finErrorKits::EC_SUCCESS;
+}
+
+QString finSyntaxTree::dumpObjInfo() const
+{
+    QString retstr;
+    QTextStream ts(&retstr);
+    QString firstscln = "NULL";
+    if ( !this->_scriptCodes.empty() )
+        firstscln = this->_scriptCodes[0];
+
+    ts << "Root:{" << this->_rootNode.dumpObjInfo() << "}; "
+       << "Script:[" << this->_scriptCodes.count() << "]{" << firstscln << "}; "
+       << "Errors:[" << this->_errList.count() <<"];";
+
+    return retstr;
 }
 
 void finSyntaxTree::disposeAll()
