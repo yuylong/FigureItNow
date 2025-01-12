@@ -14,23 +14,22 @@
 
 
 finLexReader::finLexReader()
-    : _inputStr()
+    : _inputStr(), _posIdx(0), _curRow(0), _curCol(0),
+    _lastNodeType(finLexNode::TP_DUMMY), _nextReadOrder(ORD_NUMBER_FIRST)
 {
-    this->_posIdx = 0;
-    this->_curRow = 0;
-    this->_curCol = 0;
-    this->_lastNodeType = finLexNode::TP_DUMMY;
-    this->_nextReadOrder = ORD_NUMBER_FIRST;
+    finDebug << "An empty LexReader is constructed." << finDbgObj;
 }
 
 finLexReader::finLexReader(const QString &inputstr)
-    : _inputStr(inputstr)
+    : _inputStr(inputstr), _posIdx(0), _curRow(0), _curCol(0),
+    _lastNodeType(finLexNode::TP_DUMMY), _nextReadOrder(ORD_NUMBER_FIRST)
 {
-    this->_posIdx = 0;
-    this->_curRow = 0;
-    this->_curCol = 0;
-    this->_lastNodeType = finLexNode::TP_DUMMY;
-    this->_nextReadOrder = ORD_NUMBER_FIRST;
+    finDebug << "A LexReader is constructed." << finDbgObj;
+}
+
+finLexReader::~finLexReader()
+{
+    finDebug << "The LexReader is destructed." << finDbgObj;
 }
 
 QString
@@ -51,6 +50,19 @@ finLexReader::isReachBottom() const
     return this->_posIdx >= this->scriptLength();
 }
 
+QString
+finLexReader::dbgScript(const QString str)
+{
+    QString retstr;
+    QTextStream ts(&retstr);
+
+    if (!str.isEmpty())
+        ts << "\"" << str.left(10).simplified() << "...\"(len=" << str.length() << ")";
+    else
+        ts << "<EMPTY>";
+    return retstr;
+}
+
 void
 finLexReader::setString(const QString &instr)
 {
@@ -59,7 +71,7 @@ finLexReader::setString(const QString &instr)
                     QString("Change script is not allowed for when LexReader is in processing."));
     }
 
-    this->_inputStr.clear();
+    finDebug << "Setup script to LexReader [" << dbgScript(instr) << "]." << finDbgObj;
     this->_inputStr = instr;
     this->_posIdx = 0;
     this->_curRow = 0;
@@ -71,12 +83,8 @@ QString finLexReader::dumpObjInfo() const
     QString retstr;
     QTextStream ts(&retstr);
 
-    ts << "Script:";
-    if (!this->_inputStr.isEmpty())
-        ts << "\"" << this->_inputStr.left(10).simplified() << "...\"(len=" << this->_inputStr.length() << ")";
-    else
-        ts << "<EMPTY>";
-    ts << ",Position:" << this->_posIdx << "(" << this->_curRow << ":" << this->_curCol << ")";
+    ts << "Script:" << dbgScript(this->_inputStr)
+       << ",Position:" << this->_posIdx << "(" << this->_curRow << ":" << this->_curCol << ")";
     return retstr;
 }
 

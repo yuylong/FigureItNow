@@ -27,6 +27,7 @@ private:
 public:
     finLexReader();
     finLexReader(const QString &inputstr);
+    ~finLexReader();
 
     QString getString() const;
     unsigned long getCurrentPosition() const;
@@ -39,6 +40,8 @@ public:
     virtual QString dumpObjInfo() const override;
 
 private:
+    static QString dbgScript(const QString str);
+
     unsigned long scriptLength() const;
     QChar getScriptCharAt(unsigned long pos) const;
     QChar getScriptChar() const;

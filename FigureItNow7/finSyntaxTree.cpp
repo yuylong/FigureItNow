@@ -3,11 +3,12 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2024 Yulong Yu. All rights reserved.
  */
 
 #include "finSyntaxTree.h"
 
+#include <QtGlobal>
 #include <QTextStream>
 
 
@@ -40,7 +41,6 @@ QString finSyntaxTree::getScriptCode() const
     for ( int i = 0; i < this->_scriptCodes.count(); i++ ) {
         retstm << this->_scriptCodes.at(i) << Qt::endl;
     }
-    retstm << Qt::flush;
     return retstr;
 }
 
@@ -67,8 +67,7 @@ finSyntaxError finSyntaxTree::getSyntaxError(int idx) const
 
 finErrorCode finSyntaxTree::setRootNode(const finSyntaxNode *rtnode)
 {
-    if ( rtnode == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    Q_ASSERT(rtnode != nullptr);
 
     if ( rtnode->getType() != finSyntaxNode::TP_PROGRAM )
         return finErrorKits::EC_INVALID_PARAM;
@@ -80,15 +79,14 @@ finErrorCode finSyntaxTree::setRootNode(const finSyntaxNode *rtnode)
 
 finErrorCode finSyntaxTree::appendSyntaxNode(const finSyntaxNode *synnode)
 {
-    if ( synnode == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    Q_ASSERT(synnode != nullptr);
 
     //if ( !finSyntaxNode::isStatementLevelType(synnode->getType()) )
     //    return finErrorKits::EC_INVALID_PARAM;
 
     finSyntaxNode *mynode = new finSyntaxNode();
-    if ( mynode == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
+    if (mynode == nullptr)
+        finThrow(finErrorKits::EC_OUT_OF_MEMORY, "Alloc syntax node failed.");
 
     try {
         mynode->copyNode(synnode);
@@ -103,15 +101,14 @@ finErrorCode finSyntaxTree::appendSyntaxNode(const finSyntaxNode *synnode)
 
 finErrorCode finSyntaxTree::prependSyntaxNode(const finSyntaxNode *synnode)
 {
-    if ( synnode == nullptr)
-        return finErrorKits::EC_NULL_POINTER;
+    Q_ASSERT (synnode != nullptr);
 
     //if ( !finSyntaxNode::isStatementLevelType(synnode->getType()) )
     //    return finErrorKits::EC_INVALID_PARAM;
 
     finSyntaxNode *mynode = new finSyntaxNode();
-    if ( mynode == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
+    if (mynode == nullptr)
+        finThrow(finErrorKits::EC_OUT_OF_MEMORY, "Alloc syntax node failed.");
 
     try {
         mynode->copyNode(synnode);
@@ -125,11 +122,15 @@ finErrorCode finSyntaxTree::prependSyntaxNode(const finSyntaxNode *synnode)
 
 finErrorCode finSyntaxTree::appendSyntaxNodeList(const QList<finSyntaxNode *> *list)
 {
-    if ( list == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    Q_ASSERT(list != nullptr);
 
     for ( int i = 0; i < list->count(); i++ ) {
         const finSyntaxNode *synnode = list->at(i);
+        if (synnode == nullptr) {
+            // TODO: This condition need?
+            finWarning << "Null syntax node in list at " << i;
+            continue;
+        }
 
         finErrorCode errcode = this->appendSyntaxNode(synnode);
         if ( finErrorKits::isErrorResult(errcode) )
@@ -140,11 +141,15 @@ finErrorCode finSyntaxTree::appendSyntaxNodeList(const QList<finSyntaxNode *> *l
 
 finErrorCode finSyntaxTree::appendSyntaxNodeStack(const QList<finSyntaxNode *> *list)
 {
-    if ( list == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    Q_ASSERT(list != nullptr);
 
     for ( int i = list->count() - 1; i >= 0; i-- ) {
         const finSyntaxNode *synnode = list->at(i);
+        if (synnode == nullptr) {
+            // TODO: This condition need?
+            finWarning << "Null syntax node in list at " << i;
+            continue;
+        }
 
         finErrorCode errcode = this->appendSyntaxNode(synnode);
         if ( finErrorKits::isErrorResult(errcode) )
@@ -153,9 +158,9 @@ finErrorCode finSyntaxTree::appendSyntaxNodeStack(const QList<finSyntaxNode *> *
     return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxTree::clearSyntaxNodes()
+void finSyntaxTree::clearSyntaxNodes()
 {
-    return finErrorKits::EC_NON_IMPLEMENT;
+    finThrow(finErrorKits::EC_NON_IMPLEMENT, "Not implemented.");
 }
 
 finErrorCode finSyntaxTree::setScriptCode(const QString &script)
