@@ -19,32 +19,26 @@ finSyntaxNode::~finSyntaxNode()
     this->disposeAll();
 }
 
-finErrorCode finSyntaxNode::copyNode(const finSyntaxNode *srcnode)
+void finSyntaxNode::copyNode(const finSyntaxNode *srcnode)
 {
-    finErrorCode errcode;
     this->disposeAll();
 
     if ( srcnode == nullptr )
-        return finErrorKits::EC_SUCCESS;
+        finThrowObj(finErrorKits::EC_NULL_POINTER, QString("Copy froma null syntax node."));
 
     this->_type = srcnode->getType();
     this->_cmdLexNode.copyNode(srcnode->getCommandLexNode());
 
     for ( int i = 0; i < srcnode->getSubListCount(); i++ ) {
         finSyntaxNode *synnode = new finSyntaxNode();
-        if ( synnode == nullptr )
-            return finErrorKits::EC_OUT_OF_MEMORY;
-
-        errcode = synnode->copyNode(srcnode->getSubSyntaxNode(i));
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            synnode->disposeAll();
-            delete synnode;
-            return errcode;
+        if ( synnode == nullptr ) {
+            finThrowObj(finErrorKits::EC_OUT_OF_MEMORY,
+                        QString("Out of memory when copy sub syntax node at Idx-%1.").arg(i));
         }
 
+        synnode->copyNode(srcnode->getSubSyntaxNode(i));
         this->appendSubSyntaxNode(synnode);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finSyntaxNodeType finSyntaxNode::getType() const
@@ -104,7 +98,7 @@ void finSyntaxNode::prependSubSyntaxNode(finSyntaxNode *synnode)
 finSyntaxNode *finSyntaxNode::pickSubSyntaxNode(int idx)
 {
     if ( idx < 0 || idx >= this->_subSyntaxList.count() ) {
-        finThrowObj(finErrorCode::EC_INVALID_PARAM,
+        finThrowObj(finErrorKits::EC_INVALID_PARAM,
                     QString("Idx-%1 out of range (%2).").arg(idx).arg(this->_subSyntaxList.count()));
     }
 

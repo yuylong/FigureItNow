@@ -51,7 +51,7 @@ public:
     finSyntaxNode();
     virtual ~finSyntaxNode();
 
-    finErrorCode copyNode(const finSyntaxNode *srcnode);
+    void copyNode(const finSyntaxNode *srcnode);
 
     Type getType() const;
     const finLexNode *getCommandLexNode() const;
