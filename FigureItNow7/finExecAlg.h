@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2018 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINEXECALG_H
@@ -29,13 +29,13 @@ public:
 
     static void stringListToNumArrayVar(const QStringList &strlist, finExecVariable *outvar);
     static void stringListToStrArrayVar(const QStringList &strlist, finExecVariable *outvar);
-    static finErrorCode stringListToArrayVar(const QStringList &strlist, finExecVariable *outvar);
+    static void stringListToArrayVar(const QStringList &strlist, finExecVariable *outvar);
     static finErrorCode numArrayVarToStringList(finExecVariable *invar, QStringList *strlist);
     static finErrorCode arrayVarToStringList(finExecVariable *invar, QStringList *strlist);
 
     static void csStringToNumArrayVar(const QString &csstr, finExecVariable *outvar);
     static void csStringToStrArrayVar(const QString &csstr, finExecVariable *outvar);
-    static finErrorCode csStringToArrayVar(const QString &csstr, finExecVariable *outvar);
+    static void csStringToArrayVar(const QString &csstr, finExecVariable *outvar);
     static QString numArrayVarToCsString(finExecVariable *invar);
     static QString arrayVarToCsString(finExecVariable *invar);
 

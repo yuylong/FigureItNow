@@ -57,12 +57,14 @@ void finExecAlg::stringListToStrArrayVar(const QStringList &strlist, finExecVari
     }
 }
 
-finErrorCode finExecAlg::stringListToArrayVar(const QStringList &strlist, finExecVariable *outvar)
+void finExecAlg::stringListToArrayVar(const QStringList &strlist, finExecVariable *outvar)
 {
     int curcol = 0;
     outvar->setType(finExecVariable::TP_ARRAY);
-    if ( strlist.isEmpty() )
-        return finErrorKits::EC_REACH_BOTTOM;
+    if ( strlist.isEmpty() ) {
+        finWarning << "Convert an empty string list to array variable.";
+        return;
+    }
 
     outvar->preallocArrayLength(strlist.length());
     foreach ( QString stritem, strlist ) {
@@ -81,7 +83,6 @@ finErrorCode finExecAlg::stringListToArrayVar(const QStringList &strlist, finExe
         }
         curcol++;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 static inline finErrorCode _appendNumVarToStrList(finExecVariable *invar, QStringList *strlist)
@@ -167,15 +168,15 @@ void finExecAlg::csStringToStrArrayVar(const QString &csstr, finExecVariable *ou
     stringListToStrArrayVar(trimstr.split(','), outvar);
 }
 
-finErrorCode finExecAlg::csStringToArrayVar(const QString &csstr, finExecVariable *outvar)
+void finExecAlg::csStringToArrayVar(const QString &csstr, finExecVariable *outvar)
 {
     QString trimstr = csstr.trimmed();
     if ( trimstr.isEmpty() ) {
         outvar->setType(finExecVariable::TP_ARRAY);
-        return finErrorKits::EC_REACH_BOTTOM;
+        return;
     }
 
-    return stringListToArrayVar(trimstr.split(','), outvar);
+    stringListToArrayVar(trimstr.split(','), outvar);
 }
 
 QString finExecAlg::numArrayVarToCsString(finExecVariable *invar)
