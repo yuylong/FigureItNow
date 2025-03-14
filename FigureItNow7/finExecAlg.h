@@ -27,7 +27,7 @@ class finExecAlg
 public:
     finExecAlg();
 
-    static finErrorCode stringListToNumArrayVar(const QStringList &strlist, finExecVariable *outvar);
+    static void stringListToNumArrayVar(const QStringList &strlist, finExecVariable *outvar);
     static finErrorCode stringListToStrArrayVar(const QStringList &strlist, finExecVariable *outvar);
     static finErrorCode stringListToArrayVar(const QStringList &strlist, finExecVariable *outvar);
     static finErrorCode numArrayVarToStringList(finExecVariable *invar, QStringList *strlist);

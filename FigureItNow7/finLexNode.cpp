@@ -34,8 +34,9 @@ void finLexNode::reset()
 void finLexNode::copyNode(const finLexNode *srcnode)
 {
     if (srcnode == nullptr) {
-        finWarning << "Copy SynNode from null.";
-        return this->reset();
+        finWarning << "Copy SynNode from null." << finDbgObj;
+        this->reset();
+        return;
     }
 
     this->_string = srcnode->getString();

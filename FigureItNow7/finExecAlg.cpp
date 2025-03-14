@@ -16,12 +16,14 @@ finExecAlg::finExecAlg()
     return;
 }
 
-finErrorCode finExecAlg::stringListToNumArrayVar(const QStringList &strlist, finExecVariable *outvar)
+void finExecAlg::stringListToNumArrayVar(const QStringList &strlist, finExecVariable *outvar)
 {
     int curcol = 0;
     outvar->setType(finExecVariable::TP_ARRAY);
-    if ( strlist.isEmpty() )
-        return finErrorKits::EC_REACH_BOTTOM;
+    if ( strlist.isEmpty() ) {
+        finWarning << "Convert an empty string list to number array variable.";
+        return;
+    }
 
     outvar->preallocArrayLength(strlist.length());
     foreach ( QString stritem, strlist ) {
@@ -35,7 +37,6 @@ finErrorCode finExecAlg::stringListToNumArrayVar(const QStringList &strlist, fin
         colvar->setNumericValue(valitem);
         curcol++;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::stringListToStrArrayVar(const QStringList &strlist, finExecVariable *outvar)
@@ -151,7 +152,8 @@ finErrorCode finExecAlg::csStringToNumArrayVar(const QString &csstr, finExecVari
         return finErrorKits::EC_REACH_BOTTOM;
     }
 
-    return stringListToNumArrayVar(trimstr.split(','), outvar);
+    stringListToNumArrayVar(trimstr.split(','), outvar);
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::csStringToStrArrayVar(const QString &csstr, finExecVariable *outvar)
