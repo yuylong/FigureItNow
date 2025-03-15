@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2018 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #include <qmath.h>
@@ -85,65 +85,59 @@ void finExecAlg::stringListToArrayVar(const QStringList &strlist, finExecVariabl
     }
 }
 
-static inline finErrorCode _appendNumVarToStrList(finExecVariable *invar, QStringList *strlist)
+static inline void _appendNumVarToStrList(finExecVariable *invar, QStringList *strlist)
 {
     if ( invar == nullptr || invar->getType() == finExecVariable::TP_NULL ) {
         strlist->append(QString());
-        return finErrorKits::EC_NORMAL_WARN;
+        finWarning << "Append a null typed variable to string list.";
     } else if ( invar->getType() == finExecVariable::TP_STRING || invar->getType() == finExecVariable::TP_IMAGE ) {
         strlist->append(QString("0"));
-        return finErrorKits::EC_NORMAL_WARN;
     } else if ( invar->getType() == finExecVariable::TP_NUMERIC ) {
         strlist->append(QString::number(invar->getNumericValue()));
-        return finErrorKits::EC_SUCCESS;
-    } else {
-        return finErrorKits::EC_INVALID_PARAM;
     }
 }
 
-finErrorCode finExecAlg::numArrayVarToStringList(finExecVariable *invar, QStringList *strlist)
+void finExecAlg::numArrayVarToStringList(finExecVariable *invar, QStringList *strlist)
 {
     strlist->clear();
-    if ( invar == nullptr || invar->getType() != finExecVariable::TP_ARRAY )
-        return _appendNumVarToStrList(invar, strlist);
+    if ( invar == nullptr || invar->getType() != finExecVariable::TP_ARRAY ) {
+        _appendNumVarToStrList(invar, strlist);
+        return;
+    }
 
     int itemcnt = invar->getArrayLength();
     for ( int i = 0; i < itemcnt; i++ ) {
         finExecVariable *itemvar = invar->getVariableItemAt(i);
         _appendNumVarToStrList(itemvar, strlist);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-static inline finErrorCode _appendVarToStrList(finExecVariable *invar, QStringList *strlist)
+static inline void _appendVarToStrList(finExecVariable *invar, QStringList *strlist)
 {
     if ( invar == nullptr || invar->getType() == finExecVariable::TP_NULL ||
          invar->getType() == finExecVariable::TP_IMAGE ) {
         strlist->append(QString());
-        return finErrorKits::EC_NORMAL_WARN;
+        finWarning << "Append a null/image typed variable to string list.";
     } else if ( invar->getType() == finExecVariable::TP_STRING ) {
         strlist->append(invar->getStringValue());
-        return finErrorKits::EC_SUCCESS;
     } else if ( invar->getType() == finExecVariable::TP_NUMERIC ) {
         strlist->append(QString::number(invar->getNumericValue()));
-        return finErrorKits::EC_SUCCESS;
-    } else {
-        return finErrorKits::EC_INVALID_PARAM;
     }
 }
 
-finErrorCode finExecAlg::arrayVarToStringList(finExecVariable *invar, QStringList *strlist)
+void finExecAlg::arrayVarToStringList(finExecVariable *invar, QStringList *strlist)
 {
     strlist->clear();
-    if ( invar == nullptr || invar->getType() != finExecVariable::TP_ARRAY )
-        return _appendVarToStrList(invar, strlist);
+    if ( invar == nullptr || invar->getType() != finExecVariable::TP_ARRAY ) {
+        _appendVarToStrList(invar, strlist);
+        return;
+    }
 
     int itemcnt = invar->getArrayLength();
     for ( int i = 0; i < itemcnt; i++ ) {
         finExecVariable *itemvar = invar->getVariableItemAt(i);
         _appendVarToStrList(itemvar, strlist);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 void finExecAlg::csStringToNumArrayVar(const QString &csstr, finExecVariable *outvar)
@@ -182,20 +176,14 @@ void finExecAlg::csStringToArrayVar(const QString &csstr, finExecVariable *outva
 QString finExecAlg::numArrayVarToCsString(finExecVariable *invar)
 {
     QStringList strlist;
-    finErrorCode errcode = numArrayVarToStringList(invar, &strlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return QString();
-
+    numArrayVarToStringList(invar, &strlist);
     return strlist.join(',');
 }
 
 QString finExecAlg::arrayVarToCsString(finExecVariable *invar)
 {
     QStringList strlist;
-    finErrorCode errcode = arrayVarToStringList(invar, &strlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return QString();
-
+    arrayVarToStringList(invar, &strlist);
     return strlist.join(',');
 }
 
@@ -214,28 +202,29 @@ static inline finErrorCode _appendVarToNumList(finExecVariable *invar, QList<dou
     }
 }
 
-finErrorCode finExecAlg::numArrayVarToList(finExecVariable *invar, QList<double> *list)
+void finExecAlg::numArrayVarToList(finExecVariable *invar, QList<double> *list)
 {
     list->clear();
-    if ( invar == nullptr || invar->getType() != finExecVariable::TP_ARRAY )
-        return _appendVarToNumList(invar, list);
+    if ( invar == nullptr || invar->getType() != finExecVariable::TP_ARRAY ) {
+        _appendVarToNumList(invar, list);
+        return;
+    }
 
     int itemcnt = invar->getArrayLength();
     for ( int i = 0; i < itemcnt; i++ ) {
         finExecVariable *itemvar = invar->getVariableItemAt(i);
         _appendVarToNumList(itemvar, list);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecAlg::numMatVarToList(finExecVariable *invar, QList<QList<double>> *list)
+void finExecAlg::numMatVarToList(finExecVariable *invar, QList<QList<double>> *list)
 {
     list->clear();
     if ( invar == nullptr || invar->getType() != finExecVariable::TP_ARRAY ) {
         QList<double> tmplist;
-        finErrorCode errcode = _appendVarToNumList(invar, &tmplist);
+        _appendVarToNumList(invar, &tmplist);
         list->append(tmplist);
-        return errcode;
+        return;
     }
 
     int itemcnt = invar->getArrayLength();
@@ -245,7 +234,6 @@ finErrorCode finExecAlg::numMatVarToList(finExecVariable *invar, QList<QList<dou
         numArrayVarToList(itemvar, &itemlist);
         list->append(itemlist);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::listToNumArrayVar(const QList<double> &list, finExecVariable *outvar)

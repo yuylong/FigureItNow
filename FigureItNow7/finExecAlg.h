@@ -30,8 +30,8 @@ public:
     static void stringListToNumArrayVar(const QStringList &strlist, finExecVariable *outvar);
     static void stringListToStrArrayVar(const QStringList &strlist, finExecVariable *outvar);
     static void stringListToArrayVar(const QStringList &strlist, finExecVariable *outvar);
-    static finErrorCode numArrayVarToStringList(finExecVariable *invar, QStringList *strlist);
-    static finErrorCode arrayVarToStringList(finExecVariable *invar, QStringList *strlist);
+    static void numArrayVarToStringList(finExecVariable *invar, QStringList *strlist);
+    static void arrayVarToStringList(finExecVariable *invar, QStringList *strlist);
 
     static void csStringToNumArrayVar(const QString &csstr, finExecVariable *outvar);
     static void csStringToStrArrayVar(const QString &csstr, finExecVariable *outvar);
@@ -39,8 +39,8 @@ public:
     static QString numArrayVarToCsString(finExecVariable *invar);
     static QString arrayVarToCsString(finExecVariable *invar);
 
-    static finErrorCode numArrayVarToList(finExecVariable *invar, QList<double> *list);
-    static finErrorCode numMatVarToList(finExecVariable *invar, QList<QList<double>> *list);
+    static void numArrayVarToList(finExecVariable *invar, QList<double> *list);
+    static void numMatVarToList(finExecVariable *invar, QList<QList<double>> *list);
     static finErrorCode listToNumArrayVar(const QList<double> &list, finExecVariable *outvar);
     static finErrorCode listToNumMatVar(const QList<QList<double>> &list, finExecVariable *outvar);
 
