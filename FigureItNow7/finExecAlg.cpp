@@ -187,18 +187,14 @@ QString finExecAlg::arrayVarToCsString(finExecVariable *invar)
     return strlist.join(',');
 }
 
-static inline finErrorCode _appendVarToNumList(finExecVariable *invar, QList<double> *list)
+static inline void _appendVarToNumList(finExecVariable *invar, QList<double> *list)
 {
     if ( invar == nullptr || invar->getType() == finExecVariable::TP_NULL ) {
-        return finErrorKits::EC_NORMAL_WARN;
+        return;
     } else if ( invar->getType() == finExecVariable::TP_STRING || invar->getType() == finExecVariable::TP_IMAGE ) {
         list->append(0.0);
-        return finErrorKits::EC_NORMAL_WARN;
     } else if ( invar->getType() == finExecVariable::TP_NUMERIC ) {
         list->append(invar->getNumericValue());
-        return finErrorKits::EC_SUCCESS;
-    } else {
-        return finErrorKits::EC_INVALID_PARAM;
     }
 }
 
@@ -236,7 +232,7 @@ void finExecAlg::numMatVarToList(finExecVariable *invar, QList<QList<double>> *l
     }
 }
 
-finErrorCode finExecAlg::listToNumArrayVar(const QList<double> &list, finExecVariable *outvar)
+void finExecAlg::listToNumArrayVar(const QList<double> &list, finExecVariable *outvar)
 {
     outvar->setType(finExecVariable::TP_ARRAY);
     outvar->preallocArrayLength(list.length());
@@ -248,10 +244,9 @@ finErrorCode finExecAlg::listToNumArrayVar(const QList<double> &list, finExecVar
         itemvar->setNumericValue(val);
         idx++;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecAlg::listToNumMatVar(const QList<QList<double>> &list, finExecVariable *outvar)
+void finExecAlg::listToNumMatVar(const QList<QList<double>> &list, finExecVariable *outvar)
 {
     outvar->setType(finExecVariable::TP_ARRAY);
     outvar->preallocArrayLength(list.length());
@@ -262,7 +257,6 @@ finErrorCode finExecAlg::listToNumMatVar(const QList<QList<double>> &list, finEx
         listToNumArrayVar(sublist, itemvar);
         idx++;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::listMatrixToArray(const QList< QList<double> > &inlist, QList<double> *outlist)
@@ -562,7 +556,8 @@ finErrorCode finExecAlg::varArrayNeg(finExecVariable *invar, finExecVariable *ou
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return listToNumArrayVar(outlist, outvar);
+    listToNumArrayVar(outlist, outvar);
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::varArrayAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
@@ -586,7 +581,8 @@ finErrorCode finExecAlg::varArrayAdd(finExecVariable *invar1, finExecVariable *i
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return listToNumArrayVar(outlist, outvar);
+    listToNumArrayVar(outlist, outvar);
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::varArraySub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
@@ -610,7 +606,8 @@ finErrorCode finExecAlg::varArraySub(finExecVariable *invar1, finExecVariable *i
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return listToNumArrayVar(outlist, outvar);
+    listToNumArrayVar(outlist, outvar);
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::varArraySum(finExecVariable *invar, finExecVariable *outvar)
@@ -750,7 +747,8 @@ finErrorCode finExecAlg::varVectorNormalize(finExecVariable *invar, finExecVaria
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return listToNumArrayVar(outlist, outvar);
+    listToNumArrayVar(outlist, outvar);
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::varVectorDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
@@ -902,7 +900,8 @@ finErrorCode finExecAlg::varMatTranspose(finExecVariable *invar, finExecVariable
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return listToNumMatVar(outlist, outvar);
+    listToNumMatVar(outlist, outvar);
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::varMatAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
@@ -926,7 +925,8 @@ finErrorCode finExecAlg::varMatAdd(finExecVariable *invar1, finExecVariable *inv
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return listToNumMatVar(outlist, outvar);
+    listToNumMatVar(outlist, outvar);
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::varMatSub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
@@ -950,7 +950,8 @@ finErrorCode finExecAlg::varMatSub(finExecVariable *invar1, finExecVariable *inv
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return listToNumMatVar(outlist, outvar);
+    listToNumMatVar(outlist, outvar);
+    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::varMatDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
@@ -974,5 +975,6 @@ finErrorCode finExecAlg::varMatDot(finExecVariable *invar1, finExecVariable *inv
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    return listToNumMatVar(outlist, outvar);
+    listToNumMatVar(outlist, outvar);
+    return finErrorKits::EC_SUCCESS;
 }
