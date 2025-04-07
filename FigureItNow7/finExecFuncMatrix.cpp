@@ -182,7 +182,6 @@ static struct finExecSysFuncRegItem _funcRegItem_matrix = {
 static finErrorCode _sysfunc_matrix2array(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *matvar;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -196,11 +195,8 @@ static finErrorCode _sysfunc_matrix2array(finExecFunction *self, finExecEnvironm
     if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varMatrixToArray(matvar, retvar);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete retvar;
-        return errcode;
-    }
+    finExecAlg::varMatrixToArray(matvar, retvar);
+    // FIXEME: delete retvar in error state.
 
     retvar->clearLeftValue();
     retvar->setWriteProtected();
@@ -230,7 +226,6 @@ static struct finExecSysFuncRegItem _funcRegItem_matrix2vector = {
 static finErrorCode _sysfunc_array_cut(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *aryvar, *fromvar, *tovar;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -257,11 +252,8 @@ static finErrorCode _sysfunc_array_cut(finExecFunction *self, finExecEnvironment
     if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varArrayCut(aryvar, from, to, retvar);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete retvar;
-        return errcode;
-    }
+    finExecAlg::varArrayCut(aryvar, from, to, retvar);
+    // FIXEME: delete retvar in error state.
 
     retvar->clearLeftValue();
     retvar->setWriteProtected();

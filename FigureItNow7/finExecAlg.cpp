@@ -259,10 +259,11 @@ void finExecAlg::listToNumMatVar(const QList<QList<double>> &list, finExecVariab
     }
 }
 
-finErrorCode finExecAlg::listMatrixToArray(const QList< QList<double> > &inlist, QList<double> *outlist)
+void finExecAlg::listMatrixToArray(const QList< QList<double> > &inlist, QList<double> *outlist)
 {
-    if ( outlist == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    if ( outlist == nullptr ) {
+        finThrow(finErrorCode::EC_NULL_POINTER, "Output list is null.");
+    }
 
     outlist->clear();
     foreach ( const QList<double> &sublist, inlist ) {
@@ -270,72 +271,71 @@ finErrorCode finExecAlg::listMatrixToArray(const QList< QList<double> > &inlist,
             outlist->append(item);
         }
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-static finErrorCode _appendSubVar(finExecVariable *outvar, finExecVariable *subvar, int startpos, int *endpos)
+static void _appendSubVar(finExecVariable *outvar, finExecVariable *subvar, int startpos, int *endpos)
 {
     if ( subvar == nullptr || subvar->getType() == finExecVariable::TP_NULL ) {
         *endpos = startpos;
-        return finErrorKits::EC_NORMAL_WARN;
+        return;
     }
 
     if ( subvar->getType() != finExecVariable::TP_ARRAY ) {
         outvar->preallocArrayLength(startpos + 1);
         finExecVariable *outitem = outvar->getVariableItemAt(startpos);
-        if ( outitem == nullptr )
-            return finErrorKits::EC_OUT_OF_MEMORY;
+        if ( outitem == nullptr ) {
+            finThrow(finErrorKits::EC_OUT_OF_MEMORY, QString("Cannot get output item at index %1.").arg(startpos));
+        }
 
         outitem->copyVariable(subvar);
         *endpos = startpos + 1;
-        return finErrorKits::EC_SUCCESS;
     }
 
-    finErrorCode errcode;
     int sublen = subvar->getArrayLength();
     outvar->preallocArrayLength(startpos + sublen);
     for ( int i = 0; i < sublen; i++ ) {
         finExecVariable *initem = subvar->getVariableItemAt(i);
         finExecVariable *outitem = outvar->getVariableItemAt(startpos + i);
-        if ( initem == nullptr || outitem == nullptr )
-            return finErrorKits::EC_OUT_OF_MEMORY;
+        if ( initem == nullptr || outitem == nullptr ) {
+            finThrow(finErrorKits::EC_OUT_OF_MEMORY,
+                     QString("Cannot get input item (%1) or output item (%2).").arg(i).arg(startpos + i));
+        }
 
-        errcode = outitem->copyVariable(initem);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        outitem->copyVariable(initem);
     }
     *endpos = startpos + sublen;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecAlg::varMatrixToArray(finExecVariable *invar, finExecVariable *outvar)
+void finExecAlg::varMatrixToArray(finExecVariable *invar, finExecVariable *outvar)
 {
-    if ( invar == nullptr || outvar == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    if ( invar == nullptr || outvar == nullptr ) {
+        finThrow(finErrorCode::EC_NULL_POINTER, "Input or output variable is null.");
+    }
 
     int pos = 0;
     outvar->setType(finExecVariable::TP_ARRAY);
-    if ( invar->getType() != finExecVariable::TP_ARRAY )
-        return _appendSubVar(outvar, invar, 0, &pos);
+    if ( invar->getType() != finExecVariable::TP_ARRAY ) {
+        _appendSubVar(outvar, invar, 0, &pos);
+        return;
+    }
 
-    finErrorCode errcode;
     int rowcnt = invar->getArrayLength();
     for ( int rowidx = 0; rowidx < rowcnt; rowidx++ ) {
         finExecVariable *inrowvar = invar->getVariableItemAt(rowidx);
 
-        errcode = _appendSubVar(outvar, inrowvar, pos, &pos);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        _appendSubVar(outvar, inrowvar, pos, &pos);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecAlg::varArrayCut(finExecVariable *invar, int from, int to, finExecVariable *outvar)
+void finExecAlg::varArrayCut(finExecVariable *invar, int from, int to, finExecVariable *outvar)
 {
-    if ( invar == nullptr || outvar == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
-    if ( invar->getType() != finExecVariable::TP_ARRAY )
-        return finErrorKits::EC_INVALID_PARAM;
+    if ( invar == nullptr || outvar == nullptr ) {
+        finThrow(finErrorCode::EC_NULL_POINTER, "Input or output variable is null.");
+    }
+    if ( invar->getType() != finExecVariable::TP_ARRAY ) {
+        finThrow(finErrorKits::EC_INVALID_PARAM,
+                 QString("Array operation performs on non-array variable (%1)").arg(invar->getType()));
+    }
 
     int inlen = invar->getArrayLength();
     from = (from < 0 ? 0 : from);
@@ -343,20 +343,17 @@ finErrorCode finExecAlg::varArrayCut(finExecVariable *invar, int from, int to, f
     int realfrom = (from < to ? from : to);
     int realto = (from < to ? to : from);
 
-    finErrorCode errcode;
     outvar->setType(finExecVariable::TP_ARRAY);
     outvar->preallocArrayLength(realto - realfrom);
     for (int outi = 0, ini = from; ini < to; outi++, ini++) {
         finExecVariable *initem = invar->getVariableItemAt(ini);
         finExecVariable *outitem = outvar->getVariableItemAt(outi);
         if ( initem == nullptr || outitem == nullptr )
-            return finErrorKits::EC_OUT_OF_MEMORY;
+            finThrow(finErrorKits::EC_OUT_OF_MEMORY,
+                     QString("Cannot get array item at index %1-%2.").arg(ini).arg(outi));
 
-        errcode = outitem->copyVariable(initem);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        outitem->copyVariable(initem);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::varArrayJoin(const QList<finExecVariable *> &invarlist, finExecVariable *outvar)
@@ -367,9 +364,7 @@ finErrorCode finExecAlg::varArrayJoin(const QList<finExecVariable *> &invarlist,
     int pos = 0;
     outvar->setType(finExecVariable::TP_ARRAY);
     foreach ( finExecVariable *invar, invarlist ) {
-        finErrorCode errcode = _appendSubVar(outvar, invar, pos, &pos);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        _appendSubVar(outvar, invar, pos, &pos);
     }
     return finErrorKits::EC_SUCCESS;
 }
