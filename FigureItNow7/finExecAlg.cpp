@@ -369,16 +369,15 @@ void finExecAlg::varArrayJoin(const QList<finExecVariable *> &invarlist, finExec
     }
 }
 
-finErrorCode finExecAlg::listArrayNeg(const QList<double> &inlist, QList<double> *outlist)
+void finExecAlg::listArrayNeg(const QList<double> &inlist, QList<double> *outlist)
 {
-    if ( outlist == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
-
+    if ( outlist == nullptr ) {
+        finThrow(finErrorCode::EC_NULL_POINTER, "The output variable is null.");
+    }
     outlist->clear();
     foreach ( double val, inlist) {
         outlist->append(-val);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::listArrayAdd(const QList<double> &inlist1, const QList<double> &inlist2,
@@ -546,11 +545,7 @@ finErrorCode finExecAlg::varArrayNeg(finExecVariable *invar, finExecVariable *ou
 
     QList<double> inlist, outlist;
     numArrayVarToList(invar, &inlist);
-
-    finErrorCode errcode = listArrayNeg(inlist, &outlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
+    listArrayNeg(inlist, &outlist);
     listToNumArrayVar(outlist, outvar);
     return finErrorKits::EC_SUCCESS;
 }
