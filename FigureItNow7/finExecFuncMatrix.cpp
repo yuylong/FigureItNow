@@ -283,7 +283,6 @@ static struct finExecSysFuncRegItem _funcRegItem_vec_cut = {
 static finErrorCode _sysfunc_array_join(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *aryvar;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -305,11 +304,7 @@ static finErrorCode _sysfunc_array_join(finExecFunction *self, finExecEnvironmen
     if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varArrayJoin(invarlist, retvar);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete retvar;
-        return errcode;
-    }
+    finExecAlg::varArrayJoin(invarlist, retvar);
 
     retvar->clearLeftValue();
     retvar->setWriteProtected();

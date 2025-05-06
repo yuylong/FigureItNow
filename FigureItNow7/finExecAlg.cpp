@@ -356,17 +356,17 @@ void finExecAlg::varArrayCut(finExecVariable *invar, int from, int to, finExecVa
     }
 }
 
-finErrorCode finExecAlg::varArrayJoin(const QList<finExecVariable *> &invarlist, finExecVariable *outvar)
+void finExecAlg::varArrayJoin(const QList<finExecVariable *> &invarlist, finExecVariable *outvar)
 {
-    if ( outvar == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    if ( outvar == nullptr ) {
+        finThrow(finErrorCode::EC_NULL_POINTER, "The output variable is null.");
+    }
 
     int pos = 0;
     outvar->setType(finExecVariable::TP_ARRAY);
     foreach ( finExecVariable *invar, invarlist ) {
         _appendSubVar(outvar, invar, pos, &pos);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::listArrayNeg(const QList<double> &inlist, QList<double> *outlist)
