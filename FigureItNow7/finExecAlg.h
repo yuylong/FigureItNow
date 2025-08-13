@@ -51,9 +51,9 @@ public:
 
     static void listArrayNeg(const QList<double> &inlist, QList<double> *outlist);
     static void listArrayAdd(const QList<double> &inlist1, const QList<double> &inlist2,
-                                     QList<double> *outlist);
-    static finErrorCode listArraySub(const QList<double> &inlist1, const QList<double> &inlist2,
-                                     QList<double> *outlist);
+                             QList<double> *outlist);
+    static void listArraySub(const QList<double> &inlist1, const QList<double> &inlist2,
+                             QList<double> *outlist);
     static finErrorCode listArraySum(const QList<double> &inlist, double *outval);
     static finErrorCode listArrayAvg(const QList<double> &inlist, double *outval);
 

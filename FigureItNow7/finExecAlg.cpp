@@ -381,10 +381,10 @@ void finExecAlg::listArrayNeg(const QList<double> &inlist, QList<double> *outlis
 }
 
 void finExecAlg::listArrayAdd(const QList<double> &inlist1, const QList<double> &inlist2,
-                                      QList<double> *outlist)
+                              QList<double> *outlist)
 {
     if ( outlist == nullptr ) {
-        finThrow(finErrorCode::EC_NULL_POINTER, "The output variable is null.");
+        finThrow(finErrorKits::EC_NULL_POINTER, "The output variable is null.");
     }
     if ( inlist1.length() != inlist2.length() ) {
         finThrow(finErrorKits::EC_INVALID_PARAM, "Input lists must have the same length.");
@@ -399,13 +399,15 @@ void finExecAlg::listArrayAdd(const QList<double> &inlist1, const QList<double> 
     }
 }
 
-finErrorCode finExecAlg::listArraySub(const QList<double> &inlist1, const QList<double> &inlist2,
-                                      QList<double> *outlist)
+void finExecAlg::listArraySub(const QList<double> &inlist1, const QList<double> &inlist2,
+                              QList<double> *outlist)
 {
-    if ( outlist == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
-    if ( inlist1.length() != inlist2.length() )
-        return finErrorKits::EC_INVALID_PARAM;
+    if ( outlist == nullptr ) {
+        finThrow(finErrorKits::EC_NULL_POINTER, "The output variable is null.");
+    }
+    if ( inlist1.length() != inlist2.length() ) {
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Input lists must have the same length.");
+    }
 
     int len = inlist1.length();
     outlist->clear();
@@ -414,7 +416,6 @@ finErrorCode finExecAlg::listArraySub(const QList<double> &inlist1, const QList<
         double val2 = inlist2.at(i);
         outlist->append(val1 - val2);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::listArraySum(const QList<double> &inlist, double *outval)
@@ -590,10 +591,7 @@ finErrorCode finExecAlg::varArraySub(finExecVariable *invar1, finExecVariable *i
     numArrayVarToList(invar1, &inlist1);
     numArrayVarToList(invar2, &inlist2);
 
-    finErrorCode errcode = listArraySub(inlist1, inlist2, &outlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
+    listArraySub(inlist1, inlist2, &outlist);
     listToNumArrayVar(outlist, outvar);
     return finErrorKits::EC_SUCCESS;
 }
@@ -829,10 +827,7 @@ finErrorCode finExecAlg::listMatSub(const QList<QList<double>> &inlist1, const Q
         const QList<double> &insublist2 = inlist2.at(i);
         QList<double> outsublist;
 
-        finErrorCode errcode = listArraySub(insublist1, insublist2, &outsublist);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
-
+        listArraySub(insublist1, insublist2, &outsublist);
         outlist->append(outsublist);
     }
     return finErrorKits::EC_SUCCESS;
