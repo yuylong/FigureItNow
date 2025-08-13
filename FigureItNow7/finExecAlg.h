@@ -50,7 +50,7 @@ public:
     static void varArrayJoin(const QList<finExecVariable *> &invarlist, finExecVariable *outvar);
 
     static void listArrayNeg(const QList<double> &inlist, QList<double> *outlist);
-    static finErrorCode listArrayAdd(const QList<double> &inlist1, const QList<double> &inlist2,
+    static void listArrayAdd(const QList<double> &inlist1, const QList<double> &inlist2,
                                      QList<double> *outlist);
     static finErrorCode listArraySub(const QList<double> &inlist1, const QList<double> &inlist2,
                                      QList<double> *outlist);
