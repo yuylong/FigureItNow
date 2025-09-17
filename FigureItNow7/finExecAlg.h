@@ -57,9 +57,9 @@ public:
     static void listArraySum(const QList<double> &inlist, double *outval);
     static void listArrayAvg(const QList<double> &inlist, double *outval);
 
-    static finErrorCode listVectorNorm(const QList<double> &inlist, double *outval);
-    static finErrorCode listVectorNorm1(const QList<double> &inlist, double *outval);
-    static finErrorCode listVectorNormP(const QList<double> &inlist, double p, double *outval);
+    static void listVectorNorm(const QList<double> &inlist, double *outval);
+    static void listVectorNorm1(const QList<double> &inlist, double *outval);
+    static void listVectorNormP(const QList<double> &inlist, double p, double *outval);
     static finErrorCode listVectorNormInf(const QList<double> &inlist, double *outval);
     static finErrorCode listVectorNormalize(const QList<double> &inlist, QList<double> *outlist);
     static finErrorCode listVectorDot(const QList<double> &inlist1, const QList<double> &inlist2, double *outval);

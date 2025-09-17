@@ -52,7 +52,7 @@
    <item>
     <widget class="QLabel" name="lblCopyrights">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Version: [:version:]&lt;br/&gt;[:branch:] [:gitver:]&lt;br/&gt;([:gittime:])&lt;/p&gt;&lt;p&gt;GNU GENERAL PUBLIC LICENSE, version 3&lt;/a&gt;&lt;br/&gt;Author: Yulong Yu&lt;/p&gt;&lt;p&gt;Copyright(c) 2015 - 2024 Yulong Yu, All Rights Reserved.&lt;/p&gt;&lt;p&gt;GUI Support: QT [:qtver:] (build with QT [:qtbuildver:])&lt;br/&gt;Adobe PDF Support: QPdfWriter in QT.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Version: [:version:]&lt;br/&gt;[:branch:] [:gitver:]&lt;br/&gt;([:gittime:])&lt;/p&gt;&lt;p&gt;GNU GENERAL PUBLIC LICENSE, version 3&lt;/a&gt;&lt;br/&gt;Author: Yulong Yu&lt;/p&gt;&lt;p&gt;Copyright(c) 2015 - 2025 Yulong Yu, All Rights Reserved.&lt;/p&gt;&lt;p&gt;GUI Support: QT [:qtver:] (build with QT [:qtbuildver:])&lt;br/&gt;Adobe PDF Support: QPdfWriter in QT.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="margin">
       <number>8</number>
