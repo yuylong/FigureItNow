@@ -438,6 +438,7 @@ void finExecAlg::listArrayAvg(const QList<double> &inlist, double *outval)
     }
     if ( inlist.length() == 0 ) {
         *outval = 0.0;
+        finWarning << "The input list is empty.";
         return;
     }
 
