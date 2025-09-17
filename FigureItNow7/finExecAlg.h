@@ -54,8 +54,8 @@ public:
                              QList<double> *outlist);
     static void listArraySub(const QList<double> &inlist1, const QList<double> &inlist2,
                              QList<double> *outlist);
-    static finErrorCode listArraySum(const QList<double> &inlist, double *outval);
-    static finErrorCode listArrayAvg(const QList<double> &inlist, double *outval);
+    static void listArraySum(const QList<double> &inlist, double *outval);
+    static void listArrayAvg(const QList<double> &inlist, double *outval);
 
     static finErrorCode listVectorNorm(const QList<double> &inlist, double *outval);
     static finErrorCode listVectorNorm1(const QList<double> &inlist, double *outval);

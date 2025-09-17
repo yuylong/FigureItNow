@@ -418,35 +418,33 @@ void finExecAlg::listArraySub(const QList<double> &inlist1, const QList<double> 
     }
 }
 
-finErrorCode finExecAlg::listArraySum(const QList<double> &inlist, double *outval)
+void finExecAlg::listArraySum(const QList<double> &inlist, double *outval)
 {
-    if ( outval == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    if ( outval == nullptr ) {
+        finThrow(finErrorKits::EC_NULL_POINTER, "The output variable is null.");
+    }
 
     double sumval = 0.0;
     foreach ( double val, inlist ) {
         sumval += val;
     }
     *outval = sumval;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecAlg::listArrayAvg(const QList<double> &inlist, double *outval)
+void finExecAlg::listArrayAvg(const QList<double> &inlist, double *outval)
 {
-    if ( outval == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    if ( outval == nullptr ) {
+        finThrow(finErrorKits::EC_NULL_POINTER, "The output variable is null.");
+    }
     if ( inlist.length() == 0 ) {
         *outval = 0.0;
-        return finErrorKits::EC_NORMAL_WARN;
+        return;
     }
 
     double sumval = 0.0;
-    finErrorCode errcode = listArraySum(inlist, &sumval);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    listArraySum(inlist, &sumval);
 
     *outval = sumval / inlist.length();
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::listVectorNorm(const QList<double> &inlist, double *outval)
@@ -607,9 +605,7 @@ finErrorCode finExecAlg::varArraySum(finExecVariable *invar, finExecVariable *ou
     numArrayVarToList(invar, &inlist);
 
     double outval = 0.0;
-    finErrorCode errcode = listArraySum(inlist, &outval);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    listArraySum(inlist, &outval);
 
     outvar->setType(finExecVariable::TP_NUMERIC);
     outvar->setNumericValue(outval);
@@ -627,9 +623,7 @@ finErrorCode finExecAlg::varArrayAvg(finExecVariable *invar, finExecVariable *ou
     numArrayVarToList(invar, &inlist);
 
     double outval = 0.0;
-    finErrorCode errcode = listArrayAvg(inlist, &outval);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    listArrayAvg(inlist, &outval);
 
     outvar->setType(finExecVariable::TP_NUMERIC);
     outvar->setNumericValue(outval);
