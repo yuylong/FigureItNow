@@ -507,11 +507,7 @@ finErrorCode finExecAlg::listVectorNormalize(const QList<double> &inlist, QList<
         return finErrorKits::EC_NULL_POINTER;
 
     double norm = 1.0;
-    try {
-        listVectorNorm(inlist, &norm);
-    } catch (...) {
-        norm = 1.0;
-    }
+    listVectorNorm(inlist, &norm);
 
     outlist->clear();
     foreach ( double val, inlist ) {
