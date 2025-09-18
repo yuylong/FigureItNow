@@ -487,10 +487,11 @@ void finExecAlg::listVectorNormP(const QList<double> &inlist, double p, double *
     *outval = pow(normp, 1.0 / p);
 }
 
-finErrorCode finExecAlg::listVectorNormInf(const QList<double> &inlist, double *outval)
+void finExecAlg::listVectorNormInf(const QList<double> &inlist, double *outval)
 {
-    if ( outval == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    if ( outval == nullptr ) {
+        finThrow(finErrorKits::EC_NULL_POINTER, "The output variable is null.");
+    }
 
     double normmax = 0.0;
     foreach ( double val, inlist ) {
@@ -498,13 +499,13 @@ finErrorCode finExecAlg::listVectorNormInf(const QList<double> &inlist, double *
             normmax = fabs(val);
     }
     *outval = normmax;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecAlg::listVectorNormalize(const QList<double> &inlist, QList<double> *outlist)
+void finExecAlg::listVectorNormalize(const QList<double> &inlist, QList<double> *outlist)
 {
-    if ( outlist == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    if ( outlist == nullptr ) {
+        finThrow(finErrorKits::EC_NULL_POINTER, "The output list is null.");
+    }
 
     double norm = 1.0;
     listVectorNorm(inlist, &norm);
@@ -513,13 +514,13 @@ finErrorCode finExecAlg::listVectorNormalize(const QList<double> &inlist, QList<
     foreach ( double val, inlist ) {
         outlist->append(val/norm);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecAlg::listVectorDot(const QList<double> &inlist1, const QList<double> &inlist2, double *outval)
+void finExecAlg::listVectorDot(const QList<double> &inlist1, const QList<double> &inlist2, double *outval)
 {
-    if ( outval == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    if ( outval == nullptr ) {
+        finThrow(finErrorKits::EC_NULL_POINTER, "The output variable is null.");
+    }
 
     int len = inlist1.length();
     if ( len > inlist2.length() )
@@ -532,7 +533,6 @@ finErrorCode finExecAlg::listVectorDot(const QList<double> &inlist1, const QList
         retval += val1 * val2;
     }
     *outval = retval;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::varArrayNeg(finExecVariable *invar, finExecVariable *outvar)
@@ -697,9 +697,7 @@ finErrorCode finExecAlg::varVectorNormInf(finExecVariable *invar, finExecVariabl
     numArrayVarToList(invar, &inlist);
 
     double outval = 0.0;
-    finErrorCode errcode = listVectorNormInf(inlist, &outval);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    listVectorNormInf(inlist, &outval);
 
     outvar->setType(finExecVariable::TP_NUMERIC);
     outvar->setNumericValue(outval);
@@ -716,9 +714,7 @@ finErrorCode finExecAlg::varVectorNormalize(finExecVariable *invar, finExecVaria
     QList<double> inlist, outlist;
     numArrayVarToList(invar, &inlist);
 
-    finErrorCode errcode = listVectorNormalize(inlist, &outlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    listVectorNormalize(inlist, &outlist);
 
     listToNumArrayVar(outlist, outvar);
     return finErrorKits::EC_SUCCESS;
@@ -742,9 +738,7 @@ finErrorCode finExecAlg::varVectorDot(finExecVariable *invar1, finExecVariable *
     numArrayVarToList(invar2, &inlist2);
 
     double outval = 0.0;
-    finErrorCode errcode = listVectorDot(inlist1, inlist2, &outval);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    listVectorDot(inlist1, inlist2, &outval);
 
     outvar->setType(finExecVariable::TP_NUMERIC);
     outvar->setNumericValue(outval);
