@@ -373,7 +373,6 @@ static struct finExecSysFuncRegItem _funcRegItem_array_size = {
 static finErrorCode _sysfunc_array_neg(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *aryvar;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -387,10 +386,11 @@ static finErrorCode _sysfunc_array_neg(finExecFunction *self, finExecEnvironment
     if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varArrayNeg(aryvar, retvar);
-    if ( finErrorKits::isErrorResult(errcode) ) {
+    try {
+        finExecAlg::varArrayNeg(aryvar, retvar);
+    } catch (finException &e) {
         delete retvar;
-        return errcode;
+        return e.getErrorCode();
     }
 
     retvar->clearLeftValue();
@@ -422,7 +422,6 @@ static struct finExecSysFuncRegItem _funcRegItem_vec_neg = {
 static finErrorCode _sysfunc_array_add(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *ary1var, *ary2var;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -437,10 +436,11 @@ static finErrorCode _sysfunc_array_add(finExecFunction *self, finExecEnvironment
     if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varArrayAdd(ary1var, ary2var, retvar);
-    if ( finErrorKits::isErrorResult(errcode) ) {
+    try {
+        finExecAlg::varArrayAdd(ary1var, ary2var, retvar);
+    } catch (finException &e) {
         delete retvar;
-        return errcode;
+        return e.getErrorCode();
     }
 
     retvar->clearLeftValue();
@@ -472,7 +472,6 @@ static struct finExecSysFuncRegItem _funcRegItem_vec_add = {
 static finErrorCode _sysfunc_array_sub(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *ary1var, *ary2var;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -487,10 +486,11 @@ static finErrorCode _sysfunc_array_sub(finExecFunction *self, finExecEnvironment
     if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varArraySub(ary1var, ary2var, retvar);
-    if ( finErrorKits::isErrorResult(errcode) ) {
+    try {
+        finExecAlg::varArraySub(ary1var, ary2var, retvar);
+    } catch (finException &e) {
         delete retvar;
-        return errcode;
+        return e.getErrorCode();
     }
 
     retvar->clearLeftValue();

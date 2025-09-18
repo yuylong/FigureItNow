@@ -535,32 +535,36 @@ void finExecAlg::listVectorDot(const QList<double> &inlist1, const QList<double>
     *outval = retval;
 }
 
-finErrorCode finExecAlg::varArrayNeg(finExecVariable *invar, finExecVariable *outvar)
+void finExecAlg::varArrayNeg(finExecVariable *invar, finExecVariable *outvar)
 {
-    if ( invar == nullptr || outvar == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
-    if ( !invar->isNumericArray() )
-        return finErrorKits::EC_INVALID_PARAM;
+    if ( invar == nullptr || outvar == nullptr ) {
+        finThrow(finErrorKits::EC_NULL_POINTER, "Input or output variable is null.");
+    }
+    if ( !invar->isNumericArray() ) {
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Input variable is not a numeric array.");
+    }
 
     QList<double> inlist, outlist;
     numArrayVarToList(invar, &inlist);
     listArrayNeg(inlist, &outlist);
     listToNumArrayVar(outlist, outvar);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecAlg::varArrayAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
+void finExecAlg::varArrayAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
 {
-    if ( invar1 == nullptr || invar2 == nullptr || outvar == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    if ( invar1 == nullptr || invar2 == nullptr || outvar == nullptr ) {
+        finThrow(finErrorKits::EC_NULL_POINTER, "Input or output variable is null.");
+    }
 
     int varlen1 = 0, varlen2 = 0;
     bool isary1 = invar1->isNumericArray(&varlen1);
     bool isary2 = invar2->isNumericArray(&varlen2);
-    if ( !isary1 || !isary2 )
-        return finErrorKits::EC_INVALID_PARAM;
-    if ( varlen1 != varlen2 )
-        return finErrorKits::EC_INVALID_PARAM;
+    if ( !isary1 || !isary2 ) {
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Input variables are not numeric arrays.");
+    }
+    if ( varlen1 != varlen2 ) {
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Input arrays have different lengths.");
+    }
 
     QList<double> inlist1, inlist2, outlist;
     numArrayVarToList(invar1, &inlist1);
@@ -568,21 +572,23 @@ finErrorCode finExecAlg::varArrayAdd(finExecVariable *invar1, finExecVariable *i
 
     listArrayAdd(inlist1, inlist2, &outlist);
     listToNumArrayVar(outlist, outvar);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecAlg::varArraySub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
+void finExecAlg::varArraySub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
 {
-    if ( invar1 == nullptr || invar2 == nullptr || outvar == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+    if ( invar1 == nullptr || invar2 == nullptr || outvar == nullptr ) {
+        finThrow(finErrorKits::EC_NULL_POINTER, "Input or output variable is null.");
+    }
 
     int varlen1 = 0, varlen2 = 0;
     bool isary1 = invar1->isNumericArray(&varlen1);
     bool isary2 = invar2->isNumericArray(&varlen2);
-    if ( !isary1 || !isary2 )
-        return finErrorKits::EC_INVALID_PARAM;
-    if ( varlen1 != varlen2 )
-        return finErrorKits::EC_INVALID_PARAM;
+    if ( !isary1 || !isary2 ) {
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Input variables are not numeric arrays.");
+    }
+    if ( varlen1 != varlen2 ) {
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Input arrays have different lengths.");
+    }
 
     QList<double> inlist1, inlist2, outlist;
     numArrayVarToList(invar1, &inlist1);
@@ -590,7 +596,6 @@ finErrorCode finExecAlg::varArraySub(finExecVariable *invar1, finExecVariable *i
 
     listArraySub(inlist1, inlist2, &outlist);
     listToNumArrayVar(outlist, outvar);
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::varArraySum(finExecVariable *invar, finExecVariable *outvar)

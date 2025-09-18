@@ -64,9 +64,9 @@ public:
     static void listVectorNormalize(const QList<double> &inlist, QList<double> *outlist);
     static void listVectorDot(const QList<double> &inlist1, const QList<double> &inlist2, double *outval);
 
-    static finErrorCode varArrayNeg(finExecVariable *invar, finExecVariable *outvar);
-    static finErrorCode varArrayAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
-    static finErrorCode varArraySub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
+    static void varArrayNeg(finExecVariable *invar, finExecVariable *outvar);
+    static void varArrayAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
+    static void varArraySub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
     static finErrorCode varArraySum(finExecVariable *invar, finExecVariable *outvar);
     static finErrorCode varArrayAvg(finExecVariable *invar, finExecVariable *outvar);
 
