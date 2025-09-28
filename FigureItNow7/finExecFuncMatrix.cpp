@@ -536,10 +536,11 @@ static finErrorCode _sysfunc_array_sum(finExecFunction *self, finExecEnvironment
     if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varArraySum(aryvar, retvar);
-    if ( finErrorKits::isErrorResult(errcode) ) {
+    try {
+        finExecAlg::varArraySum(aryvar, retvar);
+    } catch (const finException &e) {
         delete retvar;
-        return errcode;
+        return e.getErrorCode();
     }
 
     retvar->clearLeftValue();
@@ -575,10 +576,11 @@ static finErrorCode _sysfunc_array_avg(finExecFunction *self, finExecEnvironment
     if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varArrayAvg(aryvar, retvar);
-    if ( finErrorKits::isErrorResult(errcode) ) {
+    try {
+        finExecAlg::varArrayAvg(aryvar, retvar);
+    } catch (const finException &e) {
         delete retvar;
-        return errcode;
+        return e.getErrorCode();
     }
 
     retvar->clearLeftValue();

@@ -67,8 +67,8 @@ public:
     static void varArrayNeg(finExecVariable *invar, finExecVariable *outvar);
     static void varArrayAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
     static void varArraySub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
-    static finErrorCode varArraySum(finExecVariable *invar, finExecVariable *outvar);
-    static finErrorCode varArrayAvg(finExecVariable *invar, finExecVariable *outvar);
+    static void varArraySum(finExecVariable *invar, finExecVariable *outvar);
+    static void varArrayAvg(finExecVariable *invar, finExecVariable *outvar);
 
     static finErrorCode varVectorNorm(finExecVariable *invar, finExecVariable *outvar);
     static finErrorCode varVectorNorm1(finExecVariable *invar, finExecVariable *outvar);
