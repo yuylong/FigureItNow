@@ -9,6 +9,7 @@
 #include "finExecFunction.h"
 
 #include <qmath.h>
+#include <QScopedPointer>
 
 #include "finExecAlg.h"
 #include "finExecVariable.h"
@@ -652,20 +653,20 @@ finErrorCode _sysfunc_vec_norm(finExecFunction *self, finExecEnvironment *env,
     if ( aryvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    finExecVariable *retvar = new finExecVariable();
-    if ( retvar == nullptr )
+    QScopedPointer<finExecVariable> retvar(new finExecVariable());
+    if ( retvar.isNull() )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varVectorNorm(aryvar, retvar);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete retvar;
-        return errcode;
+    try {
+        finExecAlg::varVectorNorm(aryvar, retvar.data());
+    } catch (const finException &e) {
+        return e.getErrorCode();
     }
 
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar);
+    flowctl->setReturnVariable(retvar.take());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -682,20 +683,20 @@ static finErrorCode _sysfunc_vec_norm_1(finExecFunction *self, finExecEnvironmen
     if ( aryvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    finExecVariable *retvar = new finExecVariable();
-    if ( retvar == nullptr )
+    QScopedPointer<finExecVariable> retvar(new finExecVariable());
+    if ( retvar.isNull() )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varVectorNorm1(aryvar, retvar);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete retvar;
-        return errcode;
+    try {
+        finExecAlg::varVectorNorm1(aryvar, retvar.data());
+    } catch (const finException &e) {
+        return e.getErrorCode();
     }
 
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar);
+    flowctl->setReturnVariable(retvar.take());
     return finErrorKits::EC_SUCCESS;
 }
 

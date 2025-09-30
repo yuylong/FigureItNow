@@ -632,12 +632,12 @@ void finExecAlg::varArrayAvg(finExecVariable *invar, finExecVariable *outvar)
     outvar->setNumericValue(outval);
 }
 
-finErrorCode finExecAlg::varVectorNorm(finExecVariable *invar, finExecVariable *outvar)
+void finExecAlg::varVectorNorm(finExecVariable *invar, finExecVariable *outvar)
 {
     if ( invar == nullptr || outvar == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Input or output variable is null.");
     if ( !invar->isNumericArray() )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Input variable is not a numeric array.");
 
     QList<double> inlist;
     numArrayVarToList(invar, &inlist);
@@ -647,15 +647,14 @@ finErrorCode finExecAlg::varVectorNorm(finExecVariable *invar, finExecVariable *
 
     outvar->setType(finExecVariable::TP_NUMERIC);
     outvar->setNumericValue(outval);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecAlg::varVectorNorm1(finExecVariable *invar, finExecVariable *outvar)
+void finExecAlg::varVectorNorm1(finExecVariable *invar, finExecVariable *outvar)
 {
     if ( invar == nullptr || outvar == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Input or output variable is null.");
     if ( !invar->isNumericArray() )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Input variable is not a numeric array.");
 
     QList<double> inlist;
     numArrayVarToList(invar, &inlist);
@@ -665,7 +664,6 @@ finErrorCode finExecAlg::varVectorNorm1(finExecVariable *invar, finExecVariable 
 
     outvar->setType(finExecVariable::TP_NUMERIC);
     outvar->setNumericValue(outval);
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::varVectorNormP(finExecVariable *invar, finExecVariable *pvar, finExecVariable *outvar)
