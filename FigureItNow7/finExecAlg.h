@@ -78,10 +78,10 @@ public:
     static void varVectorDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
 
     static void listMatTranspose(const QList<QList<double>> &inlist, QList<QList<double>> *outlist);
-    static finErrorCode listMatAdd(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
-                                   QList<QList<double>> *outlist);
-    static finErrorCode listMatSub(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
-                                   QList<QList<double>> *outlist);
+    static void listMatAdd(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
+                           QList<QList<double>> *outlist);
+    static void listMatSub(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
+                           QList<QList<double>> *outlist);
     static finErrorCode listMatDot(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
                                    QList<QList<double>> *outlist);
 

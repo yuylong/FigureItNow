@@ -768,13 +768,13 @@ void finExecAlg::listMatTranspose(const QList<QList<double>> &inlist, QList<QLis
     }
 }
 
-finErrorCode finExecAlg::listMatAdd(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
-                                    QList<QList<double>> *outlist)
+void finExecAlg::listMatAdd(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
+                            QList<QList<double>> *outlist)
 {
     if ( outlist == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "The output list is null.");
     if ( inlist1.length() != inlist2.length() )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Input lists must have the same number of rows.");
 
     int len = inlist1.length();
     outlist->clear();
@@ -786,16 +786,15 @@ finErrorCode finExecAlg::listMatAdd(const QList<QList<double>> &inlist1, const Q
         listArrayAdd(insublist1, insublist2, &outsublist);
         outlist->append(outsublist);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecAlg::listMatSub(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
-                                    QList<QList<double>> *outlist)
+void finExecAlg::listMatSub(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
+                            QList<QList<double>> *outlist)
 {
     if ( outlist == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "The output list is null.");
     if ( inlist1.length() != inlist2.length() )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Input lists must have the same number of rows.");
 
     int len = inlist1.length();
     outlist->clear();
@@ -807,7 +806,6 @@ finErrorCode finExecAlg::listMatSub(const QList<QList<double>> &inlist1, const Q
         listArraySub(insublist1, insublist2, &outsublist);
         outlist->append(outsublist);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::listMatDot(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
@@ -871,9 +869,7 @@ finErrorCode finExecAlg::varMatAdd(finExecVariable *invar1, finExecVariable *inv
     numMatVarToList(invar1, &inlist1);
     numMatVarToList(invar2, &inlist2);
 
-    finErrorCode errcode = listMatAdd(inlist1, inlist2, &outlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    listMatAdd(inlist1, inlist2, &outlist);
 
     listToNumMatVar(outlist, outvar);
     return finErrorKits::EC_SUCCESS;
@@ -896,9 +892,7 @@ finErrorCode finExecAlg::varMatSub(finExecVariable *invar1, finExecVariable *inv
     numMatVarToList(invar1, &inlist1);
     numMatVarToList(invar2, &inlist2);
 
-    finErrorCode errcode = listMatSub(inlist1, inlist2, &outlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    listMatSub(inlist1, inlist2, &outlist);
 
     listToNumMatVar(outlist, outvar);
     return finErrorKits::EC_SUCCESS;
