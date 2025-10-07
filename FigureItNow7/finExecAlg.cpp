@@ -718,18 +718,18 @@ void finExecAlg::varVectorNormalize(finExecVariable *invar, finExecVariable *out
     listToNumArrayVar(outlist, outvar);
 }
 
-finErrorCode finExecAlg::varVectorDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
+void finExecAlg::varVectorDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
 {
     if ( invar1 == nullptr || invar2 == nullptr || outvar == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Input or output variable is null.");
 
     int varlen1 = 0, varlen2 = 0;
     bool isary1 = invar1->isNumericArray(&varlen1);
     bool isary2 = invar2->isNumericArray(&varlen2);
     if ( !isary1 || !isary2 )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Input variables are not numeric arrays.");
     if ( varlen1 != varlen2 )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Input variables Vector length mismatch.");
 
     QList<double> inlist1, inlist2;
     numArrayVarToList(invar1, &inlist1);
@@ -740,7 +740,6 @@ finErrorCode finExecAlg::varVectorDot(finExecVariable *invar1, finExecVariable *
 
     outvar->setType(finExecVariable::TP_NUMERIC);
     outvar->setNumericValue(outval);
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::listMatTranspose(const QList<QList<double>> &inlist, QList<QList<double>> *outlist)

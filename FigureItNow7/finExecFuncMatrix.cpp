@@ -802,9 +802,10 @@ static finErrorCode _sysfunc_vec_dot(finExecFunction *self, finExecEnvironment *
     if ( retvar.isNull() )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varVectorDot(ary1var, ary2var, retvar.data());
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        return errcode;
+    try {
+        finExecAlg::varVectorDot(ary1var, ary2var, retvar.data());
+    } catch ( finException &e ) {
+        return e.getErrorCode();
     }
 
     retvar->clearLeftValue();
@@ -813,7 +814,6 @@ static finErrorCode _sysfunc_vec_dot(finExecFunction *self, finExecEnvironment *
     flowctl->setReturnVariable(retvar.take());
     return finErrorKits::EC_SUCCESS;
 }
-
 static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
 {
