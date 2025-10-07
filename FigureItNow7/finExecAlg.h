@@ -82,8 +82,8 @@ public:
                            QList<QList<double>> *outlist);
     static void listMatSub(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
                            QList<QList<double>> *outlist);
-    static finErrorCode listMatDot(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
-                                   QList<QList<double>> *outlist);
+    static void listMatDot(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
+                           QList<QList<double>> *outlist);
 
     static finErrorCode varMatTranspose(finExecVariable *invar, finExecVariable *outvar);
     static finErrorCode varMatAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);

@@ -808,11 +808,11 @@ void finExecAlg::listMatSub(const QList<QList<double>> &inlist1, const QList<QLi
     }
 }
 
-finErrorCode finExecAlg::listMatDot(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
-                                    QList<QList<double>> *outlist)
+void finExecAlg::listMatDot(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
+                            QList<QList<double>> *outlist)
 {
     if ( outlist == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "The output list is null.");
 
     QList<QList<double>> inlist2t;
     listMatTranspose(inlist2, &inlist2t);
@@ -823,7 +823,7 @@ finErrorCode finExecAlg::listMatDot(const QList<QList<double>> &inlist1, const Q
         foreach ( const QList<double> &in2col, inlist2t ) {
             int len = in1row.length();
             if ( len != in2col.length() )
-                return finErrorKits::EC_INVALID_PARAM;
+                finThrow(finErrorKits::EC_INVALID_PARAM, "Matrix inner dimensions mismatch.");
 
             double itemval = 0.0;
             for ( int i = 0; i < len; i++ ) {
@@ -835,7 +835,6 @@ finErrorCode finExecAlg::listMatDot(const QList<QList<double>> &inlist1, const Q
         }
         outlist->append(outrow);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::varMatTranspose(finExecVariable *invar, finExecVariable *outvar)
@@ -915,9 +914,7 @@ finErrorCode finExecAlg::varMatDot(finExecVariable *invar1, finExecVariable *inv
     numMatVarToList(invar1, &inlist1);
     numMatVarToList(invar2, &inlist2);
 
-    finErrorCode errcode = listMatDot(inlist1, inlist2, &outlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    listMatDot(inlist1, inlist2, &outlist);
 
     listToNumMatVar(outlist, outvar);
     return finErrorKits::EC_SUCCESS;
