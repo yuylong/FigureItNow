@@ -77,7 +77,7 @@ public:
     static void varVectorNormalize(finExecVariable *invar, finExecVariable *outvar);
     static void varVectorDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
 
-    static finErrorCode listMatTranspose(const QList<QList<double>> &inlist, QList<QList<double>> *outlist);
+    static void listMatTranspose(const QList<QList<double>> &inlist, QList<QList<double>> *outlist);
     static finErrorCode listMatAdd(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
                                    QList<QList<double>> *outlist);
     static finErrorCode listMatSub(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,

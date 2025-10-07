@@ -742,10 +742,10 @@ void finExecAlg::varVectorDot(finExecVariable *invar1, finExecVariable *invar2, 
     outvar->setNumericValue(outval);
 }
 
-finErrorCode finExecAlg::listMatTranspose(const QList<QList<double>> &inlist, QList<QList<double>> *outlist)
+void finExecAlg::listMatTranspose(const QList<QList<double>> &inlist, QList<QList<double>> *outlist)
 {
     if ( outlist == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Output list is null.");
 
     int outrow = 0, outcol = inlist.length();
     foreach ( const QList<double> &sublist, inlist ) {
@@ -766,7 +766,6 @@ finErrorCode finExecAlg::listMatTranspose(const QList<QList<double>> &inlist, QL
         }
         outlist->append(outsublist);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::listMatAdd(const QList<QList<double>> &inlist1, const QList<QList<double>> &inlist2,
@@ -817,11 +816,8 @@ finErrorCode finExecAlg::listMatDot(const QList<QList<double>> &inlist1, const Q
     if ( outlist == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
-    finErrorCode errcode;
     QList<QList<double>> inlist2t;
-    errcode = listMatTranspose(inlist2, &inlist2t);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    listMatTranspose(inlist2, &inlist2t);
 
     outlist->clear();
     foreach ( const QList<double> &in1row, inlist1 ) {
@@ -853,11 +849,7 @@ finErrorCode finExecAlg::varMatTranspose(finExecVariable *invar, finExecVariable
 
     QList<QList<double>> inlist, outlist;
     numMatVarToList(invar, &inlist);
-
-    finErrorCode errcode = listMatTranspose(inlist, &outlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
+    listMatTranspose(inlist, &outlist);
     listToNumMatVar(outlist, outvar);
     return finErrorKits::EC_SUCCESS;
 }
