@@ -713,8 +713,8 @@ static finErrorCode _sysfunc_vec_norm_p(finExecFunction *self, finExecEnvironmen
 
     try {
         finExecAlg::varVectorNormP(aryvar, pvar, retvar.data());
-    } catch ( finErrorCode errcode ) {
-        return errcode;
+    } catch ( finException &e ) {
+        return e.getErrorCode();
     }
 
     retvar->clearLeftValue();
@@ -743,8 +743,8 @@ static finErrorCode _sysfunc_vec_norm_inf(finExecFunction *self, finExecEnvironm
 
     try {
         finExecAlg::varVectorNormInf(aryvar, retvar.data());
-    } catch ( finErrorCode errcode ) {
-        return errcode;
+    } catch ( finException &e ) {
+        return e.getErrorCode();
     }
 
     retvar->clearLeftValue();
@@ -773,8 +773,8 @@ static finErrorCode _sysfunc_vec_normalize(finExecFunction *self, finExecEnviron
 
     try {
         finExecAlg::varVectorNormalize(aryvar, retvar.data());
-    } catch ( finErrorCode errcode ) {
-        return errcode;
+    } catch ( finException &e ) {
+        return e.getErrorCode();
     }
 
     retvar->clearLeftValue();
