@@ -518,7 +518,6 @@ static struct finExecSysFuncRegItem _funcRegItem_vec_sub = {
 static finErrorCode _sysfunc_array_sum(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *aryvar;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -557,7 +556,6 @@ static struct finExecSysFuncRegItem _funcRegItem_array_sum = {
 static finErrorCode _sysfunc_array_avg(finExecFunction *self, finExecEnvironment *env,
                                        finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *aryvar;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -636,7 +634,6 @@ static struct finExecSysFuncRegItem _funcRegItem_vec_dim = {
 finErrorCode _sysfunc_vec_norm(finExecFunction *self, finExecEnvironment *env,
                                finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *aryvar;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -666,7 +663,6 @@ finErrorCode _sysfunc_vec_norm(finExecFunction *self, finExecEnvironment *env,
 static finErrorCode _sysfunc_vec_norm_1(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *aryvar;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -696,7 +692,6 @@ static finErrorCode _sysfunc_vec_norm_1(finExecFunction *self, finExecEnvironmen
 static finErrorCode _sysfunc_vec_norm_p(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *aryvar, *pvar;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -727,7 +722,6 @@ static finErrorCode _sysfunc_vec_norm_p(finExecFunction *self, finExecEnvironmen
 static finErrorCode _sysfunc_vec_norm_inf(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *aryvar;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -757,7 +751,6 @@ static finErrorCode _sysfunc_vec_norm_inf(finExecFunction *self, finExecEnvironm
 static finErrorCode _sysfunc_vec_normalize(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *aryvar;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -787,7 +780,6 @@ static finErrorCode _sysfunc_vec_normalize(finExecFunction *self, finExecEnviron
 static finErrorCode _sysfunc_vec_dot(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *ary1var, *ary2var;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
