@@ -72,9 +72,9 @@ public:
 
     static void varVectorNorm(finExecVariable *invar, finExecVariable *outvar);
     static void varVectorNorm1(finExecVariable *invar, finExecVariable *outvar);
-    static finErrorCode varVectorNormP(finExecVariable *invar, finExecVariable *pvar, finExecVariable *outvar);
-    static finErrorCode varVectorNormInf(finExecVariable *invar, finExecVariable *outvar);
-    static finErrorCode varVectorNormalize(finExecVariable *invar, finExecVariable *outvar);
+    static void varVectorNormP(finExecVariable *invar, finExecVariable *pvar, finExecVariable *outvar);
+    static void varVectorNormInf(finExecVariable *invar, finExecVariable *outvar);
+    static void varVectorNormalize(finExecVariable *invar, finExecVariable *outvar);
     static finErrorCode varVectorDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
 
     static finErrorCode listMatTranspose(const QList<QList<double>> &inlist, QList<QList<double>> *outlist);

@@ -711,8 +711,9 @@ static finErrorCode _sysfunc_vec_norm_p(finExecFunction *self, finExecEnvironmen
     if ( retvar.isNull() )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varVectorNormP(aryvar, pvar, retvar.data());
-    if ( finErrorKits::isErrorResult(errcode) ) {
+    try {
+        finExecAlg::varVectorNormP(aryvar, pvar, retvar.data());
+    } catch ( finErrorCode errcode ) {
         return errcode;
     }
 
@@ -740,8 +741,9 @@ static finErrorCode _sysfunc_vec_norm_inf(finExecFunction *self, finExecEnvironm
     if ( retvar.isNull() )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varVectorNormInf(aryvar, retvar.data());
-    if ( finErrorKits::isErrorResult(errcode) ) {
+    try {
+        finExecAlg::varVectorNormInf(aryvar, retvar.data());
+    } catch ( finErrorCode errcode ) {
         return errcode;
     }
 
@@ -769,8 +771,9 @@ static finErrorCode _sysfunc_vec_normalize(finExecFunction *self, finExecEnviron
     if ( retvar.isNull() )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varVectorNormalize(aryvar, retvar.data());
-    if ( finErrorKits::isErrorResult(errcode) ) {
+    try {
+        finExecAlg::varVectorNormalize(aryvar, retvar.data());
+    } catch ( finErrorCode errcode ) {
         return errcode;
     }
 
