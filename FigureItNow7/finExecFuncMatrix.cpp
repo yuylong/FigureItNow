@@ -9,7 +9,7 @@
 #include "finExecFunction.h"
 
 #include <qmath.h>
-#include <QScopedPointer>
+#include <memory>
 
 #include "finExecAlg.h"
 #include "finExecVariable.h"
@@ -192,16 +192,16 @@ static finErrorCode _sysfunc_matrix2array(finExecFunction *self, finExecEnvironm
     if ( matvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    finExecAlg::varMatrixToArray(matvar, retvar.data());
+    finExecAlg::varMatrixToArray(matvar, retvar.get());
 
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -248,16 +248,16 @@ static finErrorCode _sysfunc_array_cut(finExecFunction *self, finExecEnvironment
     if ( tovar != nullptr && tovar->getType() == finExecVariable::TP_NUMERIC )
         to = tovar->getNumericValue();
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    finExecAlg::varArrayCut(aryvar, from, to, retvar.data());
+    finExecAlg::varArrayCut(aryvar, from, to, retvar.get());
 
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -299,16 +299,16 @@ static finErrorCode _sysfunc_array_join(finExecFunction *self, finExecEnvironmen
         invarlist.append(aryvar);
     }
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    finExecAlg::varArrayJoin(invarlist, retvar.data());
+    finExecAlg::varArrayJoin(invarlist, retvar.get());
 
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -342,8 +342,8 @@ static finErrorCode _sysfunc_array_size(finExecFunction *self, finExecEnvironmen
     if ( aryvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     double size = 0;
@@ -356,7 +356,7 @@ static finErrorCode _sysfunc_array_size(finExecFunction *self, finExecEnvironmen
     retvar->setWriteProtected();
 
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -381,12 +381,12 @@ static finErrorCode _sysfunc_array_neg(finExecFunction *self, finExecEnvironment
     if ( aryvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     try {
-        finExecAlg::varArrayNeg(aryvar, retvar.data());
+        finExecAlg::varArrayNeg(aryvar, retvar.get());
     } catch (finException &e) {
         return e.getErrorCode();
     }
@@ -394,7 +394,7 @@ static finErrorCode _sysfunc_array_neg(finExecFunction *self, finExecEnvironment
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -430,12 +430,12 @@ static finErrorCode _sysfunc_array_add(finExecFunction *self, finExecEnvironment
     if ( ary1var == nullptr || ary2var == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     try {
-        finExecAlg::varArrayAdd(ary1var, ary2var, retvar.data());
+        finExecAlg::varArrayAdd(ary1var, ary2var, retvar.get());
     } catch (finException &e) {
         return e.getErrorCode();
     }
@@ -443,7 +443,7 @@ static finErrorCode _sysfunc_array_add(finExecFunction *self, finExecEnvironment
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -479,12 +479,12 @@ static finErrorCode _sysfunc_array_sub(finExecFunction *self, finExecEnvironment
     if ( ary1var == nullptr || ary2var == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     try {
-        finExecAlg::varArraySub(ary1var, ary2var, retvar.data());
+        finExecAlg::varArraySub(ary1var, ary2var, retvar.get());
     } catch (finException &e) {
         return e.getErrorCode();
     }
@@ -492,7 +492,7 @@ static finErrorCode _sysfunc_array_sub(finExecFunction *self, finExecEnvironment
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -528,12 +528,12 @@ static finErrorCode _sysfunc_array_sum(finExecFunction *self, finExecEnvironment
     if ( aryvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     try {
-        finExecAlg::varArraySum(aryvar, retvar.data());
+        finExecAlg::varArraySum(aryvar, retvar.get());
     } catch (const finException &e) {
         return e.getErrorCode();
     }
@@ -541,7 +541,7 @@ static finErrorCode _sysfunc_array_sum(finExecFunction *self, finExecEnvironment
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -567,12 +567,12 @@ static finErrorCode _sysfunc_array_avg(finExecFunction *self, finExecEnvironment
     if ( aryvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     try {
-        finExecAlg::varArrayAvg(aryvar, retvar.data());
+        finExecAlg::varArrayAvg(aryvar, retvar.get());
     } catch (const finException &e) {
         return e.getErrorCode();
     }
@@ -580,7 +580,7 @@ static finErrorCode _sysfunc_array_avg(finExecFunction *self, finExecEnvironment
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -605,8 +605,8 @@ static finErrorCode _sysfunc_vec_dim(finExecFunction *self, finExecEnvironment *
     if ( aryvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     int dim = 0;
@@ -620,7 +620,7 @@ static finErrorCode _sysfunc_vec_dim(finExecFunction *self, finExecEnvironment *
     retvar->setWriteProtected();
 
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -646,12 +646,12 @@ finErrorCode _sysfunc_vec_norm(finExecFunction *self, finExecEnvironment *env,
     if ( aryvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     try {
-        finExecAlg::varVectorNorm(aryvar, retvar.data());
+        finExecAlg::varVectorNorm(aryvar, retvar.get());
     } catch (const finException &e) {
         return e.getErrorCode();
     }
@@ -659,7 +659,7 @@ finErrorCode _sysfunc_vec_norm(finExecFunction *self, finExecEnvironment *env,
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -676,12 +676,12 @@ static finErrorCode _sysfunc_vec_norm_1(finExecFunction *self, finExecEnvironmen
     if ( aryvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     try {
-        finExecAlg::varVectorNorm1(aryvar, retvar.data());
+        finExecAlg::varVectorNorm1(aryvar, retvar.get());
     } catch (const finException &e) {
         return e.getErrorCode();
     }
@@ -689,7 +689,7 @@ static finErrorCode _sysfunc_vec_norm_1(finExecFunction *self, finExecEnvironmen
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -707,12 +707,12 @@ static finErrorCode _sysfunc_vec_norm_p(finExecFunction *self, finExecEnvironmen
     if ( aryvar == nullptr || pvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     try {
-        finExecAlg::varVectorNormP(aryvar, pvar, retvar.data());
+        finExecAlg::varVectorNormP(aryvar, pvar, retvar.get());
     } catch ( finException &e ) {
         return e.getErrorCode();
     }
@@ -720,7 +720,7 @@ static finErrorCode _sysfunc_vec_norm_p(finExecFunction *self, finExecEnvironmen
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -737,12 +737,12 @@ static finErrorCode _sysfunc_vec_norm_inf(finExecFunction *self, finExecEnvironm
     if ( aryvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     try {
-        finExecAlg::varVectorNormInf(aryvar, retvar.data());
+        finExecAlg::varVectorNormInf(aryvar, retvar.get());
     } catch ( finException &e ) {
         return e.getErrorCode();
     }
@@ -750,7 +750,7 @@ static finErrorCode _sysfunc_vec_norm_inf(finExecFunction *self, finExecEnvironm
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -767,12 +767,12 @@ static finErrorCode _sysfunc_vec_normalize(finExecFunction *self, finExecEnviron
     if ( aryvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     try {
-        finExecAlg::varVectorNormalize(aryvar, retvar.data());
+        finExecAlg::varVectorNormalize(aryvar, retvar.get());
     } catch ( finException &e ) {
         return e.getErrorCode();
     }
@@ -780,7 +780,7 @@ static finErrorCode _sysfunc_vec_normalize(finExecFunction *self, finExecEnviron
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -798,12 +798,12 @@ static finErrorCode _sysfunc_vec_dot(finExecFunction *self, finExecEnvironment *
     if ( ary1var == nullptr || ary2var == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
     try {
-        finExecAlg::varVectorDot(ary1var, ary2var, retvar.data());
+        finExecAlg::varVectorDot(ary1var, ary2var, retvar.get());
     } catch ( finException &e ) {
         return e.getErrorCode();
     }
@@ -811,7 +811,7 @@ static finErrorCode _sysfunc_vec_dot(finExecFunction *self, finExecEnvironment *
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnvironment *env,
@@ -827,11 +827,11 @@ static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnviron
     if ( matvar == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varMatTranspose(matvar, retvar.data());
+    errcode = finExecAlg::varMatTranspose(matvar, retvar.get());
     if ( finErrorKits::isErrorResult(errcode) ) {
         return errcode;
     }
@@ -839,7 +839,7 @@ static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnviron
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -857,11 +857,11 @@ static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *
     if ( mat1var == nullptr || mat2var == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varMatAdd(mat1var, mat2var, retvar.data());
+    errcode = finExecAlg::varMatAdd(mat1var, mat2var, retvar.get());
     if ( finErrorKits::isErrorResult(errcode) ) {
         return errcode;
     }
@@ -869,7 +869,7 @@ static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -887,11 +887,11 @@ static finErrorCode _sysfunc_mat_sub(finExecFunction *self, finExecEnvironment *
     if ( mat1var == nullptr || mat2var == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varMatSub(mat1var, mat2var, retvar.data());
+    errcode = finExecAlg::varMatSub(mat1var, mat2var, retvar.get());
     if ( finErrorKits::isErrorResult(errcode) ) {
         return errcode;
     }
@@ -899,7 +899,7 @@ static finErrorCode _sysfunc_mat_sub(finExecFunction *self, finExecEnvironment *
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
@@ -917,11 +917,11 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
     if ( mat1var == nullptr || mat2var == nullptr )
         return finErrorKits::EC_NOT_FOUND;
 
-    QScopedPointer<finExecVariable> retvar(new finExecVariable());
-    if ( retvar.isNull() )
+    std::unique_ptr<finExecVariable> retvar(new finExecVariable());
+    if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varMatDot(mat1var, mat2var, retvar.data());
+    errcode = finExecAlg::varMatDot(mat1var, mat2var, retvar.get());
     if ( finErrorKits::isErrorResult(errcode) ) {
         return errcode;
     }
@@ -929,7 +929,7 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
     retvar->clearLeftValue();
     retvar->setWriteProtected();
     flowctl->setFlowNext();
-    flowctl->setReturnVariable(retvar.take());
+    flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
 
