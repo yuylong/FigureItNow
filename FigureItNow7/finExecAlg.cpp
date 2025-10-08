@@ -837,18 +837,17 @@ void finExecAlg::listMatDot(const QList<QList<double>> &inlist1, const QList<QLi
     }
 }
 
-finErrorCode finExecAlg::varMatTranspose(finExecVariable *invar, finExecVariable *outvar)
+void finExecAlg::varMatTranspose(finExecVariable *invar, finExecVariable *outvar)
 {
     if ( invar == nullptr || outvar == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Input or output variable is null.");
     if ( !invar->isNumericMatrix() )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Input variable is not a numeric matrix.");
 
     QList<QList<double>> inlist, outlist;
     numMatVarToList(invar, &inlist);
     listMatTranspose(inlist, &outlist);
     listToNumMatVar(outlist, outvar);
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecAlg::varMatAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)

@@ -823,9 +823,10 @@ static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnviron
     if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varMatTranspose(matvar, retvar.get());
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        return errcode;
+    try {
+        finExecAlg::varMatTranspose(matvar, retvar.get());
+    } catch ( const finException &e ) {
+        return e.getErrorCode();
     }
 
     retvar->clearLeftValue();
