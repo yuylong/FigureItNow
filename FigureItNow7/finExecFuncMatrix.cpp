@@ -809,7 +809,6 @@ static finErrorCode _sysfunc_vec_dot(finExecFunction *self, finExecEnvironment *
 static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *matvar;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -839,7 +838,6 @@ static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnviron
 static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *mat1var, *mat2var;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -870,7 +868,6 @@ static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *
 static finErrorCode _sysfunc_mat_sub(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *mat1var, *mat2var;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -901,7 +898,6 @@ static finErrorCode _sysfunc_mat_sub(finExecFunction *self, finExecEnvironment *
 static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *mat1var, *mat2var;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
