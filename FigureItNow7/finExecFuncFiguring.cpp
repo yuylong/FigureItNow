@@ -584,11 +584,29 @@ static finErrorCode _sysfunc_draw_text(finExecFunction *self, finExecEnvironment
     return _sysfunc_draw_text_base(self, env, machine, flowctl, false);
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_draw_text = {
+    /*._funcName     =*/ QString("draw_text"),
+    /*._paramCsvList =*/ QString("text,cx,cy,rad,sc"),
+    /*._funcCall     =*/ _sysfunc_draw_text,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("draw_text (text, cx, cy[, rad, sc])"),
+    /*._description  =*/ QString("Draw text at given position on the panel."),
+};
+
 static finErrorCode _sysfunc_draw_pinned_text(finExecFunction *self, finExecEnvironment *env,
                                               finExecMachine *machine, finExecFlowControl *flowctl)
 {
     return _sysfunc_draw_text_base(self, env, machine, flowctl, true);
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_draw_pinned_text = {
+    /*._funcName     =*/ QString("draw_pinned_text"),
+    /*._paramCsvList =*/ QString("text,cx,cy,rad,sc"),
+    /*._funcCall     =*/ _sysfunc_draw_pinned_text,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("draw_pinned_text (text, cx, cy[, rad, sc])"),
+    /*._description  =*/ QString("Draw pinned text at given position on the panel."),
+};
 
 static finErrorCode _sysfunc_draw_image_base(finExecFunction *self, finExecEnvironment *env,
                                              finExecMachine *machine, finExecFlowControl *flowctl, bool pinned)
@@ -663,11 +681,29 @@ static finErrorCode _sysfunc_draw_image(finExecFunction *self, finExecEnvironmen
     return _sysfunc_draw_image_base(self, env, machine, flowctl, false);
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_draw_image = {
+    /*._funcName     =*/ QString("draw_image"),
+    /*._paramCsvList =*/ QString("image,cx,cy,rad,sx,sy"),
+    /*._funcCall     =*/ _sysfunc_draw_image,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("draw_image (image, cx, cy[, rad, sx, sy])"),
+    /*._description  =*/ QString("Draw an image at given position on the panel."),
+};
+
 static finErrorCode _sysfunc_draw_pinned_image(finExecFunction *self, finExecEnvironment *env,
                                                finExecMachine *machine, finExecFlowControl *flowctl)
 {
     return _sysfunc_draw_image_base(self, env, machine, flowctl, true);
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_draw_pinned_image = {
+    /*._funcName     =*/ QString("draw_pinned_image"),
+    /*._paramCsvList =*/ QString("image,cx,cy,rad,sx,sy"),
+    /*._funcCall     =*/ _sysfunc_draw_pinned_image,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("draw_pinned_image (image, cx, cy[, rad, sx, sy])"),
+    /*._description  =*/ QString("Draw a pinned image at given position on the panel."),
+};
 
 static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env,
                                   finExecMachine *machine, finExecFlowControl *flowctl)
@@ -730,6 +766,15 @@ static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_axis = {
+    /*._funcName     =*/ QString("axis"),
+    /*._paramCsvList =*/ QString("sx,sy,tx,ty,rx1,rx2,ry1,ry2"),
+    /*._funcCall     =*/ _sysfunc_axis,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("axis (sx, sy, tx, ty, rx1, rx2, ry1, ry2)"),
+    /*._description  =*/ QString("Add axis object with optional parameters."),
+};
+
 static finErrorCode
 _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -775,6 +820,15 @@ _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env, finExecMachine *
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_line3d = {
+    /*._funcName     =*/ QString("line3d"),
+    /*._paramCsvList =*/ QString("x1,y1,z1,x2,y2,z2"),
+    /*._funcCall     =*/ _sysfunc_line3d,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("line3d (x1, y1, z1, x2, y2, z2)"),
+    /*._description  =*/ QString("Draw a 3D line between two points."),
+};
+
 static finErrorCode _sysfunc_named_color(finExecFunction *self, finExecEnvironment *env,
                                          finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -809,6 +863,15 @@ static finErrorCode _sysfunc_named_color(finExecFunction *self, finExecEnvironme
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_named_color = {
+    /*._funcName     =*/ QString("named_color"),
+    /*._paramCsvList =*/ QString("colorname"),
+    /*._funcCall     =*/ _sysfunc_named_color,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("named_color (colorname)"),
+    /*._description  =*/ QString("Return color value by name."),
+};
 
 static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvironment *env,
                                              finExecMachine *machine, finExecFlowControl *flowctl)
@@ -907,6 +970,15 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
     flowctl->setReturnVariable(cfgvalue);
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_read_fig_config = {
+    /*._funcName     =*/ QString("read_fig_config"),
+    /*._paramCsvList =*/ QString("cfgname"),
+    /*._funcCall     =*/ _sysfunc_read_fig_config,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("read_fig_config (cfgname)"),
+    /*._description  =*/ QString("Read figure configuration by name."),
+};
 
 static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvironment *env,
                                               finExecMachine *machine, finExecFlowControl *flowctl)
@@ -1007,6 +1079,15 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_write_fig_config = {
+    /*._funcName     =*/ QString("write_fig_config"),
+    /*._paramCsvList =*/ QString("cfgname,value"),
+    /*._funcCall     =*/ _sysfunc_write_fig_config,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("write_fig_config (cfgname, value)"),
+    /*._description  =*/ QString("Write figure configuration by name."),
+};
 
 static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnvironment *env,
                                                finExecMachine *machine, finExecFlowControl *flowctl)
@@ -1231,6 +1312,15 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_read_graph_config = {
+    /*._funcName     =*/ QString("read_graph_config"),
+    /*._paramCsvList =*/ QString("cfgname"),
+    /*._funcCall     =*/ _sysfunc_read_graph_config,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("read_graph_config (cfgname)"),
+    /*._description  =*/ QString("Read graph configuration by name."),
+};
+
 static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEnvironment *env,
                                                 finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -1379,6 +1469,15 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_write_graph_config = {
+    /*._funcName     =*/ QString("write_graph_config"),
+    /*._paramCsvList =*/ QString("cfgname,value"),
+    /*._funcCall     =*/ _sysfunc_write_graph_config,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("write_graph_config (cfgname, value)"),
+    /*._description  =*/ QString("Write graph configuration by name."),
+};
+
 static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     _funcRegItem_clear_fig,
     _funcRegItem_draw_dot,
@@ -1390,19 +1489,19 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     _funcRegItem_polygon_mat,
     _funcRegItem_circle,
     _funcRegItem_ellipse,
-    { QString("draw_text"),          QString("text,cx,cy,rad,sc"),           _sysfunc_draw_text          },
-    { QString("draw_pinned_text"),   QString("text,cx,cy,rad,sc"),           _sysfunc_draw_pinned_text   },
-    { QString("draw_image"),         QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_image         },
-    { QString("draw_pinned_image"),  QString("image,cx,cy,rad,sx,sy"),       _sysfunc_draw_pinned_image  },
-    { QString("axis"),               QString("sx,sy,tx,ty,rx1,rx2,ry1,ry2"), _sysfunc_axis               },
+    _funcRegItem_draw_text,
+    _funcRegItem_draw_pinned_text,
+    _funcRegItem_draw_image,
+    _funcRegItem_draw_pinned_image,
+    _funcRegItem_axis,
 
-    { QString("line3d"),             QString("x1,y1,z1,x2,y2,z2"),           _sysfunc_line3d             },
+    _funcRegItem_line3d,
 
-    { QString("named_color"),        QString("colorname"),                   _sysfunc_named_color        },
-    { QString("read_fig_config"),    QString("cfgname"),                     _sysfunc_read_fig_config    },
-    { QString("write_fig_config"),   QString("cfgname,value"),               _sysfunc_write_fig_config   },
-    { QString("read_graph_config"),  QString("cfgname"),                     _sysfunc_read_graph_config  },
-    { QString("write_graph_config"), QString("cfgname,value"),               _sysfunc_write_graph_config },
+    _funcRegItem_named_color,
+    _funcRegItem_read_fig_config,
+    _funcRegItem_write_fig_config,
+    _funcRegItem_read_graph_config,
+    _funcRegItem_write_graph_config,
 
     { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
 };
