@@ -660,6 +660,15 @@ finErrorCode _sysfunc_vec_norm(finExecFunction *self, finExecEnvironment *env,
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_vec_norm = {
+    /*._funcName     =*/ QString("vec_norm"),
+    /*._paramCsvList =*/ QString("ary"),
+    /*._funcCall     =*/ _sysfunc_vec_norm,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("vec_norm (ary)"),
+    /*._description  =*/ QString("Returns the Euclidean norm (L2) of the given vector."),
+};
+
 static finErrorCode _sysfunc_vec_norm_1(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -688,6 +697,15 @@ static finErrorCode _sysfunc_vec_norm_1(finExecFunction *self, finExecEnvironmen
     flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_vec_norm_1 = {
+    /*._funcName     =*/ QString("vec_norm_1"),
+    /*._paramCsvList =*/ QString("ary"),
+    /*._funcCall     =*/ _sysfunc_vec_norm_1,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("vec_norm_1 (ary)"),
+    /*._description  =*/ QString("Returns the L1 norm of the given vector."),
+};
 
 static finErrorCode _sysfunc_vec_norm_p(finExecFunction *self, finExecEnvironment *env,
                                         finExecMachine *machine, finExecFlowControl *flowctl)
@@ -719,6 +737,15 @@ static finErrorCode _sysfunc_vec_norm_p(finExecFunction *self, finExecEnvironmen
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_vec_norm_p = {
+    /*._funcName     =*/ QString("vec_norm_p"),
+    /*._paramCsvList =*/ QString("ary,p"),
+    /*._funcCall     =*/ _sysfunc_vec_norm_p,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("vec_norm_p (ary, p)"),
+    /*._description  =*/ QString("Returns the Lp norm of the given vector with order p."),
+};
+
 static finErrorCode _sysfunc_vec_norm_inf(finExecFunction *self, finExecEnvironment *env,
                                           finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -747,6 +774,15 @@ static finErrorCode _sysfunc_vec_norm_inf(finExecFunction *self, finExecEnvironm
     flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_vec_norm_inf = {
+    /*._funcName     =*/ QString("vec_norm_inf"),
+    /*._paramCsvList =*/ QString("ary"),
+    /*._funcCall     =*/ _sysfunc_vec_norm_inf,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("vec_norm_inf (ary)"),
+    /*._description  =*/ QString("Returns the infinity norm (max absolute value) of the given vector."),
+};
 
 static finErrorCode _sysfunc_vec_normalize(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
@@ -777,6 +813,15 @@ static finErrorCode _sysfunc_vec_normalize(finExecFunction *self, finExecEnviron
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_vec_normalize = {
+    /*._funcName     =*/ QString("vec_normalize"),
+    /*._paramCsvList =*/ QString("ary"),
+    /*._funcCall     =*/ _sysfunc_vec_normalize,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("vec_normalize (ary)"),
+    /*._description  =*/ QString("Returns a normalized copy of the given vector."),
+};
+
 static finErrorCode _sysfunc_vec_dot(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -806,6 +851,16 @@ static finErrorCode _sysfunc_vec_dot(finExecFunction *self, finExecEnvironment *
     flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_vec_dot = {
+    /*._funcName     =*/ QString("vec_dot"),
+    /*._paramCsvList =*/ QString("ary1,ary2"),
+    /*._funcCall     =*/ _sysfunc_vec_dot,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("vec_dot (ary1, ary2)"),
+    /*._description  =*/ QString("Returns the dot product of two vectors."),
+};
+
 static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnvironment *env,
                                            finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -834,6 +889,15 @@ static finErrorCode _sysfunc_mat_transpose(finExecFunction *self, finExecEnviron
     flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_mat_transpose = {
+    /*._funcName     =*/ QString("mat_transpose"),
+    /*._paramCsvList =*/ QString("mat"),
+    /*._funcCall     =*/ _sysfunc_mat_transpose,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("mat_transpose (mat)"),
+    /*._description  =*/ QString("Returns the transpose of the given matrix."),
+};
 
 static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
@@ -865,6 +929,15 @@ static finErrorCode _sysfunc_mat_add(finExecFunction *self, finExecEnvironment *
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_mat_add = {
+    /*._funcName     =*/ QString("mat_add"),
+    /*._paramCsvList =*/ QString("mat1,mat2"),
+    /*._funcCall     =*/ _sysfunc_mat_add,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("mat_add (mat1, mat2)"),
+    /*._description  =*/ QString("Returns a new matrix which is the element-wise sum of the two given matrices."),
+};
+
 static finErrorCode _sysfunc_mat_sub(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
 {
@@ -894,6 +967,15 @@ static finErrorCode _sysfunc_mat_sub(finExecFunction *self, finExecEnvironment *
     flowctl->setReturnVariable(retvar.release());
     return finErrorKits::EC_SUCCESS;
 }
+
+static struct finExecSysFuncRegItem _funcRegItem_mat_sub = {
+    /*._funcName     =*/ QString("mat_sub"),
+    /*._paramCsvList =*/ QString("mat1,mat2"),
+    /*._funcCall     =*/ _sysfunc_mat_sub,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("mat_sub (mat1, mat2)"),
+    /*._description  =*/ QString("Returns a new matrix which is the element-wise difference of the two given matrices."),
+};
 
 static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
@@ -925,6 +1007,15 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
     return finErrorKits::EC_SUCCESS;
 }
 
+static struct finExecSysFuncRegItem _funcRegItem_mat_dot = {
+    /*._funcName     =*/ QString("mat_dot"),
+    /*._paramCsvList =*/ QString("mat1,mat2"),
+    /*._funcCall     =*/ _sysfunc_mat_dot,
+    /*._category     =*/ _defFuncCtg,
+    /*._prototype    =*/ QString("mat_dot (mat1, mat2)"),
+    /*._description  =*/ QString("Returns the matrix product of the two given matrices."),
+};
+
 static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
     _funcRegItem_array,
     _funcRegItem_vector,
@@ -947,17 +1038,17 @@ static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
     _funcRegItem_vec_neg,
     _funcRegItem_vec_add,
     _funcRegItem_vec_sub,
-    { QString("vec_norm"),         QString("ary"),         _sysfunc_vec_norm      },
-    { QString("vec_norm_1"),       QString("ary"),         _sysfunc_vec_norm_1    },
-    { QString("vec_norm_p"),       QString("ary,p"),       _sysfunc_vec_norm_p    },
-    { QString("vec_norm_inf"),     QString("ary"),         _sysfunc_vec_norm_inf  },
-    { QString("vec_normalize"),    QString("ary"),         _sysfunc_vec_normalize },
-    { QString("vec_dot"),          QString("ary1,ary2"),   _sysfunc_vec_dot       },
+    _funcRegItem_vec_norm,
+    _funcRegItem_vec_norm_1,
+    _funcRegItem_vec_norm_p,
+    _funcRegItem_vec_norm_inf,
+    _funcRegItem_vec_normalize,
+    _funcRegItem_vec_dot,
 
-    { QString("mat_transpose"),    QString("mat"),         _sysfunc_mat_transpose },
-    { QString("mat_add"),          QString("mat1,mat2"),   _sysfunc_mat_add       },
-    { QString("mat_sub"),          QString("mat1,mat2"),   _sysfunc_mat_sub       },
-    { QString("mat_dot"),          QString("mat1,mat2"),   _sysfunc_mat_dot       },
+    _funcRegItem_mat_transpose,
+    _funcRegItem_mat_add,
+    _funcRegItem_mat_sub,
+    _funcRegItem_mat_dot,
 
     { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
 };
