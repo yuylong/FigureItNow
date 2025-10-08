@@ -916,9 +916,10 @@ static finErrorCode _sysfunc_mat_dot(finExecFunction *self, finExecEnvironment *
     if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    errcode = finExecAlg::varMatDot(mat1var, mat2var, retvar.get());
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        return errcode;
+    try {
+        finExecAlg::varMatDot(mat1var, mat2var, retvar.get());
+    } catch ( const finException &e ) {
+        return e.getErrorCode();
     }
 
     retvar->clearLeftValue();

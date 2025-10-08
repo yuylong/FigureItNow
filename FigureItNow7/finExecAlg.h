@@ -88,7 +88,7 @@ public:
     static void varMatTranspose(finExecVariable *invar, finExecVariable *outvar);
     static void varMatAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
     static void varMatSub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
-    static finErrorCode varMatDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
+    static void varMatDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
 };
 
 #endif // FINEXECALG_H

@@ -894,18 +894,18 @@ void finExecAlg::varMatSub(finExecVariable *invar1, finExecVariable *invar2, fin
     listToNumMatVar(outlist, outvar);
 }
 
-finErrorCode finExecAlg::varMatDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
+void finExecAlg::varMatDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar)
 {
     if ( invar1 == nullptr || invar2 == nullptr || outvar == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Input or output variable is null.");
 
     int varrow1 = 0, varcol1 = 0, varrow2 = 0, varcol2 = 0;
     bool ismat1 = invar1->isNumericMatrix(&varrow1, &varcol1);
     bool ismat2 = invar2->isNumericMatrix(&varrow2, &varcol2);
     if ( !ismat1 || !ismat2 )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Input variables are not numeric matrices.");
     if ( varcol1 != varrow2 )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Matrix inner dimensions mismatch.");
 
     QList< QList<double> > inlist1, inlist2, outlist;
     numMatVarToList(invar1, &inlist1);
@@ -914,5 +914,4 @@ finErrorCode finExecAlg::varMatDot(finExecVariable *invar1, finExecVariable *inv
     listMatDot(inlist1, inlist2, &outlist);
 
     listToNumMatVar(outlist, outvar);
-    return finErrorKits::EC_SUCCESS;
 }
