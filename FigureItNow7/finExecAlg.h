@@ -86,8 +86,8 @@ public:
                            QList<QList<double>> *outlist);
 
     static void varMatTranspose(finExecVariable *invar, finExecVariable *outvar);
-    static finErrorCode varMatAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
-    static finErrorCode varMatSub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
+    static void varMatAdd(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
+    static void varMatSub(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
     static finErrorCode varMatDot(finExecVariable *invar1, finExecVariable *invar2, finExecVariable *outvar);
 };
 
