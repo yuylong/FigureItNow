@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #include "finExecFunction.h"
@@ -20,52 +20,6 @@
 #include "finGraphConfig.h"
 #include "finGraphTrans.h"
 #include "finPlotFunction.h"
-
-
-static finErrorCode _sysfunc_clear_fig(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_draw_dot(finExecFunction *self, finExecEnvironment *env,
-                                      finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_line(finExecFunction *self, finExecEnvironment *env,
-                                  finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment *env,
-                                      finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_polyline_mat(finExecFunction *self, finExecEnvironment *env,
-                                          finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env,
-                                  finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *env,
-                                     finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_polygon_mat(finExecFunction *self, finExecEnvironment *env,
-                                         finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *env,
-                                    finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *env,
-                                     finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_draw_text(finExecFunction *self, finExecEnvironment *env,
-                                       finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_draw_pinned_text(finExecFunction *self, finExecEnvironment *env,
-                                              finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_draw_image(finExecFunction *self, finExecEnvironment *env,
-                                        finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_draw_pinned_image(finExecFunction *self, finExecEnvironment *env,
-                                               finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env,
-                                  finExecMachine *machine, finExecFlowControl *flowctl);
-
-static finErrorCode _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env,
-                                    finExecMachine *machine, finExecFlowControl *flowctl);
-
-static finErrorCode _sysfunc_named_color(finExecFunction *self, finExecEnvironment *env,
-                                         finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvironment *env,
-                                             finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvironment *env,
-                                              finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnvironment *env,
-                                               finExecMachine *machine, finExecFlowControl *flowctl);
-static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEnvironment *env,
-                                                finExecMachine *machine, finExecFlowControl *flowctl);
 
 static QString _defFuncCtg("Figuring");
 
