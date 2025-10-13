@@ -77,8 +77,8 @@ public:
     void copyFigure();
     void insertTextAtCurrentPos(const QString &text);
 
-    finErrorCode applyFigureConfig(finFigureConfig *figconfig);
-    finErrorCode applyGraphConfig(finGraphConfig *graphconfig);
+    void applyFigureConfig(finFigureConfig *figconfig);
+    void applyGraphConfig(finGraphConfig *graphconfig);
 
     bool containsFigureObjects() const;
     finErrorCode drawOnPanel();

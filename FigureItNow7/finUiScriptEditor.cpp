@@ -9,6 +9,7 @@
 #include "finUiScriptEditor.h"
 #include "ui_finUiScriptEditor.h"
 
+#include <QtGlobal>
 #include <QDebug>
 #include <QStringBuilder>
 #include <QFile>
@@ -293,17 +294,20 @@ void finUiScriptEditor::copyFigure()
     clipboard->setMimeData(md);
 }
 
-finErrorCode finUiScriptEditor::applyFigureConfig(finFigureConfig *figconfig)
+void finUiScriptEditor::applyFigureConfig(finFigureConfig *figconfig)
 {
+    Q_ASSERT(figconfig != nullptr);
     finFigureConfig *mycfg = this->_figContainer.getFigureConfig();
-    return figconfig->cloneFigureConfig(mycfg);
+    Q_ASSERT(mycfg != nullptr);
+    figconfig->cloneFigureConfig(mycfg);
 }
 
-finErrorCode finUiScriptEditor::applyGraphConfig(finGraphConfig *graphconfig)
+void finUiScriptEditor::applyGraphConfig(finGraphConfig *graphconfig)
 {
+    Q_ASSERT(graphconfig != nullptr);
     finGraphConfig *mycfg = this->_figContainer.getGraphConfig();
+    Q_ASSERT(mycfg != nullptr);
     mycfg->copyGraphConfig(graphconfig);
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finUiScriptEditor::containsFigureObjects() const
