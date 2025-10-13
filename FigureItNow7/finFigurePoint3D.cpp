@@ -44,22 +44,19 @@ double finFigurePoint3D::getZ() const
     return this->_z;
 }
 
-finErrorCode finFigurePoint3D::setX(double x)
+void finFigurePoint3D::setX(double x)
 {
     this->_x = x;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigurePoint3D::setY(double y)
+void finFigurePoint3D::setY(double y)
 {
     this->_y = y;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigurePoint3D::setZ(double z)
+void finFigurePoint3D::setZ(double z)
 {
     this->_z = z;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finFigurePoint3D finFigurePoint3D::operator + (const finFigurePoint3D &pt)

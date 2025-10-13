@@ -32,7 +32,7 @@ finGraphConfig::~finGraphConfig()
         delete this->_transform;
 }
 
-finErrorCode finGraphConfig::copyGraphConfig(const finGraphConfig *srccfg)
+void finGraphConfig::copyGraphConfig(const finGraphConfig *srccfg)
 {
     this->_panelSize = srccfg->_panelSize;
     this->_bgColor = srccfg->_bgColor;
@@ -44,8 +44,6 @@ finErrorCode finGraphConfig::copyGraphConfig(const finGraphConfig *srccfg)
 
     this->cloneTransform(srccfg);
     this->_renderHints = srccfg->_renderHints;
-
-    return finErrorKits::EC_SUCCESS;
 }
 
 const QSizeF &finGraphConfig::getPanelPixelSize() const
@@ -150,35 +148,30 @@ QPainter::RenderHints finGraphConfig::getRenderHints() const
     return this->_renderHints;
 }
 
-finErrorCode finGraphConfig::setPanelPixelSize(const QSizeF &size)
+void finGraphConfig::setPanelPixelSize(const QSizeF &size)
 {
     this->_panelSize = size;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphConfig::setPanelPixelWidth(double width)
+void finGraphConfig::setPanelPixelWidth(double width)
 {
     this->_panelSize.setWidth(width);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphConfig::setPanelPixelHeight(double height)
+void finGraphConfig::setPanelPixelHeight(double height)
 {
     this->_panelSize.setHeight(height);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphConfig::setPanelPixelSize(double sizex, double sizey)
+void finGraphConfig::setPanelPixelSize(double sizex, double sizey)
 {
     this->_panelSize.setWidth(sizex);
     this->_panelSize.setHeight(sizey);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphConfig::setBackgroundColor(const QColor &color)
+void finGraphConfig::setBackgroundColor(const QColor &color)
 {
     this->_bgColor = color;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::setOriginPixelPoint(const QPointF &pt)

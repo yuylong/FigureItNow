@@ -26,9 +26,9 @@ public:
     double getY() const;
     double getZ() const;
 
-    finErrorCode setX(double x);
-    finErrorCode setY(double y);
-    finErrorCode setZ(double z);
+    void setX(double x);
+    void setY(double y);
+    void setZ(double z);
 
     finFigurePoint3D operator + (const finFigurePoint3D &pt);
     finFigurePoint3D operator - (const finFigurePoint3D &pt);

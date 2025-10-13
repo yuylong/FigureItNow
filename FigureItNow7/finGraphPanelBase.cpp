@@ -26,7 +26,8 @@ finGraphConfig *finGraphPanelBase::getGraphConfig()
 
 finErrorCode finGraphPanelBase::setGraphConfig(const finGraphConfig *cfg)
 {
-    return this->_config.copyGraphConfig(cfg);
+    this->_config.copyGraphConfig(cfg);
+    return finErrorKits::EC_SUCCESS;
 }
 
 int finGraphPanelBase::getFigurePathCount() const

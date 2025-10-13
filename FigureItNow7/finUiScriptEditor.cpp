@@ -302,7 +302,8 @@ finErrorCode finUiScriptEditor::applyFigureConfig(finFigureConfig *figconfig)
 finErrorCode finUiScriptEditor::applyGraphConfig(finGraphConfig *graphconfig)
 {
     finGraphConfig *mycfg = this->_figContainer.getGraphConfig();
-    return mycfg->copyGraphConfig(graphconfig);
+    mycfg->copyGraphConfig(graphconfig);
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finUiScriptEditor::containsFigureObjects() const

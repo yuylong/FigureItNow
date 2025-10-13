@@ -41,7 +41,7 @@ public:
     finGraphConfig();
     ~finGraphConfig();
 
-    finErrorCode copyGraphConfig(const finGraphConfig *srccfg);
+    void copyGraphConfig(const finGraphConfig *srccfg);
 
     const QSizeF &getPanelPixelSize() const;
     double getPanelPixelWidth() const;
@@ -66,11 +66,11 @@ public:
 
     QPainter::RenderHints getRenderHints() const;
 
-    finErrorCode setPanelPixelSize(const QSizeF &size);
-    finErrorCode setPanelPixelWidth(double width);
-    finErrorCode setPanelPixelHeight(double height);
-    finErrorCode setPanelPixelSize(double sizex, double sizey);
-    finErrorCode setBackgroundColor(const QColor &color);
+    void setPanelPixelSize(const QSizeF &size);
+    void setPanelPixelWidth(double width);
+    void setPanelPixelHeight(double height);
+    void setPanelPixelSize(double sizex, double sizey);
+    void setBackgroundColor(const QColor &color);
 
     finErrorCode setOriginPixelPoint(const QPointF &pt);
     finErrorCode setOriginPixelPointX(double ptx);
