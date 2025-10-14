@@ -14,7 +14,7 @@
 #include "finErrorCode.h"
 
 
-class finLexNode : finExceptionObject
+class finLexNode : public finExceptionObject
 {
 public:
     enum Type

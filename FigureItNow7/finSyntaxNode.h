@@ -24,7 +24,7 @@
 /*! \class finSyntaxNode
  *  \brief The finSyntaxNode class
  */
-class finSyntaxNode : finExceptionObject
+class finSyntaxNode : public finExceptionObject
 {
 public:
     enum Type {
@@ -60,7 +60,7 @@ public:
     finSyntaxNode *getSubSyntaxNode(int idx) const;
 
     void dump() const;
-    virtual QString dumpObjInfo() const;
+    virtual QString dumpObjInfo() const override;
 
     void setType(Type type);
     void setCommandLexNode(const finLexNode *lexnode);

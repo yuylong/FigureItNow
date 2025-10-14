@@ -15,7 +15,7 @@
 #include "finLexNode.h"
 
 
-class finLexReader : finExceptionObject
+class finLexReader : public finExceptionObject
 {
 private:
     QString _inputStr;
@@ -27,7 +27,7 @@ private:
 public:
     finLexReader();
     finLexReader(const QString &inputstr);
-    ~finLexReader();
+    virtual ~finLexReader();
 
     QString getString() const;
     unsigned long getCurrentPosition() const;

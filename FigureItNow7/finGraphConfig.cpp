@@ -174,47 +174,40 @@ void finGraphConfig::setBackgroundColor(const QColor &color)
     this->_bgColor = color;
 }
 
-finErrorCode finGraphConfig::setOriginPixelPoint(const QPointF &pt)
+void finGraphConfig::setOriginPixelPoint(const QPointF &pt)
 {
     this->_originPoint = pt;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphConfig::setOriginPixelPointX(double ptx)
+void finGraphConfig::setOriginPixelPointX(double ptx)
 {
     this->_originPoint.setX(ptx);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphConfig::setOriginPixelPointY(double pty)
+void finGraphConfig::setOriginPixelPointY(double pty)
 {
     this->_originPoint.setY(pty);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphConfig::setOriginPixelPoint(double ptx, double pty)
+void finGraphConfig::setOriginPixelPoint(double ptx, double pty)
 {
     this->_originPoint.setX(ptx);
     this->_originPoint.setY(pty);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphConfig::setAxisUnitPixelSize(double size)
+void finGraphConfig::setAxisUnitPixelSize(double size)
 {
     this->_axisUnitSize = size;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphConfig::setAxisRadZ(double rad)
+void finGraphConfig::setAxisRadZ(double rad)
 {
     this->_axisRadZ = rad;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphConfig::setAxisScaleZ(double scale)
+void finGraphConfig::setAxisScaleZ(double scale)
 {
     this->_axisScaleZ = scale;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphConfig::setTransformType(finGraphTransType type)

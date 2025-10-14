@@ -72,13 +72,13 @@ public:
     void setPanelPixelSize(double sizex, double sizey);
     void setBackgroundColor(const QColor &color);
 
-    finErrorCode setOriginPixelPoint(const QPointF &pt);
-    finErrorCode setOriginPixelPointX(double ptx);
-    finErrorCode setOriginPixelPointY(double pty);
-    finErrorCode setOriginPixelPoint(double ptx, double pty);
-    finErrorCode setAxisUnitPixelSize(double size);
-    finErrorCode setAxisRadZ(double rad);
-    finErrorCode setAxisScaleZ(double scale);
+    void setOriginPixelPoint(const QPointF &pt);
+    void setOriginPixelPointX(double ptx);
+    void setOriginPixelPointY(double pty);
+    void setOriginPixelPoint(double ptx, double pty);
+    void setAxisUnitPixelSize(double size);
+    void setAxisRadZ(double rad);
+    void setAxisScaleZ(double scale);
 
     finErrorCode setTransformType(finGraphTransType type);
     finErrorCode cloneTransform(const finGraphTrans *srctrans);
