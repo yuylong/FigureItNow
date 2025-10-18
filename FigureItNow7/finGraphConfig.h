@@ -80,9 +80,9 @@ public:
     void setAxisRadZ(double rad);
     void setAxisScaleZ(double scale);
 
-    finErrorCode setTransformType(finGraphTransType type);
-    finErrorCode cloneTransform(const finGraphTrans *srctrans);
-    finErrorCode cloneTransform(const finGraphConfig *srccfg);
+    void setTransformType(finGraphTransType type);
+    void cloneTransform(const finGraphTrans *srctrans);
+    void cloneTransform(const finGraphConfig *srccfg);
     QTransform getNakePixelTransformMatrix() const;
 
     finErrorCode setRenderHints(QPainter::RenderHints hints);

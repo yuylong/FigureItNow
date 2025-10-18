@@ -210,23 +210,23 @@ void finGraphConfig::setAxisScaleZ(double scale)
     this->_axisScaleZ = scale;
 }
 
-finErrorCode finGraphConfig::setTransformType(finGraphTransType type)
+void finGraphConfig::setTransformType(finGraphTransType type)
 {
     if ( this->getTransformType() == type )
-        return finErrorKits::EC_DUPLICATE_OP;
+        return;
 
     finGraphTrans *newtrans = nullptr;
     switch ( type ) {
       case finGraphTrans::TP_RECT:
         newtrans = new finGraphTransRect();
         if ( newtrans == nullptr )
-            return finErrorKits::EC_OUT_OF_MEMORY;
+            finThrow(finErrorKits::EC_OUT_OF_MEMORY, QString("Failed to create transform."));
         break;
 
       case finGraphTrans::TP_AFFINE:
         newtrans = new finGraphTransAffine();
         if ( newtrans == nullptr )
-            return finErrorKits::EC_OUT_OF_MEMORY;
+            finThrow(finErrorKits::EC_OUT_OF_MEMORY, QString("Failed to create transform."));
         break;
 
       default:
@@ -237,32 +237,30 @@ finErrorCode finGraphConfig::setTransformType(finGraphTransType type)
     this->_transform = newtrans;
     if ( oldtrans != nullptr )
         delete oldtrans;
-    return finErrorKits::EC_SUCCESS;
+    return;
 }
 
-finErrorCode finGraphConfig::cloneTransform(const finGraphTrans *srctrans)
+void finGraphConfig::cloneTransform(const finGraphTrans *srctrans)
 {
-    if ( srctrans == nullptr || srctrans->getTransformType() == finGraphTrans::TP_NONE )
-        return this->setTransformType(finGraphTrans::TP_NONE);
+    if ( srctrans == nullptr || srctrans->getTransformType() == finGraphTrans::TP_NONE ) {
+        this->setTransformType(finGraphTrans::TP_NONE);
+        return;
+    }
 
-    finErrorCode errcode = this->setTransformType(srctrans->getTransformType());
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    this->setTransformType(srctrans->getTransformType());
 
     finGraphTrans *mytrans = this->getTransform();
     if ( mytrans == nullptr )
-        return finErrorKits::EC_SUCCESS;
+        return;
 
-    errcode = mytrans->cloneTransform(srctrans);
+    finErrorCode errcode = mytrans->cloneTransform(srctrans);
     if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
-    return finErrorKits::EC_SUCCESS;
+        finThrow(errcode, QString("Failed to clone transform."));
 }
 
-finErrorCode finGraphConfig::cloneTransform(const finGraphConfig *srccfg)
+void finGraphConfig::cloneTransform(const finGraphConfig *srccfg)
 {
-    return this->cloneTransform(srccfg->getTransform());
+    this->cloneTransform(srccfg->getTransform());
 }
 
 QTransform finGraphConfig::getNakePixelTransformMatrix() const
