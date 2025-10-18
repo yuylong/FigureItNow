@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #include "finFigurePath.h"
@@ -52,40 +52,34 @@ QImage finFigurePath::getImage() const
     return this->_pixmap.toImage();
 }
 
-finErrorCode finFigurePath::setPen(const QPen &pen)
+void finFigurePath::setPen(const QPen &pen)
 {
     this->_pen = pen;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigurePath::setBrush(const QBrush &brush)
+void finFigurePath::setBrush(const QBrush &brush)
 {
     this->_brush = brush;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigurePath::setPath(const QPainterPath &path)
+void finFigurePath::setPath(const QPainterPath &path)
 {
     this->_path = path;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigurePath::setImagePosition(const QPointF &imgpos)
+void finFigurePath::setImagePosition(const QPointF &imgpos)
 {
     this->_imgPos = imgpos;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigurePath::setPixmap(const QPixmap &pixmap)
+void finFigurePath::setPixmap(const QPixmap &pixmap)
 {
     this->_pixmap = pixmap;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigurePath::setImage(const QImage &image)
+void finFigurePath::setImage(const QImage &image)
 {
     this->_pixmap = QPixmap::fromImage(image);
-    return finErrorKits::EC_SUCCESS;
 }
 
 finFigurePath &finFigurePath::operator = (const finFigurePath &figpath)

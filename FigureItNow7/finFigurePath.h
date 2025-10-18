@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINFIGUREPATH_H
@@ -39,12 +39,12 @@ public:
     const QPixmap &getPixmap() const;
     QImage getImage() const;
 
-    finErrorCode setPen(const QPen &pen);
-    finErrorCode setBrush(const QBrush &brush);
-    finErrorCode setPath(const QPainterPath &path);
-    finErrorCode setImagePosition(const QPointF &imgpos);
-    finErrorCode setPixmap(const QPixmap &pixmap);
-    finErrorCode setImage(const QImage &image);
+    void setPen(const QPen &pen);
+    void setBrush(const QBrush &brush);
+    void setPath(const QPainterPath &path);
+    void setImagePosition(const QPointF &imgpos);
+    void setPixmap(const QPixmap &pixmap);
+    void setImage(const QImage &image);
 
     finFigurePath &operator = (const finFigurePath &figpath);
 };
