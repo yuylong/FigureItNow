@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Dec 31st, 2016
- * Copyright(c) 2015-2016 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINFIGUREOBJECT_H
@@ -73,8 +73,8 @@ public:
 
     QPointF getPoint() const;
 
-    finErrorCode setPoint(const QPointF &qpt);
-    finErrorCode setPoint(double ptx, double pty);
+    void setPoint(const QPointF &qpt);
+    void setPoint(double ptx, double pty);
 
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
     virtual void dump() const;
@@ -95,13 +95,13 @@ public:
     QPointF getPoint1() const;
     QPointF getPoint2() const;
 
-    finErrorCode setPoint1(const QPointF &qpt);
-    finErrorCode setPoint1(double ptx, double pty);
-    finErrorCode setPoint2(const QPointF &qpt);
-    finErrorCode setPoint2(double ptx, double pty);
+    void setPoint1(const QPointF &qpt);
+    void setPoint1(double ptx, double pty);
+    void setPoint2(const QPointF &qpt);
+    void setPoint2(double ptx, double pty);
 
     bool isArrowIgnored() const;
-    finErrorCode setIgnoreArrow(bool blval);
+    void setIgnoreArrow(bool blval);
 
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
     virtual void dump() const;
@@ -122,13 +122,13 @@ public:
     int getPointCount() const;
     QPointF getPointAt(int idx) const;
 
-    finErrorCode appendPoint(const QPointF &pt);
-    finErrorCode appendPoint(double ptx, double pty);
-    finErrorCode appendPoints(const QList<QPointF> &ptlist);
-    finErrorCode removePointAt(int idx);
+    void appendPoint(const QPointF &pt);
+    void appendPoint(double ptx, double pty);
+    void appendPoints(const QList<QPointF> &ptlist);
+    void removePointAt(int idx);
 
     bool isArrowIgnored() const;
-    finErrorCode setIgnoreArrow(bool blval);
+    void setIgnoreArrow(bool blval);
 
     virtual finErrorCode getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const;
     virtual void dump() const;
@@ -159,11 +159,11 @@ public:
     QPointF getLowerLeftPoint() const;
     QPointF getLowerRightPoint() const;
 
-    finErrorCode setCenterPoint(const QPointF &ctrpt);
-    finErrorCode setCenterPoint(double cx, double cy);
-    finErrorCode setSize(const QSizeF &size);
-    finErrorCode setSize(double width, double height);
-    finErrorCode setRadian(double rad);
+    void setCenterPoint(const QPointF &ctrpt);
+    void setCenterPoint(double cx, double cy);
+    void setSize(const QSizeF &size);
+    void setSize(double width, double height);
+    void setRadian(double rad);
 
     QPolygonF getPolygonInstance() const;
 
@@ -185,10 +185,10 @@ public:
     int getPointCount() const;
     QPointF getPointAt(int idx) const;
 
-    finErrorCode appendPoint(const QPointF &pt);
-    finErrorCode appendPoint(double ptx, double pty);
-    finErrorCode appendPoints(const QList<QPointF> &ptlist);
-    finErrorCode removePointAt(int idx);
+    void appendPoint(const QPointF &pt);
+    void appendPoint(double ptx, double pty);
+    void appendPoints(const QList<QPointF> &ptlist);
+    void removePointAt(int idx);
 
     QPolygonF getPolygonInstance() const;
 
@@ -215,11 +215,11 @@ public:
     double getShortRadius() const;
     double getRadian() const;
 
-    finErrorCode setCenterPoint(const QPointF &ctrpt);
-    finErrorCode setCenterPoint(double cx, double cy);
-    finErrorCode setLongRadius(double lr);
-    finErrorCode setShortRadius(double sr);
-    finErrorCode setRadian(double rad);
+    void setCenterPoint(const QPointF &ctrpt);
+    void setCenterPoint(double cx, double cy);
+    void setLongRadius(double lr);
+    void setShortRadius(double sr);
+    void setRadian(double rad);
 
     QPointF getEllipsePointAtRad(double rad) const;
 

@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Dec 31st, 2016
- * Copyright(c) 2015-2016 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #include "finFigureObject.h"
@@ -79,17 +79,15 @@ QPointF finFigureObjectDot::getPoint() const
     return this->_point;
 }
 
-finErrorCode finFigureObjectDot::setPoint(const QPointF &qpt)
+void finFigureObjectDot::setPoint(const QPointF &qpt)
 {
     this->_point = qpt;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectDot::setPoint(double ptx, double pty)
+void finFigureObjectDot::setPoint(double ptx, double pty)
 {
     this->_point.setX(ptx);
     this->_point.setY(pty);
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectDot::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
@@ -149,30 +147,26 @@ QPointF finFigureObjectLine::getPoint2() const
     return this->_pt2;
 }
 
-finErrorCode finFigureObjectLine::setPoint1(const QPointF &qpt)
+void finFigureObjectLine::setPoint1(const QPointF &qpt)
 {
     this->_pt1 = qpt;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectLine::setPoint1(double ptx, double pty)
+void finFigureObjectLine::setPoint1(double ptx, double pty)
 {
     this->_pt1.setX(ptx);
     this->_pt1.setY(pty);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectLine::setPoint2(const QPointF &qpt)
+void finFigureObjectLine::setPoint2(const QPointF &qpt)
 {
     this->_pt2 = qpt;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectLine::setPoint2(double ptx, double pty)
+void finFigureObjectLine::setPoint2(double ptx, double pty)
 {
     this->_pt2.setX(ptx);
     this->_pt2.setY(pty);
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finFigureObjectLine::isArrowIgnored() const
@@ -180,10 +174,9 @@ bool finFigureObjectLine::isArrowIgnored() const
     return this->_ignoreArrow;
 }
 
-finErrorCode finFigureObjectLine::setIgnoreArrow(bool blval)
+void finFigureObjectLine::setIgnoreArrow(bool blval)
 {
     this->_ignoreArrow = blval;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureObjectLine::getPixelFigurePath(QList<finFigurePath> *pathlist, finGraphConfig *cfg) const
@@ -250,28 +243,24 @@ QPointF finFigureObjectPolyline::getPointAt(int idx) const
     return this->_ptList.at(idx);
 }
 
-finErrorCode finFigureObjectPolyline::appendPoint(const QPointF &pt)
+void finFigureObjectPolyline::appendPoint(const QPointF &pt)
 {
     this->_ptList.append(pt);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectPolyline::appendPoint(double ptx, double pty)
+void finFigureObjectPolyline::appendPoint(double ptx, double pty)
 {
     this->_ptList.append(QPointF(ptx, pty));
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectPolyline::appendPoints(const QList<QPointF> &ptlist)
+void finFigureObjectPolyline::appendPoints(const QList<QPointF> &ptlist)
 {
     this->_ptList.append(ptlist);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectPolyline::removePointAt(int idx)
+void finFigureObjectPolyline::removePointAt(int idx)
 {
     this->_ptList.removeAt(idx);
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finFigureObjectPolyline::isArrowIgnored() const
@@ -279,10 +268,9 @@ bool finFigureObjectPolyline::isArrowIgnored() const
     return this->_ignoreArrow;
 }
 
-finErrorCode finFigureObjectPolyline::setIgnoreArrow(bool blval)
+void finFigureObjectPolyline::setIgnoreArrow(bool blval)
 {
     this->_ignoreArrow = blval;
-    return finErrorKits::EC_SUCCESS;
 }
 
 QList<QPointF> finFigureObjectPolyline::getTransformedPointList(finGraphConfig *cfg) const
@@ -423,33 +411,29 @@ QPointF finFigureObjectRect::getLowerRightPoint() const
     return this->_center + relpt;
 }
 
-finErrorCode finFigureObjectRect::setCenterPoint(const QPointF &ctrpt)
+void finFigureObjectRect::setCenterPoint(const QPointF &ctrpt)
 {
     this->_center = ctrpt;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectRect::setCenterPoint(double cx, double cy)
+void finFigureObjectRect::setCenterPoint(double cx, double cy)
 {
     this->_center.setX(cx);
     this->_center.setY(cy);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectRect::setSize(const QSizeF &size)
+void finFigureObjectRect::setSize(const QSizeF &size)
 {
     this->_size = size;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectRect::setSize(double width, double height)
+void finFigureObjectRect::setSize(double width, double height)
 {
     this->_size.setWidth(width);
     this->_size.setHeight(height);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectRect::setRadian(double rad)
+void finFigureObjectRect::setRadian(double rad)
 {
     // Make the degree falling into the range (-90, 90].
     rad = rad - floor(rad / M_PI) * M_PI;
@@ -459,7 +443,6 @@ finErrorCode finFigureObjectRect::setRadian(double rad)
     this->_radian = rad;
     this->_sinrad = sin(rad);
     this->_cosrad = cos(rad);
-    return finErrorKits::EC_SUCCESS;
 }
 
 QPolygonF finFigureObjectRect::getPolygonInstance() const
@@ -525,28 +508,24 @@ QPointF finFigureObjectPolygon::getPointAt(int idx) const
     return this->_ptList.at(idx);
 }
 
-finErrorCode finFigureObjectPolygon::appendPoint(const QPointF &pt)
+void finFigureObjectPolygon::appendPoint(const QPointF &pt)
 {
     this->_ptList.append(pt);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectPolygon::appendPoint(double ptx, double pty)
+void finFigureObjectPolygon::appendPoint(double ptx, double pty)
 {
     this->_ptList.append(QPointF(ptx, pty));
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectPolygon::appendPoints(const QList<QPointF> &ptlist)
+void finFigureObjectPolygon::appendPoints(const QList<QPointF> &ptlist)
 {
     this->_ptList.append(ptlist);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectPolygon::removePointAt(int idx)
+void finFigureObjectPolygon::removePointAt(int idx)
 {
     this->_ptList.removeAt(idx);
-    return finErrorKits::EC_SUCCESS;
 }
 
 QPolygonF finFigureObjectPolygon::getPolygonInstance() const
@@ -633,32 +612,28 @@ double finFigureObjectEllipse::getRadian() const
     return this->_radian;
 }
 
-finErrorCode finFigureObjectEllipse::setCenterPoint(const QPointF &ctrpt)
+void finFigureObjectEllipse::setCenterPoint(const QPointF &ctrpt)
 {
     this->_center = ctrpt;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectEllipse::setCenterPoint(double cx, double cy)
+void finFigureObjectEllipse::setCenterPoint(double cx, double cy)
 {
     this->_center.setX(cx);
     this->_center.setY(cy);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectEllipse::setLongRadius(double lr)
+void finFigureObjectEllipse::setLongRadius(double lr)
 {
     this->_longR = lr;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectEllipse::setShortRadius(double sr)
+void finFigureObjectEllipse::setShortRadius(double sr)
 {
     this->_shortR = sr;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureObjectEllipse::setRadian(double rad)
+void finFigureObjectEllipse::setRadian(double rad)
 {
     // Make the degree falling into the range (-90, 90].
     rad = rad - floor(rad / M_PI) * M_PI;
@@ -668,7 +643,6 @@ finErrorCode finFigureObjectEllipse::setRadian(double rad)
     this->_radian = rad;
     this->_sinrad = sin(rad);
     this->_cosrad = cos(rad);
-    return finErrorKits::EC_SUCCESS;
 }
 
 QPointF finFigureObjectEllipse::getEllipsePointAtRad(double rad) const
