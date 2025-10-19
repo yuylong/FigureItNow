@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINPLOTFUNCTION_H
@@ -43,9 +43,9 @@ public:
     double getFigureToPosition() const;
     int getIndependentVarIndex() const;
 
-    finErrorCode setFunctionName(const QString &funcname);
-    finErrorCode setFigureRange(double x1, double x2);
-    finErrorCode setIndependentVarIndex(int idx);
+    void setFunctionName(const QString &funcname);
+    void setFigureRange(double x1, double x2);
+    void setIndependentVarIndex(int idx);
 
     QList<finExecVariable *> *getCallArgList() const;
     finExecEnvironment *getEnvironment() const;
@@ -53,18 +53,18 @@ public:
     finExecFlowControl *getFlowControl() const;
     finFigureContainer *getFigureContainer() const;
 
-    finErrorCode setCallArgList(QList<finExecVariable *> *arglist);
-    finErrorCode setEnvironment(finExecEnvironment *env);
-    finErrorCode setMachine(finExecMachine *machine);
-    finErrorCode setFlowControl(finExecFlowControl *flowctl);
-    finErrorCode setFigureContainer(finFigureContainer *figcontainer);
+    void setCallArgList(QList<finExecVariable *> *arglist);
+    void setEnvironment(finExecEnvironment *env);
+    void setMachine(finExecMachine *machine);
+    void setFlowControl(finExecFlowControl *flowctl);
+    void setFigureContainer(finFigureContainer *figcontainer);
 
     bool checkValid() const;
     finErrorCode plot();
 
 private:
     double getBaseStep() const;
-    finErrorCode buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **xvar);
+    void buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **xvar);
 
     double getCurrentStepWoRad(double basestep) const;
     double getCurrentStep(double rad, double basestep) const;

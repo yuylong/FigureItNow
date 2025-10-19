@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #include "finPlotFunction.h"
@@ -13,7 +13,6 @@
 
 #include "finExecFunction.h"
 #include "finFigureAlg.h"
-#include "finFigureObject.h"
 #include "finGraphConfig.h"
 
 
@@ -53,13 +52,12 @@ int finPlotFunction::getIndependentVarIndex() const
     return this->_xidx;
 }
 
-finErrorCode finPlotFunction::setFunctionName(const QString &funcname)
+void finPlotFunction::setFunctionName(const QString &funcname)
 {
     this->_funcname = funcname;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotFunction::setFigureRange(double x1, double x2)
+void finPlotFunction::setFigureRange(double x1, double x2)
 {
     if ( x1 <= x2 ) {
         this->_fromX = x1;
@@ -68,16 +66,14 @@ finErrorCode finPlotFunction::setFigureRange(double x1, double x2)
         this->_fromX = x2;
         this->_toX = x1;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotFunction::setIndependentVarIndex(int idx)
+void finPlotFunction::setIndependentVarIndex(int idx)
 {
     if ( idx < 0 )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, QString("Index cannot be negative."));
 
     this->_xidx = idx;
-    return finErrorKits::EC_SUCCESS;
 }
 
 QList<finExecVariable *> *finPlotFunction::getCallArgList() const
@@ -105,34 +101,29 @@ finFigureContainer *finPlotFunction::getFigureContainer() const
     return this->_stmPlot.getFigureContainer();
 }
 
-finErrorCode finPlotFunction::setCallArgList(QList<finExecVariable *> *arglist)
+void finPlotFunction::setCallArgList(QList<finExecVariable *> *arglist)
 {
     this->_callArgList = arglist;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotFunction::setEnvironment(finExecEnvironment *env)
+void finPlotFunction::setEnvironment(finExecEnvironment *env)
 {
     this->_environment = env;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotFunction::setMachine(finExecMachine *machine)
+void finPlotFunction::setMachine(finExecMachine *machine)
 {
     this->_machine = machine;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotFunction::setFlowControl(finExecFlowControl *flowctl)
+void finPlotFunction::setFlowControl(finExecFlowControl *flowctl)
 {
     this->_flowctl = flowctl;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotFunction::setFigureContainer(finFigureContainer *figcontainer)
+void finPlotFunction::setFigureContainer(finFigureContainer *figcontainer)
 {
     this->_stmPlot.setFigureContainer(figcontainer);
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finPlotFunction::checkValid() const
@@ -160,14 +151,14 @@ double finPlotFunction::getBaseStep() const
     return step;
 }
 
-finErrorCode finPlotFunction::buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **xvar)
+void finPlotFunction::buildFuncArgList(QList<finExecVariable *> *varlist, finExecVariable **xvar)
 {
     if ( varlist == nullptr || xvar == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, QString("Null pointer in arguments."));
 
     *xvar = new finExecVariable();
     if ( *xvar == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
+        finThrow(finErrorKits::EC_OUT_OF_MEMORY, QString("Failed to allocate memory for xvar."));
 
     (*xvar)->setName(QString());
     (*xvar)->setType(finExecVariable::TP_NUMERIC);
@@ -177,7 +168,6 @@ finErrorCode finPlotFunction::buildFuncArgList(QList<finExecVariable *> *varlist
 
     *varlist = *this->_callArgList;
     varlist->insert(this->_xidx, *xvar);
-    return finErrorKits::EC_SUCCESS;
 }
 
 double finPlotFunction::getCurrentStepWoRad(double basestep) const
@@ -241,9 +231,7 @@ finErrorCode finPlotFunction::plot()
 
     QList<finExecVariable *> funcarglist;
     finExecVariable *xvar;
-    errcode = this->buildFuncArgList(&funcarglist, &xvar);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    this->buildFuncArgList(&funcarglist, &xvar);
 
     bool goon = true, loopit = true;
     double curstep = this->getCurrentStepWoRad(basestep);
