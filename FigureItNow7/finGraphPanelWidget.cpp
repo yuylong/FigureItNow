@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #include "finGraphPanelWidget.h"
@@ -29,16 +29,15 @@ QPaintDevice *finGraphPanelWidget::getWidget() const
     return this->_widget;
 }
 
-finErrorCode finGraphPanelWidget::setWidget(QPaintDevice *widget)
+void finGraphPanelWidget::setWidget(QPaintDevice *widget)
 {
     this->_widget = widget;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finGraphPanelWidget::draw()
 {
     if ( this->_widget == nullptr )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, QString("Widget is not set."));
 
     QPainter painter(this->_widget);
     this->_painter = &painter;
@@ -51,7 +50,7 @@ finErrorCode finGraphPanelWidget::draw()
 finErrorCode finGraphPanelWidget::applyGraphConfig() const
 {
     if ( this->_widget == nullptr )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, QString("Widget is not set."));
 
     return finGraphPanelPainter::applyGraphConfig();
 }
@@ -59,7 +58,7 @@ finErrorCode finGraphPanelWidget::applyGraphConfig() const
 finErrorCode finGraphPanelWidget::drawFigurePath(const finFigurePath &path) const
 {
     if ( this->_widget == nullptr )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, QString("Widget is not set."));
 
     return finGraphPanelPainter::drawFigurePath(path);
 }

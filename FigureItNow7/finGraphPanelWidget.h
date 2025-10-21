@@ -3,20 +3,17 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINGRAPHPANELWIDGET_H
 #define FINGRAPHPANELWIDGET_H
 
-#include "finGraphPanelBase.h"
 #include "finGraphPanelPainter.h"
 
 #include <QPaintDevice>
 
 #include "finErrorCode.h"
-#include "finFigureObject.h"
-#include "finFigureContainer.h"
 
 
 class finGraphPanelWidget : public finGraphPanelPainter
@@ -30,7 +27,7 @@ public:
     virtual finErrorCode setPainter(QPainter *painter);
 
     QPaintDevice *getWidget() const;
-    finErrorCode setWidget(QPaintDevice *widget);
+    void setWidget(QPaintDevice *widget);
 
     virtual finErrorCode draw();
 
