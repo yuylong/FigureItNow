@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #include "finExecFunction.h"
@@ -361,7 +361,7 @@ static struct finExecSysFuncRegItem _finSysFuncSystemList[] = {
     { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
 };
 
-finErrorCode finExecFunction::registSysFuncSystem()
+void finExecFunction::registSysFuncSystem()
 {
-    return finExecFunction::registSysFuncFromArray(_finSysFuncSystemList, _defFuncCtg);
+    finExecFunction::registSysFuncFromArray(_finSysFuncSystemList, _defFuncCtg);
 }

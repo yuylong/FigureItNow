@@ -1506,7 +1506,7 @@ static finExecSysFuncRegItem _finSysFuncFigureList[] = {
     { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
 };
 
-finErrorCode finExecFunction::registSysFuncFiguring()
+void finExecFunction::registSysFuncFiguring()
 {
-    return finExecFunction::registSysFuncFromArray(_finSysFuncFigureList, QString("Figuring"));
+    finExecFunction::registSysFuncFromArray(_finSysFuncFigureList, QString("Figuring"));
 }

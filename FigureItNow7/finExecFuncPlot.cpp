@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #include "finExecFunction.h"
@@ -453,7 +453,7 @@ static finExecSysFuncRegItem _finSysFuncPlotList[] = {
     { QString(), QString(), nullptr, _defFuncCtg, QString(), QString() }
 };
 
-finErrorCode finExecFunction::registSysFuncPlot()
+void finExecFunction::registSysFuncPlot()
 {
-    return finExecFunction::registSysFuncFromArray(_finSysFuncPlotList, QString("Plotting"));
+    finExecFunction::registSysFuncFromArray(_finSysFuncPlotList, QString("Plotting"));
 }

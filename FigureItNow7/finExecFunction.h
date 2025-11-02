@@ -140,17 +140,16 @@ private:
     finErrorCode execSysFunction(finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl);
 
     static QList<finExecSysFuncRegItem> _sysFuncList;
-    static finErrorCode registSysFuncAll();
+    static void registSysFuncAll();
 
-    static finErrorCode registSysFuncFromArray(finExecSysFuncRegItem *sysfunclist,
-                                               const QString &category = QString());
-    static finErrorCode registSysFuncMath();
-    static finErrorCode registSysFuncMatrix();
-    static finErrorCode registSysFuncString();
-    static finErrorCode registSysFuncFile();
-    static finErrorCode registSysFuncSystem();
-    static finErrorCode registSysFuncFiguring();
-    static finErrorCode registSysFuncPlot();
+    static void registSysFuncFromArray(finExecSysFuncRegItem *sysfunclist, const QString &category = QString());
+    static void registSysFuncMath();
+    static void registSysFuncMatrix();
+    static void registSysFuncString();
+    static void registSysFuncFile();
+    static void registSysFuncSystem();
+    static void registSysFuncFiguring();
+    static void registSysFuncPlot();
 };
 
 typedef finExecFunction::Type finExecFunctionType;

@@ -466,8 +466,7 @@ finExecVariable *finExecFunction::getPreviousExtendArgAt(finExecEnvironment *env
 QList<finExecSysFuncRegItem> finExecFunction::_sysFuncList =
         QList<finExecSysFuncRegItem>();
 
-finErrorCode
-finExecFunction::registSysFuncFromArray(finExecSysFuncRegItem *sysfunclist, const QString &category)
+void finExecFunction::registSysFuncFromArray(finExecSysFuncRegItem *sysfunclist, const QString &category)
 {
     for ( int i = 0; !sysfunclist[i]._funcName.isNull(); i++ ) {
         if ( sysfunclist[i]._category.isEmpty() )
@@ -477,42 +476,17 @@ finExecFunction::registSysFuncFromArray(finExecSysFuncRegItem *sysfunclist, cons
 
         finExecFunction::_sysFuncList.append(sysfunclist[i]);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecFunction::registSysFuncAll()
+void finExecFunction::registSysFuncAll()
 {
-    finErrorCode errcode;
-
-    errcode = finExecFunction::registSysFuncMath();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
-    errcode = finExecFunction::registSysFuncMatrix();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
-    errcode = finExecFunction::registSysFuncString();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
-    errcode = finExecFunction::registSysFuncFile();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
-    errcode = finExecFunction::registSysFuncSystem();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
-    errcode = finExecFunction::registSysFuncFiguring();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
-    errcode = finExecFunction::registSysFuncPlot();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
-    return finErrorKits::EC_SUCCESS;
+    finExecFunction::registSysFuncMath();
+    finExecFunction::registSysFuncMatrix();
+    finExecFunction::registSysFuncString();
+    finExecFunction::registSysFuncFile();
+    finExecFunction::registSysFuncSystem();
+    finExecFunction::registSysFuncFiguring();
+    finExecFunction::registSysFuncPlot();
 }
 
 finErrorCode
@@ -524,9 +498,7 @@ finExecFunction::installSystemFunctions (finExecEnvironment *rootenv)
     if ( rootenv == nullptr )
         return finErrorKits::EC_NULL_POINTER;
 
-    errcode = finExecFunction::registSysFuncAll();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    finExecFunction::registSysFuncAll();
 
     for ( i = 0; i < finExecFunction::_sysFuncList.count(); i++ ) {
         const finExecSysFuncRegItem &sysfunc = finExecFunction::_sysFuncList.at(i);

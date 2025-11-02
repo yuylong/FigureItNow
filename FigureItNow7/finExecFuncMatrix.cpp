@@ -1054,7 +1054,7 @@ static struct finExecSysFuncRegItem _finSysFuncMatrixList[] = {
 };
 
 
-finErrorCode finExecFunction::registSysFuncMatrix()
+void finExecFunction::registSysFuncMatrix()
 {
-    return finExecFunction::registSysFuncFromArray(_finSysFuncMatrixList, QString("Matrix"));
+    finExecFunction::registSysFuncFromArray(_finSysFuncMatrixList, QString("Matrix"));
 }
