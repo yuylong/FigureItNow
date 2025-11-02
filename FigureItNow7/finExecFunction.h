@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Dec 29th, 2016
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 /*! \file finExecFunction.h
  *  \brief The declarations of the runtime function.
@@ -100,13 +100,13 @@ public:
     QString getParameterName(int idx) const;
     bool isParameterExist(const QString &paramname) const;
 
-    finErrorCode setFunctionType(Type type);
-    finErrorCode setFunctionName(const QString &funcname);
-    finErrorCode appendParameterName(const QString &paramname);
-    finErrorCode clearParameterNames();
+    void setFunctionType(Type type);
+    void setFunctionName(const QString &funcname);
+    void appendParameterName(const QString &paramname);
+    void clearParameterNames();
 
-    finErrorCode setFunctionSyntaxNode(finSyntaxNode *funcnode);
-    finErrorCode setFunctionCall(finFunctionCall funccall);
+    void setFunctionSyntaxNode(finSyntaxNode *funcnode);
+    void setFunctionCall(finFunctionCall funccall);
 
     finErrorCode execFunction(finSyntaxNode *argnode, finExecEnvironment *env,
                               finExecMachine *machine, finExecFlowControl *flowctl);

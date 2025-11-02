@@ -3,16 +3,17 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #include "finExecFunction.h"
+
+#include <memory>
 
 #include "finLexNode.h"
 #include "finExecVariable.h"
 #include "finExecEnvironment.h"
 #include "finExecMachine.h"
-#include "finExecOperartorCalc.h"
 
 
 QString finExecFunction::_extArgPrefix("__ext_arg_");
@@ -57,59 +58,53 @@ bool finExecFunction::isParameterExist(const QString &paramname) const
     return false;
 }
 
-finErrorCode finExecFunction::setFunctionType(finExecFunctionType type)
+void finExecFunction::setFunctionType(finExecFunctionType type)
 {
     if ( this->_type == type )
-        return finErrorKits::EC_DUPLICATE_OP;
+        return;
 
     this->_type = type;
     this->_u._rawPointer = nullptr;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecFunction::setFunctionName(const QString &funcname)
+void finExecFunction::setFunctionName(const QString &funcname)
 {
     if ( QString::compare(this->_funcName, funcname) == 0 )
-        return finErrorKits::EC_DUPLICATE_OP;
+        return;
 
     this->_funcName = funcname;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecFunction::appendParameterName(const QString &paramname)
+void finExecFunction::appendParameterName(const QString &paramname)
 {
     if ( paramname.isEmpty() || paramname.isNull() )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Parameter name is empty.");
 
     this->_paramList.append(paramname);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecFunction::clearParameterNames()
+void finExecFunction::clearParameterNames()
 {
     if ( this->_paramList.count() == 0 )
-        return finErrorKits::EC_DUPLICATE_OP;
+        return;
 
     this->_paramList.clear();
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecFunction::setFunctionSyntaxNode(finSyntaxNode *funcnode)
+void finExecFunction::setFunctionSyntaxNode(finSyntaxNode *funcnode)
 {
     if ( this->_type != finExecFunction::TP_USER )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Function is not user-defined.");
 
     this->_u._funcNode = funcnode;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecFunction::setFunctionCall(finFunctionCall funccall)
+void finExecFunction::setFunctionCall(finFunctionCall funccall)
 {
     if ( this->_type != finExecFunction::TP_SYSTEM )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Function is not system-defined.");
 
     this->_u._funcCall = funccall;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode
@@ -537,42 +532,29 @@ finExecFunction::installSystemFunctions (finExecEnvironment *rootenv)
         const finExecSysFuncRegItem &sysfunc = finExecFunction::_sysFuncList.at(i);
 
         QStringList paramlist;
-        finExecFunction *curfunc = new finExecFunction();
-        if ( curfunc == nullptr )
-            goto item_bad;
+        std::unique_ptr<finExecFunction> curfunc(new finExecFunction());
+        if ( curfunc.get() == nullptr )
+            continue;
 
-        errcode = curfunc->setFunctionType(finExecFunction::TP_SYSTEM);
-        if ( finErrorKits::isErrorResult(errcode) )
-            goto item_bad;
-
-        errcode = curfunc->setFunctionName(sysfunc._funcName);
-        if ( finErrorKits::isErrorResult(errcode) )
-            goto item_bad;
+        curfunc->setFunctionType(finExecFunction::TP_SYSTEM);
+        curfunc->setFunctionName(sysfunc._funcName);
 
         if ( sysfunc._paramCsvList.length() > 0 ) {
             paramlist = sysfunc._paramCsvList.split(',');
             curfunc->clearParameterNames();
             for ( int j = 0; j < paramlist.count(); j++ ) {
-                errcode = curfunc->appendParameterName(paramlist.at(j));
-                if ( finErrorKits::isErrorResult(errcode) )
-                    goto item_bad;
+                curfunc->appendParameterName(paramlist.at(j));
             }
         }
 
-        errcode = curfunc->setFunctionCall(sysfunc._funcCall);
-        if ( finErrorKits::isErrorResult(errcode) )
-            goto item_bad;
+        curfunc->setFunctionCall(sysfunc._funcCall);
 
-        errcode = rootenv->addFunction(curfunc);
+        errcode = rootenv->addFunction(curfunc.get());
         if ( finErrorKits::isErrorResult(errcode) )
-            goto item_bad;
+            continue;
 
+        curfunc.release();
         succcnt++;
-        continue;
-
-item_bad:
-        if ( curfunc != nullptr )
-            delete curfunc;
     }
 
     if ( succcnt == i ) {
