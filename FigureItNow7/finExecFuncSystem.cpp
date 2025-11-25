@@ -155,14 +155,12 @@ static finErrorCode _sysfunc_call_stack(finExecFunction *self, finExecEnvironmen
     retvar->setType(finExecVariable::TP_ARRAY);
 
     QStringList funcnamelist;
-    finErrorCode errcode = env->getBelongFunctionList(&funcnamelist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
+    env->getBelongFunctionList(&funcnamelist);
 
     /* Kick out the current 'call_stack' function from list. */
     funcnamelist.removeFirst();
 
-    errcode = retvar->preallocArrayLength(funcnamelist.count());
+    finErrorCode errcode = retvar->preallocArrayLength(funcnamelist.count());
     if ( finErrorKits::isErrorResult(errcode) )
         goto err;
 

@@ -63,7 +63,7 @@ public:
     finErrorCode buildChildEnvironment(finExecEnvironment **chdenv);
 
     QString getEnvironmentName() const;
-    finErrorCode setEnvironmentName(const QString &envname);
+    void setEnvironmentName(const QString &envname);
 
     finExecVariable *getVariableHere(const QString &varname);
     finExecFunction *getFunctionHere(const QString &funcname);
@@ -96,9 +96,9 @@ public:
     int getPreviousBelongFunctionEnvLevelIdx() const;
     int getPreviousBelongFunctionEnvLevelIdx(int level) const;
     int getTotalBelongFunctionLevelCount() const;
-    finErrorCode getBelongFunctionList(QStringList *funcnamelist) const;
+    void getBelongFunctionList(QStringList *funcnamelist) const;
 
-    finErrorCode setBelongFunction(finExecFunction *func);
+    void setBelongFunction(finExecFunction *func);
 
     finFigureContainer *getFigureContainer();
     finExecEnvironment *getParentEnvironment();

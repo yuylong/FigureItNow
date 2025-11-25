@@ -64,11 +64,10 @@ finExecEnvironment::getEnvironmentName() const
     return this->_envName;
 }
 
-finErrorCode
+void
 finExecEnvironment::setEnvironmentName(const QString &envname)
 {
     this->_envName = envname;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finExecVariable *
@@ -386,15 +385,15 @@ int finExecEnvironment::getTotalBelongFunctionLevelCount() const
     return this->getTotalFucnLevelCountIn(0);
 }
 
-finErrorCode finExecEnvironment::getBelongFunctionList(QStringList *funcnamelist) const
+void finExecEnvironment::getBelongFunctionList(QStringList *funcnamelist) const
 {
     if ( this->_belongFunc != nullptr )
         funcnamelist->append(this->_belongFunc->getFunctionName());
 
     if ( this->_prevEnv == nullptr )
-        return finErrorKits::EC_SUCCESS;
+        return;
 
-    return this->_prevEnv->getBelongFunctionList(funcnamelist);
+    this->_prevEnv->getBelongFunctionList(funcnamelist);
 }
 
 finFigureContainer *
@@ -423,10 +422,9 @@ finExecEnvironment::getParentEnvironment(int envlevel)
         return this->_prevEnv->getParentEnvironment(envlevel - 1);
 }
 
-finErrorCode finExecEnvironment::setBelongFunction(finExecFunction *func)
+void finExecEnvironment::setBelongFunction(finExecFunction *func)
 {
     this->_belongFunc = func;
-    return finErrorKits::EC_SUCCESS;
 }
 
 int finExecEnvironment::getTotalEnvLevelCountIn(int curlevel)
