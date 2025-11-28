@@ -66,30 +66,30 @@ public:
     bool getFontItalic() const;
     QColor getFontColor() const;
 
-    finErrorCode setBorderPen(const QPen &pen);
-    finErrorCode setFillBrush(const QBrush &brush);
-    finErrorCode setStartArrow(const finFigureArrow &arrow);
-    finErrorCode setEndArrow(const finFigureArrow &arrow);
-    finErrorCode setTextPen(const QPen &pen);
-    finErrorCode setTextBrush(const QBrush &brush);
-    finErrorCode setFont(const QFont &font);
-    finErrorCode setTextMargins(const QMarginsF &margins);
+    void setBorderPen(const QPen &pen);
+    void setFillBrush(const QBrush &brush);
+    void setStartArrow(const finFigureArrow &arrow);
+    void setEndArrow(const finFigureArrow &arrow);
+    void setTextPen(const QPen &pen);
+    void setTextBrush(const QBrush &brush);
+    void setFont(const QFont &font);
+    void setTextMargins(const QMarginsF &margins);
 
-    finErrorCode setDotSize(double size);
-    finErrorCode setBorderColor(const QColor &color);
-    finErrorCode setFillColor(const QColor &color);
-    finErrorCode setStartArrowType(finFigureArrowType type);
-    finErrorCode setStartArrowSize(double size);
-    finErrorCode setStartArrowRadian(double rad);
-    finErrorCode setEndArrowType(finFigureArrowType type);
-    finErrorCode setEndArrowSize(double size);
-    finErrorCode setEndArrowRadian(double rad);
+    void setDotSize(double size);
+    void setBorderColor(const QColor &color);
+    void setFillColor(const QColor &color);
+    void setStartArrowType(finFigureArrowType type);
+    void setStartArrowSize(double size);
+    void setStartArrowRadian(double rad);
+    void setEndArrowType(finFigureArrowType type);
+    void setEndArrowSize(double size);
+    void setEndArrowRadian(double rad);
 
-    finErrorCode setFontName(const QString &ftname);
-    finErrorCode setFontPointSize(double size);
-    finErrorCode setFontBold(bool bold);
-    finErrorCode setFontItalic(bool bold);
-    finErrorCode setFontColor(const QColor &color);
+    void setFontName(const QString &ftname);
+    void setFontPointSize(double size);
+    void setFontBold(bool bold);
+    void setFontItalic(bool bold);
+    void setFontColor(const QColor &color);
 
     static finFigureConfig *getDefaultFigureConfig();
     static finErrorCode releaseDefaultFigureConfig();

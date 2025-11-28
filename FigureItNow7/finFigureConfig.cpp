@@ -128,139 +128,117 @@ QColor finFigureConfig::getFontColor() const
     return this->_textBrush.color();
 }
 
-finErrorCode finFigureConfig::setBorderPen(const QPen &pen)
+void finFigureConfig::setBorderPen(const QPen &pen)
 {
     this->_borderPen = pen;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setFillBrush(const QBrush &brush)
+void finFigureConfig::setFillBrush(const QBrush &brush)
 {
     this->_fillBrush = brush;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setStartArrow(const finFigureArrow &arrow)
+void finFigureConfig::setStartArrow(const finFigureArrow &arrow)
 {
     this->_startArrow = arrow;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setEndArrow(const finFigureArrow &arrow)
+void finFigureConfig::setEndArrow(const finFigureArrow &arrow)
 {
     this->_endArrow = arrow;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setTextPen(const QPen &pen)
+void finFigureConfig::setTextPen(const QPen &pen)
 {
     this->_textPen = pen;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setTextBrush(const QBrush &brush)
+void finFigureConfig::setTextBrush(const QBrush &brush)
 {
     this->_textBrush = brush;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setFont(const QFont &font)
+void finFigureConfig::setFont(const QFont &font)
 {
     this->_font = font;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setTextMargins(const QMarginsF &margins)
+void finFigureConfig::setTextMargins(const QMarginsF &margins)
 {
     this->_textMargins = margins;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setDotSize(double size)
+void finFigureConfig::setDotSize(double size)
 {
     if ( size <= 0.0 )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Dot size must be positive.");
 
     this->_borderPen.setWidthF(size);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setBorderColor(const QColor &color)
+void finFigureConfig::setBorderColor(const QColor &color)
 {
     this->_borderPen.setColor(color);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setFillColor(const QColor &color)
+void finFigureConfig::setFillColor(const QColor &color)
 {
     this->_fillBrush.setColor(color);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setStartArrowType(finFigureArrowType type)
+void finFigureConfig::setStartArrowType(finFigureArrowType type)
 {
     this->_startArrow.setType(type);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setStartArrowSize(double size)
+void finFigureConfig::setStartArrowSize(double size)
 {
     this->_startArrow.setLength(size);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setStartArrowRadian(double rad)
+void finFigureConfig::setStartArrowRadian(double rad)
 {
     this->_endArrow.setRadian(rad);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setEndArrowType(finFigureArrowType type)
+void finFigureConfig::setEndArrowType(finFigureArrowType type)
 {
     this->_endArrow.setType(type);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setEndArrowSize(double size)
+void finFigureConfig::setEndArrowSize(double size)
 {
     this->_endArrow.setLength(size);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setEndArrowRadian(double rad)
+void finFigureConfig::setEndArrowRadian(double rad)
 {
     this->_endArrow.setRadian(rad);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setFontName(const QString &ftname)
+void finFigureConfig::setFontName(const QString &ftname)
 {
     this->_font.setFamily(ftname);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setFontPointSize(double size)
+void finFigureConfig::setFontPointSize(double size)
 {
     this->_font.setPointSizeF(size);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setFontBold(bool bold)
+void finFigureConfig::setFontBold(bool bold)
 {
     this->_font.setBold(bold);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setFontItalic(bool italic)
+void finFigureConfig::setFontItalic(bool italic)
 {
     this->_font.setItalic(italic);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureConfig::setFontColor(const QColor &color)
+void finFigureConfig::setFontColor(const QColor &color)
 {
     this->_textBrush.setColor(color);
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finFigureConfig::cloneFigureConfig(finFigureConfig *outcfg) const
