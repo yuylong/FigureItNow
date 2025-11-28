@@ -86,26 +86,23 @@ double finFigureArrow::getLength() const
     return this->_length;
 }
 
-finErrorCode finFigureArrow::setType(finFigureArrowType type)
+void finFigureArrow::setType(finFigureArrowType type)
 {
     this->_type = type;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureArrow::setRadian(double rad)
+void finFigureArrow::setRadian(double rad)
 {
     rad = rad - floor(rad / M_PI) * M_PI;
     this->_rad = rad;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finFigureArrow::setLength(double length)
+void finFigureArrow::setLength(double length)
 {
     if ( length < 0.0 )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Arrow length cannot be negative.");
 
     this->_length = length;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finFigureArrow &finFigureArrow::operator = (const finFigureArrow &arrow)
@@ -164,24 +161,24 @@ finFigureArrow::lineShrinkPoint(const QPointF &arwpt, const QPointF &prevpt, con
     }
 }
 
-finErrorCode finFigureArrow::getPixelPath(QList<finFigurePath> *pathlist,
+void finFigureArrow::getPixelPath(QList<finFigurePath> *pathlist,
                                           const QPointF &arwpt, const QPointF &prevpt,
                                           const finFigureConfig *cfg) const
 {
     if ( pathlist == nullptr || cfg == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Path list or figure config is null.") ;
 
     switch ( this->_type ) {
       case finFigureArrow::TP_NONE:
-        return finErrorKits::EC_SUCCESS;
+        return;
         break;
 
       case finFigureArrow::TP_TRIANGLE:
-        return this->getPixelPathTriangle(pathlist, arwpt, prevpt, cfg);
+        this->getPixelPathTriangle(pathlist, arwpt, prevpt, cfg);
         break;
 
       default:
-        return finErrorKits::EC_NON_IMPLEMENT;
+        finThrow(finErrorKits::EC_NON_IMPLEMENT, "Arrow type not implemented.");
         break;
     }
 }
@@ -207,7 +204,7 @@ finFigureArrow::lineShrinkPtTriangle(const QPointF &prevpt, const QPointF &arwpt
     return finFigureAlg::movePointInside(arwpt, prevpt, shrinklen);
 }
 
-finErrorCode finFigureArrow::getPixelPathTriangle(QList<finFigurePath> *pathlist,
+void finFigureArrow::getPixelPathTriangle(QList<finFigurePath> *pathlist,
                                                   const QPointF &arwpt, const QPointF &prevpt,
                                                   const finFigureConfig *cfg) const
 {
@@ -229,6 +226,4 @@ finErrorCode finFigureArrow::getPixelPathTriangle(QList<finFigurePath> *pathlist
     figpath.setBrush(this->getArrowBrush(cfg));
     figpath.setPath(path);
     pathlist->append(figpath);
-
-    return finErrorKits::EC_SUCCESS;
 }

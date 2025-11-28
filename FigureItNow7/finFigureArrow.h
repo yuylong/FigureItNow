@@ -54,9 +54,9 @@ public:
     double getRadian() const;
     double getLength() const;
 
-    finErrorCode setType(finFigureArrow::Type type);
-    finErrorCode setRadian(double rad);
-    finErrorCode setLength(double length);
+    void setType(finFigureArrow::Type type);
+    void setRadian(double rad);
+    void setLength(double length);
 
     finFigureArrow &operator = (const finFigureArrow &arrow);
 
@@ -64,14 +64,14 @@ public:
     QBrush getArrowBrush(const finFigureConfig *cfg) const;
 
     QPointF lineShrinkPoint(const QPointF &arwpt, const QPointF &prevpt, const finFigureConfig *cfg) const;
-    finErrorCode getPixelPath(QList<finFigurePath> *pathlist, const QPointF &arwpt, const QPointF &prevpt,
-                              const finFigureConfig *cfg) const;
+    void getPixelPath(QList<finFigurePath> *pathlist, const QPointF &arwpt, const QPointF &prevpt,
+                      const finFigureConfig *cfg) const;
 
 private:
     double lineShrinkLenTriangle(const finFigureConfig *cfg) const;
     QPointF lineShrinkPtTriangle(const QPointF &prevpt, const QPointF &arwpt, const finFigureConfig *cfg) const;
-    finErrorCode getPixelPathTriangle(QList<finFigurePath> *pathlist, const QPointF &arwpt, const QPointF &prevpt,
-                                      const finFigureConfig *cfg) const;
+    void getPixelPathTriangle(QList<finFigurePath> *pathlist, const QPointF &arwpt, const QPointF &prevpt,
+                              const finFigureConfig *cfg) const;
 };
 
 typedef finFigureArrow::Type finFigureArrowType;
