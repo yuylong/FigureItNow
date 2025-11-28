@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Dec 31st, 2016
- * Copyright(c) 2015-2016 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINFIGURECONFIG_H
@@ -39,7 +39,7 @@ protected:
 public:
     finFigureConfig();
 
-    finErrorCode cloneFigureConfig(finFigureConfig *outcfg) const;
+    void cloneFigureConfig(finFigureConfig *outcfg) const;
 
     const QPen &getBorderPen() const;
     const QBrush &getFillBrush() const;
@@ -92,8 +92,7 @@ public:
     void setFontColor(const QColor &color);
 
     static finFigureConfig *getDefaultFigureConfig();
-    static finErrorCode releaseDefaultFigureConfig();
-    static finErrorCode cloneFromDefaultFigureConfig(finFigureConfig *outfig);
+    static void cloneFromDefaultFigureConfig(finFigureConfig *outfig);
 };
 
 #endif // FINFIGURECONFIG_H

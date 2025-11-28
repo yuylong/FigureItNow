@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Dec 31st, 2016
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
  */
 
 #include "finFigureConfig.h"
@@ -241,10 +241,10 @@ void finFigureConfig::setFontColor(const QColor &color)
     this->_textBrush.setColor(color);
 }
 
-finErrorCode finFigureConfig::cloneFigureConfig(finFigureConfig *outcfg) const
+void finFigureConfig::cloneFigureConfig(finFigureConfig *outcfg) const
 {
     if ( outcfg == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Output figure config is null.");
 
     outcfg->_borderPen = this->_borderPen;
     outcfg->_fillBrush = this->_fillBrush;
@@ -253,7 +253,6 @@ finErrorCode finFigureConfig::cloneFigureConfig(finFigureConfig *outcfg) const
     outcfg->_textPen = this->_textPen;
     outcfg->_textBrush = this->_textBrush;
     outcfg->_font = this->_font;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finFigureConfig *finFigureConfig::getDefaultFigureConfig()
@@ -264,15 +263,7 @@ finFigureConfig *finFigureConfig::getDefaultFigureConfig()
     return finFigureConfig::_defFigCfg;
 }
 
-finErrorCode finFigureConfig::releaseDefaultFigureConfig()
+void finFigureConfig::cloneFromDefaultFigureConfig(finFigureConfig *outfig)
 {
-    if ( finFigureConfig::_defFigCfg == nullptr )
-        return finErrorKits::EC_DUPLICATE_OP;
-
-    return finErrorKits::EC_SUCCESS;
-}
-
-finErrorCode finFigureConfig::cloneFromDefaultFigureConfig(finFigureConfig *outfig)
-{
-    return finFigureConfig::getDefaultFigureConfig()->cloneFigureConfig(outfig);
+    finFigureConfig::getDefaultFigureConfig()->cloneFigureConfig(outfig);
 }
