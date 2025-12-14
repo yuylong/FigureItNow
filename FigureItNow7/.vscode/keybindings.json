@@ -1,0 +1,18 @@
+[
+    {
+        "key": "ctrl+shift+b",
+        "command": "workbench.action.tasks.build"
+    },
+    {
+        "key": "f5",
+        "command": "workbench.action.debug.start"
+    },
+    {
+        "key": "ctrl+f5",
+        "command": "workbench.action.debug.run"
+    },
+    {
+        "key": "ctrl+shift+p",
+        "command": "workbench.action.showCommands"
+    }
+]

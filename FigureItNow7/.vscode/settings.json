@@ -1,0 +1,53 @@
+{
+    "cmake.configureOnOpen": true,
+    "cmake.generator": "MinGW Makefiles",
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.autoSelectActiveFolder": false,
+    "cmake.environment": {
+        "QTDIR": "C:/Qt/6.8.0/mingw_64",
+        "Qt6_DIR": "C:/Qt/6.8.0/mingw_64/lib/cmake/Qt6",
+        "MINGW_PATH": "C:/Qt/Tools/mingw1310_64/bin"
+    },
+    "cmake.configureArgs": [
+        "-DCMAKE_BUILD_TYPE=Debug",
+        "-DCMAKE_CXX_STANDARD=17",
+        "-DCMAKE_C_COMPILER=C:/Qt/Tools/mingw1310_64/bin/gcc.exe",
+        "-DCMAKE_CXX_COMPILER=C:/Qt/Tools/mingw1310_64/bin/g++.exe",
+        "-DCMAKE_MAKE_PROGRAM=C:/Qt/Tools/mingw1310_64/bin/mingw32-make.exe"
+    ],
+    "cmake.buildArgs": [
+        "--parallel", "4"
+    ],
+    "cmake.preferredGenerators": [
+        "MinGW Makefiles",
+        "Ninja",
+        "Unix Makefiles"
+    ],
+    "cmake.allowUnsupportedPlatforms": true,
+    "cmake.showAdvanced": true,
+    "files.associations": {
+        "*.h": "cpp",
+        "*.cpp": "cpp",
+        "*.ui": "plaintext",
+        "*.qrc": "xml"
+    },
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.default.cStandard": "c11",
+    "terminal.integrated.env.windows": {
+        "QTDIR": "C:/Qt/6.8.0/mingw_64",
+        "Qt6_DIR": "C:/Qt/6.8.0/mingw_64/lib/cmake/Qt6",
+        "MINGW_PATH": "C:/Qt/Tools/mingw1310_64/bin",
+        "PATH": "C:/Qt/Tools/mingw1310_64/bin;C:/Qt/6.8.0/mingw_64/bin;${env:PATH}"
+    },
+    "terminal.integrated.env.linux": {
+        "QTDIR": "${env:QTDIR}",
+        "PATH": "${env:QTDIR}/bin:${env:PATH}",
+        "LD_LIBRARY_PATH": "${env:QTDIR}/lib:${env:LD_LIBRARY_PATH}"
+    },
+    "terminal.integrated.env.osx": {
+        "QTDIR": "${env:QTDIR}",
+        "PATH": "${env:QTDIR}/bin:${env:PATH}",
+        "DYLD_LIBRARY_PATH": "${env:QTDIR}/lib:${env:DYLD_LIBRARY_PATH}"
+    }
+}
