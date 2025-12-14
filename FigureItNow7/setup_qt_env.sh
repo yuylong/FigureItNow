@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Shell脚本：自动检测并设置Qt环境变量
-# 用法：在终端中运行：source setup_qt_env.sh
+# Shell script: Automatically detect and set Qt environment variables
+# Usage: Run in terminal: source setup_qt_env.sh
 
-echo "正在检测Qt安装..."
+echo "Detecting Qt installation..."
 
-# Linux常见Qt路径（自动检测所有版本）
+# Common Qt paths for Linux (auto-detect all versions)
 qt_paths=(
     "$QTDIR"
     "$Qt6_DIR"
@@ -23,31 +23,31 @@ found_qt=false
 
 for path_pattern in "${qt_paths[@]}"; do
     if [[ -n "$path_pattern" ]]; then
-        # 展开通配符
+        # Expand wildcards
         if [[ "$path_pattern" == *"*"* ]]; then
-            # 按版本号排序，选择最新的
+            # Sort by version number, select the latest
             path=$(ls -d $path_pattern 2>/dev/null | sort -V | tail -1)
         fi
         
         if [[ -n "$path" && -d "$path" ]]; then
-            # 检查是否是有效的Qt安装
+            # Check if it's a valid Qt installation
             if [[ -x "$path/bin/qmake" ]] || [[ -x "$path/bin/qmake6" ]]; then
-                echo "找到Qt安装: $path"
+                echo "Found Qt installation: $path"
                 
-                # 设置环境变量
+                # Set environment variables
                 export QTDIR="$path"
                 export Qt6_DIR="$path/lib/cmake/Qt6"
                 export PATH="$path/bin:$PATH"
                 
-                echo "已设置QTDIR: $QTDIR"
-                echo "已设置Qt6_DIR: $Qt6_DIR"
-                echo "已更新PATH"
+                echo "QTDIR set: $QTDIR"
+                echo "Qt6_DIR set: $Qt6_DIR"
+                echo "PATH updated"
                 
-                # 检查qmake版本
+                # Check qmake version
                 if [[ -x "$path/bin/qmake" ]]; then
                     qmake_version=$("$path/bin/qmake" -query QT_VERSION 2>/dev/null)
                     if [[ -n "$qmake_version" ]]; then
-                        echo "Qt版本: $qmake_version"
+                        echo "Qt version: $qmake_version"
                     fi
                 fi
                 
@@ -59,21 +59,21 @@ for path_pattern in "${qt_paths[@]}"; do
 done
 
 if [[ "$found_qt" == "false" ]]; then
-    echo "未找到Qt6安装！" >&2
-    echo "请确保已安装Qt6，或者手动设置环境变量：" >&2
+    echo "Qt6 installation not found!" >&2
+    echo "Please ensure Qt6 is installed, or manually set environment variables:" >&2
     echo 'export QTDIR="/path/to/qt6"' >&2
     echo 'export PATH="$QTDIR/bin:$PATH"' >&2
     return 1
 fi
 
-# 检查CMake是否安装
+# Check if CMake is installed
 if command -v cmake >/dev/null 2>&1; then
-    echo "CMake已安装"
+    echo "CMake is installed"
     cmake_version=$(cmake --version | head -1)
-    echo "CMake版本: $cmake_version"
+    echo "CMake version: $cmake_version"
 else
-    echo "警告: 未找到CMake，请安装CMake"
+    echo "Warning: CMake not found, please install CMake"
 fi
 
-echo "Qt环境设置完成！"
-echo "现在可以在VSCode中配置CMake项目了。"
+echo "Qt environment setup completed!"
+echo "You can now configure CMake project in VSCode."
