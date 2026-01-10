@@ -1,57 +1,77 @@
-{
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Debug",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/FigureItNow7.exe",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [
-                {
-                    "name": "PATH",
-                    "value": "C:/Qt/6.8.0/mingw_64/bin;C:/Qt/Tools/mingw1310_64/bin;${env:PATH}"
-                }
-            ],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "C:/Qt/Tools/mingw1310_64/bin/gdb.exe",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "CMake: Build Debug"
-        },
-        {
-            "name": "Release",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/FigureItNow7.exe",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [
-                {
-                    "name": "PATH",
-                    "value": "C:/Qt/6.8.0/mingw_64/bin;C:/Qt/Tools/mingw1310_64/bin;${env:PATH}"
-                }
-            ],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "C:/Qt/Tools/mingw1310_64/bin/gdb.exe",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "CMake: Build Release"
-        }
-    ]
+﻿{
+    "version":  "0.2.0",
+    "configurations":  [
+                           {
+                               "cwd":  "${workspaceFolder}",
+                               "program":  "${workspaceFolder}/build/FigureItNow7.exe",
+                               "preLaunchTask":  "CMake: Build Debug",
+                               "MIMode":  "gdb",
+                               "miDebuggerPath":  "C:/Qt/Tools/mingw1310_64/bin/gdb.exe",
+                               "request":  "launch",
+                               "externalConsole":  false,
+                               "name":  "Debug",
+                               "type":  "cppdbg",
+                               "stopAtEntry":  false,
+                               "args":  [
+
+                                        ],
+                               "setupCommands":  [
+                                                     {
+                                                         "description":  "Enable pretty-printing for gdb",
+                                                         "text":  "-enable-pretty-printing",
+                                                         "ignoreFailures":  true
+                                                     }
+                                                 ],
+                               "environment":  [
+                                                   {
+                                                       "value":  "C:/Qt/6.8.0/mingw_64",
+                                                       "name":  "QTDIR"
+                                                   },
+                                                   {
+                                                       "value":  "C:/Qt/Tools/mingw1310_64/bin",
+                                                       "name":  "MINGW_PATH"
+                                                   },
+                                                   {
+                                                       "value":  "C:/Qt/Tools/mingw1310_64/bin;C:/Qt/6.8.0/mingw_64/bin;${env:PATH}",
+                                                       "name":  "PATH"
+                                                   }
+                                               ]
+                           },
+                           {
+                               "cwd":  "${workspaceFolder}",
+                               "program":  "${workspaceFolder}/build/FigureItNow7.exe",
+                               "preLaunchTask":  "CMake: Build Release",
+                               "MIMode":  "gdb",
+                               "miDebuggerPath":  "C:/Qt/Tools/mingw1310_64/bin/gdb.exe",
+                               "request":  "launch",
+                               "externalConsole":  false,
+                               "name":  "Release",
+                               "type":  "cppdbg",
+                               "stopAtEntry":  false,
+                               "args":  [
+
+                                        ],
+                               "setupCommands":  [
+                                                     {
+                                                         "description":  "Enable pretty-printing for gdb",
+                                                         "text":  "-enable-pretty-printing",
+                                                         "ignoreFailures":  true
+                                                     }
+                                                 ],
+                               "environment":  [
+                                                   {
+                                                       "value":  "C:/Qt/6.8.0/mingw_64",
+                                                       "name":  "QTDIR"
+                                                   },
+                                                   {
+                                                       "value":  "C:/Qt/Tools/mingw1310_64/bin",
+                                                       "name":  "MINGW_PATH"
+                                                   },
+                                                   {
+                                                       "value":  "C:/Qt/Tools/mingw1310_64/bin;C:/Qt/6.8.0/mingw_64/bin;${env:PATH}",
+                                                       "name":  "PATH"
+                                                   }
+                                               ]
+                           }
+                       ]
 }

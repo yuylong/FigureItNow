@@ -1,67 +1,67 @@
-{
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "CMake: Build Debug",
-            "type": "cmake",
-            "command": "build",
-            "targets": [
-                "all"
-            ],
-            "group": "build",
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "detail": "CMake template build task"
-        },
-        {
-            "label": "CMake: Build Release",
-            "type": "cmake",
-            "command": "build",
-            "targets": [
-                "all"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "detail": "CMake template build task"
-        },
-        {
-            "label": "CMake: Configure",
-            "type": "cmake",
-            "command": "configure",
-            "group": "build",
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "detail": "CMake template configure task"
-        },
-        {
-            "label": "CMake: Install",
-            "type": "cmake",
-            "command": "install",
-            "targets": [
-                "install"
-            ],
-            "group": "build",
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "detail": "CMake template install task"
-        },
-        {
-            "label": "CMake: Clean",
-            "type": "cmake",
-            "command": "clean",
-            "group": "build",
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "detail": "CMake template clean task"
-        }
-    ]
+﻿{
+    "version":  "2.0.0",
+    "tasks":  [
+                  {
+                      "problemMatcher":  [
+                                             "$gcc"
+                                         ],
+                      "label":  "CMake: Build Debug",
+                      "targets":  [
+                                      "all"
+                                  ],
+                      "command":  "build",
+                      "type":  "cmake",
+                      "detail":  "CMake template build task",
+                      "group":  "build"
+                  },
+                  {
+                      "problemMatcher":  [
+                                             "$gcc"
+                                         ],
+                      "label":  "CMake: Build Release",
+                      "targets":  [
+                                      "all"
+                                  ],
+                      "command":  "build",
+                      "type":  "cmake",
+                      "detail":  "CMake template build task",
+                      "group":  {
+                                    "kind":  "build",
+                                    "isDefault":  true
+                                }
+                  },
+                  {
+                      "detail":  "CMake template configure task",
+                      "label":  "CMake: Configure",
+                      "problemMatcher":  [
+                                             "$gcc"
+                                         ],
+                      "command":  "configure",
+                      "type":  "cmake",
+                      "group":  "build"
+                  },
+                  {
+                      "problemMatcher":  [
+                                             "$gcc"
+                                         ],
+                      "label":  "CMake: Install",
+                      "targets":  [
+                                      "install"
+                                  ],
+                      "command":  "install",
+                      "type":  "cmake",
+                      "detail":  "CMake template install task",
+                      "group":  "build"
+                  },
+                  {
+                      "detail":  "CMake template clean task",
+                      "label":  "CMake: Clean",
+                      "problemMatcher":  [
+                                             "$gcc"
+                                         ],
+                      "command":  "clean",
+                      "type":  "cmake",
+                      "group":  "build"
+                  }
+              ]
 }
