@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Jan 4th, 2017
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINEXECFLOWCONTROL_H
@@ -55,11 +55,11 @@ public:
     finErrorCode checkFlowForStatement(bool *goon, finLexNode *lexnode, finExecMachine *machine);
     finErrorCode checkFlowForProgram(bool *goon, finLexNode *lexnode, finExecMachine *machine);
 
-    finErrorCode setType(Type type);
-    finErrorCode setLabel(const QString &label);
-    finErrorCode setFlowNext();
-    finErrorCode setGotoAndLabel(const QString &label);
-    finErrorCode setReturnVariable(finExecVariable *retvar);
+    void setType(Type type);
+    void setLabel(const QString &label);
+    void setFlowNext();
+    void setGotoAndLabel(const QString &label);
+    void setReturnVariable(finExecVariable *retvar);
 
     finErrorCode retVarSwitchEnv(finExecEnvironment *subenv);
     finErrorCode buildLinkedLeftVar();

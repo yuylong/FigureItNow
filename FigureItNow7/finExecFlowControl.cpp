@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finExecFlowControl.h"
@@ -168,39 +168,34 @@ finExecFlowControl::checkFlowForProgram(bool *goon, finLexNode *lexnode, finExec
     }
 }
 
-finErrorCode finExecFlowControl::setType(finExecFlowControlType type)
+void finExecFlowControl::setType(finExecFlowControlType type)
 {
     this->_type = type;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecFlowControl::setLabel(const QString &label)
+void finExecFlowControl::setLabel(const QString &label)
 {
     this->_label = label;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecFlowControl::setFlowNext()
+void finExecFlowControl::setFlowNext()
 {
     this->_type = finExecFlowControl::TP_NEXT;
     this->_label = QString();
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecFlowControl::setGotoAndLabel(const QString &label)
+void finExecFlowControl::setGotoAndLabel(const QString &label)
 {
     this->_type = finExecFlowControl::TP_GOTO;
     this->_label = label;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecFlowControl::setReturnVariable(finExecVariable *retvar)
+void finExecFlowControl::setReturnVariable(finExecVariable *retvar)
 {
     if ( this->_retVar != nullptr )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Return variable already set");
 
     this->_retVar = retvar;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecFlowControl::retVarSwitchEnv(finExecEnvironment *subenv)
