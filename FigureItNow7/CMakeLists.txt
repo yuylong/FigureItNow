@@ -7,20 +7,20 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-# Windows特定设置
+# Windows specific settings
 if(WIN32)
-    # 设置运行时库
+    # Set runtime library
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-    # 解决Unicode问题
+    # Fix Unicode issues
     add_definitions(-D_UNICODE -DUNICODE)
-    # 解决安全警告
+    # Fix security warnings
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-# 自动查找Qt6
-# 首先尝试常见的Qt安装路径
+# Automatically find Qt6
+# First try common Qt installation paths
 if(WIN32)
-    # Windows常见路径
+    # Common Windows paths
     set(QT6_POSSIBLE_PATHS
         $ENV{QTDIR}
         $ENV{Qt6_DIR}
@@ -30,7 +30,7 @@ if(WIN32)
         "C:/Program Files/Qt/*/mingw_64"
     )
 elseif(UNIX AND NOT APPLE)
-    # Linux常见路径
+    # Common Linux paths
     set(QT6_POSSIBLE_PATHS
         $ENV{QTDIR}
         $ENV{Qt6_DIR}
@@ -40,7 +40,7 @@ elseif(UNIX AND NOT APPLE)
         /usr/local/include/qt6
     )
 elseif(APPLE)
-    # macOS常见路径
+    # Common macOS paths
     set(QT6_POSSIBLE_PATHS
         $ENV{QTDIR}
         $ENV{Qt6_DIR}
@@ -51,10 +51,10 @@ elseif(APPLE)
     )
 endif()
 
-# 尝试自动找到Qt6
+# Try to find Qt6 automatically
 find_package(Qt6 QUIET COMPONENTS Core Widgets Svg PrintSupport)
 
-# 如果没有找到，尝试搜索可能的路径
+# If not found, try searching possible paths
 if(NOT Qt6_FOUND)
     message(STATUS "Qt6 not found in default locations, searching possible paths...")
     
@@ -71,11 +71,11 @@ if(NOT Qt6_FOUND)
         endif()
     endforeach()
     
-    # 重新尝试查找Qt6
+    # Try finding Qt6 again
     find_package(Qt6 REQUIRED COMPONENTS Core Widgets Svg PrintSupport)
 endif()
 
-# 输出找到的Qt6信息
+# Output found Qt6 information
 if(Qt6_FOUND)
     message(STATUS "Qt6 found: ${Qt6_DIR}")
     message(STATUS "Qt6 version: ${Qt6_VERSION}")
@@ -83,10 +83,10 @@ else()
     message(FATAL_ERROR "Qt6 not found. Please install Qt6 or set CMAKE_PREFIX_PATH to Qt6 directory.")
 endif()
 
-# 设置包含目录
+# Set include directories
 include_directories(${CMAKE_SOURCE_DIR})
 
-# 获取Git版本信息
+# Get Git version information
 find_package(Git QUIET)
 if(GIT_FOUND)
     execute_process(
@@ -118,17 +118,17 @@ else()
     set(APP_VERSION "None")
 endif()
 
-# 添加预处理器定义 - 确保在C++中是字符串字面量
+# Add preprocessor definitions - ensure strings in C++
 add_definitions(-DGIT_BRANCH=\"${GIT_BRANCH}\")
 add_definitions(-DGIT_TIME=${GIT_TIME})
 add_definitions(-DAPP_VERSION=\"${APP_VERSION}\")
 
-# 输出Git信息用于调试
+# Output Git information for debugging
 message(STATUS "Git Branch: ${GIT_BRANCH}")
 message(STATUS "Git Time: ${GIT_TIME}")
 message(STATUS "App Version: ${APP_VERSION}")
 
-# 收集源文件
+# Collect source files
 set(SOURCES
     main.cpp
     MainWindow.cpp
@@ -189,7 +189,7 @@ set(SOURCES
     finExecOperartorCalc.cpp
 )
 
-# 收集头文件
+# Collect header files
 set(HEADERS
     MainWindow.h
     finErrorCode.h
@@ -241,7 +241,7 @@ set(HEADERS
     finExecOperartorCalc.h
 )
 
-# 收集UI文件
+# Collect UI files
 set(UI_FILES
     MainWindow.ui
     finUiAboutDlg.ui
@@ -252,7 +252,7 @@ set(UI_FILES
     finUiSysFuncList.ui
 )
 
-# 收集资源文件
+# Collect resource files
 set(RESOURCES
     Icons.qrc
 )
@@ -265,7 +265,7 @@ add_executable(${PROJECT_NAME}
     ${RESOURCES}
 )
 
-# 链接Qt库
+# Link Qt libraries
 target_link_libraries(${PROJECT_NAME} 
     Qt6::Core 
     Qt6::Widgets
@@ -273,23 +273,23 @@ target_link_libraries(${PROJECT_NAME}
     Qt6::PrintSupport
 )
 
-# Windows特定设置
+# Windows specific settings
 if(WIN32)
     set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
 endif()
 
-# 设置输出目录
+# Set output directories
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
     RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}
     RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}
 )
 
-# 编译器特定设置
+# Compiler specific settings
 if(MSVC)
-    # 使用Unicode
+    # Use Unicode
     add_definitions(-DUNICODE -D_UNICODE)
-    # 设置警告级别
+    # Set warning level
     if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
         string(REGEX REPLACE "/W[0-4]" "/W3" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     else()
