@@ -1,4 +1,6 @@
 FigureItNow7/build
+FigureItNow7/.vscode/launch.json
+FigureItNow7/.vscode/settings.json
 *.user
 *.autosave
 build-FigureItNow7*
