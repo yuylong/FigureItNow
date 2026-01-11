@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINPLOTPOLAR_H
@@ -43,9 +43,9 @@ public:
     double getFigureToRadian() const;
     int getRadianVarIndex() const;
 
-    finErrorCode setFunctionName(const QString &funcname);
-    finErrorCode setFigureRange(double rad1, double rad2);
-    finErrorCode setRadianVarIndex(int idx);
+    void setFunctionName(const QString &funcname);
+    void setFigureRange(double rad1, double rad2);
+    void setRadianVarIndex(int idx);
 
     QList<finExecVariable *> *getCallArgList() const;
     finExecEnvironment *getEnvironment() const;
@@ -53,11 +53,11 @@ public:
     finExecFlowControl *getFlowControl() const;
     finFigureContainer *getFigureContainer() const;
 
-    finErrorCode setCallArgList(QList<finExecVariable *> *arglist);
-    finErrorCode setEnvironment(finExecEnvironment *env);
-    finErrorCode setMachine(finExecMachine *machine);
-    finErrorCode setFlowControl(finExecFlowControl *flowctl);
-    finErrorCode setFigureContainer(finFigureContainer *figcontainer);
+    void setCallArgList(QList<finExecVariable *> *arglist);
+    void setEnvironment(finExecEnvironment *env);
+    void setMachine(finExecMachine *machine);
+    void setFlowControl(finExecFlowControl *flowctl);
+    void setFigureContainer(finFigureContainer *figcontainer);
 
     bool checkValid() const;
     finErrorCode plot();

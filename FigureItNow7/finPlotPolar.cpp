@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finPlotPolar.h"
@@ -55,13 +55,12 @@ int finPlotPolar::getRadianVarIndex() const
     return this->_radIdx;
 }
 
-finErrorCode finPlotPolar::setFunctionName(const QString &funcname)
+void finPlotPolar::setFunctionName(const QString &funcname)
 {
     this->_funcname = funcname;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotPolar::setFigureRange(double rad1, double rad2)
+void finPlotPolar::setFigureRange(double rad1, double rad2)
 {
     if ( rad1 <= rad2 ) {
         this->_fromRad = rad1;
@@ -70,16 +69,14 @@ finErrorCode finPlotPolar::setFigureRange(double rad1, double rad2)
         this->_fromRad = rad2;
         this->_toRad = rad1;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotPolar::setRadianVarIndex(int idx)
+void finPlotPolar::setRadianVarIndex(int idx)
 {
     if ( idx < 0 )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Radian variable index must be non-negative");
 
     this->_radIdx = idx;
-    return finErrorKits::EC_SUCCESS;
 }
 
 QList<finExecVariable *> *finPlotPolar::getCallArgList() const
@@ -107,34 +104,29 @@ finFigureContainer *finPlotPolar::getFigureContainer() const
     return this->_stmPlot.getFigureContainer();
 }
 
-finErrorCode finPlotPolar::setCallArgList(QList<finExecVariable *> *arglist)
+void finPlotPolar::setCallArgList(QList<finExecVariable *> *arglist)
 {
     this->_callArgList = arglist;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotPolar::setEnvironment(finExecEnvironment *env)
+void finPlotPolar::setEnvironment(finExecEnvironment *env)
 {
     this->_environment = env;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotPolar::setMachine(finExecMachine *machine)
+void finPlotPolar::setMachine(finExecMachine *machine)
 {
     this->_machine = machine;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotPolar::setFlowControl(finExecFlowControl *flowctl)
+void finPlotPolar::setFlowControl(finExecFlowControl *flowctl)
 {
     this->_flowctl = flowctl;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotPolar::setFigureContainer(finFigureContainer *figcontainer)
+void finPlotPolar::setFigureContainer(finFigureContainer *figcontainer)
 {
     this->_stmPlot.setFigureContainer(figcontainer);
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finPlotPolar::checkValid() const
