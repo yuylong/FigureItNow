@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finPlotEquation2D.h"
@@ -66,13 +66,12 @@ int finPlotEquation2D::getVariableYIndex() const
     return this->_yidx;
 }
 
-finErrorCode finPlotEquation2D::setFunctionName(const QString &funcname)
+void finPlotEquation2D::setFunctionName(const QString &funcname)
 {
     this->_funcname = funcname;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotEquation2D::setFiguringRangeX(double x1, double x2)
+void finPlotEquation2D::setFiguringRangeX(double x1, double x2)
 {
     if ( x1 <= x2 ) {
         this->_fromX = x1;
@@ -81,10 +80,9 @@ finErrorCode finPlotEquation2D::setFiguringRangeX(double x1, double x2)
         this->_fromX = x2;
         this->_toX = x1;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotEquation2D::setFiguringRangeY(double y1, double y2)
+void finPlotEquation2D::setFiguringRangeY(double y1, double y2)
 {
     if ( y1 <= y2 ) {
         this->_fromY = y1;
@@ -93,25 +91,22 @@ finErrorCode finPlotEquation2D::setFiguringRangeY(double y1, double y2)
         this->_fromY = y2;
         this->_toY = y1;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotEquation2D::setVariableXIndex(int idx)
+void finPlotEquation2D::setVariableXIndex(int idx)
 {
     if ( idx < 0 )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Variable X index must be non-negative");
 
     this->_xidx = idx;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotEquation2D::setVariableYIndex(int idx)
+void finPlotEquation2D::setVariableYIndex(int idx)
 {
     if ( idx < 0 )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Variable Y index must be non-negative");
 
     this->_yidx = idx;
-    return finErrorKits::EC_SUCCESS;
 }
 
 QList<finExecVariable *> *finPlotEquation2D::getCallArgList() const
@@ -139,34 +134,29 @@ finFigureContainer *finPlotEquation2D::getFigureContainer() const
     return this->_scrtPlot.getFigureContainer();
 }
 
-finErrorCode finPlotEquation2D::setCallArgList(QList<finExecVariable *> *arglist)
+void finPlotEquation2D::setCallArgList(QList<finExecVariable *> *arglist)
 {
     this->_callArgList = arglist;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotEquation2D::setEnvironment(finExecEnvironment *env)
+void finPlotEquation2D::setEnvironment(finExecEnvironment *env)
 {
     this->_environment = env;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotEquation2D::setMachine(finExecMachine *machine)
+void finPlotEquation2D::setMachine(finExecMachine *machine)
 {
     this->_machine = machine;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotEquation2D::setFlowControl(finExecFlowControl *flowctl)
+void finPlotEquation2D::setFlowControl(finExecFlowControl *flowctl)
 {
     this->_flowctl = flowctl;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotEquation2D::setFigureContainer(finFigureContainer *figcontainer)
+void finPlotEquation2D::setFigureContainer(finFigureContainer *figcontainer)
 {
     this->_scrtPlot.setFigureContainer(figcontainer);
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finPlotEquation2D::checkValid() const

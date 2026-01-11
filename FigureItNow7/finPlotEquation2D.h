@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINPLOTEQUATION2D_H
@@ -45,11 +45,11 @@ public:
     int getVariableXIndex() const;
     int getVariableYIndex() const;
 
-    finErrorCode setFunctionName(const QString &funcname);
-    finErrorCode setFiguringRangeX(double x1, double x2);
-    finErrorCode setFiguringRangeY(double y1, double y2);
-    finErrorCode setVariableXIndex(int idx);
-    finErrorCode setVariableYIndex(int idx);
+    void setFunctionName(const QString &funcname);
+    void setFiguringRangeX(double x1, double x2);
+    void setFiguringRangeY(double y1, double y2);
+    void setVariableXIndex(int idx);
+    void setVariableYIndex(int idx);
 
     QList<finExecVariable *> *getCallArgList() const;
     finExecEnvironment *getEnvironment() const;
@@ -57,11 +57,11 @@ public:
     finExecFlowControl *getFlowControl() const;
     finFigureContainer *getFigureContainer() const;
 
-    finErrorCode setCallArgList(QList<finExecVariable *> *arglist);
-    finErrorCode setEnvironment(finExecEnvironment *env);
-    finErrorCode setMachine(finExecMachine *machine);
-    finErrorCode setFlowControl(finExecFlowControl *flowctl);
-    finErrorCode setFigureContainer(finFigureContainer *figcontainer);
+    void setCallArgList(QList<finExecVariable *> *arglist);
+    void setEnvironment(finExecEnvironment *env);
+    void setMachine(finExecMachine *machine);
+    void setFlowControl(finExecFlowControl *flowctl);
+    void setFigureContainer(finFigureContainer *figcontainer);
 
     bool checkValid() const;
     finErrorCode plot();
