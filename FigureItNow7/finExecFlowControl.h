@@ -39,7 +39,7 @@ public:
     finExecFlowControl();
 
     void resetFlowControl();
-    finErrorCode copyFlowControl(finExecFlowControl *srcfc);
+    void copyFlowControl(finExecFlowControl *srcfc);
 
     Type getType() const;
     bool isFlowNext() const;

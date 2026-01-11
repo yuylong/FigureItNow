@@ -24,15 +24,14 @@ void finExecFlowControl::resetFlowControl()
     this->releaseReturnVariable();
 }
 
-finErrorCode finExecFlowControl::copyFlowControl(finExecFlowControl *srcfc)
+void finExecFlowControl::copyFlowControl(finExecFlowControl *srcfc)
 {
     if ( this->_retVar != nullptr )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Cannot copy flow control with existing return variable");
 
     this->_type = srcfc->getType();
     this->_label = srcfc->getGotoLabel();
     this->_retVar = srcfc->getReturnVariable();
-    return finErrorKits::EC_SUCCESS;
 }
 
 finExecFlowControlType finExecFlowControl::getType() const
