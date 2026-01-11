@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2024 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINPLOTDOTS_H
@@ -65,9 +65,9 @@ public:
     const QPointF &getBreakPointAt(int idx) const;
     bool checkBreakPoint(const QPointF &pt) const;
 
-    finErrorCode appendBreakPoint(const QPointF &pt);
-    finErrorCode appendBreakPoint(double ptx, double pty);
-    finErrorCode clearBreakPoints();
+    void appendBreakPoint(const QPointF &pt);
+    void appendBreakPoint(double ptx, double pty);
+    void clearBreakPoints();
 
     virtual finErrorCode plot() override;
 
@@ -87,7 +87,7 @@ public:
     virtual ~finPlotDotsScatter();
 
     double getDistanceLimit() const;
-    finErrorCode setDistanceLimit(double limit);
+    void setDistanceLimit(double limit);
 
     virtual finErrorCode plot() override;
 
@@ -98,8 +98,8 @@ private:
                          int exceptcnt = 0, QPointF *outpt = nullptr);
     int findNearestPointWithRad(const QPointF &chkpt, const QPointF &prevpt, const QList<QPointF> &ptlist,
                                 int exceptcnt = 0, QPointF *outpt = nullptr);
-    finErrorCode handleEnclosePoint(const QList<QPointF> &curptlist, const QList<QPointF> &pstptlist,
-                                    finPlotDotsLine *lnplot);
+    void handleEnclosePoint(const QList<QPointF> &curptlist, const QList<QPointF> &pstptlist,
+                            finPlotDotsLine *lnplot);
 };
 
 #endif // FINPLOTDOTS_H

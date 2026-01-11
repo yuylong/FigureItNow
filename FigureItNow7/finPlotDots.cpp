@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2024 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finPlotDots.h"
@@ -207,22 +207,19 @@ bool finPlotDotsStream::checkBreakPoint(const QPointF &pt) const
     return this->checkBreakPointFrom(pt, 0, nullptr);
 }
 
-finErrorCode finPlotDotsStream::appendBreakPoint(const QPointF &pt)
+void finPlotDotsStream::appendBreakPoint(const QPointF &pt)
 {
     this->_breakPtList.append(pt);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotDotsStream::appendBreakPoint(double ptx, double pty)
+void finPlotDotsStream::appendBreakPoint(double ptx, double pty)
 {
     this->_breakPtList.append(QPointF(ptx, pty));
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotDotsStream::clearBreakPoints()
+void finPlotDotsStream::clearBreakPoints()
 {
     this->_breakPtList.clear();
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finPlotDotsStream::checkNaNOrInfPoint(QPointF *pt)
@@ -310,13 +307,12 @@ double finPlotDotsScatter::getDistanceLimit() const
     return this->_distLimit;
 }
 
-finErrorCode finPlotDotsScatter::setDistanceLimit(double limit)
+void finPlotDotsScatter::setDistanceLimit(double limit)
 {
     if ( limit < 1.0e-8 )
         limit = 1.0e-8;
 
     this->_distLimit = limit;
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finPlotDotsScatter::isNaNOrInfPoint(const QPointF &pt) const
@@ -394,11 +390,11 @@ int finPlotDotsScatter::findNearestPointWithRad(const QPointF &chkpt, const QPoi
     return nearestidx;
 }
 
-finErrorCode finPlotDotsScatter::handleEnclosePoint(
+void finPlotDotsScatter::handleEnclosePoint(
         const QList<QPointF> &curptlist, const QList<QPointF> &pstptlist, finPlotDotsLine *lnplot)
 {
     if ( curptlist.empty() )
-        return finErrorKits::EC_NORMAL_WARN;
+        return;
 
     const QPointF &lastpt = curptlist.last();
     const QPointF &firstpt = curptlist.first();
@@ -418,7 +414,7 @@ finErrorCode finPlotDotsScatter::handleEnclosePoint(
         }
     }
     if ( curptlist.count() <= 1 )
-        return finErrorKits::EC_SUCCESS;
+        return;
 
     if ( lastnidx < 0 ) {
         const QPointF &prevpt = curptlist.at(curptlist.count() - 2);
@@ -427,7 +423,7 @@ finErrorCode finPlotDotsScatter::handleEnclosePoint(
             lnplot->appendPoint(curptlist.at(lastnidx));
     }
     if ( lastnidx == 0 )
-        return finErrorKits::EC_SUCCESS;
+        return;
 
     if ( firstnidx < 0 ) {
         const QPointF &prevpt = curptlist.at(1);
@@ -435,7 +431,6 @@ finErrorCode finPlotDotsScatter::handleEnclosePoint(
         if ( firstnidx >= 0 )
             lnplot->prependPoint(curptlist.at(firstnidx));
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finPlotDotsScatter::plot()
