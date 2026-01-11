@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finPlotParametric.h"
@@ -53,13 +53,12 @@ int finPlotParametric::getParameterVarIndex() const
     return this->_tIdx;
 }
 
-finErrorCode finPlotParametric::setFunctionName(const QString &funcname)
+void finPlotParametric::setFunctionName(const QString &funcname)
 {
     this->_funcname = funcname;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotParametric::setParameterValueRange(double t1, double t2)
+void finPlotParametric::setParameterValueRange(double t1, double t2)
 {
     if ( t1 <= t2 ) {
         this->_fromT = t1;
@@ -68,13 +67,11 @@ finErrorCode finPlotParametric::setParameterValueRange(double t1, double t2)
         this->_fromT = t2;
         this->_toT = t1;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotParametric::setParameterVarIndex(int idx)
+void finPlotParametric::setParameterVarIndex(int idx)
 {
     this->_tIdx = idx;
-    return finErrorKits::EC_SUCCESS;
 }
 
 QList<finExecVariable *> *finPlotParametric::getCallArgList() const
@@ -102,34 +99,29 @@ finFigureContainer *finPlotParametric::getFigureContainer() const
     return this->_stmPlot.getFigureContainer();
 }
 
-finErrorCode finPlotParametric::setCallArgList(QList<finExecVariable *> *arglist)
+void finPlotParametric::setCallArgList(QList<finExecVariable *> *arglist)
 {
     this->_callArgList = arglist;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotParametric::setEnvironment(finExecEnvironment *env)
+void finPlotParametric::setEnvironment(finExecEnvironment *env)
 {
     this->_environment = env;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotParametric::setMachine(finExecMachine *machine)
+void finPlotParametric::setMachine(finExecMachine *machine)
 {
     this->_machine = machine;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotParametric::setFlowControl(finExecFlowControl *flowctl)
+void finPlotParametric::setFlowControl(finExecFlowControl *flowctl)
 {
     this->_flowctl = flowctl;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finPlotParametric::setFigureContainer(finFigureContainer *figcontainer)
+void finPlotParametric::setFigureContainer(finFigureContainer *figcontainer)
 {
     this->_stmPlot.setFigureContainer(figcontainer);
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finPlotParametric::checkValid() const
