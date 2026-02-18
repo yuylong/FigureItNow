@@ -90,43 +90,41 @@ finErrorCode finExecVariable::setType(finExecVariableType type)
     return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::setupWriteProtected(bool blval)
+void finExecVariable::setupWriteProtected(bool blval)
 {
     this->_writeProtect = blval;
 
     for ( int i = 0; i < this->_itemList.count(); i++ ) {
         this->_itemList.at(i)->setupWriteProtected(blval);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::setWriteProtected()
+void finExecVariable::setWriteProtected()
 {
-    return this->setupWriteProtected(true);
+    this->setupWriteProtected(true);
 }
 
-finErrorCode finExecVariable::clearWriteProtected()
+void finExecVariable::clearWriteProtected()
 {
-    return this->setupWriteProtected(false);
+    this->setupWriteProtected(false);
 }
 
-finErrorCode finExecVariable::setupLeftValue(bool blval)
+void finExecVariable::setupLeftValue(bool blval)
 {
     this->_leftValue = blval;
     for ( int i = 0; i < this->_itemList.count(); i++ ) {
         this->_itemList.at(i)->setupLeftValue(blval);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::setLeftValue()
+void finExecVariable::setLeftValue()
 {
-    return this->setupLeftValue(true);
+    this->setupLeftValue(true);
 }
 
-finErrorCode finExecVariable::clearLeftValue()
+void finExecVariable::clearLeftValue()
 {
-    return this->setupLeftValue(false);
+    this->setupLeftValue(false);
 }
 
 double finExecVariable::getNumericValue() const

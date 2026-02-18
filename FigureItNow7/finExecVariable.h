@@ -91,12 +91,12 @@ public:
 
     finErrorCode setName(const QString &name);
     finErrorCode setType(Type type);
-    finErrorCode setupWriteProtected(bool blval);
-    finErrorCode setWriteProtected();
-    finErrorCode clearWriteProtected();
-    finErrorCode setupLeftValue(bool blval);
-    finErrorCode setLeftValue();
-    finErrorCode clearLeftValue();
+    void setupWriteProtected(bool blval);
+    void setWriteProtected();
+    void clearWriteProtected();
+    void setupLeftValue(bool blval);
+    void setLeftValue();
+    void clearLeftValue();
 
     double getNumericValue() const;
     QString getStringValue() const;

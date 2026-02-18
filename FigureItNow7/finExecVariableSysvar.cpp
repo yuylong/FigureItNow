@@ -189,14 +189,8 @@ static finExecVariable *_sysvar_nil()
     if ( finErrorKits::isErrorResult(errcode) )
         goto err;
 
-    errcode = retvar->setLeftValue();
-    if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
-
-    errcode = retvar->setWriteProtected();
-    if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
-
+    retvar->setLeftValue();
+    retvar->setWriteProtected();
     return retvar;
 
 err:
@@ -224,14 +218,8 @@ _sysvar_gen_num_var(const QString &name, double val)
     if ( finErrorKits::isErrorResult(errcode) )
         goto err;
 
-    errcode = retvar->setLeftValue();
-    if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
-
-    errcode = retvar->setWriteProtected();
-    if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
-
+    retvar->setLeftValue();
+    retvar->setWriteProtected();
     return retvar;
 
 err:
@@ -259,14 +247,8 @@ _sysvar_gen_str_var(const QString &name, const QString &val)
     if ( finErrorKits::isErrorResult(errcode) )
         goto err;
 
-    errcode = retvar->setLeftValue();
-    if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
-
-    errcode = retvar->setWriteProtected();
-    if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
-
+    retvar->setLeftValue();
+    retvar->setWriteProtected();
     return retvar;
 
 err:
