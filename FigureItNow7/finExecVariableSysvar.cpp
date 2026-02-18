@@ -8,6 +8,7 @@
 
 #include <qmath.h>
 #include <QString>
+#include <memory>
 
 #include "finExecVariable.h"
 #include "finExecEnvironment.h"
@@ -177,83 +178,71 @@ item_bad:
 static finExecVariable *_sysvar_nil()
 {
     finErrorCode errcode;
-    finExecVariable *retvar = new finExecVariable();
+    auto retvar = std::make_unique<finExecVariable>();
     if ( retvar == nullptr )
         return nullptr;
 
     errcode = retvar->setName(QString("NIL"));
     if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
+        return nullptr;
 
     errcode = retvar->setType(finExecVariable::TP_NULL);
     if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
+        return nullptr;
 
     retvar->setLeftValue();
     retvar->setWriteProtected();
-    return retvar;
-
-err:
-    delete retvar;
-    return nullptr;
+    return retvar.release();
 }
 
 static inline finExecVariable *
 _sysvar_gen_num_var(const QString &name, double val)
 {
     finErrorCode errcode;
-    finExecVariable *retvar = new finExecVariable();
+    auto retvar = std::make_unique<finExecVariable>();
     if ( retvar == nullptr )
         return nullptr;
 
     errcode = retvar->setName(name);
     if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
+        return nullptr;
 
     errcode = retvar->setType(finExecVariable::TP_NUMERIC);
     if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
+        return nullptr;
 
     errcode = retvar->setNumericValue(val);
     if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
+        return nullptr;
 
     retvar->setLeftValue();
     retvar->setWriteProtected();
-    return retvar;
-
-err:
-    delete retvar;
-    return nullptr;
+    return retvar.release();
 }
 
 static inline finExecVariable *
 _sysvar_gen_str_var(const QString &name, const QString &val)
 {
     finErrorCode errcode;
-    finExecVariable *retvar = new finExecVariable();
+    auto retvar = std::make_unique<finExecVariable>();
     if ( retvar == nullptr )
         return nullptr;
 
     errcode = retvar->setName(name);
     if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
+        return nullptr;
 
     errcode = retvar->setType(finExecVariable::TP_STRING);
     if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
+        return nullptr;
 
     errcode = retvar->setStringValue(val);
     if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
+        return nullptr;
 
     retvar->setLeftValue();
     retvar->setWriteProtected();
-    return retvar;
-
-err:
-    delete retvar;
-    return nullptr;
+    return retvar.release();
 }
 
 static finExecVariable *_sysvar_pi()
