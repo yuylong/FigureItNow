@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Jan 2nd, 2017
- * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
+ * Copyright(c) 2017-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finFigureContainer.h"
@@ -38,10 +38,9 @@ finGraphConfig *finFigureContainer::getGraphConfig()
     return &this->_graphCfg;
 }
 
-finErrorCode finFigureContainer::setFigureConfigForObject(finFigureObject *figobj) const
+void finFigureContainer::setFigureConfigForObject(finFigureObject *figobj) const
 {
     this->_curFigCfg.cloneFigureConfig(figobj->getFigureConfig());
-    return finErrorKits::EC_SUCCESS;
 }
 
 int finFigureContainer::getFigureObjectCount() const
@@ -54,16 +53,10 @@ finFigureObject *finFigureContainer::getFigureObjectAt(int idx)
     return this->_figList.at(idx);
 }
 
-finErrorCode finFigureContainer::appendFigureObject(finFigureObject *figobj)
+void finFigureContainer::appendFigureObject(finFigureObject *figobj)
 {
-    finErrorCode errcode;
-
-    errcode = this->setFigureConfigForObject(figobj);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
+    this->setFigureConfigForObject(figobj);
     this->_figList.append(figobj);
-    return finErrorKits::EC_SUCCESS;
 }
 
 void finFigureContainer::clearFigureObjects()

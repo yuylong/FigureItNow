@@ -3,12 +3,13 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finExecFunction.h"
 
 #include <qmath.h>
+#include <memory>
 
 #include "finExecVariable.h"
 #include "finExecEnvironment.h"
@@ -66,17 +67,11 @@ static finErrorCode _sysfunc_draw_dot(finExecFunction *self, finExecEnvironment 
          cy->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
-    finFigureObjectDot *fodot = new finFigureObjectDot();
-    if ( fodot == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
-
+    auto fodot = std::make_unique<finFigureObjectDot>();
     fodot->setPoint(cx->getNumericValue(), cy->getNumericValue());
+    env->getFigureContainer()->appendFigureObject(fodot.get());
+    fodot.release();
 
-    errcode = env->getFigureContainer()->appendFigureObject(fodot);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete fodot;
-        return errcode;
-    }
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
@@ -115,18 +110,12 @@ _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *ma
          y2->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
-    finFigureObjectLine *foline = new finFigureObjectLine();
-    if ( foline == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
-
+    auto foline = std::make_unique<finFigureObjectLine>();
     foline->setPoint1(x1->getNumericValue(), y1->getNumericValue());
     foline->setPoint2(x2->getNumericValue(), y2->getNumericValue());
+    env->getFigureContainer()->appendFigureObject(foline.get());
+    foline.release();
 
-    errcode = env->getFigureContainer()->appendFigureObject(foline);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete foline;
-        return errcode;
-    }
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
@@ -151,28 +140,22 @@ static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment 
     if ( env->getFigureContainer() == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
-    finFigureObjectPolyline *fopolyline = new finFigureObjectPolyline();
-    if ( fopolyline == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
+    auto fopolyline = std::make_unique<finFigureObjectPolyline>();
 
     ptx = finExecVariable::transLinkTarget(env->findVariable("x1"));
     pty = finExecVariable::transLinkTarget(env->findVariable("y1"));
     if ( ptx == nullptr || pty == nullptr ||
          ptx->getType() != finExecVariable::TP_NUMERIC ||
-         pty->getType() != finExecVariable::TP_NUMERIC) {
-        delete fopolyline;
+         pty->getType() != finExecVariable::TP_NUMERIC)
         return finErrorKits::EC_INVALID_PARAM;
-    }
     fopolyline->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
 
     ptx = finExecVariable::transLinkTarget(env->findVariable("x2"));
     pty = finExecVariable::transLinkTarget(env->findVariable("y2"));
     if ( ptx == nullptr || pty == nullptr ||
          ptx->getType() != finExecVariable::TP_NUMERIC ||
-         pty->getType() != finExecVariable::TP_NUMERIC) {
-        delete fopolyline;
+         pty->getType() != finExecVariable::TP_NUMERIC)
         return finErrorKits::EC_INVALID_PARAM;
-    }
     fopolyline->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
 
     int idx = 0;
@@ -182,20 +165,16 @@ static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment 
         if ( ptx == nullptr || pty == nullptr )
             break;
         if ( ptx->getType() != finExecVariable::TP_NUMERIC ||
-             pty->getType() != finExecVariable::TP_NUMERIC) {
-            delete fopolyline;
+             pty->getType() != finExecVariable::TP_NUMERIC)
             return finErrorKits::EC_INVALID_PARAM;
-        }
 
         fopolyline->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
         idx += 2;
     }
 
-    errcode = env->getFigureContainer()->appendFigureObject(fopolyline);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete fopolyline;
-        return errcode;
-    }
+    env->getFigureContainer()->appendFigureObject(fopolyline.get());
+    fopolyline.release();
+
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
@@ -224,16 +203,10 @@ static finErrorCode _sysfunc_polyline_mat(finExecFunction *self, finExecEnvironm
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    finFigureObjectPolyline *fopolyline = new finFigureObjectPolyline();
-    if ( fopolyline == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
-
+    auto fopolyline = std::make_unique<finFigureObjectPolyline>();
     fopolyline->appendPoints(ptlist);
-    errcode = env->getFigureContainer()->appendFigureObject(fopolyline);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete fopolyline;
-        return errcode;
-    }
+    env->getFigureContainer()->appendFigureObject(fopolyline.get());
+    fopolyline.release();
 
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
@@ -252,7 +225,6 @@ static struct finExecSysFuncRegItem _funcRegItem_polyline_mat = {
 static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env,
                                   finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *cx, *cy, *w, *h, *rad;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -277,10 +249,7 @@ static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env
                             rad->getType() != finExecVariable::TP_NUMERIC) )
         return finErrorKits::EC_INVALID_PARAM;
 
-    finFigureObjectRect *forect = new finFigureObjectRect();
-    if ( forect == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
-
+    auto forect = std::make_unique<finFigureObjectRect>();
     forect->setCenterPoint(cx->getNumericValue(), cy->getNumericValue());
     forect->setSize(w->getNumericValue(), h->getNumericValue());
     if ( rad != nullptr && rad->getType() == finExecVariable::TP_NUMERIC )
@@ -288,11 +257,9 @@ static finErrorCode _sysfunc_rect(finExecFunction *self, finExecEnvironment *env
     else
         forect->setRadian(0.0);
 
-    errcode = env->getFigureContainer()->appendFigureObject(forect);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete forect;
-        return errcode;
-    }
+    env->getFigureContainer()->appendFigureObject(forect.get());
+    forect.release();
+
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
@@ -309,7 +276,6 @@ static struct finExecSysFuncRegItem _funcRegItem_rect = {
 static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *ptx, *pty;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -317,28 +283,22 @@ static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *
     if ( env->getFigureContainer() == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
-    finFigureObjectPolygon *fopolygon = new finFigureObjectPolygon();
-    if ( fopolygon == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
+    auto fopolygon = std::make_unique<finFigureObjectPolygon>();
 
     ptx = finExecVariable::transLinkTarget(env->findVariable("x1"));
     pty = finExecVariable::transLinkTarget(env->findVariable("y1"));
     if ( ptx == nullptr || pty == nullptr ||
          ptx->getType() != finExecVariable::TP_NUMERIC ||
-         pty->getType() != finExecVariable::TP_NUMERIC) {
-        delete fopolygon;
+         pty->getType() != finExecVariable::TP_NUMERIC)
         return finErrorKits::EC_INVALID_PARAM;
-    }
     fopolygon->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
 
     ptx = finExecVariable::transLinkTarget(env->findVariable("x2"));
     pty = finExecVariable::transLinkTarget(env->findVariable("y2"));
     if ( ptx == nullptr || pty == nullptr ||
          ptx->getType() != finExecVariable::TP_NUMERIC ||
-         pty->getType() != finExecVariable::TP_NUMERIC) {
-        delete fopolygon;
+         pty->getType() != finExecVariable::TP_NUMERIC)
         return finErrorKits::EC_INVALID_PARAM;
-    }
     fopolygon->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
 
     int idx = 0;
@@ -348,20 +308,16 @@ static finErrorCode _sysfunc_polygon(finExecFunction *self, finExecEnvironment *
         if ( ptx == nullptr || pty == nullptr )
             break;
         if ( ptx->getType() != finExecVariable::TP_NUMERIC ||
-             pty->getType() != finExecVariable::TP_NUMERIC) {
-            delete fopolygon;
+             pty->getType() != finExecVariable::TP_NUMERIC)
             return finErrorKits::EC_INVALID_PARAM;
-        }
 
         fopolygon->appendPoint(ptx->getNumericValue(), pty->getNumericValue());
         idx += 2;
     }
 
-    errcode = env->getFigureContainer()->appendFigureObject(fopolygon);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete fopolygon;
-        return errcode;
-    }
+    env->getFigureContainer()->appendFigureObject(fopolygon.get());
+    fopolygon.release();
+
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
@@ -390,16 +346,10 @@ static finErrorCode _sysfunc_polygon_mat(finExecFunction *self, finExecEnvironme
     if ( finErrorKits::isErrorResult(errcode) )
         return errcode;
 
-    finFigureObjectPolygon *fopolygon = new finFigureObjectPolygon();
-    if ( fopolygon == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
-
+    auto fopolygon = std::make_unique<finFigureObjectPolygon>();
     fopolygon->appendPoints(ptlist);
-    errcode = env->getFigureContainer()->appendFigureObject(fopolygon);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete fopolygon;
-        return errcode;
-    }
+    env->getFigureContainer()->appendFigureObject(fopolygon.get());
+    fopolygon.release();
 
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
@@ -418,7 +368,6 @@ static struct finExecSysFuncRegItem _funcRegItem_polygon_mat = {
 static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *cx, *cy, *r;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -438,20 +387,15 @@ static finErrorCode _sysfunc_circle(finExecFunction *self, finExecEnvironment *e
          r->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
-    finFigureObjectEllipse *circle = new finFigureObjectEllipse();
-    if ( circle == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
-
+    auto circle = std::make_unique<finFigureObjectEllipse>();
     circle->setCenterPoint(cx->getNumericValue(), cy->getNumericValue());
     circle->setLongRadius(r->getNumericValue());
     circle->setShortRadius(r->getNumericValue());
     circle->setRadian(0.0);
 
-    errcode = env->getFigureContainer()->appendFigureObject(circle);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete circle;
-        return errcode;
-    }
+    env->getFigureContainer()->appendFigureObject(circle.get());
+    circle.release();
+
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
@@ -468,7 +412,6 @@ static struct finExecSysFuncRegItem _funcRegItem_circle = {
 static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *env,
                                      finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *cx, *cy, *lr, *sr, *rad;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -493,10 +436,7 @@ static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *
                             rad->getType() != finExecVariable::TP_NUMERIC) )
         return finErrorKits::EC_INVALID_PARAM;
 
-    finFigureObjectEllipse *foellipse = new finFigureObjectEllipse();
-    if ( foellipse == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
-
+    auto foellipse = std::make_unique<finFigureObjectEllipse>();
     foellipse->setCenterPoint(cx->getNumericValue(), cy->getNumericValue());
     foellipse->setLongRadius(lr->getNumericValue());
     foellipse->setShortRadius(sr->getNumericValue());
@@ -505,11 +445,9 @@ static finErrorCode _sysfunc_ellipse(finExecFunction *self, finExecEnvironment *
     else
         foellipse->setRadian(0.0);
 
-    errcode = env->getFigureContainer()->appendFigureObject(foellipse);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete foellipse;
-        return errcode;
-    }
+    env->getFigureContainer()->appendFigureObject(foellipse.get());
+    foellipse.release();
+
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
@@ -527,7 +465,6 @@ static struct finExecSysFuncRegItem _funcRegItem_ellipse = {
 static finErrorCode _sysfunc_draw_text_base(finExecFunction *self, finExecEnvironment *env,
                                             finExecMachine *machine, finExecFlowControl *flowctl, bool pinned)
 {
-    finErrorCode errcode;
     finExecVariable *text, *cx, *cy, *rad, *scale;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -553,9 +490,7 @@ static finErrorCode _sysfunc_draw_text_base(finExecFunction *self, finExecEnviro
                               scale->getType() != finExecVariable::TP_NUMERIC))
         return finErrorKits::EC_INVALID_PARAM;
 
-    finFigureObjectText *fotext = new finFigureObjectText();
-    if ( fotext == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
+    auto fotext = std::make_unique<finFigureObjectText>();
     fotext->setIsPinned(pinned);
 
     fotext->setText(text->getStringValue());
@@ -569,11 +504,9 @@ static finErrorCode _sysfunc_draw_text_base(finExecFunction *self, finExecEnviro
     else
         fotext->setScale(1.0);
 
-    errcode = env->getFigureContainer()->appendFigureObject(fotext);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete fotext;
-        return errcode;
-    }
+    env->getFigureContainer()->appendFigureObject(fotext.get());
+    fotext.release();
+
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
@@ -611,7 +544,6 @@ static struct finExecSysFuncRegItem _funcRegItem_draw_pinned_text = {
 static finErrorCode _sysfunc_draw_image_base(finExecFunction *self, finExecEnvironment *env,
                                              finExecMachine *machine, finExecFlowControl *flowctl, bool pinned)
 {
-    finErrorCode errcode;
     finExecVariable *image, *cx, *cy, *rad, *sx, *sy;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -641,9 +573,7 @@ static finErrorCode _sysfunc_draw_image_base(finExecFunction *self, finExecEnvir
                            sy->getType() != finExecVariable::TP_NUMERIC))
         return finErrorKits::EC_INVALID_PARAM;
 
-    finFigureObjectImage *foimg = new finFigureObjectImage();
-    if ( foimg == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
+    auto foimg = std::make_unique<finFigureObjectImage>();
     foimg->setIsPinned(pinned);
 
     if ( image->getType() == finExecVariable::TP_STRING ) {
@@ -666,11 +596,9 @@ static finErrorCode _sysfunc_draw_image_base(finExecFunction *self, finExecEnvir
     else
         foimg->setScaleY(1.0);
 
-    errcode = env->getFigureContainer()->appendFigureObject(foimg);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete foimg;
-        return errcode;
-    }
+    env->getFigureContainer()->appendFigureObject(foimg.get());
+    foimg.release();
+
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
@@ -713,9 +641,7 @@ static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env
     if ( env->getFigureContainer() == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
-    finFigureObjectAxis *foaxis = new finFigureObjectAxis();
-    if ( foaxis == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
+    auto foaxis = std::make_unique<finFigureObjectAxis>();
 
     finExecVariable *stepxvar = finExecVariable::transLinkTarget(env->findVariable("sx"));
     if ( stepxvar == nullptr || stepxvar->getType() != finExecVariable::TP_NUMERIC )
@@ -757,11 +683,8 @@ static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env
     else
         foaxis->setRangeY(minyvar->getNumericValue(), maxyvar->getNumericValue());
 
-    finErrorCode errcode = env->getFigureContainer()->appendFigureObject(foaxis);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete foaxis;
-        return errcode;
-    }
+    env->getFigureContainer()->appendFigureObject(foaxis.get());
+    foaxis.release();
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }
@@ -778,7 +701,6 @@ static struct finExecSysFuncRegItem _funcRegItem_axis = {
 static finErrorCode
 _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *x1, *y1, *z1, *x2, *y2, *z2;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -804,18 +726,12 @@ _sysfunc_line3d(finExecFunction *self, finExecEnvironment *env, finExecMachine *
          z2->getType() != finExecVariable::TP_NUMERIC )
         return finErrorKits::EC_INVALID_PARAM;
 
-    finFigureObjectLine3D *foline3d = new finFigureObjectLine3D();
-    if ( foline3d == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
-
+    auto foline3d = std::make_unique<finFigureObjectLine3D>();
     foline3d->setPoint1(x1->getNumericValue(), y1->getNumericValue(), z1->getNumericValue());
     foline3d->setPoint2(x2->getNumericValue(), y2->getNumericValue(), z2->getNumericValue());
+    env->getFigureContainer()->appendFigureObject(foline3d.get());
+    foline3d.release();
 
-    errcode = env->getFigureContainer()->appendFigureObject(foline3d);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete foline3d;
-        return errcode;
-    }
     flowctl->setFlowNext();
     return finErrorKits::EC_SUCCESS;
 }

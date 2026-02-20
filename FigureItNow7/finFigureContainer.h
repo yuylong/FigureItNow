@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Jan 2nd, 2017
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2017-2026 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINFIGURECONTAINER_H
@@ -32,12 +32,12 @@ public:
     finFigureConfig *getFigureConfig();
     const finGraphConfig *getGraphConfig() const;
     finGraphConfig *getGraphConfig();
-    finErrorCode setFigureConfigForObject(finFigureObject *figobj) const;
+    void setFigureConfigForObject(finFigureObject *figobj) const;
 
     int getFigureObjectCount() const;
     finFigureObject *getFigureObjectAt(int idx);
 
-    finErrorCode appendFigureObject(finFigureObject *figobj);
+    void appendFigureObject(finFigureObject *figobj);
 
     void clearFigureObjects();
 

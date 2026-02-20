@@ -9,6 +9,7 @@
 #include "finPlotDots.h"
 
 #include <qmath.h>
+#include <memory>
 
 #include "finFigureAlg.h"
 
@@ -92,16 +93,10 @@ finErrorCode finPlotDots::plot()
         return finErrorKits::EC_STATE_ERROR;
 
     for ( int i = 0; i < this->_ptList.count(); i++ ) {
-        finFigureObjectDot *fodot = new finFigureObjectDot();
-        if ( fodot == nullptr )
-            return finErrorKits::EC_OUT_OF_MEMORY;
-
+        auto fodot = std::make_unique<finFigureObjectDot>();
         fodot->setPoint(this->_ptList.at(i));
-        finErrorCode errcode = this->_figcontainer->appendFigureObject(fodot);
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            delete fodot;
-            return errcode;
-        }
+        this->_figcontainer->appendFigureObject(fodot.get());
+        fodot.release();
     }
     return finErrorKits::EC_SUCCESS;
 }
@@ -121,36 +116,23 @@ finErrorCode finPlotDotsLine::plot()
     if ( this->_figcontainer == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
-    finErrorCode errcode;
     if ( this->_ptList.count() == 0 ) {
         return finErrorKits::EC_SUCCESS;
     } else if ( this->_ptList.count() == 1 ) {
-        finFigureObjectDot *fodot = new finFigureObjectDot();
-        if ( fodot == nullptr )
-            return finErrorKits::EC_OUT_OF_MEMORY;
-
+        auto fodot = std::make_unique<finFigureObjectDot>();
         fodot->setPoint(this->_ptList.first());
-        errcode = this->_figcontainer->appendFigureObject(fodot);
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            delete fodot;
-            return errcode;
-        }
+        this->_figcontainer->appendFigureObject(fodot.get());
+        fodot.release();
         return finErrorKits::EC_SUCCESS;
     }
 
-    finFigureObjectPolyline *fopln = new finFigureObjectPolyline();
-    if ( fopln == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
-
+    auto fopln = std::make_unique<finFigureObjectPolyline>();
     fopln->setIgnoreArrow(true);
     for ( int i = 0; i < this->_ptList.count(); i++ )
         fopln->appendPoint(this->_ptList.at(i));
 
-    errcode = this->_figcontainer->appendFigureObject(fopln);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete fopln;
-        return errcode;
-    }
+    this->_figcontainer->appendFigureObject(fopln.get());
+    fopln.release();
     return finErrorKits::EC_SUCCESS;
 }
 
