@@ -85,10 +85,9 @@ finSyntaxError finExecMachine::getExecuteErrorAt(int idx) const
     return this->_errList.getEntryAt(idx);
 }
 
-finErrorCode finExecMachine::setName(const QString &name)
+void finExecMachine::setName(const QString &name)
 {
     this->_name = name;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecMachine::initEnvironment(finExecEnvironment *prevenv)
@@ -139,10 +138,9 @@ finErrorCode finExecMachine::setFigureContainer(finFigureContainer *figcontainer
     return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecMachine::setScriptCode(const QString &script)
+void finExecMachine::setScriptCode(const QString &script)
 {
     this->_compiler.setScriptCode(script);
-    return finErrorKits::EC_SUCCESS;
 }
 
 finErrorCode finExecMachine::setExecuteErrorDumper(finSyntaxErrorDump *dumper)

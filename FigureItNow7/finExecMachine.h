@@ -60,13 +60,13 @@ public:
     int getExecuteErrorCount() const;
     finSyntaxError getExecuteErrorAt(int idx) const;
 
-    finErrorCode setName(const QString &name);
+    void setName(const QString &name);
 
     finErrorCode initEnvironment(finExecEnvironment *prevenv);
     finErrorCode initEnvironmentFromRoot();
 
     finErrorCode setFigureContainer(finFigureContainer *figcontainer);
-    finErrorCode setScriptCode(const QString &script);
+    void setScriptCode(const QString &script);
     finErrorCode setExecuteErrorDumper(finSyntaxErrorDump *dumper);
 
     bool isCompiled() const;
