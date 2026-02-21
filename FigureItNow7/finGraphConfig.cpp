@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Jan 2nd, 2017
- * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
+ * Copyright(c) 2017-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finGraphConfig.h"
@@ -271,10 +271,9 @@ QTransform finGraphConfig::getNakePixelTransformMatrix() const
     return trans * subtrans;
 }
 
-finErrorCode finGraphConfig::setRenderHints(QPainter::RenderHints hints)
+void finGraphConfig::setRenderHints(QPainter::RenderHints hints)
 {
     this->_renderHints = hints;
-    return finErrorKits::EC_SUCCESS;
 }
 
 QPointF finGraphConfig::transformPixelPoint3D(double x, double y, double z) const
