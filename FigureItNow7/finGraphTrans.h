@@ -63,8 +63,8 @@ public:
     double getAxisZoomX() const;
     double getAxisZoomY() const;
 
-    finErrorCode setAxisZoomX(double zoomx);
-    finErrorCode setAxisZoomY(double zoomy);
+    void setAxisZoomX(double zoomx);
+    void setAxisZoomY(double zoomy);
 
     virtual QPointF transPoint(const QPointF &ptr);
     virtual QPointF arcTransPoint(const QPointF &ptr);
@@ -116,16 +116,16 @@ public:
     int getActionCount() const;
     Action getActionAt(int idx) const;
 
-    finErrorCode reset();
-    finErrorCode appendRotate(double rad);
-    finErrorCode appendScale(double sx, double sy);
-    finErrorCode appendTranslate(double tx, double ty);
+    void reset();
+    void appendRotate(double rad);
+    void appendScale(double sx, double sy);
+    void appendTranslate(double tx, double ty);
 
     virtual QPointF transPoint(const QPointF &ptr);
     virtual QPointF arcTransPoint(const QPointF &ptr);
 
  private:
-    finErrorCode calcInvertedMatrix();
+    void calcInvertedMatrix();
 };
 
 #endif // FINGRAPHTRANS_H

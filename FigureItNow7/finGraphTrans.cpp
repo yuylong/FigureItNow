@@ -148,22 +148,20 @@ double finGraphTransRect::getAxisZoomY() const
     return this->_axisZoomY;
 }
 
-finErrorCode finGraphTransRect::setAxisZoomX(double zoomx)
+void finGraphTransRect::setAxisZoomX(double zoomx)
 {
     if ( zoomx <= 0.0 )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Axis zoom X must be positive");
 
     this->_axisZoomX = zoomx;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphTransRect::setAxisZoomY(double zoomy)
+void finGraphTransRect::setAxisZoomY(double zoomy)
 {
     if ( zoomy <= 0.0 )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Axis zoom Y must be positive");
 
     this->_axisZoomY = zoomy;
-    return finErrorKits::EC_SUCCESS;
 }
 
 QPointF finGraphTransRect::transPoint(const QPointF &ptr)
@@ -319,26 +317,24 @@ finGraphTransAffine::Action finGraphTransAffine::getActionAt(int idx) const
         return this->_actList.at(idx);
 }
 
-finErrorCode finGraphTransAffine::reset()
+void finGraphTransAffine::reset()
 {
     this->_actList.clear();
     this->_matrix.reset();
     this->_invMatrix.reset();
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphTransAffine::calcInvertedMatrix()
+void finGraphTransAffine::calcInvertedMatrix()
 {
     if ( !this->_matrix.isInvertible() ) {
         this->_invMatrix.reset();
-        return finErrorKits::EC_PRECISE_LOSS;
+        return;
     }
 
     this->_invMatrix = this->_matrix.inverted();
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphTransAffine::appendRotate(double rad)
+void finGraphTransAffine::appendRotate(double rad)
 {
     QTransform subtrans;
     subtrans.rotateRadians(rad);
@@ -349,11 +345,9 @@ finErrorCode finGraphTransAffine::appendRotate(double rad)
     act._type = finGraphTransAffine::AT_ROTATE;
     act._arg1 = act._arg2 = rad;
     this->_actList.append(act);
-
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphTransAffine::appendScale(double sx, double sy)
+void finGraphTransAffine::appendScale(double sx, double sy)
 {
     QTransform subtrans;
     subtrans.scale(sx, sy);
@@ -365,11 +359,9 @@ finErrorCode finGraphTransAffine::appendScale(double sx, double sy)
     act._arg1 = sx;
     act._arg2 = sy;
     this->_actList.append(act);
-
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finGraphTransAffine::appendTranslate(double tx, double ty)
+void finGraphTransAffine::appendTranslate(double tx, double ty)
 {
     QTransform subtrans;
     subtrans.translate(tx, ty);
@@ -381,8 +373,6 @@ finErrorCode finGraphTransAffine::appendTranslate(double tx, double ty)
     act._arg1 = tx;
     act._arg2 = ty;
     this->_actList.append(act);
-
-    return finErrorKits::EC_SUCCESS;
 }
 
 QPointF finGraphTransAffine::transPoint(const QPointF &ptr)
