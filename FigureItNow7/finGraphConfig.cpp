@@ -253,9 +253,7 @@ void finGraphConfig::cloneTransform(const finGraphTrans *srctrans)
     if ( mytrans == nullptr )
         return;
 
-    finErrorCode errcode = mytrans->cloneTransform(srctrans);
-    if ( finErrorKits::isErrorResult(errcode) )
-        finThrow(errcode, QString("Failed to clone transform."));
+    mytrans->cloneTransform(srctrans);
 }
 
 void finGraphConfig::cloneTransform(const finGraphConfig *srccfg)

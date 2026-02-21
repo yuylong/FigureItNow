@@ -38,7 +38,7 @@ public:
     finGraphTrans();
     virtual ~finGraphTrans();
 
-    virtual finErrorCode cloneTransform(const finGraphTrans *trans);
+    virtual void cloneTransform(const finGraphTrans *trans);
     Type getTransformType() const;
     virtual bool isLinear() const;
 
@@ -57,7 +57,7 @@ public:
     finGraphTransRect();
     virtual ~finGraphTransRect();
 
-    virtual finErrorCode cloneTransform(const finGraphTrans *trans);
+    virtual void cloneTransform(const finGraphTrans *trans);
     virtual bool isLinear() const;
 
     double getAxisZoomX() const;
@@ -107,7 +107,7 @@ public:
     finGraphTransAffine();
     virtual ~finGraphTransAffine();
 
-    virtual finErrorCode cloneTransform(const finGraphTrans *trans);
+    virtual void cloneTransform(const finGraphTrans *trans);
     virtual bool isLinear() const;
 
     QTransform getTransformMatrix() const;

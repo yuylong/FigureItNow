@@ -81,12 +81,10 @@ finGraphTrans::~finGraphTrans()
     return;
 }
 
-finErrorCode finGraphTrans::cloneTransform(const finGraphTrans *trans)
+void finGraphTrans::cloneTransform(const finGraphTrans *trans)
 {
     if ( trans == nullptr || trans->getTransformType() != this->_type )
-        return finErrorKits::EC_INVALID_PARAM;
-
-    return finErrorKits::EC_SUCCESS;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Cannot clone transform with different type");
 }
 
 finGraphTransType finGraphTrans::getTransformType() const
@@ -121,16 +119,13 @@ finGraphTransRect::~finGraphTransRect()
     return;
 }
 
-finErrorCode finGraphTransRect::cloneTransform(const finGraphTrans *trans)
+void finGraphTransRect::cloneTransform(const finGraphTrans *trans)
 {
-    finErrorCode errcode = finGraphTrans::cloneTransform(trans);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    finGraphTrans::cloneTransform(trans);
 
     const finGraphTransRect *srctrans = (const finGraphTransRect *)trans;
     this->_axisZoomX = srctrans->_axisZoomX;
     this->_axisZoomY = srctrans->_axisZoomY;
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finGraphTransRect::isLinear() const
@@ -273,18 +268,15 @@ finGraphTransAffine::~finGraphTransAffine()
     return;
 }
 
-finErrorCode finGraphTransAffine::cloneTransform(const finGraphTrans *trans)
+void finGraphTransAffine::cloneTransform(const finGraphTrans *trans)
 {
-    finErrorCode errcode = finGraphTrans::cloneTransform(trans);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    finGraphTrans::cloneTransform(trans);
 
     const finGraphTransAffine *srctrans = (const finGraphTransAffine *)trans;
     this->_actList.clear();
     this->_actList = srctrans->_actList;
     this->_matrix = srctrans->_matrix;
     this->_invMatrix = srctrans->_invMatrix;
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finGraphTransAffine::isLinear() const
