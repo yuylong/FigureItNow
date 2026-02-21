@@ -88,7 +88,7 @@ public:
 
     static QString getAffineTransActionName(ActionType type);
     static ActionType parseAffineTransAction(const QString &name);
-    static finErrorCode fillAffineTransActionsInComboBox(QComboBox *cmbox);
+    static void fillAffineTransActionsInComboBox(QComboBox *cmbox);
 
     static int getAffineTransActionArgCnt(ActionType type);
     static ActArgType getAffineTransActionArgType(ActionType type);

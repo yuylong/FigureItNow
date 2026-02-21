@@ -209,15 +209,14 @@ finGraphTransAffine::ActionType finGraphTransAffine::parseAffineTransAction(cons
     return finGraphTransAffine::AT_DUMMY;
 }
 
-finErrorCode finGraphTransAffine::fillAffineTransActionsInComboBox(QComboBox *cmbox)
+void finGraphTransAffine::fillAffineTransActionsInComboBox(QComboBox *cmbox)
 {
     if ( cmbox == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "ComboBox pointer is null");
 
     cmbox->addItem(QString("Rotate"), QVariant(QString("rotate")));
     cmbox->addItem(QString("Scale"), QVariant(QString("scale")));
     cmbox->addItem(QString("Translate"), QVariant(QString("translate")));
-    return finErrorKits::EC_SUCCESS;
 }
 
 int finGraphTransAffine::getAffineTransActionArgCnt(finGraphTransAffine::ActionType type)
