@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINGRAPHTRANS_H
@@ -27,9 +27,9 @@ public:
 
     static QString getTransformTypeName(Type type);
     static Type parseTransformType(const QString &name);
-    static finErrorCode fillTypesInComboBox(QComboBox *cmbox);
+    static void fillTypesInComboBox(QComboBox *cmbox);
     static int getComboBoxIndexForType(QComboBox *cmbox, Type type);
-    static finErrorCode setComboBoxCurrentItemToType(QComboBox *cmbox, Type type);
+    static void setComboBoxCurrentItemToType(QComboBox *cmbox, Type type);
 
 protected:
     Type _type;

@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finGraphTrans.h"
@@ -38,15 +38,14 @@ finGraphTransType finGraphTrans::parseTransformType(const QString &name)
         return finGraphTrans::TP_NONE;
 }
 
-finErrorCode finGraphTrans::fillTypesInComboBox(QComboBox *cmbox)
+void finGraphTrans::fillTypesInComboBox(QComboBox *cmbox)
 {
     if ( cmbox == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "ComboBox pointer is null");
 
     cmbox->addItem(QString("None"), QVariant(QString("none")));
     cmbox->addItem(QString("Rectangle"), QVariant(QString("rect")));
     cmbox->addItem(QString("Affine"), QVariant(QString("affine")));
-    return finErrorKits::EC_SUCCESS;
 }
 
 int finGraphTrans::getComboBoxIndexForType(QComboBox *cmbox, finGraphTransType type)
@@ -63,14 +62,13 @@ int finGraphTrans::getComboBoxIndexForType(QComboBox *cmbox, finGraphTransType t
     return -1;
 }
 
-finErrorCode finGraphTrans::setComboBoxCurrentItemToType(QComboBox *cmbox, finGraphTransType type)
+void finGraphTrans::setComboBoxCurrentItemToType(QComboBox *cmbox, finGraphTrans::Type type)
 {
     int idx = finGraphTrans::getComboBoxIndexForType(cmbox, type);
     if ( idx < 0 )
-        return finErrorKits::EC_NOT_FOUND;
+        finThrow(finErrorKits::EC_NOT_FOUND, "Type not found in combo box");
 
     cmbox->setCurrentIndex(idx);
-    return finErrorKits::EC_SUCCESS;
 }
 
 finGraphTrans::finGraphTrans()
