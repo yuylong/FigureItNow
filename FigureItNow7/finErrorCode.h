@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, May 26th, 2016
- * Copyright(c) 2015-2024 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 /*! \file finErrorCode.h
  *  \brief The declarations of the Error Codes.
@@ -173,6 +173,7 @@ public:
 
     finErrorCode getErrorCode() const;
     const QString &getErrorDescription() const;
+    finExceptionObject *getErrorObject() const;
 
     void raise() const override;
     finException *clone() const override;

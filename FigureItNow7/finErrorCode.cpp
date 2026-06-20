@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2024 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finErrorCode.h"
@@ -149,6 +149,11 @@ finErrorCode finException::getErrorCode() const
 const QString &finException::getErrorDescription() const
 {
     return this->_errDesc;
+}
+
+finExceptionObject *finException::getErrorObject() const
+{
+    return this->_errObj;
 }
 
 void finException::raise() const

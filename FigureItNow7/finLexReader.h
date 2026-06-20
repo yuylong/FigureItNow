@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2024 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINLEXREADER_H
@@ -31,6 +31,8 @@ public:
 
     QString getString() const;
     unsigned long getCurrentPosition() const;
+    unsigned int getRow() const;
+    unsigned int getColumn() const;
     bool isReachBottom() const;
     void setString(const QString &instr);
     void resetPosition();

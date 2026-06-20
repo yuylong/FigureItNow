@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2024 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finLexReader.h"
@@ -42,6 +42,18 @@ unsigned long
 finLexReader::getCurrentPosition() const
 {
     return this->_posIdx;
+}
+
+unsigned int
+finLexReader::getRow() const
+{
+    return this->_curRow;
+}
+
+unsigned int
+finLexReader::getColumn() const
+{
+    return this->_curCol;
 }
 
 bool

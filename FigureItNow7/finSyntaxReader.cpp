@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2024 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finSyntaxReader.h"
@@ -99,12 +99,18 @@ finErrorCode finSyntaxReader::readNextToken()
         }
     } catch (finException &e) {
         // The lex reader threw: record the error and abort this read.
-        // The error description already includes the script position.
+        // Try to recover the script position from the attached LexReader object.
         finSyntaxError synerr;
         synerr.setLevel(finSyntaxError::LV_ERROR);
         synerr.setStage(finSyntaxError::ST_COMPILE);
         synerr.setRow(0);
         synerr.setColumn(0);
+
+        if ( finLexReader *lexr = dynamic_cast<finLexReader *>(e.getErrorObject()) ) {
+            synerr.setRow(lexr->getRow());
+            synerr.setColumn(lexr->getColumn());
+        }
+
         synerr.setErrorString(e.getErrorDescription());
         this->_errList.append(synerr);
         return e.getErrorCode();
