@@ -35,7 +35,7 @@ public:
     void setString(const QString &instr);
     void resetPosition();
 
-    finErrorCode getNextLexNode(finLexNode *retnode);
+    bool getNextLexNode(finLexNode *retnode);
 
     virtual QString dumpObjInfo() const override;
 
@@ -48,9 +48,9 @@ private:
     QString getScriptSubAt(unsigned long pos, unsigned long len) const;
     QString getScriptSub(unsigned long len) const;
 
-    finErrorCode moveReadPos();
-    finErrorCode moveReadPosWith(unsigned long detpos);
-    finErrorCode moveToNextNonblank();
+    bool moveReadPos();
+    bool moveReadPosWith(unsigned long detpos);
+    bool moveToNextNonblank();
 
     void buildLexNode(finLexNode *retnode, finLexNodeType type, unsigned long endpos);
 
@@ -64,13 +64,13 @@ private:
     void getLexTypeOrder(const finLexNodeType **typeorder, int *typenum);
     void getLexTypeOrder(finLexReader::finLexReaderOrder order,
                          const finLexNodeType **typeorder, int *typenum);
-    finErrorCode tryGetTypedNode(finLexNode *retnode, finLexNodeType lextype);
-    finErrorCode tryGetNote(finLexNode *retnode);
-    finErrorCode tryGetVariable(finLexNode *retnode);
-    finErrorCode tryRecogKeyword(finLexNode *retnode);
-    finErrorCode tryGetNumber(finLexNode *retnode);
-    finErrorCode tryGetString(finLexNode *retnode);
-    finErrorCode tryGetOperator(finLexNode *retnode);
+    bool tryGetTypedNode(finLexNode *retnode, finLexNodeType lextype);
+    bool tryGetNote(finLexNode *retnode);
+    bool tryGetVariable(finLexNode *retnode);
+    bool tryRecogKeyword(finLexNode *retnode);
+    bool tryGetNumber(finLexNode *retnode);
+    bool tryGetString(finLexNode *retnode);
+    bool tryGetOperator(finLexNode *retnode);
 
     static bool isVariableStartChar(const QChar &ch);
     static bool isVariableChar(const QChar &ch);

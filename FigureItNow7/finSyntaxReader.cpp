@@ -91,13 +91,25 @@ finErrorCode finSyntaxReader::readNextToken()
         return finErrorKits::EC_STATE_ERROR;
 
     finLexNode lexnode;
-    finErrorCode errcode = this->_lexReader.getNextLexNode(&lexnode);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-    if ( errcode == finErrorKits::EC_REACH_BOTTOM ) {
-        this->_state = ST_DONE;
-        return errcode;
+    try {
+        bool hasToken = this->_lexReader.getNextLexNode(&lexnode);
+        if ( !hasToken ) {
+            this->_state = ST_DONE;
+            return finErrorKits::EC_REACH_BOTTOM;
+        }
+    } catch (finException &e) {
+        // The lex reader threw: record the error and abort this read.
+        // The error description already includes the script position.
+        finSyntaxError synerr;
+        synerr.setLevel(finSyntaxError::LV_ERROR);
+        synerr.setStage(finSyntaxError::ST_COMPILE);
+        synerr.setRow(0);
+        synerr.setColumn(0);
+        synerr.setErrorString(e.getErrorDescription());
+        this->_errList.append(synerr);
+        return e.getErrorCode();
     }
+
     if ( lexnode.getType() == finLexNode::TP_DUMMY )
         return finErrorKits::EC_NORMAL_WARN;
 
