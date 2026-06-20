@@ -6,3 +6,4 @@ FigureItNow7/.vscode/settings.json
 build-FigureItNow7*
 *.user.*
 .DS_Store
+.claude
