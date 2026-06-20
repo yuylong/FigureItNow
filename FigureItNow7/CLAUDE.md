@@ -92,6 +92,7 @@ Key things to know when navigating:
 
 ## Conventions / gotchas
 
+- **Line width is 120 columns.** All lines — code, comments, Doxygen blocks, and preprocessor directives — must stay at or under 120 columns. The codebase does not wrap at 80; treat 120 as the hard limit. When a Doxygen `//!<` trailing comment on an enum entry would exceed the limit, split it across multiple lines and use Doxygen's multi-line `//!<` continuation, aligning the `//!<` markers column-wise.
 - All source files begin with the GPL-3 header and `Author: Yulong Yu` line. Keep that header on new files.
 - License year in headers has been bumped periodically (e.g. `Copyright(c) 2015-2026`). Use the current year for new files.
 - Filename typo to be aware of: `finExecOperartorCalc.{h,cpp}` (missing the "e" in "Operator"). Refer to it by this exact name; do not "fix" the name without also updating `CMakeLists.txt`, `FigureItNow7.pro`, and the `.user` file.

@@ -6,6 +6,13 @@
  * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
+/*! \file finErrorCode.cpp
+ *  \brief Implementations of the error-code helpers and finException.
+ *
+ *  Provides the lookup table backing finErrorKits::errcodeToString(), the finException constructor /
+ *  accessor / logging routines, and the QDebug stream operator used to render a finExceptionObject.
+ */
+
 #include "finErrorCode.h"
 
 #include <QtGlobal>
@@ -66,8 +73,9 @@ QString finErrorKits::_defErrorString = QObject::tr("Unknown error");
 
 finErrorKits::finErrorKits()
 {
-    // We keep this function public, not private or protected, allowing the upper layered code create the instance of
-    // this class. But it is not reaaly necessary, because currently all the functions in this class is static.
+    // The constructor is kept public (not private or protected) so that the
+    // upper layers can still build an instance of this class if they need to.
+    // It is not really required, because every function in this class is static.
     return;
 }
 
