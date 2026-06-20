@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include <QObject>
@@ -25,14 +25,16 @@ finSyntaxError::finSyntaxError(const finSyntaxError &src)
     this->copySyntaxError(&src);
 }
 
-finErrorCode finSyntaxError::copySyntaxError(const finSyntaxError *src)
+void finSyntaxError::copySyntaxError(const finSyntaxError *src)
 {
-    this->_level = src->_level;
-    this->_stage = src->_stage;
+    if ( src == nullptr )
+        finThrow(finErrorKits::EC_NULL_POINTER, "Copy from a null syntax error.");
+
+    this->_level = src->getLevel();
+    this->_stage = src->getStage();
     this->_row = src->getRow();
     this->_column = src->getColumn();
     this->_errString = src->getErrorString();
-    return finErrorKits::EC_SUCCESS;
 }
 
 finSyntaxError &finSyntaxError::operator =(const finSyntaxError &src)
@@ -169,11 +171,11 @@ QString finSyntaxError::getStageName(Stage stage)
     }
 }
 
-finErrorCode finSyntaxError::appendExecutionError(const finLexNode *lexnode, QList<finSyntaxError> *errlist,
-                                                  const QString &errinfo)
+void finSyntaxError::appendExecutionError(const finLexNode *lexnode, QList<finSyntaxError> *errlist,
+                                          const QString &errinfo)
 {
     if ( lexnode == nullptr || errlist == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Append execution error with null pointer.");
 
     finSyntaxError synerr;
     synerr.setRow(lexnode->getRow());
@@ -181,5 +183,4 @@ finErrorCode finSyntaxError::appendExecutionError(const finLexNode *lexnode, QLi
     synerr.setErrorString(errinfo);
 
     errlist->append(synerr);
-    return finErrorKits::EC_SUCCESS;
 }

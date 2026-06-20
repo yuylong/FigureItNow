@@ -121,14 +121,14 @@ const QString &finException::levelName(Level level)
     return levelname[static_cast<unsigned>(level)];
 }
 
-finException::finException(finErrorCode errcode, finException::Level level, finExceptionObject *errobj)
+finException::finException(finErrorCode errcode, finException::Level level, const finExceptionObject *errobj)
     : _errCode(errcode), _errDesc(), _srcFile(), _srcPrettyFunction(), _srcLine(0), _level(level), _errObj(errobj)
 {
     this->dump();
 }
 
 finException::finException(finErrorCode errcode, const QString &errdesc,
-                           finException::Level level, finExceptionObject *errobj)
+                           finException::Level level, const finExceptionObject *errobj)
     : _errCode(errcode), _errDesc(errdesc), _srcFile(), _srcPrettyFunction(), _srcLine(0),
     _level(level), _errObj(errobj)
 {
@@ -137,7 +137,7 @@ finException::finException(finErrorCode errcode, const QString &errdesc,
 
 finException::finException(finErrorCode errcode, const QString &errdesc,
                            const QString &srcfile, const QString &srcfunc, unsigned long srcline,
-                           finException::Level level, finExceptionObject *errobj)
+                           finException::Level level, const finExceptionObject *errobj)
     : _errCode(errcode), _errDesc(errdesc), _srcFile(srcfile),
     _srcPrettyFunction(srcfunc), _srcLine(srcline), _level(level), _errObj(errobj)
 {
@@ -159,7 +159,7 @@ const QString &finException::getErrorDescription() const
     return this->_errDesc;
 }
 
-finExceptionObject *finException::getErrorObject() const
+const finExceptionObject *finException::getErrorObject() const
 {
     return this->_errObj;
 }

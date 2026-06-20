@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Dec 30th, 2016
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finExecMachine.h"
@@ -145,13 +145,9 @@ void finExecMachine::setScriptCode(const QString &script)
 
 finErrorCode finExecMachine::setExecuteErrorDumper(finSyntaxErrorDump *dumper)
 {
-    finErrorCode errcode;
-    errcode = this->_errList.setDumper(dumper);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
+    this->_errList.setDumper(dumper);
     this->_errList.setIsRealtimeDump(dumper != nullptr);
-    return errcode;
+    return finErrorKits::EC_SUCCESS;
 }
 
 bool finExecMachine::isCompiled() const

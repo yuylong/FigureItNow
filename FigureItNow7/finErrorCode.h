@@ -211,7 +211,7 @@ private:
     QString _srcPrettyFunction;         //!< Pretty-printed function name of the throw site.
     unsigned long _srcLine;             //!< Line number of the throw site.
     Level _level;                       //!< Severity level.
-    finExceptionObject *_errObj;        //!< Optional object that carries extra context, or \c nullptr.
+    const finExceptionObject *_errObj;        //!< Optional object that carries extra context, or \c nullptr.
 
 public:
     /*!
@@ -219,13 +219,13 @@ public:
      *
      *  The level defaults to EL_CRITIAL. The exception is logged immediately by dump().
      */
-    finException(finErrorCode errcode, Level level = EL_CRITIAL, finExceptionObject *errobj = nullptr);
+    finException(finErrorCode errcode, Level level = EL_CRITIAL, const finExceptionObject *errobj = nullptr);
 
     /*!
      *  \brief Constructs a finException with a description but no source location.
      */
     finException(finErrorCode errcode, const QString &errdesc,
-                 Level level = EL_CRITIAL, finExceptionObject *errobj = nullptr);
+                 Level level = EL_CRITIAL, const finExceptionObject *errobj = nullptr);
 
     /*!
      *  \brief Constructs a finException with a description and source location.
@@ -235,7 +235,7 @@ public:
      */
     finException(finErrorCode errcode, const QString &errdesc,
                  const QString &srcfile, const QString &srcfunc, unsigned long srcline,
-                 Level level = EL_CRITIAL, finExceptionObject *errobj = nullptr);
+                 Level level = EL_CRITIAL, const finExceptionObject *errobj = nullptr);
 
     /*!
      *  \brief Copy constructor.
@@ -255,7 +255,7 @@ public:
     /*!
      *  \brief Returns the extra-context object, or \c nullptr if none was attached.
      */
-    finExceptionObject *getErrorObject() const;
+    const finExceptionObject *getErrorObject() const;
 
     /*!
      *  \brief Re-throws this exception. Required by QException.

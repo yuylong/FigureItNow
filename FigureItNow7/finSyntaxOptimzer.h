@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2018 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINSYNTAXOPTIMZER_H
@@ -27,11 +27,11 @@ public:
     finSyntaxOptimzer();
 
     finSyntaxTree *getSyntaxTree() const;
-    finErrorCode setSyntaxTree(finSyntaxTree *syntree);
+    void setSyntaxTree(finSyntaxTree *syntree);
     QStringList getOption() const;
-    finErrorCode setOption(const QStringList &options);
+    void setOption(const QStringList &options);
 
-    finErrorCode optimize();
+    void optimize();
 };
 
 #endif // FINSYNTAXOPTIMZER_H

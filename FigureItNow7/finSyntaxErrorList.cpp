@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2019 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finSyntaxErrorList.h"
@@ -70,8 +70,8 @@ finSyntaxError::Level finSyntaxErrorList::getDumpStartingLevel() const
     return this->_startingLevel;
 }
 
-finErrorCode finSyntaxErrorList::appendEntry(finSyntaxError::Level level, finSyntaxError::Stage stage,
-                                             finLexNode *lexnode, QString info)
+void finSyntaxErrorList::appendEntry(finSyntaxError::Level level, finSyntaxError::Stage stage,
+                                      finLexNode *lexnode, QString info)
 {
     finSyntaxError entry;
 
@@ -90,16 +90,16 @@ finErrorCode finSyntaxErrorList::appendEntry(finSyntaxError::Level level, finSyn
 
     if ( this->_rtDump && this->_dumper != nullptr && level >= this->_startingLevel )
         entry.dumpErrorInfo(this->_dumper);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxErrorList::removeEntryAt(int index)
+void finSyntaxErrorList::removeEntryAt(int index)
 {
     if ( index < 0 || index >= this->_list.count() )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM,
+                 QString("Index %1 out of range (size %2).")
+                     .arg(index).arg(this->_list.count()));
 
     this->_list.removeAt(index);
-    return finErrorKits::EC_SUCCESS;
 }
 
 void finSyntaxErrorList::clearAllErrorList()
@@ -107,43 +107,39 @@ void finSyntaxErrorList::clearAllErrorList()
     this->_list.clear();
 }
 
-finErrorCode finSyntaxErrorList::setIsRealtimeDump(bool rtdump)
+void finSyntaxErrorList::setIsRealtimeDump(bool rtdump)
 {
     this->_rtDump = rtdump;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxErrorList::setDumper(finSyntaxErrorDump *dumper)
+void finSyntaxErrorList::setDumper(finSyntaxErrorDump *dumper)
 {
     this->_dumper = dumper;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxErrorList::setDumpStartingLevel(finSyntaxError::Level level)
+void finSyntaxErrorList::setDumpStartingLevel(finSyntaxError::Level level)
 {
     this->_startingLevel = level;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxErrorList::dumpList(finSyntaxErrorDump *dumper, finSyntaxError::Level startinglevel) const
+void finSyntaxErrorList::dumpList(finSyntaxErrorDump *dumper, finSyntaxError::Level startinglevel) const
 {
     if ( dumper == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Cannot dump syntax error list to a NULL dumper.");
 
     foreach ( const finSyntaxError &entry, this->_list ) {
         if ( entry.getLevel() >= startinglevel ) {
             entry.dumpErrorInfo(dumper);
         }
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxErrorList::dumpList(finSyntaxError::Level startinglevel) const
+void finSyntaxErrorList::dumpList(finSyntaxError::Level startinglevel) const
 {
-    return this->dumpList(this->_dumper, startinglevel);
+    this->dumpList(this->_dumper, startinglevel);
 }
 
-finErrorCode finSyntaxErrorList::dumpList() const
+void finSyntaxErrorList::dumpList() const
 {
-    return this->dumpList(this->_dumper, this->_startingLevel);
+    this->dumpList(this->_dumper, this->_startingLevel);
 }

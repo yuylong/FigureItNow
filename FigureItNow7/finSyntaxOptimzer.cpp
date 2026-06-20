@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2018 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finSyntaxOptimzer.h"
@@ -12,9 +12,9 @@
 #include <QString>
 
 
-typedef finErrorCode (*finSynOptFunc)(finSyntaxNode *synnode);
+typedef void (*finSynOptFunc)(finSyntaxNode *synnode);
 
-static finErrorCode _testOptFunc(finSyntaxNode *synnode);
+static void _testOptFunc(finSyntaxNode *synnode);
 
 static struct {
     QString _optName;
@@ -28,16 +28,15 @@ static struct {
 static QMap<QString, finSynOptFunc> _optFuncMap = QMap<QString, finSynOptFunc>();
 static bool _isOptFuncMapInstalled = false;
 
-static finErrorCode _installOptFuncMap()
+static void _installOptFuncMap()
 {
     if ( _isOptFuncMapInstalled )
-        return finErrorKits::EC_DUPLICATE_OP;
+        return;
 
     for ( int i = 0; _optFuncList[i]._func != nullptr; i++ ) {
         _optFuncMap.insert(_optFuncList[i]._optName, _optFuncList[i]._func);
     }
     _isOptFuncMapInstalled = true;
-    return finErrorKits::EC_SUCCESS;
 }
 
 static QList<finSynOptFunc> _getOptFuncFromOptions(const QStringList &options)
@@ -68,10 +67,9 @@ finSyntaxTree *finSyntaxOptimzer::getSyntaxTree() const
     return this->_synTree;
 }
 
-finErrorCode finSyntaxOptimzer::setSyntaxTree(finSyntaxTree *syntree)
+void finSyntaxOptimzer::setSyntaxTree(finSyntaxTree *syntree)
 {
     this->_synTree = syntree;
-    return finErrorKits::EC_SUCCESS;
 }
 
 QStringList finSyntaxOptimzer::getOption() const
@@ -79,48 +77,33 @@ QStringList finSyntaxOptimzer::getOption() const
     return this->_optOptions;
 }
 
-finErrorCode finSyntaxOptimzer::setOption(const QStringList &options)
+void finSyntaxOptimzer::setOption(const QStringList &options)
 {
     this->_optOptions = options;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxOptimzer::optimize()
+void finSyntaxOptimzer::optimize()
 {
     if ( this->_synTree == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Cannot optimize a null syntax tree.");
     if ( this->_synTree->getErrorCount() > 0 )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Cannot optimize a syntax tree with errors.");
     if ( this->_optOptions.isEmpty() )
-        return finErrorKits::EC_NORMAL_WARN;
+        return;
 
     finSyntaxNode *rootnode = this->_synTree->getRootNode();
     QList<finSynOptFunc> optfunclist = _getOptFuncFromOptions(this->_optOptions);
-    finErrorCode errcode = finErrorKits::EC_SUCCESS;
-    unsigned funccnt = 0, failedcnt = 0;
 
     foreach ( finSynOptFunc func, optfunclist ) {
         if ( func == nullptr )
             continue;
 
-        funccnt++;
-        errcode = func(rootnode);
-        if ( finErrorKits::isErrorResult(errcode) )
-            failedcnt++;
+        func(rootnode);
     }
-
-    if ( failedcnt == 0 )
-        return finErrorKits::EC_SUCCESS;
-    else if ( failedcnt == funccnt )
-        return errcode;
-    else
-        return finErrorKits::EC_NORMAL_WARN;
 }
 
-static finErrorCode _testOptFunc(finSyntaxNode *synnode)
+static void _testOptFunc(finSyntaxNode *synnode)
 {
     if ( synnode == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
-
-    return finErrorKits::EC_SUCCESS;
+        return;
 }

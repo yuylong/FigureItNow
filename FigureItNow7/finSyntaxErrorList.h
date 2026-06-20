@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2019 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINSYNTAXERRORLIST_H
@@ -41,18 +41,18 @@ public:
     finSyntaxErrorDump *getDumper() const;
     finSyntaxError::Level getDumpStartingLevel() const;
 
-    finErrorCode appendEntry(finSyntaxError::Level level, finSyntaxError::Stage stage,
-                             finLexNode *lexnode, QString info);
-    finErrorCode removeEntryAt(int index);
+    void appendEntry(finSyntaxError::Level level, finSyntaxError::Stage stage,
+                     finLexNode *lexnode, QString info);
+    void removeEntryAt(int index);
     void clearAllErrorList();
 
-    finErrorCode setIsRealtimeDump(bool rtdump);
-    finErrorCode setDumper(finSyntaxErrorDump *dumper);
-    finErrorCode setDumpStartingLevel(finSyntaxError::Level level);
+    void setIsRealtimeDump(bool rtdump);
+    void setDumper(finSyntaxErrorDump *dumper);
+    void setDumpStartingLevel(finSyntaxError::Level level);
 
-    finErrorCode dumpList(finSyntaxErrorDump *dumper, finSyntaxError::Level startinglevel) const;
-    finErrorCode dumpList(finSyntaxError::Level startinglevel) const;
-    finErrorCode dumpList() const;
+    void dumpList(finSyntaxErrorDump *dumper, finSyntaxError::Level startinglevel) const;
+    void dumpList(finSyntaxError::Level startinglevel) const;
+    void dumpList() const;
 };
 
 #endif // FINSYNTAXERRORLIST_H

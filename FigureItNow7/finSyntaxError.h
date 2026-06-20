@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINSYNTAXERROR_H
@@ -45,8 +45,9 @@ public:
     finSyntaxError();
     finSyntaxError(const finSyntaxError &src);
 
-    finErrorCode copySyntaxError(const finSyntaxError *src);
     finSyntaxError &operator =(const finSyntaxError &src);
+
+    void copySyntaxError(const finSyntaxError *src);
 
     Level getLevel() const;
     Stage getStage() const;
@@ -69,8 +70,8 @@ public:
     static QString getLevelName(Level level);
     static QString getStageName(Stage stage);
 
-    static finErrorCode appendExecutionError(const finLexNode *lexnode, QList<finSyntaxError> *errlist,
-                                             const QString &errinfo);
+    static void appendExecutionError(const finLexNode *lexnode, QList<finSyntaxError> *errlist,
+                                     const QString &errinfo);
 };
 
 #endif // FINSYNTAXERROR_H

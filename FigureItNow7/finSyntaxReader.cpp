@@ -106,7 +106,7 @@ finErrorCode finSyntaxReader::readNextToken()
         synerr.setRow(0);
         synerr.setColumn(0);
 
-        if ( finLexReader *lexr = dynamic_cast<finLexReader *>(e.getErrorObject()) ) {
+        if ( const finLexReader *lexr = dynamic_cast<const finLexReader *>(e.getErrorObject()) ) {
             synerr.setRow(lexr->getRow());
             synerr.setColumn(lexr->getColumn());
         }

@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2024 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finSyntaxTree.h"
@@ -148,28 +148,24 @@ void finSyntaxTree::clearSyntaxNodes()
     finThrowObj(finErrorKits::EC_NON_IMPLEMENT, "Not implemented.");
 }
 
-finErrorCode finSyntaxTree::setScriptCode(const QString &script)
+void finSyntaxTree::setScriptCode(const QString &script)
 {
     this->_scriptCodes = script.split(QChar::LineSeparator, Qt::KeepEmptyParts);
-    return finErrorKits::EC_NON_IMPLEMENT;
 }
 
-finErrorCode finSyntaxTree::appendSyntaxError(const finSyntaxError &synerr)
+void finSyntaxTree::appendSyntaxError(const finSyntaxError &synerr)
 {
     this->_errList.append(synerr);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxTree::appendSyntaxErrorList(const QList<finSyntaxError> *list)
+void finSyntaxTree::appendSyntaxErrorList(const QList<finSyntaxError> *list)
 {
     this->_errList.append(*list);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxTree::clearSyntaxErrorList()
+void finSyntaxTree::clearSyntaxErrorList()
 {
     this->_errList.clear();
-    return finErrorKits::EC_SUCCESS;
 }
 
 QString finSyntaxTree::dumpObjInfo() const
