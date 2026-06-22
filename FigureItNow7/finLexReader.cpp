@@ -6,6 +6,15 @@
  * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
+/*! \file finLexReader.cpp
+ *  \brief Implementations of the FIN-7 streaming tokenizer.
+ *
+ *  Provides the constructors and destructor, the public state getters, the move / peek / slice
+ *  helpers that walk the input, the token-probe dispatch (getNextLexNode / tryGetXxx) for each
+ *  of the FIN-7 token types, and the per-operator character-recognition table used by
+ *  tryGetOperator.
+ */
+
 #include "finLexReader.h"
 
 #include <QtGlobal>

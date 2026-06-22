@@ -3,7 +3,15 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2024 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+/*! \file finLexNode.cpp
+ *  \brief Implementations of the finLexNode value class.
+ *
+ *  Provides the constructors, the reset / copyNode helpers, the type-discriminated getters and
+ *  setters, and the dumpObjInfo() formatter used when a finLexNode is attached to a logged
+ *  finException.
  */
 
 #include "finLexNode.h"
