@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finExecCompiler.h"
@@ -33,7 +33,6 @@ finErrorCode finExecCompiler::setScriptCode(const QString &script)
 
 finSyntaxTree *finExecCompiler::compile()
 {
-    finErrorCode errcode;
     finSyntaxTree *rettree = nullptr;
 
     if ( this->_scriptCode.length() == 0 )
@@ -42,18 +41,13 @@ finSyntaxTree *finExecCompiler::compile()
     if ( this->_synReader.isReading() )
         this->_synReader.stopRead();
 
-    errcode = this->_synReader.setScriptCode(this->_scriptCode);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return this->buildErrorTree(QString("Cannot setup script code."));
+    try {
+        this->_synReader.setScriptCode(this->_scriptCode);
+        this->_synReader.startRead();
 
-    errcode = this->_synReader.startRead();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return this->buildErrorTree(QString("Cannot start syntax reader."));
-
-    while ( errcode != finErrorKits::EC_REACH_BOTTOM ) {
-        errcode = this->_synReader.readNextToken();
-        if ( finErrorKits::isErrorResult(errcode) )
-            break;
+        while ( this->_synReader.readNextToken() ) { }
+    } catch (finException &e) {
+        return this->buildErrorTree(e.getErrorDescription());
     }
 
     rettree = this->_synReader.getSyntaxTree();

@@ -30,22 +30,16 @@ QString finSyntaxReader::getScriptCode() const
     return this->_lexReader.getString();
 }
 
-finErrorCode finSyntaxReader::setScriptCode(const QString &scriptcode)
+void finSyntaxReader::setScriptCode(const QString &scriptcode)
 {
     if ( this->isReading() )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Cannot change script while reading.");
 
-    try {
-        this->_lexReader.resetPosition();
-        this->_lexReader.setString(scriptcode);
-    } catch (finException &e) {
-        // TODO: Need to re-throw the exception.
-        return e.getErrorCode();
-    }
+    this->_lexReader.resetPosition();
+    this->_lexReader.setString(scriptcode);
 
     if ( this->_state == ST_DUMMY)
         this->_state = ST_READY;
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finSyntaxReader::isReading() const
@@ -58,48 +52,43 @@ finSyntaxReader::State finSyntaxReader::getState() const
     return this->_state;
 }
 
-finErrorCode finSyntaxReader::startRead()
+void finSyntaxReader::startRead()
 {
     if ( this->_state != ST_READY )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Syntax reader is not in the READY state.");
 
     this->disposeAllRead();
     this->_lexReader.resetPosition();
 
     this->_state = ST_READING;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxReader::stopRead()
+void finSyntaxReader::stopRead()
 {
     if ( this->_state == ST_DUMMY )
-        return finErrorKits::EC_STATE_ERROR;
-    else if ( !this->isReading() )
-        return finErrorKits::EC_DUPLICATE_OP;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Syntax reader has not been set up.");
+    if ( !this->isReading() )
+        finThrow(finErrorKits::EC_DUPLICATE_OP, "Syntax reader is already stopped.");
 
     this->_state = ST_READY;
     this->disposeAllRead();
-
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxReader::readNextToken()
+bool finSyntaxReader::readNextToken()
 {
     if ( this->_state == ST_DONE )
-        return finErrorKits::EC_REACH_BOTTOM;
+        return false;
     if ( this->_state != ST_READING )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Syntax reader is not in the READING state.");
 
     finLexNode lexnode;
     try {
-        bool hasToken = this->_lexReader.getNextLexNode(&lexnode);
-        if ( !hasToken ) {
+        if ( !this->_lexReader.getNextLexNode(&lexnode) ) {
             this->_state = ST_DONE;
-            return finErrorKits::EC_REACH_BOTTOM;
+            return false;
         }
     } catch (finException &e) {
-        // The lex reader threw: record the error and abort this read.
-        // Try to recover the script position from the attached LexReader object.
+        // Record the lex error and stop reading. The errList travels with the syntax tree.
         finSyntaxError synerr;
         synerr.setLevel(finSyntaxError::LV_ERROR);
         synerr.setStage(finSyntaxError::ST_COMPILE);
@@ -113,13 +102,15 @@ finErrorCode finSyntaxReader::readNextToken()
 
         synerr.setErrorString(e.getErrorDescription());
         this->_errList.append(synerr);
-        return e.getErrorCode();
+        this->_state = ST_DONE;
+        return false;
     }
 
     if ( lexnode.getType() == finLexNode::TP_DUMMY )
-        return finErrorKits::EC_NORMAL_WARN;
+        return true;
 
-    return this->processTypedNextToken(&lexnode, lexnode.getType());
+    this->processTypedNextToken(&lexnode, lexnode.getType());
+    return true;
 }
 
 finSyntaxTree *finSyntaxReader::getSyntaxTree()
@@ -138,7 +129,7 @@ finSyntaxTree *finSyntaxReader::getSyntaxTree()
 }
 
 
-finErrorCode finSyntaxReader::disposeAllRead()
+void finSyntaxReader::disposeAllRead()
 {
     while ( !this->_syntaxStack.empty() ) {
         finSyntaxNode *syntk = this->_syntaxStack.first();
@@ -147,27 +138,29 @@ finErrorCode finSyntaxReader::disposeAllRead()
     }
 
     this->_errList.clear();
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxReader::processTypedNextToken(finLexNode *lexnode, finLexNodeType lextype)
+void finSyntaxReader::processTypedNextToken(finLexNode *lexnode, finLexNodeType lextype)
 {
     switch ( lextype ) {
       case finLexNode::TP_KEYWORD:
       case finLexNode::TP_VARIABLE:
       case finLexNode::TP_DECIMAL:
       case finLexNode::TP_STRING:
-        return processInstanceToken(lexnode);
+        this->processInstanceToken(lexnode);
+        break;
 
       case finLexNode::TP_OPERATOR:
-        return processOperatorToken(lexnode);
+        this->processOperatorToken(lexnode);
+        break;
 
       default:
-        return processVirtualToken(lexnode);
+        this->processVirtualToken(lexnode);
+        break;
     }
 }
 
-finErrorCode finSyntaxReader::processInstanceToken(finLexNode *lexnode)
+void finSyntaxReader::processInstanceToken(finLexNode *lexnode)
 {
     finSyntaxNodeType tokentype;
     switch ( lexnode->getType() ) {
@@ -182,26 +175,25 @@ finErrorCode finSyntaxReader::processInstanceToken(finLexNode *lexnode)
         break;
     }
 
-    return this->pushSingleLexNode(lexnode, tokentype);
+    this->pushSingleLexNode(lexnode, tokentype);
 }
 
-finErrorCode finSyntaxReader::processVirtualToken(finLexNode *lexnode)
+void finSyntaxReader::processVirtualToken(finLexNode *lexnode)
 {
     if ( lexnode == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Process a null virtual token.");
 
     // Do nothing with the lex node, and release the memory merely.
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxReader::processOperatorToken(finLexNode *lexnode)
+void finSyntaxReader::processOperatorToken(finLexNode *lexnode)
 {
     if ( isArithOperator(lexnode) )
-        return this->processArithOperator(lexnode);
+        this->processArithOperator(lexnode);
     else if ( isBracket(lexnode))
-        return this->processBracket(lexnode);
+        this->processBracket(lexnode);
     else
-        return this->processSplitter(lexnode);
+        this->processSplitter(lexnode);
 }
 
 static struct _finSynLexOpTableItem {

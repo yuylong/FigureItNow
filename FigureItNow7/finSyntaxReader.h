@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2024 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 /*! \file finSyntaxReader.h
  *  \brief The method converting from Lex Nodes to a Syntax Tree.
@@ -50,25 +50,25 @@ public:
     finLexReader *getLexReader();
     QString getScriptCode() const;
 
-    finErrorCode setScriptCode(const QString &scriptcode);
+    void setScriptCode(const QString &scriptcode);
 
     bool isReading() const;
     State getState() const;
 
-    finErrorCode startRead();
-    finErrorCode stopRead();
+    void startRead();
+    void stopRead();
 
-    finErrorCode readNextToken();
+    bool readNextToken();
     finSyntaxTree *getSyntaxTree();
 
 private:
-    finErrorCode disposeAllRead();
+    void disposeAllRead();
 
-    finErrorCode processTypedNextToken(finLexNode *lexnode, finLexNodeType lextype);
+    void processTypedNextToken(finLexNode *lexnode, finLexNodeType lextype);
 
-    finErrorCode processInstanceToken(finLexNode *lexnode);
-    finErrorCode processVirtualToken(finLexNode *lexnode);
-    finErrorCode processOperatorToken(finLexNode *lexnode);
+    void processInstanceToken(finLexNode *lexnode);
+    void processVirtualToken(finLexNode *lexnode);
+    void processOperatorToken(finLexNode *lexnode);
 
     static int getOperatorBfParamCnt(finLexNode *lexnode);
     static int getOperatorAfParamCnt(finLexNode *lexnode);
