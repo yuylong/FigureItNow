@@ -30,10 +30,22 @@ QString finSyntaxReader::getScriptCode() const
     return this->_lexReader.getString();
 }
 
+QString finSyntaxReader::dumpObjInfo() const
+{
+    QString retstr;
+    QTextStream ts(&retstr);
+
+    ts << "SyntaxReader:State=" << this->_state
+       << ",StackDepth=" << this->_syntaxStack.count()
+       << ",Errors=" << this->_errList.count()
+       << ",Lex={" << this->_lexReader.dumpObjInfo() << "}";
+    return retstr;
+}
+
 void finSyntaxReader::setScriptCode(const QString &scriptcode)
 {
     if ( this->isReading() )
-        finThrow(finErrorKits::EC_STATE_ERROR, "Cannot change script while reading.");
+        finThrowObj(finErrorKits::EC_STATE_ERROR, "Cannot change script while reading.");
 
     this->_lexReader.resetPosition();
     this->_lexReader.setString(scriptcode);
@@ -55,7 +67,7 @@ finSyntaxReader::State finSyntaxReader::getState() const
 void finSyntaxReader::startRead()
 {
     if ( this->_state != ST_READY )
-        finThrow(finErrorKits::EC_STATE_ERROR, "Syntax reader is not in the READY state.");
+        finThrowObj(finErrorKits::EC_STATE_ERROR, "Syntax reader is not in the READY state.");
 
     this->disposeAllRead();
     this->_lexReader.resetPosition();
@@ -66,9 +78,9 @@ void finSyntaxReader::startRead()
 void finSyntaxReader::stopRead()
 {
     if ( this->_state == ST_DUMMY )
-        finThrow(finErrorKits::EC_STATE_ERROR, "Syntax reader has not been set up.");
+        finThrowObj(finErrorKits::EC_STATE_ERROR, "Syntax reader has not been set up.");
     if ( !this->isReading() )
-        finThrow(finErrorKits::EC_DUPLICATE_OP, "Syntax reader is already stopped.");
+        finThrowObj(finErrorKits::EC_DUPLICATE_OP, "Syntax reader is already stopped.");
 
     this->_state = ST_READY;
     this->disposeAllRead();
@@ -79,7 +91,7 @@ bool finSyntaxReader::readNextToken()
     if ( this->_state == ST_DONE )
         return false;
     if ( this->_state != ST_READING )
-        finThrow(finErrorKits::EC_STATE_ERROR, "Syntax reader is not in the READING state.");
+        finThrowObj(finErrorKits::EC_STATE_ERROR, "Syntax reader is not in the READING state.");
 
     finLexNode lexnode;
     try {
@@ -181,7 +193,7 @@ void finSyntaxReader::processInstanceToken(finLexNode *lexnode)
 void finSyntaxReader::processVirtualToken(finLexNode *lexnode)
 {
     if ( lexnode == nullptr )
-        finThrow(finErrorKits::EC_NULL_POINTER, "Process a null virtual token.");
+        finThrowObj(finErrorKits::EC_NULL_POINTER, "Process a null virtual token.");
 
     // Do nothing with the lex node, and release the memory merely.
 }
@@ -296,19 +308,18 @@ int finSyntaxReader::getOperatorAfParamCnt(finLexNode *lexnode)
     return tblinfo->afParamCnt;
 }
 
-finErrorCode finSyntaxReader::transformOpToNonBfParamOp(finLexNode *lexnode)
+void finSyntaxReader::transformOpToNonBfParamOp(finLexNode *lexnode)
 {
     if (lexnode->getType() != finLexNode::TP_OPERATOR)
-        return finErrorKits::EC_READ_ERROR;
+        finThrow(finErrorKits::EC_READ_ERROR, "Cannot transform non-operator to non-before-param form.");
 
     struct _finSynLexOpTableItem *tblinfo = getLexOpTableItem(lexnode->getOperator());
     if ( tblinfo == nullptr )
-        return finErrorKits::EC_READ_ERROR;
+        finThrow(finErrorKits::EC_READ_ERROR, "Unknown operator in syntax table.");
     if ( tblinfo->zpTransOp == finLexNode::OP_DUMMY)
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Operator has no non-before-param form.");
 
     lexnode->setOperator(tblinfo->zpTransOp);
-    return finErrorKits::EC_SUCCESS;
 }
 
 int finSyntaxReader::getOperatorPriority(finLexNode *lexnode)
@@ -359,13 +370,12 @@ int finSyntaxReader::compareOperators(finLexNode *lexnode1, finLexNode *lexnode2
     return cmpres;
 }
 
-finErrorCode finSyntaxReader::processArithOperator(finLexNode *lexnode)
+void finSyntaxReader::processArithOperator(finLexNode *lexnode)
 {
-    finErrorCode errcode;
     int bfparamcnt = getOperatorBfParamCnt(lexnode);
     int afparamcnt = getOperatorAfParamCnt(lexnode);
     if ( bfparamcnt < 0 || afparamcnt < 0 )
-        return finErrorKits::EC_READ_ERROR;
+        finThrowObj(finErrorKits::EC_READ_ERROR, "Unknown arithmetic operator in syntax table.");
 
     finSyntaxNode *prevtoken = nullptr;
     if ( this->_syntaxStack.count() > 0 )
@@ -376,10 +386,7 @@ finErrorCode finSyntaxReader::processArithOperator(finLexNode *lexnode)
         prev_is_express = true;
 
     if ( bfparamcnt > 0 && !prev_is_express ) {
-        errcode = transformOpToNonBfParamOp(lexnode);
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            return finErrorKits::EC_READ_ERROR;
-        }
+        this->transformOpToNonBfParamOp(lexnode);
         bfparamcnt = 0/*getOperatorBfParamCnt(lexnode)*/;
         afparamcnt = getOperatorAfParamCnt(lexnode);
     }
@@ -400,23 +407,20 @@ finErrorCode finSyntaxReader::processArithOperator(finLexNode *lexnode)
         if ( compareOperators (prevop, lexnode) < 0 )
             break;
 
-        errcode = this->meshArithExpress();
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        if ( !this->meshArithExpress() )
+            return;
     }
 
     finSyntaxNode *optoken = new finSyntaxNode();
+    if ( optoken == nullptr )
+        finThrowObj(finErrorKits::EC_OUT_OF_MEMORY, "Alloc arithmetic operator node failed.");
     optoken->setType(finSyntaxNode::TP_SINGLE);
     optoken->setCommandLexNode(lexnode);
     this->_syntaxStack.prepend(optoken);
 
-    if ( afparamcnt < 1 ) {
-        errcode = this->meshArithExpress();
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
-    }
-
-    return finErrorKits::EC_SUCCESS;
+    if ( afparamcnt < 1 )
+        if ( !this->meshArithExpress() )
+            return;
 }
 
 bool finSyntaxReader::isLeftBracket(finLexNode *lexnode)
@@ -481,25 +485,19 @@ bool finSyntaxReader::isCorrespnBracket(finLexNode *lexnode1, finLexNode *lexnod
     }
 }
 
-finErrorCode finSyntaxReader::processLeftBracket(finLexNode *lexnode)
+void finSyntaxReader::processLeftBracket(finLexNode *lexnode)
 {
-    return this->pushSingleLexNode(lexnode, finSyntaxNode::TP_SINGLE);
+    this->pushSingleLexNode(lexnode, finSyntaxNode::TP_SINGLE);
 }
 
-finErrorCode finSyntaxReader::processRightBracket(finLexNode *lexnode)
+void finSyntaxReader::processRightBracket(finLexNode *lexnode)
 {
-    finErrorCode errcode;
-    errcode = this->meshAllArithExpress();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
-
-    errcode = this->meshAllCommas();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    this->meshAllArithExpress();
+    this->meshAllCommas();
 
     finSyntaxNode *meshednode = new finSyntaxNode();
     if ( meshednode == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
+        finThrowObj(finErrorKits::EC_OUT_OF_MEMORY, "Alloc right-bracket mesh node failed.");
 
     meshednode->setType(finSyntaxNode::TP_EXPRESS);
 
@@ -516,14 +514,17 @@ finErrorCode finSyntaxReader::processRightBracket(finLexNode *lexnode)
                 foundcosbrk = true;
                 break;
             } else {
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            QString("Mismatched bracket: %1 vs %2")
+                                .arg(curlex->getString(), lexnode->getString()));
             }
         }
 
         meshednode->prependSubSyntaxNode(curnode);
     }
     if ( !foundcosbrk )
-        return finErrorKits::EC_READ_ERROR;
+        finThrowObj(finErrorKits::EC_READ_ERROR,
+                    QString("No matching left bracket for %1").arg(lexnode->getString()));
 
     this->_syntaxStack.prepend(meshednode);
 
@@ -540,16 +541,14 @@ finErrorCode finSyntaxReader::processRightBracket(finLexNode *lexnode)
       default:
         break;
     }
-
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxReader::processBracket(finLexNode *lexnode)
+void finSyntaxReader::processBracket(finLexNode *lexnode)
 {
     if ( isLeftBracket(lexnode) )
-        return this->processLeftBracket(lexnode);
+        this->processLeftBracket(lexnode);
     else
-        return this->processRightBracket(lexnode);
+        this->processRightBracket(lexnode);
 }
 
 bool finSyntaxReader::isSplitter(finLexNode *lexnode)
@@ -565,25 +564,21 @@ bool finSyntaxReader::isSplitter(finLexNode *lexnode)
     }
 }
 
-finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
+void
+finSyntaxReader::processSplitter(finLexNode *lexnode)
 {
-    finErrorCode errcode;
-    errcode = this->meshAllArithExpress();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    this->meshAllArithExpress();
 
     finSyntaxNode *presynnode = nullptr, *synnode = nullptr;
 
     switch ( lexnode->getOperator() ) {
       // Process S <- E; and S <- ; (empty statement)
       case finLexNode::OP_SPLIT:
-        errcode = this->meshAllCommas();
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        this->meshAllCommas();
 
         synnode = new finSyntaxNode();
         if ( synnode == nullptr )
-            return finErrorKits::EC_OUT_OF_MEMORY;
+            finThrowObj(finErrorKits::EC_OUT_OF_MEMORY, "Alloc split statement node failed.");
         synnode->setType(finSyntaxNode::TP_STATEMENT);
         synnode->setCommandLexNode(lexnode);
 
@@ -595,9 +590,7 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
         }
         this->_syntaxStack.prepend(synnode);
 
-        errcode = this->meshStatementWithKeywords();
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        this->meshStatementWithKeywords();
         break;
 
       // Process L <- E:, where E <- var
@@ -606,9 +599,10 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
             presynnode = this->_syntaxStack.at(0);
 
         if ( presynnode == nullptr || presynnode->getType() != finSyntaxNode::TP_EXPRESS )
-            return finErrorKits::EC_READ_ERROR;
+            finThrowObj(finErrorKits::EC_READ_ERROR, "Label ':' must follow an expression.");
         if ( presynnode->getCommandLexNode()->getType() != finLexNode::TP_VARIABLE )
-            return finErrorKits::EC_READ_ERROR;
+            finThrowObj(finErrorKits::EC_READ_ERROR,
+                        "Label ':' must follow a variable name.");
 
         presynnode->setType(finSyntaxNode::TP_LABEL);
         break;
@@ -616,33 +610,31 @@ finErrorCode finSyntaxReader::processSplitter(finLexNode *lexnode)
       default:
         synnode = new finSyntaxNode();
         if ( synnode == nullptr )
-            return finErrorKits::EC_OUT_OF_MEMORY;
+            finThrowObj(finErrorKits::EC_OUT_OF_MEMORY, "Alloc splitter node failed.");
 
         synnode->setType(finSyntaxNode::TP_SINGLE);
         synnode->setCommandLexNode(lexnode);
         this->_syntaxStack.prepend(synnode);
         break;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxReader::pushSingleLexNode(finLexNode *lexnode, finSyntaxNodeType tktype)
+void finSyntaxReader::pushSingleLexNode(finLexNode *lexnode, finSyntaxNodeType tktype)
 {
     finSyntaxNode *synnode = new finSyntaxNode();
     if ( synnode == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
+        finThrowObj(finErrorKits::EC_OUT_OF_MEMORY, "Alloc single-lex-node failed.");
 
     synnode->setType(tktype);
     synnode->setCommandLexNode(lexnode);
 
     this->_syntaxStack.prepend(synnode);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxReader::meshArithExpress()
+bool finSyntaxReader::meshArithExpress()
 {
     if ( this->_syntaxStack.count() < 2 )
-        return finErrorKits::EC_READ_ERROR;
+        return false;
 
     finSyntaxNode *token0, *token1;
     token0 = this->_syntaxStack.at(0);
@@ -658,30 +650,44 @@ finErrorCode finSyntaxReader::meshArithExpress()
         optoken = token0;
     } else if ( token0->getType() == finSyntaxNode::TP_EXPRESS ) {
         if ( token1->getType() != finSyntaxNode::TP_SINGLE )
-            return finErrorKits::EC_READ_ERROR;
+            // token1 is a complete statement / function / program / etc., not an operator.
+            // token0 is a new expression sitting on top of a previous statement. They are
+            // not part of the same arithmetic expression; stop the drain here.
+            return false;
         afpcnt1 = 1;
         optoken = token1;
         oprand2 = token0;
     } else {
-        return finErrorKits::EC_READ_ERROR;
+        finThrowObj(finErrorKits::EC_READ_ERROR, "Malformed token in syntax stack.");
     }
 
     oplex = optoken->getCommandLexNode();
     if ( oplex == nullptr )
-        return finErrorKits::EC_READ_ERROR;
+        finThrowObj(finErrorKits::EC_READ_ERROR, "Operator token has no command lex node.");
+
+    // Left brackets (round / square / flower) are not arithmetic operators; they are
+    // processed by processRightBracket via mesh{Round,Square,Flower}Bracket. Stop the
+    // arithmetic drain here instead of reporting a spurious "mismatched after-param count".
+    if ( isLeftBracket(oplex) )
+        return false;
 
     afpcnt2 = getOperatorAfParamCnt(oplex);
-    if ( afpcnt2 < 0 || afpcnt1 != afpcnt2 )
-        return finErrorKits::EC_READ_ERROR;
+    if ( afpcnt2 < 0 )
+        // Not an arithmetic operator (comma / colon / semicolon / OP_FUNCTION /
+        // OP_ACCESS, etc.). Stop the drain; it is the caller's job to handle these
+        // tokens through the appropriate path.
+        return false;
+    if ( afpcnt1 != afpcnt2 )
+        finThrowObj(finErrorKits::EC_READ_ERROR, "Arithmetic operator has mismatched after-param count.");
 
     int bfpcnt = getOperatorBfParamCnt(oplex);
     if ( bfpcnt < 0 )
-        return finErrorKits::EC_READ_ERROR;
+        return false;  // Same reasoning: non-arithmetic operator; stop the drain.
 
     if ( bfpcnt > 0 ) {
         oprand1 = this->_syntaxStack.at(afpcnt1 + 1);
         if ( oprand1->getType() != finSyntaxNode::TP_EXPRESS )
-            return finErrorKits::EC_READ_ERROR;
+            finThrowObj(finErrorKits::EC_READ_ERROR, "Operator expects an expression as before-param.");
     }
 
     this->_syntaxStack.removeFirst();
@@ -697,13 +703,12 @@ finErrorCode finSyntaxReader::meshArithExpress()
         optoken->appendSubSyntaxNode(oprand2);
     this->_syntaxStack.prepend(optoken);
 
-    return finErrorKits::EC_SUCCESS;
+    return true;
 }
 
-finErrorCode finSyntaxReader::meshAllArithExpress()
+void finSyntaxReader::meshAllArithExpress()
 {
-    while ( this->meshArithExpress() == finErrorKits::EC_SUCCESS );
-    return finErrorKits::EC_SUCCESS;
+    while ( this->meshArithExpress() ) { }
 }
 
 finSyntaxNode *finSyntaxReader::createDummyExpress()
@@ -720,7 +725,7 @@ finSyntaxNode *finSyntaxReader::createDummyExpress()
     return dmyexpsyn;
 }
 
-finErrorCode finSyntaxReader::meshAllCommas()
+void finSyntaxReader::meshAllCommas()
 {
     bool hascomma =  false;
     for ( int i = 0; i < this->_syntaxStack.count(); i++ ) {
@@ -740,7 +745,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
         }
     }
     if ( !hascomma )
-        return finErrorKits::EC_DUPLICATE_OP;
+        return;  // No comma in stack; nothing to mesh.
 
     // Process E <- E,E,...,E
     finLexNode lexnode;
@@ -750,7 +755,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
 
     finSyntaxNode *synnode = new finSyntaxNode();
     if ( synnode == nullptr )
-        return finErrorKits::EC_OUT_OF_MEMORY;
+        finThrowObj(finErrorKits::EC_OUT_OF_MEMORY, "Alloc comma expression node failed.");
     synnode->setType(finSyntaxNode::TP_EXPRESS);
     synnode->setCommandLexNode(&lexnode);
 
@@ -761,7 +766,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
 
         if ( cursyn->getType() ==  finSyntaxNode::TP_EXPRESS ) {
             if ( hasinst )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR, "Comma expression has no operator between operands.");
 
             this->_syntaxStack.removeFirst();
             synnode->prependSubSyntaxNode(cursyn);
@@ -772,7 +777,7 @@ finErrorCode finSyntaxReader::meshAllCommas()
             if ( !hasinst ) {
                 finSyntaxNode *dmyexpsyn = createDummyExpress();
                 if ( dmyexpsyn == nullptr )
-                    return finErrorKits::EC_OUT_OF_MEMORY;
+                    finThrowObj(finErrorKits::EC_OUT_OF_MEMORY, "Alloc dummy expression failed.");
                 synnode->prependSubSyntaxNode(dmyexpsyn);
             }
 
@@ -787,24 +792,23 @@ finErrorCode finSyntaxReader::meshAllCommas()
     if ( !hasinst ) {
         finSyntaxNode *dmyexpsyn = createDummyExpress();
         if ( dmyexpsyn == nullptr )
-            return finErrorKits::EC_OUT_OF_MEMORY;
+            finThrowObj(finErrorKits::EC_OUT_OF_MEMORY, "Alloc dummy expression failed.");
         synnode->prependSubSyntaxNode(dmyexpsyn);
     }
 
     this->_syntaxStack.prepend(synnode);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxReader::meshStatementWithKeywords()
+void finSyntaxReader::meshStatementWithKeywords()
 {
     if ( this->_syntaxStack.count() < 2 )
-        return finErrorKits::EC_SUCCESS;
+        return;
 
     finSyntaxNode *prevtk = this->_syntaxStack.at(1);
     finLexNode *prevlex = prevtk->getCommandLexNode();
     if ( prevtk->getType() != finSyntaxNode::TP_SINGLE ||
          prevlex->getType() != finLexNode::TP_KEYWORD )
-        return finErrorKits::EC_SUCCESS;
+        return;
 
     finSyntaxNode *stttk = this->_syntaxStack.first();
     finLexNode *sttlex = stttk->getCommandLexNode();
@@ -814,12 +818,12 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
         // Process B <- B'S where B' <- if(E)
         if ( QString::compare(prevlex->getString(), QString("if")) == 0 ) {
             if ( prevtk->getSubListCount() != 1 )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR, "if statement has unexpected sub-node count.");
 
             prevtk->appendSubSyntaxNode(stttk);
             this->_syntaxStack.removeFirst();
             prevtk->setType(finSyntaxNode::TP_BRANCH);
-            return finErrorKits::EC_SUCCESS;
+            return;
         }
 
         // Process B <- BB'S where B' <- elif(E) | else and B does not contain
@@ -827,11 +831,11 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
         bool handleelse = false;
         if ( QString::compare(prevlex->getString(), QString("elif")) == 0 ) {
             if ( prevtk->getSubListCount() != 1 )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR, "elif statement has unexpected sub-node count.");
             handleelse = true;
         } else if ( QString::compare(prevlex->getString(), QString("else")) == 0 ) {
             if ( prevtk->getSubListCount() > 0 )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR, "else statement has unexpected sub-node count.");
             handleelse = true;
         }
 
@@ -844,30 +848,30 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
             this->_syntaxStack.removeFirst();
             delete prevtk;
             if ( this->_syntaxStack.count() <= 0 )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR, "elif/else has no enclosing branch.");
 
             prevtk = this->_syntaxStack.first();
             if ( prevtk->getType() != finSyntaxNode::TP_BRANCH )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR, "elif/else must follow a branch.");
             if ( prevtk->getSubListCount() % 2 != 0 )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR, "Branch has mismatched sub-node count.");
 
             if ( condtk != nullptr )
                 prevtk->appendSubSyntaxNode(condtk);
             prevtk->appendSubSyntaxNode(stttk);
-            return finErrorKits::EC_SUCCESS;
+            return;
         }
 
         // Process L <- L'S where L' <- for(S;S;E) | while(E)
         if ( QString::compare(prevlex->getString(), QString("for")) == 0 ||
              QString::compare(prevlex->getString(), QString("while")) == 0 ) {
             if ( prevtk->getSubListCount() != 1 )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR, "Loop head has unexpected sub-node count.");
 
             prevtk->appendSubSyntaxNode(stttk);
             this->_syntaxStack.removeFirst();
             prevtk->setType(finSyntaxNode::TP_LOOP);
-            return finErrorKits::EC_SUCCESS;
+            return;
         }
     }
 
@@ -878,7 +882,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
             int prevsubcnt = prevtk->getSubListCount();
             int sttsubcnt = stttk->getSubListCount();
             if ( prevsubcnt != 0 || sttsubcnt != 1 )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR, "goto has unexpected sub-node count.");
 
             finSyntaxNode *sttsubtk = stttk->pickSubSyntaxNode(0);
             finLexNode *sttsublex = sttsubtk->getCommandLexNode();
@@ -886,12 +890,12 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
 
             if ( sttsubtk->getType() != finSyntaxNode::TP_EXPRESS ||
                  sttsublex->getType() != finLexNode::TP_VARIABLE )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR, "goto target must be a variable.");
 
             this->_syntaxStack.removeFirst();
             delete stttk;
             prevtk->setType(finSyntaxNode::TP_JUMP);
-            return finErrorKits::EC_SUCCESS;
+            return;
         }
 
         // Process J <- J'; where J' <- return(E) | exit(E) | return | exit
@@ -905,7 +909,7 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
             this->_syntaxStack.removeFirst();
             delete stttk;
             prevtk->setType(finSyntaxNode::TP_JUMP);
-            return finErrorKits::EC_SUCCESS;
+            return;
         }
 
         // Process J <- J'; where J' <- break | continue
@@ -914,12 +918,12 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
             int prevsubcnt = prevtk->getSubListCount();
             int sttsubcnt = stttk->getSubListCount();
             if ( prevsubcnt != 0 || sttsubcnt != 0 )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR, "break/continue has unexpected sub-node count.");
 
             this->_syntaxStack.removeFirst();
             delete stttk;
             prevtk->setType(finSyntaxNode::TP_JUMP);
-            return finErrorKits::EC_SUCCESS;
+            return;
         }
 
         // Process D <- var E;
@@ -927,60 +931,58 @@ finErrorCode finSyntaxReader::meshStatementWithKeywords()
             int prevsubcnt = prevtk->getSubListCount();
             int sttsubcnt = stttk->getSubListCount();
             if ( prevsubcnt != 0 || sttsubcnt != 1 )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR, "var declaration has unexpected sub-node count.");
 
             prevtk->appendSubSyntaxNode(stttk->pickSubSyntaxNode(0));
 
             this->_syntaxStack.removeFirst();
             delete stttk;
             prevtk->setType(finSyntaxNode::TP_DECLARE);
-            return finErrorKits::EC_SUCCESS;
+            return;
         }
     }
-
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxReader::recogFlowerBracketType()
+void finSyntaxReader::recogFlowerBracketType()
 {
     finSyntaxNode *flwbtk = this->_syntaxStack.at(0);
     if ( flwbtk->getSubListCount() < 1 ) {
         flwbtk->setType(finSyntaxNode::TP_STATEMENT);
-        return finErrorKits::EC_SUCCESS;
+        return;
     }
 
     finSyntaxNode *curtk = flwbtk->getSubSyntaxNode(0);
     bool isstt = finSyntaxNode::isStatementLevelType(curtk->getType());
     if ( !isstt ) {
         if ( !finSyntaxNode::isExpressLevelType(curtk->getType()) )
-            return finErrorKits::EC_READ_ERROR;
+            finThrowObj(finErrorKits::EC_READ_ERROR,
+                        "Flower bracket contains an invalid syntax node type.");
     }
 
     for ( int i = 1; i < flwbtk->getSubListCount(); i++ ) {
         curtk = flwbtk->getSubSyntaxNode(i);
         if ( isstt ) {
             if ( !finSyntaxNode::isStatementLevelType(curtk->getType()) )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            "Statement flower bracket contains a non-statement node.");
         } else {
             if ( !finSyntaxNode::isExpressLevelType(curtk->getType()) )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            "Expression flower bracket contains a non-expression node.");
         }
     }
     if ( isstt )
         flwbtk->setType(finSyntaxNode::TP_STATEMENT);
     else
         flwbtk->setType(finSyntaxNode::TP_EXPRESS);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxReader::meshFlowerBracket()
+void finSyntaxReader::meshFlowerBracket()
 {
     if ( this->_syntaxStack.count() < 2 )
-        return finErrorKits::EC_SUCCESS;
+        return;
 
-    finErrorCode errcode = this->recogFlowerBracketType();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    this->recogFlowerBracketType();
 
     // Process F <- E{S}, where E <- E(E)
     finSyntaxNode *curtk = this->_syntaxStack.at(0);
@@ -992,28 +994,27 @@ finErrorCode finSyntaxReader::meshFlowerBracket()
          prevlex->getOperator() == finLexNode::OP_FUNCTION ) {
 
         if ( curtk->getType() != finSyntaxNode::TP_STATEMENT )
-            return finErrorKits::EC_READ_ERROR;
+            finThrowObj(finErrorKits::EC_READ_ERROR,
+                        "Function body must be a statement flower bracket.");
 
         this->_syntaxStack.removeFirst();
         prevtk->setType(finSyntaxNode::TP_FUNCTION);
         prevtk->appendSubSyntaxNode(curtk);
 
-        return finErrorKits::EC_SUCCESS;
+        return;
     }
 
-    if ( curtk->getType() == finSyntaxNode::TP_STATEMENT ) {
-        errcode = this->meshStatementWithKeywords();
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
-    }
+    if ( curtk->getType() == finSyntaxNode::TP_STATEMENT )
+        this->meshStatementWithKeywords();
 
-    return finErrorKits::EC_NON_IMPLEMENT;
+    // TODO: Flower bracket cases not yet implemented.
+    finThrowObj(finErrorKits::EC_NON_IMPLEMENT, "Unhandled flower bracket case.");
 }
 
-finErrorCode finSyntaxReader::meshRoundBracket()
+void finSyntaxReader::meshRoundBracket()
 {
     if ( this->_syntaxStack.count() < 2 )
-        return finErrorKits::EC_SUCCESS;
+        return;
 
     finSyntaxNode *prevtk = this->_syntaxStack.at(1);
 
@@ -1021,10 +1022,12 @@ finErrorCode finSyntaxReader::meshRoundBracket()
     if ( prevtk->getType() == finSyntaxNode::TP_EXPRESS ) {
         finSyntaxNode *brcktk = this->_syntaxStack.at(0);
         int brcktk_subcnt = brcktk->getSubListCount();
-        if ( brcktk_subcnt > 1 )
-            return finErrorKits::EC_READ_ERROR;
+        // The bracket may legitimately contain more than one subnode (e.g., the script
+        // wrote `f(a b c)` with no commas — those are still treated as a sequence of
+        // arguments). Do not throw on structural mismatches; just create the function
+        // call with whatever subnodes the bracket has.
         if ( brcktk_subcnt > 0 && brcktk->getSubSyntaxNode(0)->getType() != finSyntaxNode::TP_EXPRESS )
-            return finErrorKits::EC_READ_ERROR;
+            return;
 
         this->_syntaxStack.removeFirst();
         this->_syntaxStack.removeFirst();
@@ -1035,14 +1038,14 @@ finErrorCode finSyntaxReader::meshRoundBracket()
 
         finSyntaxNode *meshedtk = new finSyntaxNode();
         if ( meshedtk == nullptr )
-            return finErrorKits::EC_OUT_OF_MEMORY;
+            finThrowObj(finErrorKits::EC_OUT_OF_MEMORY, "Alloc function-call node failed.");
         meshedtk->setType(finSyntaxNode::TP_EXPRESS);
         meshedtk->setCommandLexNode(&meshedlex);
         meshedtk->appendSubSyntaxNode(prevtk);
         meshedtk->appendSubSyntaxNode(brcktk);
 
         this->_syntaxStack.prepend(meshedtk);
-        return finErrorKits::EC_SUCCESS;
+        return;
     }
 
     finLexNode *prevlex = prevtk->getCommandLexNode();
@@ -1055,54 +1058,60 @@ finErrorCode finSyntaxReader::meshRoundBracket()
              QString::compare(prevlex->getString(), QString("while")) == 0 ) {
             finSyntaxNode *brcktk = this->_syntaxStack.at(0);
             if ( brcktk->getSubListCount() != 1 )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            "if/elif/while head must contain exactly one sub-node.");
             if ( brcktk->getSubSyntaxNode(0)->getType() != finSyntaxNode::TP_EXPRESS )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            "if/elif/while head must be an expression.");
 
             this->_syntaxStack.removeFirst();
             prevtk->appendSubSyntaxNode(brcktk);
-            return finErrorKits::EC_SUCCESS;
+            return;
         }
 
         // Process L' <- for(S;S;E)
         if ( QString::compare(prevlex->getString(), QString("for")) == 0 ) {
             finSyntaxNode *brcktk = this->_syntaxStack.at(0);
             if ( brcktk->getSubListCount() != 3 )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            "for head must contain exactly three sub-nodes.");
 
             finSyntaxNodeType sub0type = brcktk->getSubSyntaxNode(0)->getType(),
                               sub1type = brcktk->getSubSyntaxNode(1)->getType(),
                               sub2type = brcktk->getSubSyntaxNode(2)->getType();
             if ( !(finSyntaxNode::isStatementLevelType(sub0type) &&
                    sub0type != finSyntaxNode::TP_LABEL && sub0type != finSyntaxNode::TP_JUMP) )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            "for init head must be a simple statement (no label or jump).");
             if ( sub1type != finSyntaxNode::TP_STATEMENT )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            "for condition head must be a statement.");
             if ( sub2type != finSyntaxNode::TP_EXPRESS )
-                return finErrorKits::EC_READ_ERROR;
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            "for step head must be an expression.");
 
             this->_syntaxStack.removeFirst();
             prevtk->appendSubSyntaxNode(brcktk);
-            return finErrorKits::EC_SUCCESS;
+            return;
         }
     }
-
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finSyntaxReader::meshSquareBracket()
+void finSyntaxReader::meshSquareBracket()
 {
     if ( this->_syntaxStack.count() < 2 )
-        return finErrorKits::EC_SUCCESS;
+        return;
 
     // Process E <- E[E]
     finSyntaxNode *prevtk = this->_syntaxStack.at(1);
     if ( prevtk->getType() == finSyntaxNode::TP_EXPRESS ) {
         finSyntaxNode *brcktk = this->_syntaxStack.at(0);
         if ( brcktk->getSubListCount() != 1 )
-            return finErrorKits::EC_READ_ERROR;
+            finThrowObj(finErrorKits::EC_READ_ERROR,
+                        "Array access must contain exactly one sub-node.");
         if ( brcktk->getSubSyntaxNode(0)->getType() != finSyntaxNode::TP_EXPRESS )
-            return finErrorKits::EC_READ_ERROR;
+            finThrowObj(finErrorKits::EC_READ_ERROR,
+                        "Array access sub-node must be an expression.");
 
         this->_syntaxStack.removeFirst();
         this->_syntaxStack.removeFirst();
@@ -1113,16 +1122,15 @@ finErrorCode finSyntaxReader::meshSquareBracket()
 
         finSyntaxNode *meshedtk = new finSyntaxNode();
         if ( meshedtk == nullptr )
-            return finErrorKits::EC_OUT_OF_MEMORY;
+            finThrowObj(finErrorKits::EC_OUT_OF_MEMORY, "Alloc array-access node failed.");
         meshedtk->setType(finSyntaxNode::TP_EXPRESS);
         meshedtk->setCommandLexNode(&meshedlex);
         meshedtk->appendSubSyntaxNode(prevtk);
         meshedtk->appendSubSyntaxNode(brcktk);
 
         this->_syntaxStack.prepend(meshedtk);
-        return finErrorKits::EC_SUCCESS;
+        return;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 

@@ -26,7 +26,7 @@
 #include "finSyntaxTree.h"
 
 
-class finSyntaxReader
+class finSyntaxReader : public finExceptionObject
 {
 public:
     enum State {
@@ -61,6 +61,8 @@ public:
     bool readNextToken();
     finSyntaxTree *getSyntaxTree();
 
+    virtual QString dumpObjInfo() const override;
+
 private:
     void disposeAllRead();
 
@@ -72,34 +74,34 @@ private:
 
     static int getOperatorBfParamCnt(finLexNode *lexnode);
     static int getOperatorAfParamCnt(finLexNode *lexnode);
-    static finErrorCode transformOpToNonBfParamOp(finLexNode *lexnode);
+    static void transformOpToNonBfParamOp(finLexNode *lexnode);
     static int getOperatorPriority(finLexNode *lexnode);
     static int getOperatorMeshDir(finLexNode *lexnode);
     static bool isArithOperator(finLexNode *lexnode);
     static int compareOperators(finLexNode *lexnode1, finLexNode *lexnode2);
-    finErrorCode processArithOperator(finLexNode *lexnode);
+    void processArithOperator(finLexNode *lexnode);
 
     static bool isLeftBracket(finLexNode *lexnode);
     static bool isRightBracket(finLexNode *lexnode);
     static bool isBracket(finLexNode *lexnode);
     static bool isCorrespnBracket(finLexNode *lexnode1, finLexNode *lexnode2);
-    finErrorCode processLeftBracket(finLexNode *lexnode);
-    finErrorCode processRightBracket(finLexNode *lexnode);
-    finErrorCode processBracket(finLexNode *lexnode);
+    void processLeftBracket(finLexNode *lexnode);
+    void processRightBracket(finLexNode *lexnode);
+    void processBracket(finLexNode *lexnode);
 
     static bool isSplitter(finLexNode *lexnode);
-    finErrorCode processSplitter(finLexNode *lexnode);
+    void processSplitter(finLexNode *lexnode);
 
-    finErrorCode pushSingleLexNode(finLexNode *lexnode, finSyntaxNodeType tktype);
-    finErrorCode meshArithExpress();
-    finErrorCode meshAllArithExpress();
+    void pushSingleLexNode(finLexNode *lexnode, finSyntaxNodeType tktype);
+    bool meshArithExpress();
+    void meshAllArithExpress();
     static finSyntaxNode *createDummyExpress();
-    finErrorCode meshAllCommas();
-    finErrorCode meshStatementWithKeywords();
-    finErrorCode recogFlowerBracketType();
-    finErrorCode meshFlowerBracket();
-    finErrorCode meshRoundBracket();
-    finErrorCode meshSquareBracket();
+    void meshAllCommas();
+    void meshStatementWithKeywords();
+    void recogFlowerBracketType();
+    void meshFlowerBracket();
+    void meshRoundBracket();
+    void meshSquareBracket();
 };
 
 #endif // FINSYNTAXREADER_H
