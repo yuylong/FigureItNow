@@ -130,18 +130,26 @@ finLexReader::getNextLexNode(finLexNode *retnode)
 
     Q_ASSERT(retnode != nullptr);
 
+    finDebug << "getNextLexNode enter" << finDbgObj;
+
     // Check the current state of string inside the LexReader.
     if ( this->_inputStr.isEmpty() )
         finThrowObj(finErrorKits::EC_STATE_ERROR, "Cannot lex an empty script.");
 
     // Move the position pointer to the next non-blank char of the string.
-    if ( !this->moveToNextNonblank() )
+    if ( !this->moveToNextNonblank() ) {
+        finDebug << "getNextLexNode return false (end of script)" << finDbgObj;
         return false;
+    }
 
     this->getLexTypeOrder(&typeorder, &typeordernum);
     for ( int i = 0; i < typeordernum; i++ ) {
-        if ( this->tryGetTypedNode(retnode, typeorder[i]) )
+        if ( this->tryGetTypedNode(retnode, typeorder[i]) ) {
+            finDebug << "getNextLexNode return true; token type=" << retnode->getType()
+                     << " str=\"" << retnode->getString() << "\""
+                     << " row=" << retnode->getRow() << " col=" << retnode->getColumn();
             return true;
+        }
     }
 
     // No type probe matched the current character: this is a real lex error.
@@ -295,33 +303,40 @@ bool finLexReader::tryGetTypedNode(finLexNode *retnode, finLexNodeType lextype)
 {
     Q_ASSERT(retnode != nullptr);
 
+    finDebug << "tryGetTypedNode trying type=" << lextype
+             << " at " << this->_curRow << ":" << this->_curCol
+             << " char=\"" << this->getScriptChar() << "\"";
+
+    bool matched = false;
     switch (lextype) {
       case finLexNode::TP_NOTE:
-        return this->tryGetNote(retnode);
-        //break;
+        matched = this->tryGetNote(retnode);
+        break;
 
       case finLexNode::TP_STRING:
-        return this->tryGetString(retnode);
-        //break;
+        matched = this->tryGetString(retnode);
+        break;
 
       case finLexNode::TP_VARIABLE:
       case finLexNode::TP_KEYWORD:
-        return this->tryGetVariable(retnode);
-        //break;
+        matched = this->tryGetVariable(retnode);
+        break;
 
       case finLexNode::TP_DECIMAL:
-        return this->tryGetNumber(retnode);
-        //break;
+        matched = this->tryGetNumber(retnode);
+        break;
 
       case finLexNode::TP_OPERATOR:
-        return this->tryGetOperator(retnode);
-        //break;
+        matched = this->tryGetOperator(retnode);
+        break;
 
       default:
-        return false;
-        //break;
+        break;
     }
-    //return false;
+
+    finDebug << "tryGetTypedNode type=" << lextype
+             << (matched ? " MATCHED" : " no-match");
+    return matched;
 }
 
 bool finLexReader::tryGetNote(finLexNode *retnode)
@@ -368,6 +383,7 @@ bool finLexReader::tryGetNote(finLexNode *retnode)
     }
 
     this->buildLexNode(retnode, finLexNode::TP_NOTE, trypos);
+    finDebug << "tryGetNote matched" << finDbgObj;
     return true;
 }
 
@@ -412,6 +428,7 @@ bool finLexReader::tryGetVariable(finLexNode *retnode)
 
     this->_lastNodeType = retnode->getType();
     this->_nextReadOrder = ORD_OPERATOR_FIRST;
+    finDebug << "tryGetVariable matched" << finDbgObj;
     return true;
 }
 
@@ -579,6 +596,7 @@ bool finLexReader::tryGetNumber(finLexNode *retnode)
 
     this->_lastNodeType = finLexNode::TP_DECIMAL;
     this->_nextReadOrder = ORD_OPERATOR_FIRST;
+    finDebug << "tryGetNumber matched" << finDbgObj;
     return true;
 }
 
@@ -637,6 +655,7 @@ bool finLexReader::tryGetString(finLexNode *retnode)
 
     this->_lastNodeType = finLexNode::TP_STRING;
     this->_nextReadOrder = ORD_OPERATOR_FIRST;
+    finDebug << "tryGetString matched" << finDbgObj;
     return true;
 }
 
@@ -809,5 +828,7 @@ bool finLexReader::tryGetOperator(finLexNode *retnode)
     retnode->setOperator(optype);
 
     this->_lastNodeType = finLexNode::TP_OPERATOR;
+    finDebug << "tryGetOperator matched operator=" << optype
+             << " str=\"" << retnode->getString() << "\"" << finDbgObj;
     return true;
 }
