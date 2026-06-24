@@ -3,7 +3,17 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+/*! \file finSyntaxNode.cpp
+ *  \brief Implementations of the finSyntaxNode value class.
+ *
+ *  Provides the constructors and destructor, the recursive copyNode helper, the type-discriminated
+ *  getters and setters, the child-list append / prepend / pick operations, the disposal helpers
+ *  that own the child sub-trees, the static isExpressLevelType / isStatementLevelType
+ *  classifiers, the pretty-print dump / dumpLeveled pair, and the dumpObjInfo() formatter used
+ *  when a finSyntaxNode is attached to a logged finException.
  */
 
 #include "finSyntaxNode.h"
