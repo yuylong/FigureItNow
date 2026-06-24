@@ -233,6 +233,9 @@ finLexReader::moveReadPosWith(unsigned long detpos)
 bool
 finLexReader::moveToNextNonblank()
 {
+    if ( this->_posIdx >= this->scriptLength() )
+        return false;
+
     while ( this->getScriptChar().isSpace() ) {
         if ( !this->moveReadPos() )
             return false;
