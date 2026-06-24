@@ -66,7 +66,7 @@ finLexReader::getColumn() const
 }
 
 bool
-finLexReader::isReachBottom() const
+finLexReader::isReachedBottom() const
 {
     return this->_posIdx >= this->scriptLength();
 }
@@ -205,9 +205,8 @@ finLexReader::moveReadPos()
 {
     this->_posIdx++;
 
-    unsigned long strlength = this->scriptLength();
-    if ( this->_posIdx >= strlength ) {
-        this->_posIdx = strlength;
+    if ( this->isReachedBottom() ) {
+        this->_posIdx = this->scriptLength();
         return false;
     }
 
@@ -233,7 +232,7 @@ finLexReader::moveReadPosWith(unsigned long detpos)
 bool
 finLexReader::moveToNextNonblank()
 {
-    if ( this->_posIdx >= this->scriptLength() )
+    if ( this->isReachedBottom() )
         return false;
 
     while ( this->getScriptChar().isSpace() ) {

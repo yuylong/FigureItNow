@@ -89,7 +89,7 @@ public:
     /*!
      *  \brief Returns \c true if the read position is at or past the end of the input.
      */
-    bool isReachBottom() const;
+    bool isReachedBottom() const;
 
     /*!
      *  \brief Replaces the script being lexed and rewinds the read position.
