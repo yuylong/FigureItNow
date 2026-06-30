@@ -6,6 +6,13 @@
  * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
+/*! \file finExecFlowControl.cpp
+ *  \brief Implementations of the execution-time flow-control state object.
+ *
+ *  Provides the small runtime helper that stores propagated control-transfer state, validates it for
+ *  different execution contexts, and manages the optional return variable attached to that state.
+ */
+
 #include "finExecFlowControl.h"
 
 #include "finExecMachine.h"
