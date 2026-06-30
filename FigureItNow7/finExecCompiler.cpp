@@ -6,6 +6,13 @@
  * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
+/*! \file finExecCompiler.cpp
+ *  \brief Implementations of the execution-layer compiler wrapper.
+ *
+ *  Provides the small adapter that stores script text, drives finSyntaxReader through a full parse,
+ *  and converts parse failures into heap-allocated finSyntaxTree instances that carry syntax errors.
+ */
+
 #include "finExecCompiler.h"
 
 finExecCompiler::finExecCompiler()

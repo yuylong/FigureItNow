@@ -3,14 +3,14 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Jan 5th, 2017
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 /*! \file finExecCompiler.h
- *  \brief The compiler wrap for the execution module.
+ *  \brief Declarations of the execution-layer wrapper around finSyntaxReader.
  *
- * This file declares a class wrap the whole procedure of the syntax module, and give the interface to upper layer
- * code as a compiler. It give an interface that easily transform the script codes into a syntax tree. The syntax tree
- * then will be used by execution machine to generate the figure object list and other outputs.
+ *  This header defines finExecCompiler, a small adapter used by the execution layer to feed script
+ *  text into finSyntaxReader and retrieve the resulting finSyntaxTree. When compilation cannot produce
+ *  a normal tree, the wrapper builds a fallback tree that carries syntax-error information.
  */
 #ifndef FINEXECCOMPILER_H
 #define FINEXECCOMPILER_H
@@ -21,59 +21,74 @@
 
 
 /*! \class finExecCompiler
- *  \brief The compiler wrap for the execution module.
+ *  \brief Execution-layer wrapper that compiles script text into a syntax tree.
  *
- * This class gives an interface that transform a piece of script code into syntax tree. It is used by the execution
- * machine, and wrap all the procedure of the lower layered lexical and syntax modules.
+ *  finExecCompiler stores the script text currently being compiled and owns a finSyntaxReader used to
+ *  run the lexing and parsing pipeline. The execution machine uses this class as a narrow entry point:
+ *  setScriptCode() installs the source text, and compile() drives finSyntaxReader until it produces a
+ *  finSyntaxTree or an error tree containing a diagnostic message.
+ *
+ *  \see finSyntaxReader
+ *  \see finSyntaxTree
  */
 class finExecCompiler
 {
 private:
-    QString _scriptCode;         //!< The script code.
-    finSyntaxReader _synReader;  //!< The wrapped syntax reader.
+    QString _scriptCode;         //!< Script source text to be compiled on the next compile() call.
+    finSyntaxReader _synReader;  //!< Wrapped parser pipeline used to build the syntax tree.
 
 public:
-    /*! \fn finExecCompiler
-     *  \brief The constructor of class finExecCompiler.
+    /*!
+     *  \brief Constructs a compiler with empty script text.
      *
-     * It constructs an instance with empty script code. The script code is needed to be set before compiling process
-     * is invoked.
+     *  Call setScriptCode() before invoking compile().
      */
     finExecCompiler();
 
-    /*! \fn ~finExecCompiler
-     *  \brief the destructor of class finExecCompiler.
+    /*!
+     *  \brief Destroys the compiler and stops any in-progress syntax-reader session.
      */
     ~finExecCompiler();
 
-    /*! \fn getScriptCode
-     *  \brief Read the string value of the script code installed in the class instance.
+    /*!
+     *  \brief Returns the script text currently stored in the compiler.
      *
-     * \return The script code.
+     *  \return The source text that will be compiled by the next compile() call.
      */
     QString getScriptCode() const;
 
-    /*! \fn setScriptCode
-     *  \brief Setup a new script code.
+    /*!
+     *  \brief Replaces the script text to be compiled.
      *
-     * The old script code will be overwriten with the new one.
+     *  The previous script text is overwritten immediately; no compilation is triggered until compile()
+     *  is called.
      *
-     * \param script The script code.
-     * \return The operation is successful or not.
+     *  \param script  Source text to store.
+     *  \return \c finErrorKits::EC_SUCCESS after the new script text has been stored.
      */
     finErrorCode setScriptCode(const QString &script);
 
-    /*! \fn compile
-     *  \brief The main procedure of the compiler.
+    /*!
+     *  \brief Compiles the stored script text into a syntax tree.
      *
-     * This method transform the script code installed in the instance into a syntax tree. The syntax tree in heap
-     * space is generated after the invocation, and is needed to be deleted to avoid the memory leap.
+     *  This method resets any in-progress reader state, feeds the stored script text into finSyntaxReader,
+     *  and drives token reading until parsing finishes. The returned tree is heap-allocated and owned by
+     *  the caller. If parsing fails or no script text has been installed, the method returns a heap-
+     *  allocated fallback tree containing syntax-error information instead of returning \c nullptr whenever
+     *  possible.
      *
-     * \return The syntax tree corresponding to the script code. If the compiling failed, returns NULL.
+     *  \return A heap-allocated syntax tree representing the current script, or an error tree if
+     *          compilation failed. Returns \c nullptr only if allocating the fallback tree fails.
      */
     finSyntaxTree *compile();
 
 private:
+    /*!
+     *  \brief Builds a fallback syntax tree containing one syntax error.
+     *
+     *  \param errstr  Error message to attach to the tree. If empty, an empty tree is returned.
+     *  \return A heap-allocated syntax tree, or \c nullptr if allocation fails.
+     */
     finSyntaxTree *buildErrorTree(const QString &errstr) const;
 };
 
