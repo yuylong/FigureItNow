@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2021-2024 Yulong Yu. All rights reserved.
+ * Copyright(c) 2021-2026 Yulong Yu. All rights reserved.
  */
 
 /*! \file finVersion.cpp

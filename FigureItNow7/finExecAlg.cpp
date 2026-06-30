@@ -3,7 +3,15 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+/*! \file finExecAlg.cpp
+ *  \brief Implementations of runtime conversion, vector, and matrix helpers.
+ *
+ *  Provides the list / string conversion routines used by execution built-ins, the wrappers that
+ *  translate between finExecVariable and Qt container representations, and the numeric array, vector,
+ *  and matrix algorithms invoked by the interpreter.
  */
 
 #include <qmath.h>
