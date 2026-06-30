@@ -6,6 +6,14 @@
  * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
+/*! \file finExecMachine.cpp
+ *  \brief Implementations of the FIN-7 tree-walking execution machine.
+ *
+ *  Provides the end-to-end runtime pipeline after parsing: environment initialization, compilation
+ *  handoff, recursive syntax-node dispatch, expression and statement execution, and execution-
+ *  diagnostic collection.
+ */
+
 #include "finExecMachine.h"
 
 #include "finExecVariable.h"
