@@ -3,7 +3,15 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+/*! \file finExecFunction.cpp
+ *  \brief Implementations of runtime function metadata, argument binding, and dispatch.
+ *
+ *  Provides the shared execution path for user-defined and built-in functions, including sub-
+ *  environment construction, argument binding, extra-argument lookup, and system-function registry
+ *  installation.
  */
 
 #include "finExecFunction.h"
