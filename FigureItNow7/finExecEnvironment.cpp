@@ -3,7 +3,14 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+/*! \file finExecEnvironment.cpp
+ *  \brief Implementations of the runtime environment and scope-chain container.
+ *
+ *  Provides the environment object that owns runtime variables and functions, resolves names through
+ *  parent links, tracks function-call ownership, and manages the lazily initialized root environment.
  */
 
 #include "finExecEnvironment.h"
