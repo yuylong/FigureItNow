@@ -6,6 +6,14 @@
  * Copyright(c) 2021-2024 Yulong Yu. All rights reserved.
  */
 
+/*! \file finVersion.cpp
+ *  \brief Implementations of the finVersionTools metadata and formatting helpers.
+ *
+ *  Provides the static storage for the application's compiled-in version and Git metadata, the helper
+ *  that packs version components into finVersionTools::Version, and the string-formatting accessors used
+ *  by the UI and diagnostic output.
+ */
+
 #include "finVersion.h"
 
 #include <QtGlobal>
