@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2019 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINSYNTAXERRORDUMP_H
@@ -44,7 +44,7 @@ public:
     virtual ~finSyntaxErrorDumpGUIPlainText();
 
     QPlainTextEdit *getWidget() const;
-    finErrorCode setWidget(QPlainTextEdit *widget);
+    void setWidget(QPlainTextEdit *widget);
 
     virtual void dumpText(const QString &text);
 };

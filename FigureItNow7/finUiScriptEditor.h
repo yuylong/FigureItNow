@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #ifndef FINUISCRIPTEDITOR_H
@@ -50,7 +50,7 @@ public:
     ~finUiScriptEditor();
 
     QPlainTextEdit *getCompilerOutput() const;
-    finErrorCode setCompilerOutput(QPlainTextEdit *pte);
+    void setCompilerOutput(QPlainTextEdit *pte);
 
     const QString &getFilePath() const;
     const QString &getFilename() const;

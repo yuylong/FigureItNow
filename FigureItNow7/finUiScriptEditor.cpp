@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finUiScriptEditor.h"
@@ -64,9 +64,9 @@ QPlainTextEdit *finUiScriptEditor::getCompilerOutput() const
     return this->_compilerOutput.getWidget();
 }
 
-finErrorCode finUiScriptEditor::setCompilerOutput(QPlainTextEdit *pte)
+void finUiScriptEditor::setCompilerOutput(QPlainTextEdit *pte)
 {
-    return this->_compilerOutput.setWidget(pte);
+    this->_compilerOutput.setWidget(pte);
 }
 
 const QString &finUiScriptEditor::getFilePath() const

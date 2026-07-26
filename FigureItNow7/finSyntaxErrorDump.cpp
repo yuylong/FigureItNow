@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2019 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finSyntaxErrorDump.h"
@@ -59,10 +59,9 @@ QPlainTextEdit *finSyntaxErrorDumpGUIPlainText::getWidget() const
     return this->_widget;
 }
 
-finErrorCode finSyntaxErrorDumpGUIPlainText::setWidget(QPlainTextEdit *widget)
+void finSyntaxErrorDumpGUIPlainText::setWidget(QPlainTextEdit *widget)
 {
     this->_widget = widget;
-    return finErrorKits::EC_SUCCESS;
 }
 
 void finSyntaxErrorDumpGUIPlainText::dumpText(const QString &text)
