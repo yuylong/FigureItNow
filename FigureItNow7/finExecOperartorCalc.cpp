@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Dec 26th, 2016
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finExecOperartorCalc.h"
@@ -22,9 +22,7 @@ bool finExecOperartorCalc::varLogicValue(finExecVariable *var)
         return false;
 
     bool retval = false;
-    finErrorCode errcode = var->readBoolValue(&retval);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return false;
+    var->readBoolValue(&retval);
 
     return retval;
 }
@@ -35,11 +33,7 @@ finExecVariable *finExecOperartorCalc::buildStdLogicVar(bool blval)
     if ( retvar == nullptr )
         return nullptr;
 
-    finErrorCode errcode = retvar->setupBoolValue(blval);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete retvar;
-        return nullptr;
-    }
+    retvar->setupBoolValue(blval);
     retvar->setWriteProtected();
     retvar->clearLeftValue();
     return retvar;
@@ -543,9 +537,7 @@ _letOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
          oprand1->getType() != oprand2->getType() )
         return finErrorKits::EC_INVALID_PARAM;
 
-    finErrorCode errcode = oprand1->smartCopyVariableValue(oprand2);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    oprand1->smartCopyVariableValue(oprand2);
 
     *retval = oprand1;
     return finErrorKits::EC_SUCCESS;

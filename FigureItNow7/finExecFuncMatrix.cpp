@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finExecFunction.h"
@@ -58,11 +58,7 @@ static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *en
             return finErrorKits::EC_STATE_ERROR;
         }
 
-        errcode = retitemvar->copyVariableValue(itemvar);
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            delete retvar;
-            return errcode;
-        }
+        retitemvar->copyVariableValue(itemvar);
         aryidx++;
     }
 
@@ -154,11 +150,7 @@ static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *e
                 return finErrorKits::EC_STATE_ERROR;
             }
 
-            errcode = itemvar->copyVariableValue(srcvar);
-            if ( finErrorKits::isErrorResult(errcode) ) {
-                delete retvar;
-                return errcode;
-            }
+            itemvar->copyVariableValue(srcvar);
         }
     }
 

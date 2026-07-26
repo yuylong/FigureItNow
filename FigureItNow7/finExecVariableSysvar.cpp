@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2018 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include <qmath.h>
@@ -141,54 +141,33 @@ _finSysvarGencall _finSysvarGencallList[] = {
     nullptr
 };
 
-finErrorCode
+void
 finExecVariable::installSystemVariables(finExecEnvironment *rootenv)
 {
-    finErrorCode errcode;
-    int success = 0, failed = 0;
+    if ( rootenv == nullptr )
+        finThrow(finErrorKits::EC_NULL_POINTER, "Cannot install system variables into a null environment.");
 
     for ( int i = 0; _finSysvarGencallList[i] != nullptr; i++ ) {
         finExecVariable *curvar = _finSysvarGencallList[i]();
         if ( curvar == nullptr )
-            goto item_bad;
+            finThrow(finErrorKits::EC_OUT_OF_MEMORY, "Cannot create a system variable.");
 
-        errcode = rootenv->addVariable(curvar);
-        if ( finErrorKits::isErrorResult(errcode) )
-            goto item_bad;
-
-        success++;
-        continue;
-
-item_bad:
-        if ( curvar != nullptr )
+        finErrorCode errcode = rootenv->addVariable(curvar);
+        if ( finErrorKits::isErrorResult(errcode) ) {
             delete curvar;
-        failed++;
+            finThrow(errcode, "Cannot install a system variable.");
+        }
     }
-
-    if ( success == 0 && failed == 0 )
-        return finErrorKits::EC_REACH_BOTTOM;
-    else if ( success == 0 )
-        return finErrorKits::EC_NOT_FOUND;
-    else if ( failed != 0 )
-        return finErrorKits::EC_NORMAL_WARN;
-    else
-        return finErrorKits::EC_SUCCESS;
 }
 
 static finExecVariable *_sysvar_nil()
 {
-    finErrorCode errcode;
     auto retvar = std::make_unique<finExecVariable>();
     if ( retvar == nullptr )
         return nullptr;
 
-    errcode = retvar->setName(QString("NIL"));
-    if ( finErrorKits::isErrorResult(errcode) )
-        return nullptr;
-
-    errcode = retvar->setType(finExecVariable::TP_NULL);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return nullptr;
+    retvar->setName(QString("NIL"));
+    retvar->setType(finExecVariable::TP_NULL);
 
     retvar->setLeftValue();
     retvar->setWriteProtected();
@@ -198,22 +177,13 @@ static finExecVariable *_sysvar_nil()
 static inline finExecVariable *
 _sysvar_gen_num_var(const QString &name, double val)
 {
-    finErrorCode errcode;
     auto retvar = std::make_unique<finExecVariable>();
     if ( retvar == nullptr )
         return nullptr;
 
-    errcode = retvar->setName(name);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return nullptr;
-
-    errcode = retvar->setType(finExecVariable::TP_NUMERIC);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return nullptr;
-
-    errcode = retvar->setNumericValue(val);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return nullptr;
+    retvar->setName(name);
+    retvar->setType(finExecVariable::TP_NUMERIC);
+    retvar->setNumericValue(val);
 
     retvar->setLeftValue();
     retvar->setWriteProtected();
@@ -223,22 +193,13 @@ _sysvar_gen_num_var(const QString &name, double val)
 static inline finExecVariable *
 _sysvar_gen_str_var(const QString &name, const QString &val)
 {
-    finErrorCode errcode;
     auto retvar = std::make_unique<finExecVariable>();
     if ( retvar == nullptr )
         return nullptr;
 
-    errcode = retvar->setName(name);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return nullptr;
-
-    errcode = retvar->setType(finExecVariable::TP_STRING);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return nullptr;
-
-    errcode = retvar->setStringValue(val);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return nullptr;
+    retvar->setName(name);
+    retvar->setType(finExecVariable::TP_STRING);
+    retvar->setStringValue(val);
 
     retvar->setLeftValue();
     retvar->setWriteProtected();

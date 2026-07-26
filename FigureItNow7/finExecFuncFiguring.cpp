@@ -195,9 +195,7 @@ static finErrorCode _sysfunc_polyline_mat(finExecFunction *self, finExecEnvironm
     finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
     finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
     QList<QPointF> ptlist;
-    finErrorCode errcode = finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
 
     auto fopolyline = std::make_unique<finFigureObjectPolyline>();
     fopolyline->appendPoints(ptlist);
@@ -338,9 +336,7 @@ static finErrorCode _sysfunc_polygon_mat(finExecFunction *self, finExecEnvironme
     finExecVariable *xaryvar = finExecVariable::transLinkTarget(env->findVariable("xary"));
     finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
     QList<QPointF> ptlist;
-    finErrorCode errcode = finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
 
     auto fopolygon = std::make_unique<finFigureObjectPolygon>();
     fopolygon->appendPoints(ptlist);
@@ -765,9 +761,7 @@ static finErrorCode _sysfunc_named_color(finExecFunction *self, finExecEnvironme
     if (retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    finErrorCode errcode = retvar->setupColorValue(color);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    retvar->setupColorValue(color);
 
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -816,17 +810,9 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
         cfgvalue->setType(finExecVariable::TP_NUMERIC);
         cfgvalue->setNumericValue(figconfig->getDotSize());
     } else if ( QString::compare(cfgname, "border_color") == 0 ) {
-        errcode = cfgvalue->setupColorValue(figconfig->getBorderColor());
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            delete cfgvalue;
-            return errcode;
-        }
+        cfgvalue->setupColorValue(figconfig->getBorderColor());
     } else if ( QString::compare(cfgname, "fill_color") == 0 ) {
-        errcode = cfgvalue->setupColorValue(figconfig->getFillColor());
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            delete cfgvalue;
-            return errcode;
-        }
+        cfgvalue->setupColorValue(figconfig->getFillColor());
     } else if ( QString::compare(cfgname, "start_arrow_type") == 0 ) {
         finFigureArrowType arwtype = figconfig->getStartArrowType();
         cfgvalue->setType(finExecVariable::TP_STRING);
@@ -854,23 +840,11 @@ static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvir
         cfgvalue->setType(finExecVariable::TP_NUMERIC);
         cfgvalue->setNumericValue(figconfig->getFontPointSize());
     } else if ( QString::compare(cfgname, "font_bold") == 0 ) {
-        errcode = cfgvalue->setupBoolValue(figconfig->getFontBold());
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            delete cfgvalue;
-            return errcode;
-        }
+        cfgvalue->setupBoolValue(figconfig->getFontBold());
     } else if ( QString::compare(cfgname, "font_italic") == 0 ) {
-        errcode = cfgvalue->setupBoolValue(figconfig->getFontItalic());
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            delete cfgvalue;
-            return errcode;
-        }
+        cfgvalue->setupBoolValue(figconfig->getFontItalic());
     } else if ( QString::compare(cfgname, "font_color") == 0 ) {
-        errcode = cfgvalue->setupColorValue(figconfig->getFontColor());
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            delete cfgvalue;
-            return errcode;
-        }
+        cfgvalue->setupColorValue(figconfig->getFontColor());
     } else {
         delete cfgvalue;
         return finErrorKits::EC_INVALID_PARAM;
@@ -922,15 +896,11 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
         figconfig->setDotSize(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "border_color") == 0 ) {
         QColor color;
-        errcode = cfgvalue->readColorValue(&color);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        cfgvalue->readColorValue(&color);
         figconfig->setBorderColor(color);
     } else if ( QString::compare(cfgname, "fill_color") == 0 ) {
         QColor color;
-        errcode = cfgvalue->readColorValue(&color);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        cfgvalue->readColorValue(&color);
         figconfig->setFillColor(color);
     } else if ( QString::compare(cfgname, "start_arrow_type") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::TP_STRING )
@@ -968,21 +938,15 @@ static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvi
         figconfig->setFontPointSize(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "font_bold") == 0 ) {
         bool blval;
-        errcode = cfgvalue->readBoolValue(&blval);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        cfgvalue->readBoolValue(&blval);
         figconfig->setFontBold(blval);
     } else if ( QString::compare(cfgname, "font_italic") == 0 ) {
         bool blval;
-        errcode = cfgvalue->readBoolValue(&blval);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        cfgvalue->readBoolValue(&blval);
         figconfig->setFontItalic(blval);
     } else if ( QString::compare(cfgname, "font_color") == 0 ) {
         QColor color;
-        errcode = cfgvalue->readColorValue(&color);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        cfgvalue->readColorValue(&color);
         figconfig->setFontColor(color);
     } else {
         return finErrorKits::EC_INVALID_PARAM;
@@ -1032,11 +996,7 @@ static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnv
         cfgvalue->setType(finExecVariable::TP_NUMERIC);
         cfgvalue->setNumericValue(graphconfig->getAxisUnitPixelSize());
     } else if ( QString::compare(cfgname, "background_color") == 0 ) {
-        errcode = cfgvalue->setupColorValue(graphconfig->getBackgroundColor());
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            delete cfgvalue;
-            return errcode;
-        }
+        cfgvalue->setupColorValue(graphconfig->getBackgroundColor());
     } else if ( QString::compare(cfgname, "panel_width") == 0 ) {
         cfgvalue->setType(finExecVariable::TP_NUMERIC);
         cfgvalue->setNumericValue(graphconfig->getPanelPixelWidth());
@@ -1263,9 +1223,7 @@ static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEn
         graphconfig->setAxisUnitPixelSize(cfgvalue->getNumericValue());
     } else if ( QString::compare(cfgname, "background_color") == 0 ) {
         QColor color;
-        errcode = cfgvalue->readColorValue(&color);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        cfgvalue->readColorValue(&color);
         graphconfig->setBackgroundColor(color);
     } else if ( QString::compare(cfgname, "panel_width") == 0 ) {
         if ( cfgvalue->getType() != finExecVariable::TP_NUMERIC )

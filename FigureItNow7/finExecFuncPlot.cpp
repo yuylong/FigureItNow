@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finExecFunction.h"
@@ -41,10 +41,9 @@ static finErrorCode _sysfunc_plot_dots(finExecFunction *self, finExecEnvironment
     finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
 
     QList<QPointF> ptlist;
-    finErrorCode errcode = finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
 
+    finErrorCode errcode;
     finPlotDots dotplot;
     dotplot.appendPoints(ptlist);
     dotplot.setFigureContainer(env->getFigureContainer());
@@ -77,10 +76,9 @@ static finErrorCode _sysfunc_plot_line(finExecFunction *self, finExecEnvironment
     finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
 
     QList<QPointF> ptlist;
-    finErrorCode errcode = finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
 
+    finErrorCode errcode;
     finPlotDotsLine lnplot;
     lnplot.appendPoints(ptlist);
     lnplot.setFigureContainer(env->getFigureContainer());
@@ -113,10 +111,9 @@ static finErrorCode _sysfunc_plot_stream(finExecFunction *self, finExecEnvironme
     finExecVariable *yaryvar = finExecVariable::transLinkTarget(env->findVariable("yary"));
 
     QList<QPointF> ptlist;
-    finErrorCode errcode = finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
 
+    finErrorCode errcode;
     finPlotDotsStream stmplot;
     stmplot.appendPoints(ptlist);
     stmplot.setFigureContainer(env->getFigureContainer());
@@ -158,10 +155,9 @@ static finErrorCode _sysfunc_plot_scatter(finExecFunction *self, finExecEnvironm
         dislmt = dislmtvar->getNumericValue();
 
     QList<QPointF> ptlist;
-    finErrorCode errcode = finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    finExecVariable::transToPointList(xaryvar, yaryvar, &ptlist);
 
+    finErrorCode errcode;
     finPlotDotsScatter scplot;
     scplot.setDistanceLimit(dislmt);
     scplot.appendPoints(ptlist);

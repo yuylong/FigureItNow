@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finExecFunction.h"
@@ -160,9 +160,8 @@ static finErrorCode _sysfunc_call_stack(finExecFunction *self, finExecEnvironmen
     /* Kick out the current 'call_stack' function from list. */
     funcnamelist.removeFirst();
 
-    finErrorCode errcode = retvar->preallocArrayLength(funcnamelist.count());
-    if ( finErrorKits::isErrorResult(errcode) )
-        goto err;
+    finErrorCode errcode;
+    retvar->preallocArrayLength(funcnamelist.count());
 
     for ( int i = 0; i < funcnamelist.count(); i++ ) {
         finExecVariable *subvar = retvar->getVariableItemAt(i);

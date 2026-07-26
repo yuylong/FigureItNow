@@ -313,11 +313,7 @@ finExecFunction::processArgsInSubEnv(QList<finExecVariable *> *arglist, finExecE
         if ( argvar == nullptr )
             return finErrorKits::EC_OUT_OF_MEMORY;
 
-        errcode = argvar->setLinkTarget(arglist->at(i));
-        if ( finErrorKits::isErrorResult(errcode) ) {
-            delete argvar;
-            return errcode;
-        }
+        argvar->setLinkTarget(arglist->at(i));
 
         argvar->setName(this->getParameterName(i));
         argvar->setLeftValue();

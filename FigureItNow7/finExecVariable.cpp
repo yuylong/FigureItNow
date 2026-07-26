@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, May 26th, 2016
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include <QtMath>
@@ -69,25 +69,23 @@ bool finExecVariable::isLeftValue() const
     return this->_leftValue;
 }
 
-finErrorCode finExecVariable::setName(const QString &name)
+void finExecVariable::setName(const QString &name)
 {
     if ( name.isNull() || name.isEmpty() )
-        return finErrorKits::EC_INVALID_PARAM;
+        finWarning << "Variable (" << this->_varName << ") name is set to be empty.";
 
     if ( QString::compare(this->_varName, name) == 0 )
-        return finErrorKits::EC_DUPLICATE_OP;
+        return;
 
     this->_varName = name;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::setType(finExecVariableType type)
+void finExecVariable::setType(finExecVariableType type)
 {
     if ( this->_type != finExecVariable::TP_NULL )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Variable type is already set.");
 
     this->_type = type;
-    return finErrorKits::EC_SUCCESS;
 }
 
 void finExecVariable::setupWriteProtected(bool blval)
@@ -151,40 +149,37 @@ QImage finExecVariable::getImageValue() const
     return this->_image;
 }
 
-finErrorCode finExecVariable::setNumericValue(double val)
+void finExecVariable::setNumericValue(double val)
 {
     if ( this->_type != TP_NUMERIC && this->_type != TP_NULL )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Cannot assign a numeric value to this variable type.");
 
     if ( this->_type == TP_NULL )
         this->_type = TP_NUMERIC;
 
     this->_numVal = val;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::setStringValue(const QString &strval)
+void finExecVariable::setStringValue(const QString &strval)
 {
     if ( this->_type != TP_STRING && this->_type != TP_NULL )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Cannot assign a string value to this variable type.");
 
     if ( this->_type == TP_NULL )
         this->_type = TP_STRING;
 
     this->_strVal = strval;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::setImageValue(const QImage &img)
+void finExecVariable::setImageValue(const QImage &img)
 {
     if ( this->_type != TP_IMAGE && this->_type != TP_NULL )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Cannot assign an image value to this variable type.");
 
     if ( this->_type == TP_NULL )
         this->_type = TP_IMAGE;
 
     this->_image = img;
-    return finErrorKits::EC_SUCCESS;
 }
 
 int finExecVariable::getArrayLength() const
@@ -195,28 +190,29 @@ int finExecVariable::getArrayLength() const
     return this->_itemList.count();
 }
 
-finErrorCode finExecVariable::preallocArrayLength(int len)
+void finExecVariable::preallocArrayLength(int len)
 {
     if ( this->_type != TP_ARRAY && this->_type != TP_NULL )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Cannot allocate array items for this variable type.");
+    if ( len < 0 )
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Array length cannot be negative.");
 
     if ( this->_type == TP_NULL )
         this->_type = TP_ARRAY;
 
     if ( this->_itemList.count() >= len )
-        return finErrorKits::EC_DUPLICATE_OP;
+        return;
 
     while ( this->_itemList.count() < len ) {
         finExecVariable *subvar = new finExecVariable();
         if ( subvar == nullptr )
-            return finErrorKits::EC_OUT_OF_MEMORY;
+            finThrow(finErrorKits::EC_OUT_OF_MEMORY, "Cannot allocate an array variable item.");
 
         subvar->_writeProtect = this->_writeProtect;
         subvar->_leftValue = this->_leftValue;
         subvar->_parentVar = this;
         this->_itemList.append(subvar);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finExecVariable *finExecVariable::getVariableItemAt(int idx) const
@@ -243,9 +239,7 @@ finExecVariable *finExecVariable::getVariableItemAt(int idx)
     if ( idx < this->_itemList.count() )
         return this->_itemList.at(idx);
 
-    finErrorCode errcode = this->preallocArrayLength(idx + 1);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return nullptr;
+    this->preallocArrayLength(idx + 1);
 
     return this->_itemList.at(idx);
 }
@@ -264,23 +258,22 @@ bool finExecVariable::isVariableInside(const finExecVariable *var) const
     return false;
 }
 
-finErrorCode finExecVariable::clearArrayItems()
+void finExecVariable::clearArrayItems()
 {
     if ( this->_type != TP_ARRAY && this->_type != TP_NULL )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Cannot clear items from this variable type.");
 
     if ( this->_type == TP_NULL )
         this->_type = TP_ARRAY;
 
     if ( this->_itemList.count() <= 0 )
-        return finErrorKits::EC_DUPLICATE_OP;
+        return;
 
     while ( !this->_itemList.empty() ) {
         finExecVariable *itemvar = this->_itemList.first();
         this->_itemList.removeFirst();
         delete itemvar;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finExecVariable::isInArray() const
@@ -293,10 +286,10 @@ finExecVariable *finExecVariable::getParentVariable() const
     return this->_parentVar;
 }
 
-finErrorCode finExecVariable::removeFromArray()
+void finExecVariable::removeFromArray()
 {
     if ( this->_parentVar == nullptr )
-        return finErrorKits::EC_DUPLICATE_OP;
+        return;
 
     for ( int i = 0; i < this->_parentVar->_itemList.count(); i++ ) {
         if ( this->_parentVar->_itemList.at(i) == this ) {
@@ -307,7 +300,6 @@ finErrorCode finExecVariable::removeFromArray()
     this->_parentVar = nullptr;
 
     this->clearLeftValue();
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finExecVariable::isNumericMatrix(int *rowcnt, int *colcnt) const
@@ -431,47 +423,43 @@ finExecVariable *finExecVariable::transLinkTarget(finExecVariable *var)
         return var->getLinkTarget();
 }
 
-finErrorCode finExecVariable::setLinkTarget(finExecVariable *target)
+void finExecVariable::setLinkTarget(finExecVariable *target)
 {
     if ( this->_type == finExecVariable::TP_LINK && this->_linkTarget == target )
-        return finErrorKits::EC_DUPLICATE_OP;
+        return;
 
-    finErrorCode errcode = this->unsetLinkTarget();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    this->unsetLinkTarget();
 
     this->_linkTarget = target;
     if ( target != nullptr )
         target->_linkedList.append(this);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::unsetLinkTarget()
+void finExecVariable::unsetLinkTarget()
 {
     if ( this->_type != finExecVariable::TP_LINK && this->_type != finExecVariable::TP_NULL )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Cannot remove a link from this variable type.");
 
     if ( this->_type == finExecVariable::TP_NULL ) {
         this->_type = finExecVariable::TP_LINK;
         this->_linkTarget = nullptr;
-        return finErrorKits::EC_SUCCESS;
+        return;
     }
 
     if ( this->_linkTarget == nullptr )
-        return finErrorKits::EC_DUPLICATE_OP;
+        return;
 
     for ( int i = this->_linkTarget->_linkedList.count() - 1; i >= 0; i-- ) {
         if ( this->_linkTarget->_linkedList.at(i) == this )
             this->_linkTarget->_linkedList.removeAt(i);
     }
     this->_linkTarget = nullptr;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::readBoolValue(bool *blval) const
+void finExecVariable::readBoolValue(bool *blval) const
 {
     if ( blval == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Boolean output pointer is null.");
 
     switch ( this->getType() ) {
       case finExecVariable::TP_NULL:
@@ -499,14 +487,13 @@ finErrorCode finExecVariable::readBoolValue(bool *blval) const
         *blval = false;
         break;
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::setupBoolValue(bool blval)
+void finExecVariable::setupBoolValue(bool blval)
 {
     if ( this->_type != finExecVariable::TP_NULL &&
          this->_type != finExecVariable::TP_NUMERIC )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Cannot assign a boolean value to this variable type.");
 
     this->setType(finExecVariable::TP_NUMERIC);
     if ( blval ) {
@@ -514,19 +501,18 @@ finErrorCode finExecVariable::setupBoolValue(bool blval)
     } else {
         this->setNumericValue(0.0);
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::readColorValue(QColor *color) const
+void finExecVariable::readColorValue(QColor *color) const
 {
     if ( color == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Color output pointer is null.");
 
     int arylen = 0;
     if ( !this->isNumericArray(&arylen) )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Color variable must be a numeric array.");
     if ( arylen != 3 && arylen != 4 )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Color array must contain three or four values.");
 
     double red, green, blue;
     red = this->getVariableItemAt(0)->getNumericValue();
@@ -543,17 +529,14 @@ finErrorCode finExecVariable::readColorValue(QColor *color) const
     }
 
     color->setRgbF(red, green, blue, alpha);
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::setupColorValue(const QColor &color)
+void finExecVariable::setupColorValue(const QColor &color)
 {
     if ( this->_type != finExecVariable::TP_NULL )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Color can only initialize a null variable.");
 
-    finErrorCode errcode = this->preallocArrayLength(4);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    this->preallocArrayLength(4);
 
     finExecVariable *subvar = this->getVariableItemAt(0);
     subvar->setType(finExecVariable::TP_NUMERIC);
@@ -571,18 +554,16 @@ finErrorCode finExecVariable::setupColorValue(const QColor &color)
     subvar->setType(finExecVariable::TP_NUMERIC);
     subvar->setNumericValue(color.alphaF());
 
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::copyVariableValueIn(finExecVariable *srcvar)
+void finExecVariable::copyVariableValueIn(finExecVariable *srcvar)
 {
     if ( srcvar == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Cannot copy from a null variable.");
 
     if ( this->_type != TP_NULL && this->_type != srcvar->getType() )
-        return finErrorKits::EC_STATE_ERROR;
+        finThrow(finErrorKits::EC_STATE_ERROR, "Cannot copy a value into a different variable type.");
 
-    finErrorCode errcode;
     this->_type = srcvar->getType();
 
     switch ( srcvar->_type ) {
@@ -599,22 +580,16 @@ finErrorCode finExecVariable::copyVariableValueIn(finExecVariable *srcvar)
         break;
 
       case TP_ARRAY:
-        errcode = this->copyArrayVariable(srcvar);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+                this->copyArrayVariable(srcvar);
         break;
 
       case TP_LINK:
-        errcode = this->setLinkTarget(srcvar->getLinkTarget());
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+                this->setLinkTarget(srcvar->getLinkTarget());
         break;
 
       default:
-        return finErrorKits::EC_READ_ERROR;
-        break;
+                finThrow(finErrorKits::EC_READ_ERROR, "Cannot copy an unknown variable type.");
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 bool finExecVariable::isSameName(const QString &name) const
@@ -672,55 +647,40 @@ bool finExecVariable::isSameValue(finExecVariable *var)
     return false;
 }
 
-finErrorCode finExecVariable::copyArrayVariable(const finExecVariable *srcvar)
+void finExecVariable::copyArrayVariable(const finExecVariable *srcvar)
 {
-    finErrorCode errcode = this->clearArrayItems();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    this->clearArrayItems();
 
     this->preallocArrayLength(srcvar->_itemList.count());
     for ( int i = 0; i < srcvar->_itemList.count(); i++ ) {
         finExecVariable *subsrcvar = srcvar->_itemList.at(i);
         finExecVariable *subdstvar = this->getVariableItemAt(i);
 
-        errcode = subdstvar->copyVariableValueIn(subsrcvar);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        subdstvar->copyVariableValueIn(subsrcvar);
     }
-
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::copyVariableValue(finExecVariable *srcvar)
+void finExecVariable::copyVariableValue(finExecVariable *srcvar)
 {
-    finErrorCode errcode;
-    errcode = this->disposeValue();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    this->disposeValue();
 
     if ( srcvar == nullptr )
-        return finErrorKits::EC_NORMAL_WARN;
+        return;
 
-    errcode = this->copyVariableValueIn(srcvar);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    this->copyVariableValueIn(srcvar);
 
     // To keep the access mode of variables in array.
     this->setupWriteProtected(this->_writeProtect);
     this->setupLeftValue(this->_leftValue);
 
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::smartCopyVariableValue(finExecVariable *srcvar)
+void finExecVariable::smartCopyVariableValue(finExecVariable *srcvar)
 {
-    finErrorCode errcode;
-    errcode = this->disposeValue();
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    this->disposeValue();
 
     if ( srcvar == nullptr )
-        return finErrorKits::EC_NORMAL_WARN;
+        return;
 
     if ( srcvar->getType() == finExecVariable::TP_ARRAY &&
          !srcvar->isLeftValue() ) {
@@ -733,35 +693,29 @@ finErrorCode finExecVariable::smartCopyVariableValue(finExecVariable *srcvar)
         }
         this->_type = finExecVariable::TP_ARRAY;
     } else {
-        errcode = this->copyVariableValueIn(srcvar);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        this->copyVariableValueIn(srcvar);
     }
 
     // To keep the access mode of variables in array.
     this->setupWriteProtected(this->_writeProtect);
     this->setupLeftValue(this->_leftValue);
 
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::copyVariable(finExecVariable *srcvar)
+void finExecVariable::copyVariable(finExecVariable *srcvar)
 {
-    finErrorCode errcode = this->copyVariableValueIn(srcvar);
-    if ( finErrorKits::isErrorResult(errcode) )
-        return errcode;
+    this->copyVariableValueIn(srcvar);
 
     this->setName(srcvar->getName());
     this->setupWriteProtected(srcvar->isWriteProtected());
     this->setupLeftValue(srcvar->isLeftValue());
 
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::disposeValue()
+void finExecVariable::disposeValue()
 {
     if ( this->_type == TP_NULL )
-        return finErrorKits::EC_DUPLICATE_OP;
+        return;
 
     switch ( this->_type ) {
       case finExecVariable::TP_NUMERIC:
@@ -789,21 +743,18 @@ finErrorCode finExecVariable::disposeValue()
     }
 
     this->_type = TP_NULL;
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::dispose()
+void finExecVariable::dispose()
 {
     this->disposeValue();
 
-    this->setName(QString());
+    this->_varName.clear();
     this->clearWriteProtected();
     this->clearLeftValue();
-
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::clearLinkedVariables()
+void finExecVariable::clearLinkedVariables()
 {
     while ( !this->_linkedList.empty() ) {
         int cnt = this->_linkedList.count();
@@ -813,22 +764,21 @@ finErrorCode finExecVariable::clearLinkedVariables()
         if ( this->_linkedList.count() >= cnt )
             this->_linkedList.removeFirst();
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::transToPointListArray(finExecVariable *aryvar, QList<QPointF> *ptlist)
+void finExecVariable::transToPointListArray(finExecVariable *aryvar, QList<QPointF> *ptlist)
 {
     if ( ptlist == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Point list output pointer is null.");
 
     if ( aryvar == nullptr || aryvar->getType() == finExecVariable::TP_NULL ) {
         ptlist->clear();
-        return finErrorKits::EC_SUCCESS;
+        return;
     }
 
     int arylen = 0;
     if ( !aryvar->isNumericArray(&arylen) )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Point list source must be a numeric array.");
 
     ptlist->clear();
     for ( int i = 0; i + 1 < arylen; i += 2 ) {
@@ -837,24 +787,23 @@ finErrorCode finExecVariable::transToPointListArray(finExecVariable *aryvar, QLi
 
         ptlist->append(QPoint(varx->getNumericValue(), vary->getNumericValue()));
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::transToPointListMatrix(finExecVariable *matvar, QList<QPointF> *ptlist)
+void finExecVariable::transToPointListMatrix(finExecVariable *matvar, QList<QPointF> *ptlist)
 {
     if ( ptlist == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Point list output pointer is null.");
 
     if ( matvar == nullptr || matvar->getType() == finExecVariable::TP_NULL ) {
         ptlist->clear();
-        return finErrorKits::EC_SUCCESS;
+        return;
     }
 
     int row = 0, col = 0;
     if ( !matvar->isNumericMatrix(&row, &col) )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Point matrix source must be numeric.");
     if ( col < 2 )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Point matrix must contain at least two columns.");
 
     ptlist->clear();
     for ( int i = 0; i < row; i++ ) {
@@ -864,46 +813,46 @@ finErrorCode finExecVariable::transToPointListMatrix(finExecVariable *matvar, QL
 
         ptlist->append(QPointF(varx->getNumericValue(), vary->getNumericValue()));
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
-finErrorCode finExecVariable::transToPointList(finExecVariable *var, QList<QPointF> *ptlist)
+void finExecVariable::transToPointList(finExecVariable *var, QList<QPointF> *ptlist)
 {
     if ( ptlist == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Point list output pointer is null.");
 
     if ( var == nullptr || var->getType() == finExecVariable::TP_NULL ) {
         ptlist->clear();
-        return finErrorKits::EC_SUCCESS;
+        return;
     }
 
     if ( var->getType() != finExecVariable::TP_ARRAY )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Point list source must be an array.");
 
     if ( var->getArrayLength() > 0 && var->getVariableItemAt(0)->getType() == finExecVariable::TP_ARRAY )
-        return transToPointListMatrix(var, ptlist);
+        transToPointListMatrix(var, ptlist);
     else
-        return transToPointListArray(var, ptlist);
+        transToPointListArray(var, ptlist);
 }
 
-finErrorCode finExecVariable::transToPointList(
+void finExecVariable::transToPointList(
         finExecVariable *xvar, finExecVariable *yvar, QList<QPointF> *ptlist)
 {
     if ( ptlist == nullptr )
-        return finErrorKits::EC_NULL_POINTER;
+        finThrow(finErrorKits::EC_NULL_POINTER, "Point list output pointer is null.");
 
     if ( yvar == nullptr || yvar->getType() == finExecVariable::TP_NULL ) {
         if ( xvar == nullptr || xvar->getType() == finExecVariable::TP_NULL ) {
             ptlist->clear();
-            return finErrorKits::EC_SUCCESS;
+              return;
         } else {
-             return transToPointList(xvar, ptlist);
+               transToPointList(xvar, ptlist);
+               return;
         }
     }
 
     int arylen = 0, yarylen = 0;
     if ( !xvar->isNumericArray(&arylen) || !yvar->isNumericArray(&yarylen) )
-        return finErrorKits::EC_INVALID_PARAM;
+        finThrow(finErrorKits::EC_INVALID_PARAM, "Point coordinate sources must be numeric arrays.");
     if ( arylen > yarylen )
         arylen = yarylen;
 
@@ -914,7 +863,6 @@ finErrorCode finExecVariable::transToPointList(
 
         ptlist->append(QPointF(xitem->getNumericValue(), yitem->getNumericValue()));
     }
-    return finErrorKits::EC_SUCCESS;
 }
 
 finExecVariable *finExecVariable::buildNonLeftVariable(finExecVariable *var)
@@ -933,11 +881,7 @@ finExecVariable *finExecVariable::buildNonLeftVariable(finExecVariable *var)
     if ( retvar == nullptr )
         return nullptr;
 
-    finErrorCode errcode = retvar->copyVariableValueIn(var);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete retvar;
-        return nullptr;
-    }
+    retvar->copyVariableValueIn(var);
 
     retvar->setWriteProtected();
     retvar->clearLeftValue();
@@ -969,11 +913,7 @@ finExecVariable *finExecVariable::buildCopyLeftVariable(finExecVariable *var)
     if ( retvar == nullptr )
         return nullptr;
 
-    finErrorCode errcode = retvar->copyVariableValueIn(var);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete retvar;
-        return nullptr;
-    }
+    retvar->copyVariableValueIn(var);
 
     retvar->setLeftValue();
     retvar->clearWriteProtected();
@@ -1000,11 +940,7 @@ finExecVariable *finExecVariable::buildLinkLeftVariable(finExecVariable *var)
     if ( retvar == nullptr )
         return nullptr;
 
-    finErrorCode errcode = retvar->setLinkTarget(var);
-    if ( finErrorKits::isErrorResult(errcode) ) {
-        delete retvar;
-        return nullptr;
-    }
+    retvar->setLinkTarget(var);
 
     retvar->setLeftValue();
     retvar->clearWriteProtected();
@@ -1020,23 +956,16 @@ finExecVariable *finExecVariable::buildFuncReturnVariable(finExecVariable *var, 
     if ( realvar != nullptr )
         var = realvar;
 
-    finErrorCode errcode;
     if ( !var->isLeftValue() ) {
-        errcode = var->removeFromArray();
-        if ( finErrorKits::isErrorResult(errcode) )
-            goto copy_var;
-
+        var->removeFromArray();
         return var;
     }
 
     if ( !env->isVariableInEnv(var) )
         return var;
 
-    errcode = var->removeFromArray();
-    if ( finErrorKits::isErrorResult(errcode) )
-        goto copy_var;
-
-    errcode = env->removeVariable(var);
+    var->removeFromArray();
+    finErrorCode errcode = env->removeVariable(var);
     if ( finErrorKits::isErrorResult(errcode) )
         goto copy_var;
 

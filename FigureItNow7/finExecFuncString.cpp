@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #include "finExecFunction.h"
@@ -225,9 +225,7 @@ static finErrorCode _sysfunc_str_find(finExecFunction *self, finExecEnvironment 
     if ( fromvar != nullptr )
         from = (int)floor(fromvar->getNumericValue());
     if ( casevar != nullptr ) {
-        errcode = casevar->readBoolValue(&casecare);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        casevar->readBoolValue(&casecare);
     }
 
     retvar = new finExecVariable();
@@ -284,9 +282,7 @@ static finErrorCode _sysfunc_str_bk_find(finExecFunction *self, finExecEnvironme
     if ( fromvar != nullptr )
         from = (int)floor(fromvar->getNumericValue());
     if ( casevar != nullptr ) {
-        errcode = casevar->readBoolValue(&casecare);
-        if ( finErrorKits::isErrorResult(errcode) )
-            return errcode;
+        casevar->readBoolValue(&casecare);
     }
 
     retvar = new finExecVariable();

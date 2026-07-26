@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, May 26th, 2016
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 /*! \file finExecVariable.h
  *  \brief The script variable declaration.
@@ -89,8 +89,8 @@ public:
     bool isWriteProtected() const;
     bool isLeftValue() const;
 
-    finErrorCode setName(const QString &name);
-    finErrorCode setType(Type type);
+    void setName(const QString &name);
+    void setType(Type type);
     void setupWriteProtected(bool blval);
     void setWriteProtected();
     void clearWriteProtected();
@@ -102,20 +102,20 @@ public:
     QString getStringValue() const;
     QImage getImageValue() const;
 
-    finErrorCode setNumericValue(double val);
-    finErrorCode setStringValue(const QString &strval);
-    finErrorCode setImageValue(const QImage &img);
+    void setNumericValue(double val);
+    void setStringValue(const QString &strval);
+    void setImageValue(const QImage &img);
 
     int getArrayLength() const;
-    finErrorCode preallocArrayLength(int len);
+    void preallocArrayLength(int len);
     finExecVariable *getVariableItemAt(int idx) const;
     finExecVariable *getVariableItemAt(int idx);
-    finErrorCode clearArrayItems();
+    void clearArrayItems();
 
     bool isVariableInside(const finExecVariable *var) const;
     bool isInArray() const;
     finExecVariable *getParentVariable() const;
-    finErrorCode removeFromArray();
+    void removeFromArray();
 
     bool isNumericMatrix(int *rowcnt = nullptr, int *colcnt = nullptr) const;
     bool isNumericArray(int *cnt = nullptr) const;
@@ -126,27 +126,27 @@ public:
     const finExecVariable *getLinkTarget() const;
     finExecVariable *getLinkTarget();
     static finExecVariable *transLinkTarget(finExecVariable *var);
-    finErrorCode setLinkTarget(finExecVariable *target);
-    finErrorCode unsetLinkTarget();
+    void setLinkTarget(finExecVariable *target);
+    void unsetLinkTarget();
 
-    finErrorCode readBoolValue(bool *blval) const;
-    finErrorCode setupBoolValue(bool blval);
-    finErrorCode readColorValue(QColor *color) const;
-    finErrorCode setupColorValue(const QColor &color);
+    void readBoolValue(bool *blval) const;
+    void setupBoolValue(bool blval);
+    void readColorValue(QColor *color) const;
+    void setupColorValue(const QColor &color);
 
     bool isSameName(const QString &name) const;
     bool isSameValue(finExecVariable *var);
 
-    finErrorCode copyVariableValue(finExecVariable *srcvar);
-    finErrorCode smartCopyVariableValue(finExecVariable *srcvar);
-    finErrorCode copyVariable(finExecVariable *srcvar);
+    void copyVariableValue(finExecVariable *srcvar);
+    void smartCopyVariableValue(finExecVariable *srcvar);
+    void copyVariable(finExecVariable *srcvar);
 
-    finErrorCode disposeValue();
-    finErrorCode dispose();
-    finErrorCode clearLinkedVariables();
+    void disposeValue();
+    void dispose();
+    void clearLinkedVariables();
 
-    static finErrorCode transToPointList(finExecVariable *var, QList<QPointF> *ptlist);
-    static finErrorCode transToPointList(finExecVariable *xvar, finExecVariable *yvar, QList<QPointF> *ptlist);
+    static void transToPointList(finExecVariable *var, QList<QPointF> *ptlist);
+    static void transToPointList(finExecVariable *xvar, finExecVariable *yvar, QList<QPointF> *ptlist);
 
     static void releaseNonLeftVariable(finExecVariable *var);
 
@@ -156,14 +156,14 @@ public:
 
     static finExecVariable *buildFuncReturnVariable(finExecVariable *var, finExecEnvironment *env);
 
-    static finErrorCode installSystemVariables(finExecEnvironment *rootenv);
+    static void installSystemVariables(finExecEnvironment *rootenv);
 
 private:
-    finErrorCode copyVariableValueIn(finExecVariable *srcvar);
-    finErrorCode copyArrayVariable(const finExecVariable *srcvar);
+    void copyVariableValueIn(finExecVariable *srcvar);
+    void copyArrayVariable(const finExecVariable *srcvar);
 
-    static finErrorCode transToPointListArray(finExecVariable *aryvar, QList<QPointF> *ptlist);
-    static finErrorCode transToPointListMatrix(finExecVariable *matvar, QList<QPointF> *ptlist);
+    static void transToPointListArray(finExecVariable *aryvar, QList<QPointF> *ptlist);
+    static void transToPointListMatrix(finExecVariable *matvar, QList<QPointF> *ptlist);
 };
 
 typedef enum finExecVariable::Type finExecVariableType;
