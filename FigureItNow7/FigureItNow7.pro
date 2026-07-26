@@ -24,6 +24,10 @@ DEFINES += APP_VERSION=\"\\\"$$APP_VERSION\\\"\"
 TARGET = FigureItNow7
 TEMPLATE = app
 
+!msvc {
+    QMAKE_CXXFLAGS += -Wno-comment
+}
+
 SOURCES += main.cpp\
         MainWindow.cpp \
     finErrorCode.cpp \
