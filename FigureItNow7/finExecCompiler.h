@@ -64,9 +64,8 @@ public:
      *  is called.
      *
      *  \param script  Source text to store.
-     *  \return \c finErrorKits::EC_SUCCESS after the new script text has been stored.
      */
-    finErrorCode setScriptCode(const QString &script);
+    void setScriptCode(const QString &script);
 
     /*!
      *  \brief Compiles the stored script text into a syntax tree.

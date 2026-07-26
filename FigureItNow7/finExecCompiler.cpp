@@ -32,10 +32,9 @@ QString finExecCompiler::getScriptCode() const
     return this->_scriptCode;
 }
 
-finErrorCode finExecCompiler::setScriptCode(const QString &script)
+void finExecCompiler::setScriptCode(const QString &script)
 {
     this->_scriptCode = script;
-    return finErrorKits::EC_SUCCESS;
 }
 
 finSyntaxTree *finExecCompiler::compile()
