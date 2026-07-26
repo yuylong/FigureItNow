@@ -20,7 +20,6 @@
 #include "finFigureContainer.h"
 #include "finGraphConfig.h"
 #include "finGraphTrans.h"
-#include "finPlotFunction.h"
 
 static QString _defFuncCtg("Figuring");
 
@@ -50,7 +49,6 @@ static struct finExecSysFuncRegItem _funcRegItem_clear_fig = {
 static finErrorCode _sysfunc_draw_dot(finExecFunction *self, finExecEnvironment *env,
                                       finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *cx, *cy;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -88,7 +86,6 @@ static struct finExecSysFuncRegItem _funcRegItem_draw_dot = {
 static finErrorCode
 _sysfunc_line(finExecFunction *self, finExecEnvironment *env, finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *x1, *y1, *x2, *y2;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
@@ -132,7 +129,6 @@ static struct finExecSysFuncRegItem _funcRegItem_line = {
 static finErrorCode _sysfunc_polyline(finExecFunction *self, finExecEnvironment *env,
                                       finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *ptx, *pty;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
