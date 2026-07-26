@@ -708,7 +708,19 @@ bool finSyntaxReader::meshArithExpress()
 
 void finSyntaxReader::meshAllArithExpress()
 {
-    while ( this->meshArithExpress() ) { }
+    // Drain whatever arithmetic expressions can still be formed from the
+    // stack. Late attempts (e.g. a non-arithmetic operator on top of a
+    // partial expression) may throw — that just means "no more to mesh",
+    // so swallow the exception and stop the drain.
+    while ( true ) {
+        try {
+            if ( !this->meshArithExpress() )
+                break;
+        } catch ( const finException &e ) {
+            finWarning << "Stop arith-express mesh:" << e.getErrorDescription();
+            break;
+        }
+    }
 }
 
 finSyntaxNode *finSyntaxReader::createDummyExpress()
