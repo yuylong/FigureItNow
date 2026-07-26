@@ -202,7 +202,6 @@ static finErrorCode _sysfunc_str_find(finExecFunction *self, finExecEnvironment 
                                       finExecMachine *machine, finExecFlowControl *flowctl)
 {
     finExecVariable *strvar, *substrvar, *fromvar, *casevar, *retvar;
-    finErrorCode errcode;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;
@@ -259,7 +258,6 @@ static finErrorCode _sysfunc_str_bk_find(finExecFunction *self, finExecEnvironme
                                          finExecMachine *machine, finExecFlowControl *flowctl)
 {
     finExecVariable *strvar, *substrvar, *fromvar, *casevar, *retvar;
-    finErrorCode errcode;
 
     if ( self == nullptr || env == nullptr || machine == nullptr || flowctl == nullptr )
         return finErrorKits::EC_NULL_POINTER;

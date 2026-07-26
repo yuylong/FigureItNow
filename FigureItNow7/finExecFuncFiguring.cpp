@@ -782,7 +782,6 @@ static struct finExecSysFuncRegItem _funcRegItem_named_color = {
 static finErrorCode _sysfunc_read_fig_config(finExecFunction *self, finExecEnvironment *env,
                                              finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *cfgnamevar, *cfgvalue;
     finFigureConfig *figconfig;
 
@@ -869,7 +868,6 @@ static struct finExecSysFuncRegItem _funcRegItem_read_fig_config = {
 static finErrorCode _sysfunc_write_fig_config(finExecFunction *self, finExecEnvironment *env,
                                               finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *cfgnamevar, *cfgvalue;
     finFigureConfig *figconfig;
 
@@ -968,7 +966,6 @@ static struct finExecSysFuncRegItem _funcRegItem_write_fig_config = {
 static finErrorCode _sysfunc_read_graph_config(finExecFunction *self, finExecEnvironment *env,
                                                finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *cfgnamevar, *cfgvalue;
     finGraphConfig *graphconfig;
 
@@ -1196,7 +1193,6 @@ static struct finExecSysFuncRegItem _funcRegItem_read_graph_config = {
 static finErrorCode _sysfunc_write_graph_config(finExecFunction *self, finExecEnvironment *env,
                                                 finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *cfgnamevar, *cfgvalue;
     finGraphConfig *graphconfig;
 

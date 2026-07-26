@@ -21,7 +21,6 @@ static QString _defFuncCtg("Matrix");
 static finErrorCode _sysfunc_array(finExecFunction *self, finExecEnvironment *env,
                                    finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *cntvar;
     int arylen = -1, aryidx = 0;
 
@@ -92,7 +91,6 @@ static struct finExecSysFuncRegItem _funcRegItem_vector = {
 static finErrorCode _sysfunc_matrix(finExecFunction *self, finExecEnvironment *env,
                                     finExecMachine *machine, finExecFlowControl *flowctl)
 {
-    finErrorCode errcode;
     finExecVariable *rowvar, *colvar;
     int matrow, matcol;
     int extcnt;
