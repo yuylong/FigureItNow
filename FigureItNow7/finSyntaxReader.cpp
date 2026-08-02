@@ -5,6 +5,16 @@
  * Author: Yulong Yu
  * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
+/*! \file finSyntaxReader.cpp
+ *  \brief Implementations of the recursive-descent parser.
+ *
+ *  Provides the public driver (startRead / readNextToken / getSyntaxTree), the type-dispatch
+ *  layer that routes each token to the matching handler, the static operator table and its
+ *  lookup used by the arithmetic / bracket / splitter paths, the bracket-matching and
+ *  keyword-shape recognition helpers, and the dumpObjInfo() formatter used for logging.
+ *
+ *  Per-method contracts live in finSyntaxReader.h.
+ */
 
 #include "finSyntaxReader.h"
 
