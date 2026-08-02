@@ -1016,11 +1016,10 @@ void finSyntaxReader::meshFlowerBracket()
         return;
     }
 
+    // Process B <- B'S where B' <- if/elif/else/while/for; the function form E <- E{S} (E <- E(E)) is already
+    // handled above, and a bare statement block that does not match a control-flow keyword stays alone.
     if ( curtk->getType() == finSyntaxNode::TP_STATEMENT )
         this->meshStatementWithKeywords();
-
-    // TODO: Flower bracket cases not yet implemented.
-    finThrowObj(finErrorKits::EC_NON_IMPLEMENT, "Unhandled flower bracket case.");
 }
 
 void finSyntaxReader::meshRoundBracket()
