@@ -112,17 +112,10 @@ bool finSyntaxReader::readNextToken()
     } catch (finException &e) {
         // Record the lex error and stop reading. The errList travels with the syntax tree.
         finSyntaxError synerr;
-        synerr.setLevel(finSyntaxError::LV_ERROR);
-        synerr.setStage(finSyntaxError::ST_COMPILE);
-        synerr.setRow(0);
-        synerr.setColumn(0);
-
-        if ( const finLexReader *lexr = dynamic_cast<const finLexReader *>(e.getErrorObject()) ) {
-            synerr.setRow(lexr->getRow());
-            synerr.setColumn(lexr->getColumn());
-        }
-
-        synerr.setErrorString(e.getErrorDescription());
+        lexnode.setRow(this->_lexReader.getRow());
+        lexnode.setColumn(this->_lexReader.getColumn());
+        synerr.setErrorInfo(finSyntaxError::LV_ERROR, finSyntaxError::ST_LEX,
+                            finSyntaxError::CD_LEX_ERROR, &lexnode, e.getErrorDescription());
         this->_errList.append(synerr);
         this->_state = ST_DONE;
         return false;
