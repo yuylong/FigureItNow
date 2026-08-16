@@ -176,6 +176,9 @@ QString finSyntaxError::getLevelName(Level level)
       case LV_DEBUG:
         return QObject::tr("Debug");
 
+      case LV_INFO:
+        return QObject::tr("Info");
+
       case LV_WARNING:
         return QObject::tr("Warning");
 
