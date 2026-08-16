@@ -190,6 +190,9 @@ QString finSyntaxError::getLevelName(Level level)
 QString finSyntaxError::getStageName(Stage stage)
 {
     switch ( stage ) {
+      case ST_LEX:
+        return QObject::tr("Lex");
+
       case ST_COMPILE:
         return QObject::tr("Compile");
 

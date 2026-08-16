@@ -30,6 +30,7 @@ public:
 
     enum Stage {
         ST_DUMMY,
+        ST_LEX,
         ST_COMPILE,
         ST_EXECUTE,
     };
