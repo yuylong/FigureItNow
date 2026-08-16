@@ -13,7 +13,6 @@
 #include <QString>
 #include <QTextStream>
 
-#include "finErrorCode.h"
 #include "finSyntaxErrorDump.h"
 #include "finLexNode.h"
 #include "finSyntaxError.h"
@@ -43,6 +42,11 @@ public:
 
     void appendEntry(finSyntaxError::Level level, finSyntaxError::Stage stage,
                      finLexNode *lexnode, QString info);
+
+    /*!
+     *  \brief Appends an already-constructed error entry, preserving all of its fields.
+     */
+    void appendEntry(const finSyntaxError &entry);
     void removeEntryAt(int index);
     void clearAllErrorList();
 

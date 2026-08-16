@@ -92,6 +92,14 @@ void finSyntaxErrorList::appendEntry(finSyntaxError::Level level, finSyntaxError
         entry.dumpErrorInfo(this->_dumper);
 }
 
+void finSyntaxErrorList::appendEntry(const finSyntaxError &entry)
+{
+    this->_list.append(entry);
+
+    if ( this->_rtDump && this->_dumper != nullptr && entry.getLevel() >= this->_startingLevel )
+        entry.dumpErrorInfo(this->_dumper);
+}
+
 void finSyntaxErrorList::removeEntryAt(int index)
 {
     if ( index < 0 || index >= this->_list.count() )

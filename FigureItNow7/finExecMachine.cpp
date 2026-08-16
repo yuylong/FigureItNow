@@ -83,14 +83,24 @@ finSyntaxErrorDump *finExecMachine::getExecuteErrorDumper() const
     return this->_errList.getDumper();
 }
 
-int finExecMachine::getExecuteErrorCount() const
+finSyntaxErrorList *finExecMachine::getErrorList()
+{
+    return &this->_errList;
+}
+
+int finExecMachine::getErrorCount() const
 {
     return this->_errList.getEntryCount();
 }
 
-finSyntaxError finExecMachine::getExecuteErrorAt(int idx) const
+finSyntaxError finExecMachine::getErrorAt(int idx) const
 {
     return this->_errList.getEntryAt(idx);
+}
+
+bool finExecMachine::hasErrorLevel(finSyntaxError::Level level) const
+{
+    return this->_errList.getEntryCountFromLevel(level) > 0;
 }
 
 void finExecMachine::setName(const QString &name)
@@ -168,11 +178,18 @@ finErrorCode finExecMachine::compile()
     if ( this->_synTree != nullptr )
         delete this->_synTree;
 
+    this->disposeExecutionError();
     this->_synTree = this->_compiler.compile();
 
     if ( this->_synTree == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
-    if ( this->_synTree->getErrorCount() > 0 )
+
+    // Merge the parse-stage diagnostics carried by the syntax tree into the machine's own error
+    // list, so compile and execute errors share one consumer-facing pipe.
+    for ( int i = 0; i < this->_synTree->getErrorCount(); i++ )
+        this->_errList.appendEntry(this->_synTree->getSyntaxError(i));
+
+    if ( this->_errList.getEntryCount() > 0 )
         return finErrorKits::EC_NORMAL_WARN;
 
     return finErrorKits::EC_SUCCESS;
@@ -185,8 +202,9 @@ finErrorCode finExecMachine::execute()
     if ( this->_synTree == nullptr )
         return finErrorKits::EC_STATE_ERROR;
 
-    this->disposeExecutionError();
-
+    // Do not clear the error list here: compile() already reset it, and clearing again would
+    // discard the compile-stage diagnostics merged in by compile(). Execution errors append to
+    // the same list so consumers see one combined, ordered report per run.
     finExecFlowControl flowctl;
     finErrorCode errcode = this->instantExecute(this->_synTree->getRootNode(), this->_baseEnv, &flowctl);
     if ( finErrorKits::isErrorResult(errcode) )

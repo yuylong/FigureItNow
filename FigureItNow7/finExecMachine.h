@@ -23,7 +23,6 @@
 #include "finExecCompiler.h"
 #include "finFigureContainer.h"
 #include "finLexNode.h"
-#include "finSyntaxReader.h"
 #include "finSyntaxError.h"
 #include "finSyntaxErrorDump.h"
 #include "finSyntaxErrorList.h"
@@ -100,14 +99,20 @@ public:
     /*! \brief Returns the currently compiled syntax tree, or \c nullptr. */
     finSyntaxTree *getSyntaxTree();
 
-    /*! \brief Returns the diagnostic dumper currently attached to the execution error list. */
+    /*! \brief Returns the diagnostic dumper currently attached to the error list. */
     finSyntaxErrorDump *getExecuteErrorDumper() const;
 
-    /*! \brief Returns the number of execution diagnostics currently stored. */
-    int getExecuteErrorCount() const;
+    /*! \brief Returns the error list for direct access, e.g. to attach a dumper or connect a consumer. */
+    finSyntaxErrorList *getErrorList();
 
-    /*! \brief Returns one execution diagnostic by index. */
-    finSyntaxError getExecuteErrorAt(int idx) const;
+    /*! \brief Returns the number of diagnostics currently stored (compile and execute). */
+    int getErrorCount() const;
+
+    /*! \brief Returns one diagnostic by index. */
+    finSyntaxError getErrorAt(int idx) const;
+
+    /*! \brief Returns \c true if any stored diagnostic has at least \a level severity. */
+    bool hasErrorLevel(finSyntaxError::Level level) const;
     ///@}
 
     /*! \brief Sets the machine name. */
@@ -154,7 +159,7 @@ public:
     /*! \brief Executes the currently compiled syntax tree in the base environment. */
     finErrorCode execute();
 
-    /*! \brief Clears all recorded execution diagnostics. */
+    /*! \brief Clears all recorded diagnostics (compile and execute). */
     void disposeExecutionError();
 
     /*! \brief Executes one syntax node immediately in the given environment.

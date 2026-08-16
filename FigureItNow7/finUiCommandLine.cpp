@@ -171,7 +171,18 @@ finErrorCode finUiCommandLine::compileAndRunScript(const QString &filename, finF
         return errcode;
     }
 
+    for ( int i = 0; i < machine.getErrorCount(); i++ )
+        qWarning() << machine.getErrorAt(i).makeErrorInfoString().trimmed();
+    if ( machine.hasErrorLevel(finSyntaxError::LV_ERROR) ) {
+        qWarning() << "Compile script failed: " << filename;
+        // Return a negative error code so callers that gate on isErrorResult() (which only
+        // treats errcode < 0 as a failure) skip this file instead of drawing garbage.
+        return finErrorKits::EC_READ_ERROR;
+    }
+
     errcode = machine.execute();
+    for ( int i = 0; i < machine.getErrorCount(); i++ )
+        qWarning() << machine.getErrorAt(i).makeErrorInfoString().trimmed();
     if ( finErrorKits::isErrorResult(errcode) ) {
         qWarning() << "Execute script failed: " << filename;
         return errcode;
