@@ -14,6 +14,7 @@
 finSyntaxError::finSyntaxError()
     : _errString()
 {
+    this->_code = CD_DUMMY;
     this->_level = LV_DUMMY;
     this->_stage = ST_DUMMY;
     this->_row = 0;
@@ -30,6 +31,7 @@ void finSyntaxError::copySyntaxError(const finSyntaxError *src)
     if ( src == nullptr )
         finThrow(finErrorKits::EC_NULL_POINTER, "Copy from a null syntax error.");
 
+    this->_code = src->getCode();
     this->_level = src->getLevel();
     this->_stage = src->getStage();
     this->_row = src->getRow();
@@ -41,6 +43,11 @@ finSyntaxError &finSyntaxError::operator =(const finSyntaxError &src)
 {
     copySyntaxError(&src);
     return *this;
+}
+
+finSyntaxError::Code finSyntaxError::getCode() const
+{
+    return this->_code;
 }
 
 finSyntaxError::Level finSyntaxError::getLevel() const
@@ -68,6 +75,11 @@ QString finSyntaxError::getErrorString() const
     return this->_errString;
 }
 
+void finSyntaxError::setCode(finSyntaxError::Code code)
+{
+    this->_code = code;
+}
+
 void finSyntaxError::setLevel(finSyntaxError::Level level)
 {
     this->_level = level;
@@ -93,6 +105,22 @@ void finSyntaxError::setErrorString(const QString &errstr)
     this->_errString = errstr;
 }
 
+void finSyntaxError::setErrorInfo(Level level, Stage stage, Code code,
+                                  const finLexNode *lexnode, const QString &errstr)
+{
+    this->setLevel(level);
+    this->setStage(stage);
+    this->setCode(code);
+    if ( lexnode != nullptr ) {
+        this->setRow(lexnode->getRow());
+        this->setColumn(lexnode->getColumn());
+    } else {
+        this->setRow(0);
+        this->setColumn(0);
+    }
+    this->setErrorString(errstr);
+}
+
 void finSyntaxError::dumpErrorInfo(QTextStream *ts) const
 {
     if ( ts == nullptr ) {
@@ -102,6 +130,7 @@ void finSyntaxError::dumpErrorInfo(QTextStream *ts) const
     (*ts) << "<" << getLevelName(this->_level) << "> "
           << getStageName(this->_stage) << " "
           << "[" << this->_row << ":" << this->_column << "] "
+          << "(" << getCodeName(this->_code) << ") "
           << this->_errString << Qt::endl;
 }
 
@@ -129,6 +158,7 @@ const finSyntaxError &finSyntaxError::dummySyntaxError()
     static bool retval_isset = false;
 
     if ( !retval_isset ) {
+        retval._code = CD_DUMMY;
         retval._level = LV_DUMMY;
         retval._stage = ST_DUMMY;
         retval._row = 0;
@@ -165,6 +195,38 @@ QString finSyntaxError::getStageName(Stage stage)
 
       case ST_EXECUTE:
         return QObject::tr("Execute");
+
+      default:
+        return QObject::tr("Dummy");
+    }
+}
+
+QString finSyntaxError::getCodeName(Code code)
+{
+    switch ( code ) {
+      case CD_LEX_ERROR:
+        return QObject::tr("LexError");
+
+      case CD_UNEXPECTED_TOKEN:
+        return QObject::tr("UnexpectedToken");
+
+      case CD_EXPECTED_TOKEN:
+        return QObject::tr("ExpectedToken");
+
+      case CD_BRACKET_MISMATCH:
+        return QObject::tr("BracketMismatch");
+
+      case CD_STRUCTURE_MISMATCH:
+        return QObject::tr("StructureMismatch");
+
+      case CD_OPERAND_MISSING:
+        return QObject::tr("OperandMissing");
+
+      case CD_INVALID_LABEL:
+        return QObject::tr("InvalidLabel");
+
+      case CD_UNKNOWN_SYMBOL:
+        return QObject::tr("UnknownSymbol");
 
       default:
         return QObject::tr("Dummy");
