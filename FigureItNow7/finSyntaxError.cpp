@@ -6,11 +6,20 @@
  * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
+/*! \file finSyntaxError.cpp
+ *  \brief Implementations of the finSyntaxError diagnostic record.
+ *
+ *  Provides the constructors and field accessors declared in finSyntaxError.h, the formatted
+ *  dump and lookup helpers used by the front ends, the shared dummy entry, and the static
+ *  appendExecutionError() convenience wrapper.
+ */
+
 #include <QObject>
 
 #include "finSyntaxError.h"
 
 
+// An empty diagnostic: every field keeps its dummy value and position (0, 0).
 finSyntaxError::finSyntaxError()
     : _errString()
 {
@@ -21,6 +30,8 @@ finSyntaxError::finSyntaxError()
     this->_column = 0;
 }
 
+// Copy construction and copy assignment both funnel through copySyntaxError() so the field list
+// stays in one place.
 finSyntaxError::finSyntaxError(const finSyntaxError &src)
 {
     this->copySyntaxError(&src);
@@ -28,6 +39,7 @@ finSyntaxError::finSyntaxError(const finSyntaxError &src)
 
 void finSyntaxError::copySyntaxError(const finSyntaxError *src)
 {
+    // A null source is a caller bug; fail loudly instead of copying garbage.
     if ( src == nullptr )
         finThrow(finErrorKits::EC_NULL_POINTER, "Copy from a null syntax error.");
 
@@ -105,6 +117,8 @@ void finSyntaxError::setErrorString(const QString &errstr)
     this->_errString = errstr;
 }
 
+// Single-call entry point for error producers: fill level, stage, code, position, and message
+// at once. Without a source token, reset the position instead of leaving stale coordinates.
 void finSyntaxError::setErrorInfo(Level level, Stage stage, Code code,
                                   const finLexNode *lexnode, const QString &errstr)
 {
@@ -121,6 +135,8 @@ void finSyntaxError::setErrorInfo(Level level, Stage stage, Code code,
     this->setErrorString(errstr);
 }
 
+// Render one diagnostic line: "<Level> Stage [row:column] (Code) message", with the trailing
+// newline. The stream must be valid; a null stream is a caller bug.
 void finSyntaxError::dumpErrorInfo(QTextStream *ts) const
 {
     if ( ts == nullptr ) {
@@ -134,6 +150,7 @@ void finSyntaxError::dumpErrorInfo(QTextStream *ts) const
           << this->_errString << Qt::endl;
 }
 
+// Reuse the stream formatter so every sink produces byte-identical output; skip empty text.
 void finSyntaxError::dumpErrorInfo(finSyntaxErrorDump *dumper) const
 {
     QString errinfo = this->makeErrorInfoString();
@@ -143,6 +160,7 @@ void finSyntaxError::dumpErrorInfo(finSyntaxErrorDump *dumper) const
     dumper->dumpText(errinfo);
 }
 
+// Format into an in-memory QTextStream so callers get one complete string, newline included.
 QString finSyntaxError::makeErrorInfoString() const
 {
     QString retstr = "";
@@ -152,6 +170,8 @@ QString finSyntaxError::makeErrorInfoString() const
     return retstr;
 }
 
+// Lazily initialize the shared dummy entry once; it stands in for invalid or out-of-range
+// lookups so callers always receive a usable object.
 const finSyntaxError &finSyntaxError::dummySyntaxError()
 {
     static finSyntaxError retval;
@@ -170,6 +190,8 @@ const finSyntaxError &finSyntaxError::dummySyntaxError()
     return retval;
 }
 
+// Name lookups are intentionally tolerant: unknown or sentinel values fall back to "Dummy"
+// instead of throwing, so a malformed entry can still be rendered.
 QString finSyntaxError::getLevelName(Level level)
 {
     switch ( level ) {
@@ -239,6 +261,9 @@ QString finSyntaxError::getCodeName(Code code)
     }
 }
 
+// Convenience path used by execution error producers: copy the token position plus the message.
+// Level, stage, and code stay at their dummy values; use finSyntaxErrorList::appendEntry() when
+// the full field set is needed.
 void finSyntaxError::appendExecutionError(const finLexNode *lexnode, QList<finSyntaxError> *errlist,
                                           const QString &errinfo)
 {
