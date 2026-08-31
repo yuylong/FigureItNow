@@ -3,7 +3,14 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+/*! \file finFigureAlg.cpp
+ *  \brief Implementations of two-dimensional figure geometry helpers.
+ *
+ *  Implements vector and angle calculations, implicit-line operations, convex polygon containment
+ *  and clipping, rectangle checks, and QTransform construction from affine or projective point sets.
  */
 
 #include "finFigureAlg.h"
