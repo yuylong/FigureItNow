@@ -3,7 +3,14 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+/*! \file finFigurePath.cpp
+ *  \brief Implementations of the styled figure-rendering payload.
+ *
+ *  Implements storage and copying of vector path styles and geometry, along with the positioned
+ *  pixmap payload used when a figure primitive renders a raster image.
  */
 
 #include "finFigurePath.h"
