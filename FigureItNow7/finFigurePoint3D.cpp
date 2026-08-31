@@ -3,7 +3,14 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+/*! \file finFigurePoint3D.cpp
+ *  \brief Implementations of the lightweight three-dimensional point value.
+ *
+ *  Implements coordinate initialization and access plus component-wise point arithmetic and scalar
+ *  scaling for three-dimensional figure geometry.
  */
 
 #include "finFigurePoint3D.h"
