@@ -6,6 +6,13 @@
  * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
+/*! \file finExecOperartorCalc.cpp
+ *  \brief Implementations of FIN-script operator evaluation.
+ *
+ *  Defines the operator dispatch table and its operation handlers. The handlers evaluate arithmetic,
+ *  assignment, comparison, logical, array-access, and bitwise expressions on finExecVariable values.
+ */
+
 #include "finExecOperartorCalc.h"
 
 #include <QtMath>
@@ -39,6 +46,9 @@ finExecVariable *finExecOperartorCalc::buildStdLogicVar(bool blval)
     return retvar;
 }
 
+/*! \struct finExecOperartorCalcDatabase
+ *  \brief Describes an operator implementation and its minimum operand count.
+ */
 struct finExecOperartorCalcDatabase {
     finLexOperatorType _optype;
     int _oprandCnt;
@@ -139,6 +149,7 @@ finExecOperartorCalc::execOpCalc(
     return curitem->_opcall(oprands, retval);
 }
 
+/*! \brief Returns the first operand for grouping operators. */
 static finErrorCode
 _brcktOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -153,6 +164,7 @@ _brcktOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Adds numeric operands or concatenates supported string operands. */
 static finErrorCode
 _addOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -193,6 +205,7 @@ _addOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Subtracts the second numeric operand from the first. */
 static finErrorCode
 _subOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -221,6 +234,7 @@ _subOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Multiplies two numeric operands. */
 static finErrorCode
 _mulOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -249,6 +263,7 @@ _mulOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Divides the first numeric operand by the second. */
 static finErrorCode
 _divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -277,6 +292,7 @@ _divOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Applies unary positive to a numeric operand. */
 static finErrorCode _pstvOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand = finExecVariable::transLinkTarget(oprands->at(0));
@@ -301,6 +317,7 @@ static finErrorCode _pstvOpCall(QList<finExecVariable *> *oprands, finExecVariab
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Applies unary negative to a numeric operand. */
 static finErrorCode _ngtvOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *oprand = finExecVariable::transLinkTarget(oprands->at(0));
@@ -325,6 +342,7 @@ static finErrorCode _ngtvOpCall(QList<finExecVariable *> *oprands, finExecVariab
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Performs postfix increment and returns the value before the increment. */
 static finErrorCode
 _psAccumOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -352,6 +370,7 @@ _psAccumOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Performs prefix increment and returns the incremented operand. */
 static finErrorCode
 _prAccumOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -375,6 +394,7 @@ _prAccumOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Performs postfix decrement and returns the value before the decrement. */
 static finErrorCode
 _psDescdOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -402,6 +422,7 @@ _psDescdOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Performs prefix decrement and returns the decremented operand. */
 static finErrorCode
 _prDescdOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -425,6 +446,7 @@ _prDescdOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Calculates the floor-based remainder of two numeric operands. */
 static finErrorCode
 _modOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -459,6 +481,7 @@ _modOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Raises the first numeric operand to the power of the second. */
 static finErrorCode
 _powOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -490,6 +513,7 @@ _powOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Calculates the factorial of the floored numeric operand. */
 static finErrorCode
 _factoriOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -521,6 +545,7 @@ _factoriOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Assigns the second operand value to the writable first operand. */
 static finErrorCode
 _letOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -543,6 +568,7 @@ _letOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Compares two operands for value equality. */
 finErrorCode
 _eqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -563,6 +589,7 @@ _eqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Tests whether the first numeric operand is greater than the second. */
 static finErrorCode
 _grtOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -587,6 +614,7 @@ _grtOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Tests whether the first numeric operand is less than the second. */
 static finErrorCode
 _lesOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -611,6 +639,7 @@ _lesOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Compares two operands for value inequality. */
 static finErrorCode
 _neqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -631,6 +660,7 @@ _neqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Tests whether the first numeric operand is at least the second. */
 static finErrorCode
 _gteqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -655,6 +685,7 @@ _gteqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Tests whether the first numeric operand is at most the second. */
 static finErrorCode
 _lseqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -679,6 +710,7 @@ _lseqOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Negates an operand after logical conversion. */
 static finErrorCode
 _logicNotOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -694,6 +726,7 @@ _logicNotOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Calculates the logical conjunction of two operands. */
 static finErrorCode
 _logicAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -711,6 +744,7 @@ _logicAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Calculates the logical disjunction of two operands. */
 static finErrorCode
 _logicOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -728,6 +762,7 @@ _logicOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Calculates the logical exclusive-or of two operands. */
 static finErrorCode
 _logicXorOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -745,6 +780,7 @@ _logicXorOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Obtains an array item using a numeric index. */
 static finErrorCode _accessOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
     finExecVariable *parent = finExecVariable::transLinkTarget(oprands->at(0));
@@ -772,6 +808,7 @@ static finErrorCode _accessOpCall(QList<finExecVariable *> *oprands, finExecVari
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Returns the final operand of a comma expression. */
 static finErrorCode
 _commaOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -799,6 +836,7 @@ static inline double _bitable_neg_to_post(double num)
         return (double)(0xFFFFFFFF) + 1.0 + num;
 }
 
+/*! \brief Applies bitwise complement using the runtime's unsigned 32-bit representation. */
 static finErrorCode
 _bitNotOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -833,6 +871,7 @@ _bitNotOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Calculates bitwise AND using the runtime's unsigned 32-bit representation. */
 static finErrorCode
 _bitAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -873,6 +912,7 @@ _bitAndOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Calculates bitwise OR using the runtime's unsigned 32-bit representation. */
 static finErrorCode
 _bitOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
@@ -913,6 +953,7 @@ _bitOrOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Calculates bitwise exclusive-or using unsigned 32-bit operands. */
 static finErrorCode
 _bitXorOpCall(QList<finExecVariable *> *oprands, finExecVariable **retval)
 {
