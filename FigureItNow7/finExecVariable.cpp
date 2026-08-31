@@ -6,6 +6,13 @@
  * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
+/*! \file finExecVariable.cpp
+ *  \brief Implementations of FIN-script runtime variable storage and ownership.
+ *
+ *  Provides typed value storage, arrays and symbolic links, value conversion, deep-copy and transfer
+ *  operations, and helpers that prepare runtime values for operators, functions, and plot routines.
+ */
+
 #include <QtMath>
 
 #include "finExecVariable.h"
