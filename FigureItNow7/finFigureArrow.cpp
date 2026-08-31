@@ -3,7 +3,14 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+/*! \file finFigureArrow.cpp
+ *  \brief Implementations of line-end arrowhead geometry and rendering paths.
+ *
+ *  Implements arrow type conversion, UI selector population, style derivation from figure
+ *  configuration, line shortening, and pixel-space generation of triangular arrowhead paths.
  */
 
 #include "finFigureArrow.h"
