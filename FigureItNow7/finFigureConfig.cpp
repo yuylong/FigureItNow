@@ -3,7 +3,14 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Dec 31st, 2016
- * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+/*! \file finFigureConfig.cpp
+ *  \brief Implementations of per-figure drawing and text style configuration.
+ *
+ *  Provides default styles, complete and convenience accessors for border, fill, arrow, and text
+ *  properties, plus cloning helpers for copying the process-wide default figure configuration.
  */
 
 #include "finFigureConfig.h"
