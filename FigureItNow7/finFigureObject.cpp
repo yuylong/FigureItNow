@@ -3,7 +3,15 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Dec 31st, 2016
- * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+/*! \file finFigureObject.cpp
+ *  \brief Implementations of drawable FIN figure primitives.
+ *
+ *  Converts two- and three-dimensional figure geometry into styled pixel-space finFigurePath values.
+ *  Implements point, line, polyline, rectangle, polygon, ellipse, text, image, axis, and 3D line
+ *  rendering, including arrowheads, coordinate transforms, tick labels, and axis titles.
  */
 
 #include "finFigureObject.h"
