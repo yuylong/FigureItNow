@@ -6,6 +6,13 @@
  * Copyright(c) 2017-2026 Yulong Yu. All rights reserved.
  */
 
+/*! \file finFigureContainer.cpp
+ *  \brief Implementations of the owned figure-object collection.
+ *
+ *  Initializes the current style from the default configuration, copies it to appended objects,
+ *  stores shared graph settings, and releases all owned figure objects during cleanup.
+ */
+
 #include "finFigureContainer.h"
 
 finFigureContainer::finFigureContainer()
