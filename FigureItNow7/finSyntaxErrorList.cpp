@@ -6,8 +6,18 @@
  * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
+/*! \file finSyntaxErrorList.cpp
+ *  \brief Implementations of the pipeline diagnostic list.
+ *
+ *  Provides the counting and lookup accessors declared in finSyntaxErrorList.h, the append and
+ *  removal paths including the realtime dump hook, and the dump overloads that filter entries by
+ *  severity before forwarding them to a finSyntaxErrorDump sink.
+ */
+
 #include "finSyntaxErrorList.h"
 
+// A fresh list collects nothing, owns no sink, and starts at the warning level so that debug and
+// info entries stay out of user-facing output unless the caller lowers the threshold.
 finSyntaxErrorList::finSyntaxErrorList()
 {
     this->_list.clear();
@@ -15,6 +25,8 @@ finSyntaxErrorList::finSyntaxErrorList()
     this->_startingLevel = finSyntaxError::LV_WARNING;
 }
 
+// Threshold count: levels are ordered by severity, so "at least as severe as" is a plain >=
+// comparison over the whole list.
 int finSyntaxErrorList::getEntryCountFromLevel(finSyntaxError::Level level) const
 {
     int retcnt = 0;
@@ -47,6 +59,8 @@ int finSyntaxErrorList::getEntryCount() const
     return this->_list.count();
 }
 
+// Deliberately lenient lookup: the front ends index while repainting, so an out-of-range request
+// yields the shared dummy entry instead of throwing. Use getEntryCount() to check first.
 const finSyntaxError &finSyntaxErrorList::getEntryAt(int index) const
 {
     if ( index < 0 || index >= this->_list.count() )
@@ -70,6 +84,8 @@ finSyntaxError::Level finSyntaxErrorList::getDumpStartingLevel() const
     return this->_startingLevel;
 }
 
+// Producer-side append: take the source position from the offending token, falling back to (0, 0)
+// when the caller has no token, so an entry never keeps coordinates from a previous diagnostic.
 void finSyntaxErrorList::appendEntry(finSyntaxError::Level level, finSyntaxError::Stage stage,
                                       finLexNode *lexnode, QString info)
 {
@@ -92,6 +108,8 @@ void finSyntaxErrorList::appendEntry(finSyntaxError::Level level, finSyntaxError
         entry.dumpErrorInfo(this->_dumper);
 }
 
+// Forwarding append used when diagnostics were already built elsewhere (e.g. imported from the
+// syntax tree), so every field survives the copy.
 void finSyntaxErrorList::appendEntry(const finSyntaxError &entry)
 {
     this->_list.append(entry);
@@ -110,6 +128,8 @@ void finSyntaxErrorList::removeEntryAt(int index)
     this->_list.removeAt(index);
 }
 
+// Clearing keeps the sink, the realtime flag, and the starting level, so the same list can collect
+// the next run's diagnostics without reconfiguration.
 void finSyntaxErrorList::clearAllErrorList()
 {
     this->_list.clear();
@@ -130,6 +150,8 @@ void finSyntaxErrorList::setDumpStartingLevel(finSyntaxError::Level level)
     this->_startingLevel = level;
 }
 
+// Both convenience overloads funnel through this one, so the severity filter and the formatting
+// stay in a single place. A missing sink is a caller bug: without one there is no output at all.
 void finSyntaxErrorList::dumpList(finSyntaxErrorDump *dumper, finSyntaxError::Level startinglevel) const
 {
     if ( dumper == nullptr )
