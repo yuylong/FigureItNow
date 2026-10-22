@@ -143,8 +143,22 @@ finSyntaxTree *finSyntaxReader::getSyntaxTree()
     return syntree;
 }
 
+    const QList<finSyntaxError> *finSyntaxReader::getSyntaxErrorList() const
+{
+    return &this->_errList;
+}
 
-void finSyntaxReader::disposeAllRead()
+QString finSyntaxReader::recordError(finSyntaxError::Code code, const finLexNode *lexnode,
+                                     const QString &errstr)
+{
+    finSyntaxError synerr;
+    synerr.setErrorInfo(finSyntaxError::LV_ERROR, finSyntaxError::ST_COMPILE, code, lexnode, errstr);
+    this->_errList.append(synerr);
+
+    return errstr;
+    }
+
+    void finSyntaxReader::disposeAllRead()
 {
     while ( !this->_syntaxStack.empty() ) {
         finSyntaxNode *syntk = this->_syntaxStack.first();
@@ -518,8 +532,9 @@ void finSyntaxReader::processRightBracket(finLexNode *lexnode)
                 break;
             } else {
                 finThrowObj(finErrorKits::EC_READ_ERROR,
-                            QString("Mismatched bracket: %1 vs %2")
-                                .arg(curlex->getString(), lexnode->getString()));
+                            this->recordError(finSyntaxError::CD_BRACKET_MISMATCH, lexnode,
+                                              QString("Mismatched bracket: %1 vs %2")
+                                                  .arg(curlex->getString(), lexnode->getString())));
             }
         }
 
@@ -527,7 +542,8 @@ void finSyntaxReader::processRightBracket(finLexNode *lexnode)
     }
     if ( !foundcosbrk )
         finThrowObj(finErrorKits::EC_READ_ERROR,
-                    QString("No matching left bracket for %1").arg(lexnode->getString()));
+                    this->recordError(finSyntaxError::CD_BRACKET_MISMATCH, lexnode,
+                                      QString("No matching left bracket for %1").arg(lexnode->getString())));
 
     this->_syntaxStack.prepend(meshednode);
 
@@ -602,10 +618,13 @@ finSyntaxReader::processSplitter(finLexNode *lexnode)
             presynnode = this->_syntaxStack.at(0);
 
         if ( presynnode == nullptr || presynnode->getType() != finSyntaxNode::TP_EXPRESS )
-            finThrowObj(finErrorKits::EC_READ_ERROR, "Label ':' must follow an expression.");
+            finThrowObj(finErrorKits::EC_READ_ERROR,
+                        this->recordError(finSyntaxError::CD_INVALID_LABEL, lexnode,
+                                          "Label ':' must follow an expression."));
         if ( presynnode->getCommandLexNode()->getType() != finLexNode::TP_VARIABLE )
             finThrowObj(finErrorKits::EC_READ_ERROR,
-                        "Label ':' must follow a variable name.");
+                        this->recordError(finSyntaxError::CD_INVALID_LABEL, presynnode->getCommandLexNode(),
+                                          "Label ':' must follow a variable name."));
 
         presynnode->setType(finSyntaxNode::TP_LABEL);
         break;
@@ -781,7 +800,9 @@ void finSyntaxReader::meshAllCommas()
 
         if ( cursyn->getType() ==  finSyntaxNode::TP_EXPRESS ) {
             if ( hasinst )
-                finThrowObj(finErrorKits::EC_READ_ERROR, "Comma expression has no operator between operands.");
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, curlex,
+                                              "Comma expression has no operator between operands."));
 
             this->_syntaxStack.removeFirst();
             synnode->prependSubSyntaxNode(cursyn);
@@ -833,7 +854,9 @@ void finSyntaxReader::meshStatementWithKeywords()
         // Process B <- B'S where B' <- if(E)
         if ( QString::compare(prevlex->getString(), QString("if")) == 0 ) {
             if ( prevtk->getSubListCount() != 1 )
-                finThrowObj(finErrorKits::EC_READ_ERROR, "if statement has unexpected sub-node count.");
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "if statement has unexpected sub-node count."));
 
             prevtk->appendSubSyntaxNode(stttk);
             this->_syntaxStack.removeFirst();
@@ -846,11 +869,15 @@ void finSyntaxReader::meshStatementWithKeywords()
         bool handleelse = false;
         if ( QString::compare(prevlex->getString(), QString("elif")) == 0 ) {
             if ( prevtk->getSubListCount() != 1 )
-                finThrowObj(finErrorKits::EC_READ_ERROR, "elif statement has unexpected sub-node count.");
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "elif statement has unexpected sub-node count."));
             handleelse = true;
         } else if ( QString::compare(prevlex->getString(), QString("else")) == 0 ) {
             if ( prevtk->getSubListCount() > 0 )
-                finThrowObj(finErrorKits::EC_READ_ERROR, "else statement has unexpected sub-node count.");
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "else statement has unexpected sub-node count."));
             handleelse = true;
         }
 
@@ -863,13 +890,19 @@ void finSyntaxReader::meshStatementWithKeywords()
             this->_syntaxStack.removeFirst();
             delete prevtk;
             if ( this->_syntaxStack.count() <= 0 )
-                finThrowObj(finErrorKits::EC_READ_ERROR, "elif/else has no enclosing branch.");
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "elif/else has no enclosing branch."));
 
             prevtk = this->_syntaxStack.first();
             if ( prevtk->getType() != finSyntaxNode::TP_BRANCH )
-                finThrowObj(finErrorKits::EC_READ_ERROR, "elif/else must follow a branch.");
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "elif/else must follow a branch."));
             if ( prevtk->getSubListCount() % 2 != 0 )
-                finThrowObj(finErrorKits::EC_READ_ERROR, "Branch has mismatched sub-node count.");
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "Branch has mismatched sub-node count."));
 
             if ( condtk != nullptr )
                 prevtk->appendSubSyntaxNode(condtk);
@@ -881,7 +914,9 @@ void finSyntaxReader::meshStatementWithKeywords()
         if ( QString::compare(prevlex->getString(), QString("for")) == 0 ||
              QString::compare(prevlex->getString(), QString("while")) == 0 ) {
             if ( prevtk->getSubListCount() != 1 )
-                finThrowObj(finErrorKits::EC_READ_ERROR, "Loop head has unexpected sub-node count.");
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "Loop head has unexpected sub-node count."));
 
             prevtk->appendSubSyntaxNode(stttk);
             this->_syntaxStack.removeFirst();
@@ -897,7 +932,9 @@ void finSyntaxReader::meshStatementWithKeywords()
             int prevsubcnt = prevtk->getSubListCount();
             int sttsubcnt = stttk->getSubListCount();
             if ( prevsubcnt != 0 || sttsubcnt != 1 )
-                finThrowObj(finErrorKits::EC_READ_ERROR, "goto has unexpected sub-node count.");
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "goto has unexpected sub-node count."));
 
             finSyntaxNode *sttsubtk = stttk->pickSubSyntaxNode(0);
             finLexNode *sttsublex = sttsubtk->getCommandLexNode();
@@ -905,7 +942,9 @@ void finSyntaxReader::meshStatementWithKeywords()
 
             if ( sttsubtk->getType() != finSyntaxNode::TP_EXPRESS ||
                  sttsublex->getType() != finLexNode::TP_VARIABLE )
-                finThrowObj(finErrorKits::EC_READ_ERROR, "goto target must be a variable.");
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, sttsublex,
+                                              "goto target must be a variable."));
 
             this->_syntaxStack.removeFirst();
             delete stttk;
@@ -933,7 +972,9 @@ void finSyntaxReader::meshStatementWithKeywords()
             int prevsubcnt = prevtk->getSubListCount();
             int sttsubcnt = stttk->getSubListCount();
             if ( prevsubcnt != 0 || sttsubcnt != 0 )
-                finThrowObj(finErrorKits::EC_READ_ERROR, "break/continue has unexpected sub-node count.");
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "break/continue has unexpected sub-node count."));
 
             this->_syntaxStack.removeFirst();
             delete stttk;
@@ -946,7 +987,9 @@ void finSyntaxReader::meshStatementWithKeywords()
             int prevsubcnt = prevtk->getSubListCount();
             int sttsubcnt = stttk->getSubListCount();
             if ( prevsubcnt != 0 || sttsubcnt != 1 )
-                finThrowObj(finErrorKits::EC_READ_ERROR, "var declaration has unexpected sub-node count.");
+                finThrowObj(finErrorKits::EC_READ_ERROR,
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "var declaration has unexpected sub-node count."));
 
             prevtk->appendSubSyntaxNode(stttk->pickSubSyntaxNode(0));
 
@@ -971,7 +1014,8 @@ void finSyntaxReader::recogFlowerBracketType()
     if ( !isstt ) {
         if ( !finSyntaxNode::isExpressLevelType(curtk->getType()) )
             finThrowObj(finErrorKits::EC_READ_ERROR,
-                        "Flower bracket contains an invalid syntax node type.");
+                        this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, curtk->getCommandLexNode(),
+                                          "Flower bracket contains an invalid syntax node type."));
     }
 
     for ( int i = 1; i < flwbtk->getSubListCount(); i++ ) {
@@ -979,11 +1023,13 @@ void finSyntaxReader::recogFlowerBracketType()
         if ( isstt ) {
             if ( !finSyntaxNode::isStatementLevelType(curtk->getType()) )
                 finThrowObj(finErrorKits::EC_READ_ERROR,
-                            "Statement flower bracket contains a non-statement node.");
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, curtk->getCommandLexNode(),
+                                              "Statement flower bracket contains a non-statement node."));
         } else {
             if ( !finSyntaxNode::isExpressLevelType(curtk->getType()) )
                 finThrowObj(finErrorKits::EC_READ_ERROR,
-                            "Expression flower bracket contains a non-expression node.");
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, curtk->getCommandLexNode(),
+                                              "Expression flower bracket contains a non-expression node."));
         }
     }
     if ( isstt )
@@ -1010,7 +1056,8 @@ void finSyntaxReader::meshFlowerBracket()
 
         if ( curtk->getType() != finSyntaxNode::TP_STATEMENT )
             finThrowObj(finErrorKits::EC_READ_ERROR,
-                        "Function body must be a statement flower bracket.");
+                        this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, curtk->getCommandLexNode(),
+                                          "Function body must be a statement flower bracket."));
 
         this->_syntaxStack.removeFirst();
         prevtk->setType(finSyntaxNode::TP_FUNCTION);
@@ -1073,10 +1120,12 @@ void finSyntaxReader::meshRoundBracket()
             finSyntaxNode *brcktk = this->_syntaxStack.at(0);
             if ( brcktk->getSubListCount() != 1 )
                 finThrowObj(finErrorKits::EC_READ_ERROR,
-                            "if/elif/while head must contain exactly one sub-node.");
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "if/elif/while head must contain exactly one sub-node."));
             if ( brcktk->getSubSyntaxNode(0)->getType() != finSyntaxNode::TP_EXPRESS )
                 finThrowObj(finErrorKits::EC_READ_ERROR,
-                            "if/elif/while head must be an expression.");
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "if/elif/while head must be an expression."));
 
             this->_syntaxStack.removeFirst();
             prevtk->appendSubSyntaxNode(brcktk);
@@ -1088,7 +1137,8 @@ void finSyntaxReader::meshRoundBracket()
             finSyntaxNode *brcktk = this->_syntaxStack.at(0);
             if ( brcktk->getSubListCount() != 3 )
                 finThrowObj(finErrorKits::EC_READ_ERROR,
-                            "for head must contain exactly three sub-nodes.");
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "for head must contain exactly three sub-nodes."));
 
             finSyntaxNodeType sub0type = brcktk->getSubSyntaxNode(0)->getType(),
                               sub1type = brcktk->getSubSyntaxNode(1)->getType(),
@@ -1096,13 +1146,16 @@ void finSyntaxReader::meshRoundBracket()
             if ( !(finSyntaxNode::isStatementLevelType(sub0type) &&
                    sub0type != finSyntaxNode::TP_LABEL && sub0type != finSyntaxNode::TP_JUMP) )
                 finThrowObj(finErrorKits::EC_READ_ERROR,
-                            "for init head must be a simple statement (no label or jump).");
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "for init head must be a simple statement (no label or jump)."));
             if ( sub1type != finSyntaxNode::TP_STATEMENT )
                 finThrowObj(finErrorKits::EC_READ_ERROR,
-                            "for condition head must be a statement.");
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "for condition head must be a statement."));
             if ( sub2type != finSyntaxNode::TP_EXPRESS )
                 finThrowObj(finErrorKits::EC_READ_ERROR,
-                            "for step head must be an expression.");
+                            this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, prevlex,
+                                              "for step head must be an expression."));
 
             this->_syntaxStack.removeFirst();
             prevtk->appendSubSyntaxNode(brcktk);
@@ -1122,10 +1175,12 @@ void finSyntaxReader::meshSquareBracket()
         finSyntaxNode *brcktk = this->_syntaxStack.at(0);
         if ( brcktk->getSubListCount() != 1 )
             finThrowObj(finErrorKits::EC_READ_ERROR,
-                        "Array access must contain exactly one sub-node.");
+                        this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, brcktk->getCommandLexNode(),
+                                          "Array access must contain exactly one sub-node."));
         if ( brcktk->getSubSyntaxNode(0)->getType() != finSyntaxNode::TP_EXPRESS )
             finThrowObj(finErrorKits::EC_READ_ERROR,
-                        "Array access sub-node must be an expression.");
+                        this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, brcktk->getCommandLexNode(),
+                                          "Array access sub-node must be an expression."));
 
         this->_syntaxStack.removeFirst();
         this->_syntaxStack.removeFirst();

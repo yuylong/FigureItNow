@@ -176,7 +176,18 @@ public:
     finSyntaxTree *getSyntaxTree();
 
     /*!
-     *  \brief Returns a one-line textual description of the reader, used for logging.
+     *  \brief Returns a read-only pointer to the parse errors recorded so far.
+     *
+     *  The list is the same one handed to the finSyntaxTree by getSyntaxTree(); the reader
+     *  keeps ownership. The pointer stays valid until the next startRead() / stopRead(),
+     *  both of which clear the list.
+     *
+     *  \return Pointer to the internal error list; never \c nullptr.
+     */
+    const QList<finSyntaxError> *getSyntaxErrorList() const;
+
+        /*!
+         *  \brief Returns a one-line textual description of the reader, used for logging.
      *
      *  Includes the current state, the syntax stack depth, the error count, and the
      *  embedded lex reader's own dumpObjInfo().
@@ -184,6 +195,31 @@ public:
     virtual QString dumpObjInfo() const override;
 
 private:
+    /*!
+     *  \brief Records a script-level parse error and returns its message unchanged.
+     *
+     *  Called for every parse error caused by the user's script, so that the error reaches the
+     *  consumer as a full finSyntaxError entry carrying the source position of \a lexnode and a
+     *  machine-readable \a code, instead of reaching the tree as a bare message through the
+     *  exception alone. The returned message lets the call site keep its original throw:
+     *
+     *  \code
+     *      finThrowObj(finErrorKits::EC_READ_ERROR,
+     *                  this->recordError(finSyntaxError::CD_INVALID_LABEL, lexnode, "..."));
+     *  \endcode
+     *
+     *  This method only records; it never throws and never changes the parser state, so the
+     *  parse still aborts at the same point and no partially built tree reaches the executor.
+     *
+     *  \param code     Diagnostic category of the error (see finSyntaxError::Code).
+     *  \param lexnode  Token the error is reported at; may be \c nullptr, in which case the
+     *                  recorded position is (0, 0).
+     *  \param errstr   Human-readable message.
+     *
+     *  \return \a errstr, so the result can be forwarded straight to finThrowObj().
+     */
+    QString recordError(finSyntaxError::Code code, const finLexNode *lexnode, const QString &errstr);
+
     /*!
      *  \brief Deletes every node in the syntax stack and clears the error list.
      *

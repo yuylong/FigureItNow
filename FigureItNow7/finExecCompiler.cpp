@@ -73,10 +73,20 @@ finSyntaxTree *finExecCompiler::buildErrorTree(const QString &errstr) const
     if ( errstr.length() <= 0 )
         return rettree;
 
+    // Script-level errors are recorded in the reader's error list before they are thrown, so each
+    // one carries its own source position and classification. Prefer those over a bare message:
+    // adding the thrown message as well would report the same problem twice.
+    const QList<finSyntaxError> *readerrlist = this->_synReader.getSyntaxErrorList();
+    if ( readerrlist != nullptr && !readerrlist->isEmpty() ) {
+        rettree->appendSyntaxErrorList(readerrlist);
+        return rettree;
+    }
+
+    // Nothing was recorded (e.g. an internal error thrown outside recordError): fall back to a
+    // single entry carrying just the message, at a reported position of (0, 0).
     finSyntaxError synerr;
-    synerr.setRow(0);
-    synerr.setColumn(0);
-    synerr.setErrorString(errstr);
+    synerr.setErrorInfo(finSyntaxError::LV_ERROR, finSyntaxError::ST_COMPILE,
+                        finSyntaxError::CD_DUMMY, nullptr, errstr);
 
     rettree->appendSyntaxError(synerr);
     return rettree;

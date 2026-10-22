@@ -83,7 +83,12 @@ public:
 
 private:
     /*!
-     *  \brief Builds a fallback syntax tree containing one syntax error.
+     *  \brief Builds a fallback syntax tree carrying the diagnostics of a failed parse.
+     *
+     *  If the reader recorded one or more parse errors, those entries are carried over verbatim so
+     *  the consumer receives their source positions and classifications. Otherwise a single entry is
+     *  built from \a errstr at position (0, 0), which covers internal errors raised outside the
+     *  reader's reporting path.
      *
      *  \param errstr  Error message to attach to the tree. If empty, an empty tree is returned.
      *  \return A heap-allocated syntax tree, or \c nullptr if allocation fails.
