@@ -23,6 +23,7 @@ finSyntaxReader::finSyntaxReader()
     : _lexReader(), _syntaxStack()
 {
     this->_state = ST_DUMMY;
+    this->_errList = nullptr;
 }
 
 const finLexReader *finSyntaxReader::getLexReader() const
@@ -47,7 +48,7 @@ QString finSyntaxReader::dumpObjInfo() const
 
     ts << "SyntaxReader:State=" << this->_state
        << ",StackDepth=" << this->_syntaxStack.count()
-       << ",Errors=" << this->_errList.count()
+       << ",Errors=" << (this->_errList != nullptr ? this->_errList->getEntryCount() : 0)
        << ",Lex={" << this->_lexReader.dumpObjInfo() << "}";
     return retstr;
 }
@@ -110,13 +111,13 @@ bool finSyntaxReader::readNextToken()
             return false;
         }
     } catch (finException &e) {
-        // Record the lex error and stop reading. The errList travels with the syntax tree.
+        // Record the lex error and stop reading. The error goes to the shared diagnostic list.
         finSyntaxError synerr;
         lexnode.setRow(this->_lexReader.getRow());
         lexnode.setColumn(this->_lexReader.getColumn());
         synerr.setErrorInfo(finSyntaxError::LV_ERROR, finSyntaxError::ST_LEX,
                             finSyntaxError::CD_LEX_ERROR, &lexnode, e.getErrorDescription());
-        this->_errList.append(synerr);
+        this->appendErrorEntry(synerr);
         this->_state = ST_DONE;
         return false;
     }
@@ -139,13 +140,20 @@ finSyntaxTree *finSyntaxReader::getSyntaxTree()
 
     syntree->appendSyntaxNodeStack(&this->_syntaxStack);
     syntree->setScriptCode(this->_lexReader.getString());
-    syntree->appendSyntaxErrorList(&this->_errList);
     return syntree;
 }
 
-    const QList<finSyntaxError> *finSyntaxReader::getSyntaxErrorList() const
+void finSyntaxReader::setErrorList(finSyntaxErrorList *errlist)
 {
-    return &this->_errList;
+    this->_errList = errlist;
+}
+
+void finSyntaxReader::appendErrorEntry(const finSyntaxError &synerr)
+{
+    if ( this->_errList == nullptr )
+        finThrowObj(finErrorKits::EC_STATE_ERROR, "Syntax error list is not injected.");
+
+    this->_errList->appendEntry(synerr);
 }
 
 QString finSyntaxReader::recordError(finSyntaxError::Code code, const finLexNode *lexnode,
@@ -153,7 +161,7 @@ QString finSyntaxReader::recordError(finSyntaxError::Code code, const finLexNode
 {
     finSyntaxError synerr;
     synerr.setErrorInfo(finSyntaxError::LV_ERROR, finSyntaxError::ST_COMPILE, code, lexnode, errstr);
-    this->_errList.append(synerr);
+    this->appendErrorEntry(synerr);
 
     return errstr;
     }
@@ -165,8 +173,6 @@ QString finSyntaxReader::recordError(finSyntaxError::Code code, const finLexNode
         this->_syntaxStack.removeFirst();
         delete syntk;
     }
-
-    this->_errList.clear();
 }
 
 void finSyntaxReader::processTypedNextToken(finLexNode *lexnode, finLexNodeType lextype)

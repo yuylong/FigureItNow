@@ -86,8 +86,6 @@ void finSyntaxOptimzer::optimize()
 {
     if ( this->_synTree == nullptr )
         finThrow(finErrorKits::EC_NULL_POINTER, "Cannot optimize a null syntax tree.");
-    if ( this->_synTree->getErrorCount() > 0 )
-        finThrow(finErrorKits::EC_STATE_ERROR, "Cannot optimize a syntax tree with errors.");
     if ( this->_optOptions.isEmpty() )
         return;
 

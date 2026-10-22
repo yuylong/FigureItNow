@@ -13,7 +13,7 @@
 
 
 finSyntaxTree::finSyntaxTree()
-    : _rootNode(), _scriptCodes(), _errList()
+    : _rootNode(), _scriptCodes()
 {
     this->_rootNode.setType(finSyntaxNode::TP_PROGRAM);
 }
@@ -50,19 +50,6 @@ QString finSyntaxTree::getCodeLine(int line) const
         return QString();
 
     return this->_scriptCodes[line];
-}
-
-int finSyntaxTree::getErrorCount() const
-{
-    return this->_errList.count();
-}
-
-finSyntaxError finSyntaxTree::getSyntaxError(int idx) const
-{
-    if ( idx < 0 || idx >= this->_errList.count() )
-        return finSyntaxError();
-
-    return this->_errList[idx];
 }
 
 void finSyntaxTree::setRootNode(const finSyntaxNode *rtnode)
@@ -153,21 +140,6 @@ void finSyntaxTree::setScriptCode(const QString &script)
     this->_scriptCodes = script.split(QChar::LineSeparator, Qt::KeepEmptyParts);
 }
 
-void finSyntaxTree::appendSyntaxError(const finSyntaxError &synerr)
-{
-    this->_errList.append(synerr);
-}
-
-void finSyntaxTree::appendSyntaxErrorList(const QList<finSyntaxError> *list)
-{
-    this->_errList.append(*list);
-}
-
-void finSyntaxTree::clearSyntaxErrorList()
-{
-    this->_errList.clear();
-}
-
 QString finSyntaxTree::dumpObjInfo() const
 {
     QString retstr;
@@ -177,8 +149,7 @@ QString finSyntaxTree::dumpObjInfo() const
         firstscln = this->_scriptCodes[0];
 
     ts << "Root:{" << this->_rootNode.dumpObjInfo() << "}; "
-       << "Script:[" << this->_scriptCodes.count() << "]{" << firstscln << "}; "
-       << "Errors:[" << this->_errList.count() <<"];";
+       << "Script:[" << this->_scriptCodes.count() << "]{" << firstscln << "};";
 
     return retstr;
 }
@@ -188,41 +159,4 @@ void finSyntaxTree::disposeAll()
     this->_rootNode.disposeAll();
     this->_rootNode.setType(finSyntaxNode::TP_PROGRAM);
     this->_scriptCodes.clear();
-    this->_errList.clear();
-}
-
-QString finSyntaxTree::dumpSyntaxError(const finSyntaxError &synerr, int idx) const
-{
-    QString retstr;
-    QTextStream retstm(&retstr);
-
-    if ( idx > 0 )
-        retstm << idx;
-    else
-        retstm << "err";
-    retstm << ": " << synerr.getErrorString() << Qt::endl;
-
-    int row = synerr.getRow();
-    int col = synerr.getColumn();
-    if ( row < this->_scriptCodes.count() ) {
-        retstm << "Code: " << this->_scriptCodes.at(synerr.getRow()) << Qt::endl;
-        retstm << "      ";
-        for ( int i = 0; i < col; i++ )
-            retstm << " ";
-        retstm << "^" << Qt::flush;
-    }
-    return retstr;
-}
-
-QString finSyntaxTree::dumpSyntaxError(int idx) const
-{
-    if ( idx < 0 || idx >= this->_errList.count() ) {
-        QString retstr;
-        QTextStream retstm(&retstr);
-
-        retstm << idx << ": No such error!" << Qt::flush;
-        return retstr;
-    }
-
-    return this->dumpSyntaxError(this->_errList.at(idx));
 }

@@ -179,15 +179,15 @@ finErrorCode finExecMachine::compile()
         delete this->_synTree;
 
     this->disposeExecutionError();
+
+    // Inject the machine's list as the single shared diagnostic pipe: the compiler and the parser
+    // write compile-stage errors straight into it, so compile and execute errors share one
+    // consumer-facing list without any intermediate copies.
+    this->_compiler.setErrorList(&this->_errList);
     this->_synTree = this->_compiler.compile();
 
     if ( this->_synTree == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
-
-    // Merge the parse-stage diagnostics carried by the syntax tree into the machine's own error
-    // list, so compile and execute errors share one consumer-facing pipe.
-    for ( int i = 0; i < this->_synTree->getErrorCount(); i++ )
-        this->_errList.appendEntry(this->_synTree->getSyntaxError(i));
 
     if ( this->_errList.getEntryCount() > 0 )
         return finErrorKits::EC_NORMAL_WARN;
@@ -203,7 +203,7 @@ finErrorCode finExecMachine::execute()
         return finErrorKits::EC_STATE_ERROR;
 
     // Do not clear the error list here: compile() already reset it, and clearing again would
-    // discard the compile-stage diagnostics merged in by compile(). Execution errors append to
+    // discard the compile-stage diagnostics recorded by compile(). Execution errors append to
     // the same list so consumers see one combined, ordered report per run.
     finExecFlowControl flowctl;
     finErrorCode errcode = this->instantExecute(this->_synTree->getRootNode(), this->_baseEnv, &flowctl);

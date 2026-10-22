@@ -10,12 +10,14 @@
  *
  *  This header defines finExecCompiler, a small adapter used by the execution layer to feed script
  *  text into finSyntaxReader and retrieve the resulting finSyntaxTree. When compilation cannot produce
- *  a normal tree, the wrapper builds a fallback tree that carries syntax-error information.
+ *  a normal tree, the wrapper builds a fallback tree and records a fallback diagnostic into the shared
+ *  error list installed through setErrorList().
  */
 #ifndef FINEXECCOMPILER_H
 #define FINEXECCOMPILER_H
 
 #include "finErrorCode.h"
+#include "finSyntaxErrorList.h"
 #include "finSyntaxReader.h"
 #include "finSyntaxTree.h"
 
@@ -36,6 +38,7 @@ class finExecCompiler
 private:
     QString _scriptCode;         //!< Script source text to be compiled on the next compile() call.
     finSyntaxReader _synReader;  //!< Wrapped parser pipeline used to build the syntax tree.
+    finSyntaxErrorList *_errList; //!< Shared diagnostic list compile errors are written to; borrowed.
 
 public:
     /*!
@@ -68,13 +71,24 @@ public:
     void setScriptCode(const QString &script);
 
     /*!
+     *  \brief Installs the shared diagnostic list that compile errors are written to.
+     *
+     *  The pointer is borrowed, not owned; it is forwarded to the wrapped finSyntaxReader so parse
+     *  errors land in the same list. Call this before compile(); normally finExecMachine injects
+     *  its own list here.
+     *
+     *  \param errlist  The shared list to append compile diagnostics to.
+     */
+    void setErrorList(finSyntaxErrorList *errlist);
+
+    /*!
      *  \brief Compiles the stored script text into a syntax tree.
      *
      *  This method resets any in-progress reader state, feeds the stored script text into finSyntaxReader,
      *  and drives token reading until parsing finishes. The returned tree is heap-allocated and owned by
      *  the caller. If parsing fails or no script text has been installed, the method returns a heap-
-     *  allocated fallback tree containing syntax-error information instead of returning \c nullptr whenever
-     *  possible.
+     *  allocated fallback tree and records the diagnostics into the shared error list instead of
+     *  returning \c nullptr whenever possible.
      *
      *  \return A heap-allocated syntax tree representing the current script, or an error tree if
      *          compilation failed. Returns \c nullptr only if allocating the fallback tree fails.
@@ -83,14 +97,15 @@ public:
 
 private:
     /*!
-     *  \brief Builds a fallback syntax tree carrying the diagnostics of a failed parse.
+     *  \brief Builds a fallback syntax tree after a failed parse.
      *
-     *  If the reader recorded one or more parse errors, those entries are carried over verbatim so
-     *  the consumer receives their source positions and classifications. Otherwise a single entry is
-     *  built from \a errstr at position (0, 0), which covers internal errors raised outside the
-     *  reader's reporting path.
+     *  Parse errors are already recorded in the shared error list as they are detected, so the tree
+     *  itself carries no diagnostics. When nothing was recorded (e.g. an internal error thrown
+     *  outside the reader's reporting path), a single fallback entry is appended to the shared list
+     *  from \a errstr at position (0, 0).
      *
-     *  \param errstr  Error message to attach to the tree. If empty, an empty tree is returned.
+     *  \param errstr  Error message to record when the shared list is still empty. If empty, an
+     *                 empty tree is returned and nothing is recorded.
      *  \return A heap-allocated syntax tree, or \c nullptr if allocation fails.
      */
     finSyntaxTree *buildErrorTree(const QString &errstr) const;

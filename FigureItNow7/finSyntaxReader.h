@@ -9,8 +9,8 @@
  *  \brief Declarations of the recursive-descent parser that turns lex nodes into a syntax tree.
  *
  *  This header defines finSyntaxReader, the streaming parser that consumes a FIN-7 script
- *  token-by-token (via an embedded finLexReader) and emits a finSyntaxTree. The parser also
- *  accumulates per-token syntax errors into a list that travels with the resulting tree, so
+ *  token-by-token (via an embedded finLexReader) and emits a finSyntaxTree. Parse errors are
+ *  recorded into a shared finSyntaxErrorList injected by the caller (see setErrorList()), so
  *  the executor can report them alongside the successfully parsed code.
  */
 
@@ -24,6 +24,7 @@
 #include "finLexReader.h"
 #include "finSyntaxNode.h"
 #include "finSyntaxError.h"
+#include "finSyntaxErrorList.h"
 #include "finSyntaxTree.h"
 
 
@@ -42,9 +43,9 @@
  *  implement operator precedence, bracket matching, and statement / declaration framing
  *  respectively); virtual tokens (TP_DUMMY, TP_NOTE, ...) are silently dropped.
  *
- *  Errors detected during parsing are recorded as finSyntaxError entries in the internal
- *  error list, which is moved into the syntax tree handed to the executor; the reader itself
- *  only throws on internal / state-machine misuse, never on a script-level parse error.
+ *  Errors detected during parsing are recorded as finSyntaxError entries in the shared error
+ *  list injected through setErrorList(); the reader itself only throws on internal /
+ *  state-machine misuse, never on a script-level parse error.
  *
  *  The reader owns the syntax stack nodes it allocates and the lex reader it embeds; the
  *  caller owns the finSyntaxTree returned by getSyntaxTree().
@@ -79,7 +80,8 @@ protected:
     State _state;                        //!< Current parser state (see State).
     QList<finSyntaxNode *> _syntaxStack; //!< Parser working stack; the newest node is at index 0.
                                          //!< Every node in this list is heap-allocated and owned by the reader.
-    QList<finSyntaxError> _errList;      //!< Parse errors recorded so far; attached to the syntax tree.
+    finSyntaxErrorList *_errList;        //!< Shared diagnostic list parse errors are written to;
+                                         //!< borrowed pointer, not owned by the reader.
 
 public:
     /*!
@@ -108,7 +110,7 @@ public:
      *         from ST_DUMMY to ST_READY.
      *
      *  Any prior parse state is discarded: the lex reader is rewound to the start, and
-     *  the parser's syntax stack and error list are cleared.
+     *         the parser's syntax stack is cleared.
      *
      *  \throws finException with EC_STATE_ERROR if a parse is already in progress (state
      *          ST_READING or ST_DONE).
@@ -127,7 +129,7 @@ public:
 
     /*!
      *  \brief Transitions the parser from ST_READY to ST_READING and clears any leftover
-     *         stack nodes and error entries.
+     *         stack nodes.
      *
      *  After this call, readNextToken() can be invoked repeatedly to drive the parser.
      *
@@ -137,7 +139,7 @@ public:
 
     /*!
      *  \brief Transitions the parser from ST_READING / ST_DONE back to ST_READY and
-     *         discards the current syntax stack and error list.
+     *         discards the current syntax stack.
      *
      *  \throws finException with EC_STATE_ERROR if the parser is in the ST_DUMMY state.
      *  \throws finException with EC_DUPLICATE_OP if the parser is already stopped (ST_READY).
@@ -153,8 +155,8 @@ public:
      *
      *  \return \c true if more tokens are still expected (or the call was a no-op);
      *          \c false if the input is exhausted or a lex error was recorded. In the
-     *          latter case the parser transitions to ST_DONE and getSyntaxTree() will
-     *          return a tree that carries the recorded error.
+     *          latter case the parser transitions to ST_DONE and the recorded error stays
+     *          in the shared error list.
      *
      *  \throws finException with EC_STATE_ERROR if the parser is not in the ST_READING state.
      */
@@ -164,8 +166,8 @@ public:
      *  \brief Packages the current syntax stack, script code, and error list into a
      *         freshly allocated finSyntaxTree and returns it to the caller.
      *
-     *  The returned tree owns the syntax stack nodes (they are moved out of the reader),
-     *  a copy of the script code, and a copy of the error list. The reader itself is left
+     *  The returned tree owns the syntax stack nodes (they are moved out of the reader)
+     *  and a copy of the script code. The reader itself is left
      *  empty and still in the READING / DONE state, so a subsequent call will return
      *  \c nullptr until startRead() is called again.
      *
@@ -176,15 +178,16 @@ public:
     finSyntaxTree *getSyntaxTree();
 
     /*!
-     *  \brief Returns a read-only pointer to the parse errors recorded so far.
+     *  \brief Installs the shared diagnostic list that parse errors are written to.
      *
-     *  The list is the same one handed to the finSyntaxTree by getSyntaxTree(); the reader
-     *  keeps ownership. The pointer stays valid until the next startRead() / stopRead(),
-     *  both of which clear the list.
+     *  The pointer is borrowed, not owned: the caller (normally finExecMachine, which owns the
+     *  single finSyntaxErrorList of a script run) must keep the list alive while the reader
+     *  parses. Recording an error before a list is installed throws, so call this before
+     *  startRead().
      *
-     *  \return Pointer to the internal error list; never \c nullptr.
+     *  \param errlist  The shared list to append parse errors to.
      */
-    const QList<finSyntaxError> *getSyntaxErrorList() const;
+    void setErrorList(finSyntaxErrorList *errlist);
 
         /*!
          *  \brief Returns a one-line textual description of the reader, used for logging.
@@ -208,8 +211,9 @@ private:
      *                  this->recordError(finSyntaxError::CD_INVALID_LABEL, lexnode, "..."));
      *  \endcode
      *
-     *  This method only records; it never throws and never changes the parser state, so the
+     *  This method never changes the parser state, so the
      *  parse still aborts at the same point and no partially built tree reaches the executor.
+     *  It throws only when no error list has been installed through setErrorList().
      *
      *  \param code     Diagnostic category of the error (see finSyntaxError::Code).
      *  \param lexnode  Token the error is reported at; may be \c nullptr, in which case the
@@ -221,7 +225,15 @@ private:
     QString recordError(finSyntaxError::Code code, const finLexNode *lexnode, const QString &errstr);
 
     /*!
-     *  \brief Deletes every node in the syntax stack and clears the error list.
+     *  \brief Appends \a synerr to the injected shared error list.
+     *
+     *  \throws finException with EC_STATE_ERROR if no list has been installed through
+     *          setErrorList().
+     */
+    void appendErrorEntry(const finSyntaxError &synerr);
+
+    /*!
+     *  \brief Deletes every node in the syntax stack.
      *
      *  Used internally by startRead() / stopRead() to reset the parser between passes.
      */

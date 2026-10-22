@@ -31,9 +31,9 @@
  *
  *  finSyntaxErrorList accumulates the finSyntaxError entries produced by the lexer, the parser, and
  *  the execution machine, and turns them into output for a finSyntaxErrorDump sink. It is the
- *  single consumer-facing error pipe of a script run: finExecMachine merges the parse-stage
- *  diagnostics of the syntax tree into its own list before executing, so callers see compile and
- *  runtime problems together in one place.
+ *  single consumer-facing error pipe of a script run: finExecMachine owns the one instance and
+ *  injects it into the compiler and the parser, so callers see compile and runtime problems
+ *  together in one place.
  *
  *  Entries are kept by value in the order they were appended. Two output modes are supported:
  *
@@ -196,8 +196,8 @@ public:
     /*!
      *  \brief Appends an already-constructed error entry, preserving all of its fields.
      *
-     *  Used when forwarding entries parsed elsewhere, e.g. copying the syntax tree's diagnostics into
-     *  the execution machine's list. Honours the realtime dump policy.
+     *  Used when forwarding entries built elsewhere, e.g. recording a fallback diagnostic in the
+     *  shared list. Honours the realtime dump policy.
      *
      *  \param entry  The entry to copy into the list.
      */

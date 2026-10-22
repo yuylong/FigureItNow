@@ -58,7 +58,8 @@ protected:
 
     finExecCompiler _compiler;             //!< Compiler wrapper that produces the syntax tree.
     finSyntaxTree *_synTree;               //!< Last compiled syntax tree, owned by this machine.
-    finSyntaxErrorList _errList;           //!< Execution diagnostics accumulated by this machine.
+    finSyntaxErrorList _errList;           //!< Single shared diagnostic list for compile and execute;
+                                           //!< injected into the compiler before each compile pass.
 
 public:
     /*! \name Construction And Lifetime
