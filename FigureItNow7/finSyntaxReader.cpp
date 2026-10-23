@@ -340,7 +340,9 @@ void finSyntaxReader::transformOpToNonBfParamOp(finLexNode *lexnode)
     if ( tblinfo == nullptr )
         finThrow(finErrorKits::EC_READ_ERROR, "Unknown operator in syntax table.");
     if ( tblinfo->zpTransOp == finLexNode::OP_DUMMY)
-        finThrow(finErrorKits::EC_INVALID_PARAM, "Operator has no non-before-param form.");
+        finThrowObj(finErrorKits::EC_INVALID_PARAM,
+                    this->recordError(finSyntaxError::CD_OPERAND_MISSING, lexnode,
+                                      "Operator has no non-before-param form."));
 
     lexnode->setOperator(tblinfo->zpTransOp);
 }
@@ -398,7 +400,9 @@ void finSyntaxReader::processArithOperator(finLexNode *lexnode)
     int bfparamcnt = getOperatorBfParamCnt(lexnode);
     int afparamcnt = getOperatorAfParamCnt(lexnode);
     if ( bfparamcnt < 0 || afparamcnt < 0 )
-        finThrowObj(finErrorKits::EC_READ_ERROR, "Unknown arithmetic operator in syntax table.");
+        finThrowObj(finErrorKits::EC_READ_ERROR,
+                    this->recordError(finSyntaxError::CD_UNKNOWN_SYMBOL, lexnode,
+                                      "Unknown arithmetic operator in syntax table."));
 
     finSyntaxNode *prevtoken = nullptr;
     if ( this->_syntaxStack.count() > 0 )
@@ -706,7 +710,9 @@ bool finSyntaxReader::meshArithExpress()
         // tokens through the appropriate path.
         return false;
     if ( afpcnt1 != afpcnt2 )
-        finThrowObj(finErrorKits::EC_READ_ERROR, "Arithmetic operator has mismatched after-param count.");
+        finThrowObj(finErrorKits::EC_READ_ERROR,
+                    this->recordError(finSyntaxError::CD_OPERAND_MISSING, oplex,
+                                      "Arithmetic operator has mismatched after-param count."));
 
     int bfpcnt = getOperatorBfParamCnt(oplex);
     if ( bfpcnt < 0 )
@@ -715,7 +721,9 @@ bool finSyntaxReader::meshArithExpress()
     if ( bfpcnt > 0 ) {
         oprand1 = this->_syntaxStack.at(afpcnt1 + 1);
         if ( oprand1->getType() != finSyntaxNode::TP_EXPRESS )
-            finThrowObj(finErrorKits::EC_READ_ERROR, "Operator expects an expression as before-param.");
+            finThrowObj(finErrorKits::EC_READ_ERROR,
+                        this->recordError(finSyntaxError::CD_OPERAND_MISSING, oplex,
+                                          "Operator expects an expression as before-param."));
     }
 
     this->_syntaxStack.removeFirst();

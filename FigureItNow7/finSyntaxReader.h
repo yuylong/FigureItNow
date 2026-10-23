@@ -293,10 +293,11 @@ private:
      *  becomes OP_NEGATIVE, `+` becomes OP_POSITIVE).
      *
      *  \throws finException with EC_READ_ERROR if \a lexnode is not an operator, if the
-     *          operator is not in the table, or if the operator has no non-before-parameter
-     *          counterpart.
+     *          operator is not in the table, or with EC_INVALID_PARAM (after recording a
+     *          CD_OPERAND_MISSING entry in the error list) if the operator has no
+     *          non-before-parameter counterpart.
      */
-    static void transformOpToNonBfParamOp(finLexNode *lexnode);
+    void transformOpToNonBfParamOp(finLexNode *lexnode);
 
     /*!
      *  \brief Returns the operator's precedence level (higher binds tighter), or \c 0 if
