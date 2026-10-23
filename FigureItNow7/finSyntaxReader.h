@@ -219,10 +219,13 @@ private:
      *  \param lexnode  Token the error is reported at; may be \c nullptr, in which case the
      *                  recorded position is (0, 0).
      *  \param errstr   Human-readable message.
+     *  \param level    Severity to record (see finSyntaxError::Level). Defaults to LV_ERROR; pass
+     *                  LV_WARNING or LV_INFO for recoverable or informational diagnostics.
      *
      *  \return \a errstr, so the result can be forwarded straight to finThrowObj().
      */
-    QString recordError(finSyntaxError::Code code, const finLexNode *lexnode, const QString &errstr);
+        QString recordError(finSyntaxError::Code code, const finLexNode *lexnode, const QString &errstr,
+                            finSyntaxError::Level level = finSyntaxError::LV_ERROR);
 
     /*!
      *  \brief Appends \a synerr to the injected shared error list.

@@ -157,16 +157,16 @@ void finSyntaxReader::appendErrorEntry(const finSyntaxError &synerr)
 }
 
 QString finSyntaxReader::recordError(finSyntaxError::Code code, const finLexNode *lexnode,
-                                     const QString &errstr)
+                                     const QString &errstr, finSyntaxError::Level level)
 {
     finSyntaxError synerr;
-    synerr.setErrorInfo(finSyntaxError::LV_ERROR, finSyntaxError::ST_COMPILE, code, lexnode, errstr);
+    synerr.setErrorInfo(level, finSyntaxError::ST_COMPILE, code, lexnode, errstr);
     this->appendErrorEntry(synerr);
 
     return errstr;
-    }
+}
 
-    void finSyntaxReader::disposeAllRead()
+void finSyntaxReader::disposeAllRead()
 {
     while ( !this->_syntaxStack.empty() ) {
         finSyntaxNode *syntk = this->_syntaxStack.first();
