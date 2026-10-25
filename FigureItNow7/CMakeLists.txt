@@ -52,7 +52,7 @@ elseif(APPLE)
 endif()
 
 # Try to find Qt6 automatically
-find_package(Qt6 QUIET COMPONENTS Core Widgets Svg PrintSupport)
+find_package(Qt6 QUIET COMPONENTS Core Widgets Svg PrintSupport LinguistTools)
 
 # If not found, try searching possible paths
 if(NOT Qt6_FOUND)
@@ -72,7 +72,7 @@ if(NOT Qt6_FOUND)
     endforeach()
     
     # Try finding Qt6 again
-    find_package(Qt6 REQUIRED COMPONENTS Core Widgets Svg PrintSupport)
+    find_package(Qt6 REQUIRED COMPONENTS Core Widgets Svg PrintSupport LinguistTools)
 endif()
 
 # Output found Qt6 information
@@ -271,6 +271,18 @@ target_link_libraries(${PROJECT_NAME}
     Qt6::Widgets
     Qt6::Svg
     Qt6::PrintSupport
+)
+
+# Multi-language support: translation source files.
+# "update_translations" extracts translatable strings from sources and .ui files via lupdate;
+# "release_translations" compiles the .ts files into .qm and embeds them under ":/i18n".
+set(TS_FILES
+    translations/figureitnow7_zh_CN.ts
+)
+
+qt_add_translations(${PROJECT_NAME}
+    TS_FILES ${TS_FILES}
+    RESOURCE_PREFIX "/i18n"
 )
 
 # Windows specific settings

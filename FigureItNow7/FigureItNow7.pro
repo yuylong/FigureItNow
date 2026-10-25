@@ -147,3 +147,11 @@ DISTFILES +=
 
 RESOURCES += \
     Icons.qrc
+
+# Multi-language support: translation source files.
+# "lrelease" compiles the .ts files into .qm; "embed_translations" puts them into
+# the executable's resources under ":/i18n/".
+TRANSLATIONS += \
+    translations/figureitnow7_zh_CN.ts
+
+CONFIG += lrelease embed_translations
