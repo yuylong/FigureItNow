@@ -120,8 +120,8 @@ bool MainWindow::saveScriptFile(finUiScriptEditor *editor)
 
     finErrorCode errcode = editor->saveFile();
     if ( finErrorKits::isErrorResult(errcode) ) {
-        QMessageBox::critical(this, QString("Error"),
-                              QString("The file cannot be saved on disk!"), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Error"),
+                              tr("The file cannot be saved on disk!"), QMessageBox::Ok);
         return true;
     }
     return true;
@@ -135,17 +135,17 @@ bool MainWindow::saveAsScriptFile(finUiScriptEditor *editor)
     QString defpath = this->_fileDirPath;
     if ( editor->isFileOpened() )
         defpath = editor->getFilePath();
-    QString filepath = QFileDialog::getSaveFileName(this, QString("Save Script File"),
+    QString filepath = QFileDialog::getSaveFileName(this, tr("Save Script File"),
                                                     defpath,
-                                                    QString("FigureItNow Script (*.fsc)"));
+                                                    tr("FigureItNow Script (*.fsc)"));
     if ( filepath.isEmpty() )
         return false;
 
     this->_fileDirPath = filepath;
     finErrorCode errcode = editor->saveAsFile(filepath);
     if ( finErrorKits::isErrorResult(errcode) ) {
-        QMessageBox::critical(this, QString("Error"),
-                              QString("The file cannot be saved on disk!"), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Error"),
+                              tr("The file cannot be saved on disk!"), QMessageBox::Ok);
         return true;
     }
     return true;
@@ -156,8 +156,8 @@ QString MainWindow::getSaveFileQuestionString(finUiScriptEditor *editor) const
     QString str;
     QTextStream out(&str, QIODevice::WriteOnly);
 
-    out << editor->getFileDisplayPath() << QString(" is not saved.") << Qt::endl;
-    out << "Save it?" << Qt::endl;
+    out << tr("%1 is not saved.").arg(editor->getFileDisplayPath()) << Qt::endl;
+    out << tr("Save it?") << Qt::endl;
     return str;
 }
 
@@ -177,7 +177,7 @@ finErrorCode MainWindow::removeEditorAt(int idx)
     if ( !editor->isScriptModified() )
         goto out;
 
-    resbtn = QMessageBox::question(this, QString("Question"), this->getSaveFileQuestionString(editor),
+    resbtn = QMessageBox::question(this, tr("Question"), this->getSaveFileQuestionString(editor),
                                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
                                    QMessageBox::Yes);
     switch ( resbtn ) {
@@ -218,25 +218,25 @@ void MainWindow::on_actNew_triggered()
 {
     finErrorCode errcode = this->createNewScriptFile();
     if ( finErrorKits::isErrorResult(errcode) ) {
-        QMessageBox::critical(this, QString("Error"),
-                              QString("The file cannot be created!"), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Error"),
+                              tr("The file cannot be created!"), QMessageBox::Ok);
         return;
     }
 }
 
 void MainWindow::on_actOpen_triggered()
 {
-    QString filepath = QFileDialog::getOpenFileName(this, QString("Open a Script File"),
+    QString filepath = QFileDialog::getOpenFileName(this, tr("Open a Script File"),
                                                     this->_fileDirPath,
-                                                    QString("FigureItNow Script (*.fsc)"));
+                                                    tr("FigureItNow Script (*.fsc)"));
     if ( filepath.isEmpty() )
         return;
 
     this->_fileDirPath = filepath;
     finErrorCode errcode = this->openScriptFile(filepath);
     if ( finErrorKits::isErrorResult(errcode) ) {
-        QMessageBox::critical(this, QString("Error"),
-                              QString("The file cannot be open!"), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Error"),
+                              tr("The file cannot be opened!"), QMessageBox::Ok);
         return;
     }
 }
@@ -387,8 +387,8 @@ bool MainWindow::checkExportWarning(finUiScriptEditor *editor)
 {
     if ( !editor->containsFigureObjects() ) {
         QMessageBox::StandardButton resbtn;
-        resbtn = QMessageBox::warning(this, QString("Warning"),
-                                      QString("No Figure on Panel. Export it anyway?"),
+        resbtn = QMessageBox::warning(this, tr("Warning"),
+                                      tr("No Figure on Panel. Export it anyway?"),
                                       QMessageBox::Ok | QMessageBox::Cancel,
                                       QMessageBox::Cancel);
         if ( resbtn != QMessageBox::Ok )
@@ -408,17 +408,17 @@ void MainWindow::on_actExportPDF_triggered()
     QString defpath = this->_fileDirPath;
     if ( cureditor->isFileOpened() )
         defpath = cureditor->getFilePath();
-    QString filepath = QFileDialog::getSaveFileName(this, QString("Export to Adobe PDF"),
+    QString filepath = QFileDialog::getSaveFileName(this, tr("Export to Adobe PDF"),
                                                     defpath,
-                                                    QString("Adobe PDF Document (*.pdf)"));
+                                                    tr("Adobe PDF Document (*.pdf)"));
     if ( filepath.isEmpty() )
         return;
 
     this->_fileDirPath = filepath;
     finErrorCode errcode = cureditor->exportToPDF(filepath);
     if ( finErrorKits::isErrorResult(errcode) ) {
-        QMessageBox::critical(this, QString("Error"),
-                              QString("Cannot write the Adobe PDF file."), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Cannot write the Adobe PDF file."), QMessageBox::Ok);
         return;
     }
 }
@@ -434,9 +434,9 @@ void MainWindow::on_actExportImage_triggered()
     QString defpath = this->_fileDirPath;
     if ( cureditor->isFileOpened() )
         defpath = cureditor->getFilePath();
-    QString filepath = QFileDialog::getSaveFileName(this, QString("Export to Image"),
+    QString filepath = QFileDialog::getSaveFileName(this, tr("Export to Image"),
                                                     defpath,
-                                                    QString("Portable Network Graphics (*.png);;"
+                                                    tr("Portable Network Graphics (*.png);;"
                                                             "Joint Photographic Experts Group (*.jpg *jpeg);;"
                                                             "Windows Bitmap (*.bmp);;"
                                                             "Portable Pixmap (*.ppm);;"
@@ -449,8 +449,8 @@ void MainWindow::on_actExportImage_triggered()
     this->_fileDirPath = filepath;
     finErrorCode errcode = cureditor->exportToImage(filepath);
     if ( finErrorKits::isErrorResult(errcode) ) {
-        QMessageBox::critical(this, QString("Error"),
-                              QString("Cannot write the image file."), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Cannot write the image file."), QMessageBox::Ok);
         return;
     }
 }
@@ -466,17 +466,17 @@ void MainWindow::on_actExportSVG_triggered()
     QString defpath = this->_fileDirPath;
     if ( cureditor->isFileOpened() )
         defpath = cureditor->getFilePath();
-    QString filepath = QFileDialog::getSaveFileName(this, QString("Export to SVG"),
+    QString filepath = QFileDialog::getSaveFileName(this, tr("Export to SVG"),
                                                     defpath,
-                                                    QString("Scalable Vector Graphics (*.svg)"));
+                                                    tr("Scalable Vector Graphics (*.svg)"));
     if ( filepath.isEmpty() )
         return;
 
     this->_fileDirPath = filepath;
     finErrorCode errcode = cureditor->exportToSVG(filepath);
     if ( finErrorKits::isErrorResult(errcode) ) {
-        QMessageBox::critical(this, QString("Error"),
-                              QString("Cannot write the SVG file."), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Cannot write the SVG file."), QMessageBox::Ok);
         return;
     }
 }

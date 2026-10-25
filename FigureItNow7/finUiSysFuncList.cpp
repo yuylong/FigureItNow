@@ -33,12 +33,9 @@ finErrorCode finUiSysFuncList::clearList()
     return finErrorKits::EC_SUCCESS;
 }
 
-static QString _nullCatgoryString("Common Functions");
-static QString _nullFuncNameString("Unnamed_Function");
-
 QTreeWidgetItem *finUiSysFuncList::createCategoryItem(const QString &ctgstr)
 {
-    QString searchstr = (ctgstr.isEmpty() ? _nullCatgoryString : ctgstr);
+    QString searchstr = (ctgstr.isEmpty() ? tr("Common Functions") : ctgstr);
 
     QTreeWidgetItem *ctgitem = new QTreeWidgetItem(ui->trwFuncList);
     ctgitem->setText(0, searchstr);
@@ -53,7 +50,7 @@ QTreeWidgetItem *finUiSysFuncList::createCategoryItem(const QString &ctgstr)
 
 QTreeWidgetItem *finUiSysFuncList::findCategoryItem(const QString &ctgstr)
 {
-    QString searchstr = (ctgstr.isEmpty() ? _nullCatgoryString : ctgstr);
+    QString searchstr = (ctgstr.isEmpty() ? tr("Common Functions") : ctgstr);
 
     QList<QTreeWidgetItem *> itemlist = ui->trwFuncList->findItems(searchstr, Qt::MatchFixedString);
     if ( itemlist.isEmpty() )
@@ -107,20 +104,31 @@ finErrorCode finUiSysFuncList::installFunctionList()
     return this->installFunctionList(funclist);
 }
 
-void _propMapToTextStream(const QMap<QString, QVariant> &propmap, QTextStream &strm, const QStringList &keylist)
+QString finUiSysFuncList::translatePropKey(const QString &key)
+{
+    if ( key == QStringLiteral("Category") )
+        return tr("Category");
+    if ( key == QStringLiteral("Prototype") )
+        return tr("Prototype");
+    if ( key == QStringLiteral("Description") )
+        return tr("Description");
+    return key;
+}
+
+void finUiSysFuncList::propMapToTextStream(const QMap<QString, QVariant> &propmap, QTextStream &strm, const QStringList &keylist)
 {
     foreach ( const QString &key, keylist ) {
         const QVariant &value = propmap.value(key, QVariant());
         if ( value.isNull() )
             continue;
 
-        strm << key << ": " << value.toString() << Qt::endl;
+        strm << translatePropKey(key) << ": " << value.toString() << Qt::endl;
     }
 }
 
-void _propMapToTextStream(const QMap<QString, QVariant> &propmap, QTextStream &strm)
+void finUiSysFuncList::propMapToTextStream(const QMap<QString, QVariant> &propmap, QTextStream &strm)
 {
-    return _propMapToTextStream(propmap, strm, propmap.keys());
+    propMapToTextStream(propmap, strm, propmap.keys());
 }
 
 
@@ -132,13 +140,15 @@ QString finUiSysFuncList::getItemDescString(QTreeWidgetItem *item)
 
     QString retstr;
     QTextStream strm(&retstr);
-    strm << QString("Name: ") << itemname << Qt::endl;
-    strm << QString("Type: ") << type << Qt::endl;
+    strm << tr("Name: ") << itemname << Qt::endl;
 
-    if ( type.compare(QString("Function")) == 0 ) {
+    QString typeDisplay = (type == QStringLiteral("Function")) ? tr("Function") : tr("Category");
+    strm << tr("Type: ") << typeDisplay << Qt::endl;
+
+    if ( type.compare(QStringLiteral("Function")) == 0 ) {
         QStringList keylist;
         keylist << "Category" << "Prototype" << "Description";
-        _propMapToTextStream(propmap, strm, keylist);
+        propMapToTextStream(propmap, strm, keylist);
     }
     return retstr;
 }

@@ -9,6 +9,7 @@
 #ifndef FINUICOMMANDLINE_H
 #define FINUICOMMANDLINE_H
 
+#include <QObject>
 #include <QString>
 #include <QStringList>
 
@@ -16,8 +17,10 @@
 #include "finFigureContainer.h"
 
 
-class finUiCommandLine
+class finUiCommandLine : public QObject
 {
+    Q_OBJECT
+
 protected:
     QStringList _inFileList;
     QString _outType;

@@ -11,6 +11,8 @@
 
 #include <QWidget>
 #include <QTreeWidgetItem>
+#include <QStringList>
+#include <QTextStream>
 
 #include "finErrorCode.h"
 #include "finExecFunction.h"
@@ -41,6 +43,10 @@ private slots:
 
 private:
     Ui::finUiSysFuncList *ui;
+
+    static QString translatePropKey(const QString &key);
+    static void propMapToTextStream(const QMap<QString, QVariant> &propmap, QTextStream &strm, const QStringList &keylist);
+    static void propMapToTextStream(const QMap<QString, QVariant> &propmap, QTextStream &strm);
 
     QTreeWidgetItem *createCategoryItem(const QString &ctgstr);
     QTreeWidgetItem *findCategoryItem(const QString &ctgstr);
