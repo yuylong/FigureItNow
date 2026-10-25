@@ -9,10 +9,8 @@
 #include <QApplication>
 #include <QFile>
 
-#include "finErrorCode.h"
 #include "MainWindow.h"
 #include "finUiCommandLine.h"
-#include "finUiScriptEditor.h"
 
 
 static bool _isGUIStartUp(int argc, char *argv[]) {
