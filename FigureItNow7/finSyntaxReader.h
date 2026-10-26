@@ -236,6 +236,23 @@ private:
     void appendErrorEntry(const finSyntaxError &synerr);
 
     /*!
+     *  \brief Records end-of-input warnings when the input is exhausted with leftovers on the stack.
+     *
+     *  Called from readNextToken() when the lexer runs dry. Two situations deserve a warning
+     *  because the parser can still carry on with a (possibly degraded) tree:
+     *
+     *  - a left bracket is still waiting on the stack for its right bracket — the bracket is
+     *    never matched, so the subtree below it may be mis-nested;
+     *  - the top of the stack is not a framed statement — the input ended before the last
+     *    statement met its ';', so the last statement was never framed by meshStatementWithKeywords().
+     *
+     *  Every diagnostic is recorded with level LV_WARNING. This method never changes the parser
+     *  state and never throws for the recorded warnings (it may still throw for a missing error
+     *  list, exactly like recordError()).
+     */
+    void recordEndOfInputWarnings();
+
+    /*!
      *  \brief Deletes every node in the syntax stack.
      *
      *  Used internally by startRead() / stopRead() to reset the parser between passes.

@@ -107,6 +107,7 @@ bool finSyntaxReader::readNextToken()
     finLexNode lexnode;
     try {
         if ( !this->_lexReader.getNextLexNode(&lexnode) ) {
+            this->recordEndOfInputWarnings();
             this->_state = ST_DONE;
             return false;
         }
@@ -127,6 +128,46 @@ bool finSyntaxReader::readNextToken()
 
     this->processTypedNextToken(&lexnode, lexnode.getType());
     return true;
+}
+
+void finSyntaxReader::recordEndOfInputWarnings()
+{
+    // The input is exhausted. Any left bracket still waiting on the stack never met its right
+    // bracket, so the subtree below it may be mis-nested.
+    for ( int i = 0; i < this->_syntaxStack.count(); i++ ) {
+        finSyntaxNode *syntk = this->_syntaxStack.at(i);
+        finLexNode *synlex = syntk->getCommandLexNode();
+        if ( syntk->getType() != finSyntaxNode::TP_SINGLE || synlex == nullptr ||
+             !isLeftBracket(synlex) )
+            continue;
+
+        this->recordError(finSyntaxError::CD_BRACKET_MISMATCH, synlex,
+                          QString("No matching right bracket for %1.").arg(synlex->getString()),
+                          finSyntaxError::LV_WARNING);
+    }
+
+    // If the top of the stack is not a framed statement, the input ended before the last
+    // statement met its ';' — e.g. a script ending with "var x = 1" without the semicolon.
+    // The last statement never went through meshStatementWithKeywords(), so a bare "var" or
+    // "return" at the top would silently reach the tree unframed.
+    if ( this->_syntaxStack.count() <= 0 )
+        return;
+    finSyntaxNode *toptk = this->_syntaxStack.first();
+    finSyntaxNodeType toptype = toptk->getType();
+    if ( finSyntaxNode::isStatementLevelType(toptype) || toptype == finSyntaxNode::TP_FUNCTION ||
+         toptype == finSyntaxNode::TP_PROGRAM )
+        return;
+    if ( toptype == finSyntaxNode::TP_SINGLE ) {
+        finLexNode *toplex = toptk->getCommandLexNode();
+        if ( toplex != nullptr && isLeftBracket(toplex) )
+            return;  // Already reported as an unclosed bracket above.
+    }
+
+    finLexNode endlex;
+    endlex.setRow(this->_lexReader.getRow());
+    endlex.setColumn(this->_lexReader.getColumn());
+    this->recordError(finSyntaxError::CD_EXPECTED_TOKEN, &endlex,
+                      "Statement is not terminated by ';'.", finSyntaxError::LV_WARNING);
 }
 
 finSyntaxTree *finSyntaxReader::getSyntaxTree()
@@ -753,6 +794,24 @@ void finSyntaxReader::meshAllArithExpress()
             if ( !this->meshArithExpress() )
                 break;
         } catch ( const finException &e ) {
+            // The caught exception may already have been recorded into the error list by
+            // recordError() before it was thrown. Record a warning entry only for diagnostics
+            // that did not make it to the list yet, so the user sees every swallowed recovery.
+            bool alreadyrecorded = false;
+            if ( this->_errList != nullptr && this->_errList->getEntryCount() > 0 ) {
+                const finSyntaxError &lasterr =
+                    this->_errList->getEntryAt(this->_errList->getEntryCount() - 1);
+                alreadyrecorded = (lasterr.getErrorString() == e.getErrorDescription());
+            }
+            if ( !alreadyrecorded && this->_errList != nullptr ) {
+                finLexNode curlex;
+                curlex.setRow(this->_lexReader.getRow());
+                curlex.setColumn(this->_lexReader.getColumn());
+                this->recordError(finSyntaxError::CD_STRUCTURE_MISMATCH, &curlex,
+                                  QString("Arithmetic expression meshing stopped: %1")
+                                          .arg(e.getErrorDescription()),
+                                  finSyntaxError::LV_WARNING);
+            }
             finWarning << "Stop arith-express mesh:" << e.getErrorDescription();
             break;
         }
@@ -808,6 +867,8 @@ void finSyntaxReader::meshAllCommas()
     synnode->setCommandLexNode(&lexnode);
 
     bool hasinst = false;
+    unsigned int lastcmtrow = 0;
+    unsigned int lastcmtcol = 0;
     while ( this->_syntaxStack.count() > 0 ) {
         finSyntaxNode *cursyn = this->_syntaxStack.first();
         finLexNode *curlex = cursyn->getCommandLexNode();
@@ -829,8 +890,13 @@ void finSyntaxReader::meshAllCommas()
                 if ( dmyexpsyn == nullptr )
                     finThrowObj(finErrorKits::EC_OUT_OF_MEMORY, "Alloc dummy expression failed.");
                 synnode->prependSubSyntaxNode(dmyexpsyn);
+                this->recordError(finSyntaxError::CD_OPERAND_MISSING, curlex,
+                                  "Missing operand before ','; an empty value is filled in.",
+                                  finSyntaxError::LV_WARNING);
             }
 
+            lastcmtrow = curlex->getRow();
+            lastcmtcol = curlex->getColumn();
             this->_syntaxStack.removeFirst();
             delete cursyn;
             hasinst = false;
@@ -844,6 +910,12 @@ void finSyntaxReader::meshAllCommas()
         if ( dmyexpsyn == nullptr )
             finThrowObj(finErrorKits::EC_OUT_OF_MEMORY, "Alloc dummy expression failed.");
         synnode->prependSubSyntaxNode(dmyexpsyn);
+        finLexNode cmtlex;
+        cmtlex.setRow(lastcmtrow);
+        cmtlex.setColumn(lastcmtcol);
+        this->recordError(finSyntaxError::CD_OPERAND_MISSING, &cmtlex,
+                          "Missing operand after ','; an empty value is filled in.",
+                          finSyntaxError::LV_WARNING);
     }
 
     this->_syntaxStack.prepend(synnode);
