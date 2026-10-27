@@ -12,15 +12,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 
-#include "finLexNode.h"
 #include "finErrorCode.h"
-#include "finLexReader.h"
-#include "finSyntaxReader.h"
-#include "finExecMachine.h"
-#include "finFigureContainer.h"
-#include "finGraphPanelWidget.h"
-#include "finUiFigureWidget.h"
-#include "finUiSyntaxHighlighter.h"
 #include "finUiScriptEditor.h"
 
 
