@@ -17,7 +17,7 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QPrinter>
-#include <QPrintDialog>
+#include <QPrintPreviewDialog>
 
 #include "finExecEnvironment.h"
 #include "finGraphPanelScene.h"
@@ -265,15 +265,11 @@ void MainWindow::on_actPrint_triggered()
     if ( cureditor == nullptr )
         return;
 
-    QPrintDialog printdlg;
-    printdlg.setOptions(QAbstractPrintDialog::PrintToFile | QAbstractPrintDialog::PrintPageRange |
-                        QAbstractPrintDialog::PrintShowPageSize | QAbstractPrintDialog::PrintCurrentPage);
-    printdlg.exec();
-    if ( printdlg.result() != QDialog::Accepted )
-        return;
-
-    QPrinter *printer = printdlg.printer();
-    cureditor->printFile(printer);
+    QPrinter printer;
+    QPrintPreviewDialog prevdlg(&printer, this);
+    QObject::connect(&prevdlg, &QPrintPreviewDialog::paintRequested, cureditor,
+                     [cureditor](QPrinter *p) { cureditor->printFile(p); });
+    prevdlg.exec();
 }
 
 void MainWindow::on_actClose_triggered()
@@ -498,14 +494,11 @@ void MainWindow::on_actPrintFig_triggered()
     if ( !checkExportWarning(cureditor) )
         return;
 
-    QPrintDialog printdlg;
-    printdlg.setOptions(QAbstractPrintDialog::PrintToFile | QAbstractPrintDialog::PrintShowPageSize);
-    printdlg.exec();
-    if ( printdlg.result() != QDialog::Accepted )
-        return;
-
-    QPrinter *printer = printdlg.printer();
-    cureditor->printFigure(printer);
+    QPrinter printer;
+    QPrintPreviewDialog prevdlg(&printer, this);
+    QObject::connect(&prevdlg, &QPrintPreviewDialog::paintRequested, cureditor,
+                     [cureditor](QPrinter *p) { cureditor->printFigure(p); });
+    prevdlg.exec();
 }
 
 void MainWindow::on_actManual_triggered()
