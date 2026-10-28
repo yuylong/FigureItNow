@@ -10,6 +10,13 @@
 
 #include <qmath.h>
 
+/*! \file finGraphConfig.cpp
+ *  \brief Implements the panel and coordinate mapping configuration of finGraphConfig.
+ *
+ *  See finGraphConfig.h for the class documentation. This file provides the default panel
+ *  settings, the lifetime management of the optional coordinate transform object, and the
+ *  conversions between script coordinates and pixel coordinates.
+ */
 
 finGraphConfig::finGraphConfig()
 {
@@ -18,6 +25,8 @@ finGraphConfig::finGraphConfig()
 
     this->_originPoint = QPointF(320.0, 240.0);
     this->_axisUnitSize = 40.0;
+    // By default the z axis points to the lower-left direction in the pixel plane, and one
+    // z unit covers 0.618 of the x/y unit length.
     this->_axisRadZ = (-3.0 / 4.0) * M_PI;
     this->_axisScaleZ = 0.618;
 
@@ -212,6 +221,8 @@ void finGraphConfig::setAxisScaleZ(double scale)
 
 void finGraphConfig::setTransformType(finGraphTransType type)
 {
+    // Do nothing if the installed transform is already of the required type; otherwise create
+    // a new transform object and free the old one.
     if ( this->getTransformType() == type )
         return;
 
@@ -242,6 +253,8 @@ void finGraphConfig::setTransformType(finGraphTransType type)
 
 void finGraphConfig::cloneTransform(const finGraphTrans *srctrans)
 {
+    // When the source transform is empty, just remove the installed one; otherwise install a
+    // transform of the same type and copy its parameters.
     if ( srctrans == nullptr || srctrans->getTransformType() == finGraphTrans::TP_NONE ) {
         this->setTransformType(finGraphTrans::TP_NONE);
         return;
@@ -263,6 +276,8 @@ void finGraphConfig::cloneTransform(const finGraphConfig *srccfg)
 
 QTransform finGraphConfig::getNakePixelTransformMatrix() const
 {
+    // Build the matrix that scales script coordinates into pixel units (flipping the y
+    // direction) and then moves the coordinate origin to the origin pixel point.
     QTransform trans, subtrans;
     trans.scale(this->_axisUnitSize, -this->_axisUnitSize);
     subtrans.translate(this->_originPoint.x(), this->_originPoint.y());
@@ -276,6 +291,8 @@ void finGraphConfig::setRenderHints(QPainter::RenderHints hints)
 
 QPointF finGraphConfig::transformPixelPoint3D(double x, double y, double z) const
 {
+    // Project the z coordinate onto the pixel plane along the z-axis direction, and shift the
+    // (x, y) point by the projected offset.
     QPointF srcpt(x, y);
     QPointF zshift(z * this->_axisScaleZ * cos(this->_axisRadZ), z * this->_axisScaleZ * sin(this->_axisRadZ));
 
@@ -289,6 +306,9 @@ QPointF finGraphConfig::transformPixelPoint3D(const finFigurePoint3D &pt) const
 
 QPointF finGraphConfig::transformPixelPoint(const QPointF &srcpt) const
 {
+    // Apply the nonlinear transform first (if any), flip the y direction because the script y
+    // axis points up while the pixel y axis points down, then scale into pixel units and shift
+    // to the origin pixel point.
     QPointF midpt;
     if ( this->_transform != nullptr && this->_transform->getTransformType() != finGraphTrans::TP_NONE )
         midpt = this->_transform->transPoint(srcpt);
@@ -301,6 +321,8 @@ QPointF finGraphConfig::transformPixelPoint(const QPointF &srcpt) const
 
 QPointF finGraphConfig::arcTransformPixelPoint(const QPointF &srcpt) const
 {
+    // The inverse of transformPixelPoint: recover the script coordinates from the pixel ones,
+    // undoing the nonlinear transform last.
     QPointF midpt = srcpt;
     midpt = (midpt - this->_originPoint) / this->_axisUnitSize;
     midpt.setY(-midpt.y());
