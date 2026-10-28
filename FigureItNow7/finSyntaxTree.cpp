@@ -6,6 +6,15 @@
  * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
+/*! \file finSyntaxTree.cpp
+ *  \brief Implementations of the finSyntaxTree container.
+ *
+ *  Provides the constructor and destructor, the root-node getters, the script-code storage and
+ *  reconstruction, the deep-copying append / prepend helpers that own the tree nodes, the
+ *  list / stack bulk appenders, the finExceptionObject dumpObjInfo() formatter, and the
+ *  disposeAll() cleanup that resets the tree to a fresh TP_PROGRAM root.
+ */
+
 #include "finSyntaxTree.h"
 
 #include <QtGlobal>
