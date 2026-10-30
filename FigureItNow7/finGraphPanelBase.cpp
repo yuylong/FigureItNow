@@ -3,7 +3,15 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+/*! \file finGraphPanelBase.cpp
+ *  \brief Implementation of the shared figure-to-pixel-path plumbing of the graph panels.
+ *
+ *  See finGraphPanelBase.h for the class documentation. This file stores the panel configuration,
+ *  converts appended figure objects into pixel paths, aggregates the per-figure results into one
+ *  status code, and drives the painting hooks supplied by the derived classes.
  */
 
 #include "finGraphPanelBase.h"
@@ -37,6 +45,7 @@ int finGraphPanelBase::getFigurePathCount() const
 
 finFigurePath finGraphPanelBase::getFigurePathAt(int idx) const
 {
+    // Return a shared empty path instead of a partially built one when the index is out of range.
     static const finFigurePath deffigpath = finFigurePath();
     if ( idx < 0 || idx >= this->_pathList.count() )
         return deffigpath;
@@ -58,6 +67,8 @@ finErrorCode finGraphPanelBase::setFigureContainer(finFigureContainer *figcontai
     this->_pathList.clear();
     this->setGraphConfig(figcontainer->getGraphConfig());
 
+    // Convert every figure on its own so that a single failing figure does not drop the others;
+    // the counts below are merged into one summary status at the end.
     finErrorCode errcode;
     int failed = 0, success = 0;
 
