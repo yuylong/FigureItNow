@@ -3,6 +3,14 @@
 <TS version="2.1" language="zh_TW" sourcelanguage="en_US">
     <context>
         <name>MainWindow</name>
+    <message>
+        <source>Language</source>
+        <translation>語言</translation>
+    </message>
+    <message>
+        <source>System Default</source>
+        <translation>跟隨系統</translation>
+    </message>
         <message>
             <location filename="../MainWindow.ui" line="14" />
             <source>FigureItNow</source>

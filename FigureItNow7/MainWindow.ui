@@ -114,7 +114,19 @@
     <addaction name="actManual"/>
     <addaction name="actWiki"/>
     <addaction name="separator"/>
+    <addaction name="mnuLanguage"/>
     <addaction name="actAbout"/>
+   </widget>
+   <widget class="QMenu" name="mnuLanguage">
+    <property name="title">
+     <string>Language</string>
+    </property>
+    <addaction name="actLangSystem"/>
+    <addaction name="separator"/>
+    <addaction name="actLangEnglish"/>
+    <addaction name="actLangSimplifiedChinese"/>
+    <addaction name="actLangTraditionalChinese"/>
+    <addaction name="actLangJapanese"/>
    </widget>
    <addaction name="mnuFile"/>
    <addaction name="mnuEdit"/>
@@ -437,6 +449,46 @@
    </property>
    <property name="toolTip">
     <string>Export the figure to an SVG file.</string>
+   </property>
+  </action>
+  <action name="actLangSystem">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>System Default</string>
+   </property>
+  </action>
+  <action name="actLangEnglish">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">English</string>
+   </property>
+  </action>
+  <action name="actLangSimplifiedChinese">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">简体中文</string>
+   </property>
+  </action>
+  <action name="actLangTraditionalChinese">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">繁體中文</string>
+   </property>
+  </action>
+  <action name="actLangJapanese">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">日本語</string>
    </property>
   </action>
  </widget>

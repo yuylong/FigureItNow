@@ -8,14 +8,12 @@
 
 #include <QApplication>
 #include <QFile>
-#include <QLibraryInfo>
-#include <QLocale>
-#include <QTranslator>
 
 #include <cstdlib>
 
 #include "MainWindow.h"
 #include "finUiCommandLine.h"
+#include "finUiLanguageManager.h"
 
 #ifdef Q_OS_WIN
 #ifndef NOMINMAX
@@ -73,33 +71,15 @@ static void _setupUtf8Console()
 
 
 /*!
- * \brief Installs the UI translation matching the system locale.
+ * \brief Gives the application the identity used to locate its settings file.
  *
- * The translation sources live in translations/figureitnow7_<locale>.ts; the build systems compile
- * them into figureitnow7_<locale>.qm and embed the result under ":/i18n". If the system locale has
- * no matching translation, en_US is loaded explicitly so that the UI always runs with a known
- * language instead of relying on the implicit fallback to the source strings. Qt's own strings
- * (standard dialog buttons and the like) are loaded from the Qt translations directory if present.
- * The translators are function-local statics so that they outlive the widgets using them.
+ * QSettings derives the INI path from these names, so they must be set before the language manager reads or writes
+ * the settings file.
  */
-static void _installTranslations(QApplication *app)
+static void _setupApplicationIdentity()
 {
-    static QTranslator qtTranslator;
-    if ( qtTranslator.load(QLocale(), QStringLiteral("qtbase"), QStringLiteral("_"),
-                           QLibraryInfo::path(QLibraryInfo::TranslationsPath)) ) {
-        app->installTranslator(&qtTranslator);
-    }
-
-    static QTranslator appTranslator;
-    if ( !appTranslator.load(QLocale(), QStringLiteral("figureitnow7"), QStringLiteral("_"),
-                             QStringLiteral(":/i18n")) ) {
-        // Unsupported system language: fall back to English (United States) explicitly.
-        // A failed fallback leaves the translator empty, which the check below handles.
-        (void)appTranslator.load(QStringLiteral("figureitnow7_en_US"), QStringLiteral(":/i18n"));
-    }
-    if ( !appTranslator.isEmpty() ) {
-        app->installTranslator(&appTranslator);
-    }
+    QCoreApplication::setOrganizationName(QStringLiteral("FigureItNow"));
+    QCoreApplication::setApplicationName(QStringLiteral("FigureItNow7"));
 }
 
 static bool _isGUIStartUp(int argc, char *argv[]) {
@@ -127,7 +107,8 @@ static void _loadScriptFiles(MainWindow *mw, int argc, char *argv[])
 static int _guiMain(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    _installTranslations(&a);
+    _setupApplicationIdentity();
+    finUiLanguageManager::getInstance()->applySavedLanguage();
 
     MainWindow w;
     _loadScriptFiles(&w, argc, argv);
@@ -139,7 +120,8 @@ static int _guiMain(int argc, char *argv[])
 static int _consoleMain(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    _installTranslations(&a);
+    _setupApplicationIdentity();
+    finUiLanguageManager::getInstance()->applySavedLanguage();
 
     finUiCommandLine cmdline(argc, argv);
     cmdline.work();

@@ -54,7 +54,8 @@ public:
 
     const QString &getFilePath() const;
     const QString &getFilename() const;
-    const QString &getFileDisplayPath() const;
+    QString getDisplayName() const;
+    QString getFileDisplayPath() const;
     bool isFileOpened() const;
     bool isScriptModified() const;
 

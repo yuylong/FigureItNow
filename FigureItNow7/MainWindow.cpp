@@ -11,6 +11,9 @@
 
 #include <qmath.h>
 #include <QDebug>
+#include <QAction>
+#include <QActionGroup>
+#include <QEvent>
 #include <QPainter>
 #include <QFileDialog>
 #include <QDir>
@@ -24,6 +27,7 @@
 #include "finUiFigConfigDlg.h"
 #include "finUiGraphConfigDlg.h"
 #include "finUiAboutDlg.h"
+#include "finUiLanguageManager.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -33,12 +37,96 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     this->_fileDirPath = QDir::homePath();
-    this->refreshSysFuncList();
+    this->_langActionGroup = nullptr;
+    this->setupLanguageActions();
+    this->retranslateOwnText();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+/*!
+ * \brief Groups the language actions of the Help menu and connects them to the language manager.
+ *
+ * The actions are declared in the .ui file; only their mutual exclusivity and their language value are set up here.
+ */
+void MainWindow::setupLanguageActions()
+{
+    this->_langActionGroup = new QActionGroup(this);
+    this->_langActionGroup->setExclusive(true);
+
+    ui->actLangSystem->setData(int(finUiLanguageManager::LANG_SYSTEM));
+    ui->actLangEnglish->setData(int(finUiLanguageManager::LANG_ENGLISH));
+    ui->actLangSimplifiedChinese->setData(int(finUiLanguageManager::LANG_SIMPLIFIED_CHINESE));
+    ui->actLangTraditionalChinese->setData(int(finUiLanguageManager::LANG_TRADITIONAL_CHINESE));
+    ui->actLangJapanese->setData(int(finUiLanguageManager::LANG_JAPANESE));
+
+    this->_langActionGroup->addAction(ui->actLangSystem);
+    this->_langActionGroup->addAction(ui->actLangEnglish);
+    this->_langActionGroup->addAction(ui->actLangSimplifiedChinese);
+    this->_langActionGroup->addAction(ui->actLangTraditionalChinese);
+    this->_langActionGroup->addAction(ui->actLangJapanese);
+
+    QObject::connect(this->_langActionGroup, SIGNAL(triggered(QAction *)),
+                     this, SLOT(languageAction_triggered(QAction *)));
+}
+
+/*!
+ * \brief Re-applies every text that is composed in code instead of coming from the .ui file.
+ *
+ * Called after the language changed, and once at the end of the construction.
+ */
+void MainWindow::retranslateOwnText()
+{
+    finUiScriptEditor *cureditor = this->getCurrentEditor();
+    if ( cureditor == nullptr )
+        this->setWindowTitle(QStringLiteral("FigureItNow"));
+    else
+        this->setWindowTitle(cureditor->getWindowTitle() + QStringLiteral(" - FigureItNow"));
+
+    for ( int i = 0; i < ui->tbwDocumentList->count(); i++ ) {
+        finUiScriptEditor *editor = this->getEditorAt(i);
+        if ( editor != nullptr )
+            ui->tbwDocumentList->setTabText(i, editor->getTabTitle());
+    }
+
+    this->updateLanguageActions();
+    this->refreshSysFuncList();
+}
+
+/*!
+ * \brief Marks the menu entry that matches the currently effective language.
+ */
+void MainWindow::updateLanguageActions()
+{
+    int curlang = int(finUiLanguageManager::getInstance()->getLanguage());
+    const QList<QAction *> actlist = this->_langActionGroup->actions();
+    for ( int i = 0; i < actlist.count(); i++ ) {
+        QAction *act = actlist.at(i);
+        act->setChecked(act->data().toInt() == curlang);
+    }
+}
+
+void MainWindow::languageAction_triggered(QAction *action)
+{
+    if ( action == nullptr )
+        return;
+
+    finUiLanguageManager::Language lang = static_cast<finUiLanguageManager::Language>(action->data().toInt());
+    finUiLanguageManager::getInstance()->applyLanguage(lang);
+    this->updateLanguageActions();
+}
+
+void MainWindow::changeEvent(QEvent *event)
+{
+    if ( event->type() == QEvent::LanguageChange ) {
+        ui->retranslateUi(this);
+        this->retranslateOwnText();
+    }
+
+    QMainWindow::changeEvent(event);
 }
 
 finUiScriptEditor *MainWindow::getCurrentEditor() const

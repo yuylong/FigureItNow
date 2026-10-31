@@ -26,6 +26,9 @@ TEMPLATE = app
 
 !msvc {
     QMAKE_CXXFLAGS += -Wno-comment
+} else {
+    # Sources are UTF-8 (the language menu uses native language names as literals).
+    QMAKE_CXXFLAGS += /utf-8
 }
 
 SOURCES += main.cpp\
@@ -84,6 +87,7 @@ SOURCES += main.cpp\
     finExecAlg.cpp \
     finExecVariableSysvar.cpp \
     finUiSysFuncList.cpp \
+    finUiLanguageManager.cpp \
     finVersion.cpp
 
 HEADERS  += MainWindow.h \
@@ -133,6 +137,7 @@ HEADERS  += MainWindow.h \
     finUiCommandLine.h \
     finExecAlg.h \
     finUiSysFuncList.h \
+    finUiLanguageManager.h \
     finVersion.h
 
 FORMS    += MainWindow.ui \

@@ -14,6 +14,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
+#include <QEvent>
 
 finUiSysFuncList::finUiSysFuncList(QWidget *parent) :
     QWidget(parent),
@@ -25,6 +26,14 @@ finUiSysFuncList::finUiSysFuncList(QWidget *parent) :
 finUiSysFuncList::~finUiSysFuncList()
 {
     delete ui;
+}
+
+void finUiSysFuncList::changeEvent(QEvent *event)
+{
+    if ( event->type() == QEvent::LanguageChange )
+        ui->retranslateUi(this);
+
+    QWidget::changeEvent(event);
 }
 
 finErrorCode finUiSysFuncList::clearList()

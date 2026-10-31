@@ -175,6 +175,7 @@ set(SOURCES
     finUiFigConfigDlg.cpp
     finUiFigureWidget.cpp
     finUiGraphConfigDlg.cpp
+    finUiLanguageManager.cpp
     finUiScriptEditor.cpp
     finUiSysFuncList.cpp
     finUiSyntaxHighlighter.cpp
@@ -234,6 +235,7 @@ set(HEADERS
     finUiFigConfigDlg.h
     finUiFigureWidget.h
     finUiGraphConfigDlg.h
+    finUiLanguageManager.h
     finUiScriptEditor.h
     finUiSysFuncList.h
     finUiSyntaxHighlighter.h
@@ -304,6 +306,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 if(MSVC)
     # Use Unicode
     add_definitions(-DUNICODE -D_UNICODE)
+    # Sources are UTF-8 (the language menu uses native language names as literals).
+    target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
     # Set warning level
     if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
         string(REGEX REPLACE "/W[0-4]" "/W3" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")

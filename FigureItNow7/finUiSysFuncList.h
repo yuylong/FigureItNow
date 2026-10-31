@@ -37,6 +37,9 @@ public:
 signals:
     void itemTriggerred(const QString &name, const QMap<QString, QVariant> &propmap);
 
+protected:
+    virtual void changeEvent(QEvent *event);
+
 private slots:
     void on_trwFuncList_itemSelectionChanged();
     void on_trwFuncList_itemActivated(QTreeWidgetItem *item, int column);

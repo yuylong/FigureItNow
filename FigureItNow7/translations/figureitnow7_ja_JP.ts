@@ -3,6 +3,14 @@
 <TS version="2.1" language="ja_JP" sourcelanguage="en_US">
     <context>
         <name>MainWindow</name>
+    <message>
+        <source>Language</source>
+        <translation>言語</translation>
+    </message>
+    <message>
+        <source>System Default</source>
+        <translation>システム既定</translation>
+    </message>
         <message>
             <location filename="../MainWindow.ui" line="14" />
             <source>FigureItNow</source>

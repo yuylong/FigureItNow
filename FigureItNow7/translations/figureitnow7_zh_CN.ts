@@ -4,6 +4,14 @@
 <context>
     <name>MainWindow</name>
     <message>
+        <source>Language</source>
+        <translation>语言</translation>
+    </message>
+    <message>
+        <source>System Default</source>
+        <translation>跟随系统</translation>
+    </message>
+    <message>
         <location filename="../MainWindow.ui" line="14"/>
         <source>FigureItNow</source>
         <translation>FigureItNow</translation>

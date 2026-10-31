@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2017 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
 #ifndef MAINWINDOW_H
@@ -15,6 +15,9 @@
 #include "finErrorCode.h"
 #include "finUiScriptEditor.h"
 
+
+class QAction;
+class QActionGroup;
 
 namespace Ui {
 class MainWindow;
@@ -70,8 +73,11 @@ private slots:
 
     void on_dwcSysFuncList_itemTriggerred(const QString &name, const QMap<QString, QVariant> &propmap);
 
+    void languageAction_triggered(QAction *action);
+
 protected:
     virtual void closeEvent(QCloseEvent *event);
+    virtual void changeEvent(QEvent *event);
 
 private:
     /*!
@@ -80,8 +86,13 @@ private:
     Ui::MainWindow *ui;
     finFigureConfig _defFigConfig;
     finGraphConfig _defGraphConfig;
+    QActionGroup *_langActionGroup;
 
     QString _fileDirPath;
+
+    void setupLanguageActions();
+    void retranslateOwnText();
+    void updateLanguageActions();
 
     finUiScriptEditor *getCurrentEditor() const;
     finUiScriptEditor *getEditorAt(int idx) const;
