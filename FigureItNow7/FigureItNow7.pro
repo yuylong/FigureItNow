@@ -152,6 +152,9 @@ RESOURCES += \
 # "lrelease" compiles the .ts files into .qm; "embed_translations" puts them into
 # the executable's resources under ":/i18n/".
 TRANSLATIONS += \
-    translations/figureitnow7_zh_CN.ts
+    translations/figureitnow7_zh_CN.ts \
+    translations/figureitnow7_zh_TW.ts \
+    translations/figureitnow7_ja_JP.ts \
+    translations/figureitnow7_en_US.ts
 
 CONFIG += lrelease embed_translations

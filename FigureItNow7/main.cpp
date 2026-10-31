@@ -75,8 +75,10 @@ static void _setupUtf8Console()
 /*!
  * \brief Installs the UI translation matching the system locale.
  *
- * The translation sources live in translations/figureitnow7_zh_CN.ts; the build systems compile
- * them into figureitnow7_<locale>.qm and embed the result under ":/i18n". Qt's own strings
+ * The translation sources live in translations/figureitnow7_<locale>.ts; the build systems compile
+ * them into figureitnow7_<locale>.qm and embed the result under ":/i18n". If the system locale has
+ * no matching translation, en_US is loaded explicitly so that the UI always runs with a known
+ * language instead of relying on the implicit fallback to the source strings. Qt's own strings
  * (standard dialog buttons and the like) are loaded from the Qt translations directory if present.
  * The translators are function-local statics so that they outlive the widgets using them.
  */
@@ -89,8 +91,13 @@ static void _installTranslations(QApplication *app)
     }
 
     static QTranslator appTranslator;
-    if ( appTranslator.load(QLocale(), QStringLiteral("figureitnow7"), QStringLiteral("_"),
-                            QStringLiteral(":/i18n")) ) {
+    if ( !appTranslator.load(QLocale(), QStringLiteral("figureitnow7"), QStringLiteral("_"),
+                             QStringLiteral(":/i18n")) ) {
+        // Unsupported system language: fall back to English (United States) explicitly.
+        // A failed fallback leaves the translator empty, which the check below handles.
+        (void)appTranslator.load(QStringLiteral("figureitnow7_en_US"), QStringLiteral(":/i18n"));
+    }
+    if ( !appTranslator.isEmpty() ) {
         app->installTranslator(&appTranslator);
     }
 }

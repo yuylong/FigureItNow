@@ -278,6 +278,9 @@ target_link_libraries(${PROJECT_NAME}
 # "release_translations" compiles the .ts files into .qm and embeds them under ":/i18n".
 set(TS_FILES
     translations/figureitnow7_zh_CN.ts
+    translations/figureitnow7_zh_TW.ts
+    translations/figureitnow7_ja_JP.ts
+    translations/figureitnow7_en_US.ts
 )
 
 qt_add_translations(${PROJECT_NAME}
