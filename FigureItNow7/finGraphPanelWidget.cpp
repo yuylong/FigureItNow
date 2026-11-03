@@ -3,7 +3,15 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu
- * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+/*! \file finGraphPanelWidget.cpp
+ *  \brief Implementation of the QPaintDevice-based graph panel.
+ *
+ *  See finGraphPanelWidget.h for the class documentation. This file stores the borrowed paint
+ *  device, creates a stack-local QPainter around a single drawing pass, and guards the drawing
+ *  hooks against a missing device by throwing.
  */
 
 #include "finGraphPanelWidget.h"
@@ -18,6 +26,8 @@ finGraphPanelWidget::finGraphPanelWidget()
 
 finErrorCode finGraphPanelWidget::setPainter(QPainter *painter)
 {
+    // The panel draws through a painter it creates itself in draw(), so the inherited attachment
+    // API is rejected for every argument; both branches below therefore report the same code.
     if ( painter == nullptr )
         return finErrorKits::EC_INVALID_PARAM;
 
@@ -40,6 +50,8 @@ finErrorCode finGraphPanelWidget::draw()
         finThrow(finErrorKits::EC_STATE_ERROR, QString("Widget is not set."));
 
     QPainter painter(this->_widget);
+    // The painter lives on this stack frame; bind it only for the delegated call and detach it
+    // before it is destroyed so no dangling pointer survives the draw pass.
     this->_painter = &painter;
     finErrorCode errcode = finGraphPanelPainter::draw();
     this->_painter = nullptr;
