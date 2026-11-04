@@ -6,6 +6,14 @@
  * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
+/*! \file finGraphTrans.cpp
+ *  \brief Implementation of the graph transforms and their UI helper functions.
+ *
+ *  See finGraphTrans.h for the class documentation. This file maps transform and action types to
+ *  and from their textual names, fills the combo boxes of the graph configuration dialog, and
+ *  implements the forward and inverse point mappings of the rect and affine transforms.
+ */
+
 #include "finGraphTrans.h"
 
 
@@ -121,6 +129,8 @@ finGraphTransRect::~finGraphTransRect()
 
 void finGraphTransRect::cloneTransform(const finGraphTrans *trans)
 {
+    // The base implementation only checks that both transforms share the same type, so the cast
+    // below is safe once it returns.
     finGraphTrans::cloneTransform(trans);
 
     const finGraphTransRect *srctrans = (const finGraphTransRect *)trans;
@@ -269,6 +279,8 @@ finGraphTransAffine::~finGraphTransAffine()
 
 void finGraphTransAffine::cloneTransform(const finGraphTrans *trans)
 {
+    // The base implementation only checks that both transforms share the same type, so the cast
+    // below is safe once it returns.
     finGraphTrans::cloneTransform(trans);
 
     const finGraphTransAffine *srctrans = (const finGraphTransAffine *)trans;
@@ -300,6 +312,8 @@ int finGraphTransAffine::getActionCount() const
 
 finGraphTransAffine::Action finGraphTransAffine::getActionAt(int idx) const
 {
+    // The fallback mirrors a rotate action with zero arguments so that callers reading _arg1 or
+    // _arg2 never observe uninitialized memory; use getActionCount() to detect the miss.
     static const finGraphTransAffine::Action defact = { finGraphTransAffine::AT_ROTATE, 0.0, 0.0 };
 
     if ( idx < 0 || idx >= this->_actList.count() )
@@ -317,6 +331,8 @@ void finGraphTransAffine::reset()
 
 void finGraphTransAffine::calcInvertedMatrix()
 {
+    // Keep the inverse usable for arcTransPoint() even after a degenerate action; an identity
+    // fallback leaves the backwards mapping wrong but never maps every point to the origin.
     if ( !this->_matrix.isInvertible() ) {
         this->_invMatrix.reset();
         return;
@@ -334,6 +350,7 @@ void finGraphTransAffine::appendRotate(double rad)
 
     finGraphTransAffine::Action act;
     act._type = finGraphTransAffine::AT_ROTATE;
+    // A rotation takes a single angle; _arg2 is filled with the same value only for uniformity.
     act._arg1 = act._arg2 = rad;
     this->_actList.append(act);
 }
