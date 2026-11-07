@@ -9,21 +9,21 @@
 /*! \file finVersion.cpp
  *  \brief Implementations of the finVersionTools metadata and formatting helpers.
  *
- *  Provides the static storage for the application's compiled-in version and Git metadata, the helper
- *  that packs version components into finVersionTools::Version, and the string-formatting accessors used
- *  by the UI and diagnostic output.
+ *  Provides the static storage for the Git metadata captured at build time, the normalization that
+ *  turns a git describe string into the dotted numeric form installers require, the helper that packs
+ *  version components into finVersionTools::Version, and the string-formatting accessors used by the UI
+ *  and diagnostic output.
  */
 
 #include "finVersion.h"
 
+#include <QRegularExpression>
+#include <QStringList>
 #include <QtGlobal>
 #include <QObject>
 #include <QString>
 #include <QTextStream>
 
-finVersionTools::Version finVersionTools::_currentVersion = finVersionTools::version(0, 5, 0);
-QString finVersionTools::_currentVersionPrefix = QString("v");
-QString finVersionTools::_currentVersionSuffix = QString("alpha");
 QString finVersionTools::_currentGitBranch = QString(GIT_BRANCH);
 QString finVersionTools::_currentGitDate = QString(GIT_TIME).replace("-D", "");
 QString finVersionTools::_currentGitVersion = QString(APP_VERSION);
@@ -44,11 +44,6 @@ finVersionTools::Version finVersionTools::version(quint16 major, quint16 minor, 
     return verdata;
 }
 
-finVersionTools::Version finVersionTools::currentVersion()
-{
-    return _currentVersion;
-}
-
 QString finVersionTools::versionString(quint16 major, quint16 minor, quint32 build,  QString prefix, QString suffix)
 {
     Version ver = version(major, minor, build);
@@ -67,9 +62,40 @@ QString finVersionTools::versionString(Version ver, QString prefix, QString suff
     return retstr;
 }
 
+QString finVersionTools::normalizedVersionString(const QString &description)
+{
+    static const QRegularExpression numericRe(QStringLiteral("^\\d+(\\.\\d+)*$"));
+    static const QRegularExpression digitsRe(QStringLiteral("^\\d+$"));
+
+    QString text = description.trimmed();
+    if (text.startsWith(QLatin1Char('v')))
+        text.remove(0, 1);
+    if (text.endsWith(QLatin1String("-dirty")))
+        text.chop(6);
+
+    const QStringList parts = text.split(QLatin1Char('-'), Qt::SkipEmptyParts);
+    if (parts.isEmpty())
+        return QStringLiteral("0.0.0");
+
+    const QString base = parts.first();
+    if (!numericRe.match(base).hasMatch())
+        return QStringLiteral("0.0.0");
+
+    /* The last all-digit segment is the commit count since the last tag. */
+    QString revision;
+    for (const QString &part : parts) {
+        if (digitsRe.match(part).hasMatch())
+            revision = part;
+    }
+
+    if (revision.isEmpty())
+        return base;
+    return base + QLatin1Char('.') + revision;
+}
+
 QString finVersionTools::currentVersionString()
 {
-    return versionString(_currentVersion, _currentVersionPrefix, _currentVersionSuffix);
+    return normalizedVersionString(_currentGitVersion);
 }
 
 const QString &finVersionTools::currentGitBranch()

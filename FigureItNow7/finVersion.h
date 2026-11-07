@@ -9,9 +9,9 @@
 /*! \file finVersion.h
  *  \brief Declarations of version-formatting and build-metadata helpers.
  *
- *  This header defines finVersionTools, a namespace-like utility class that stores the application's
- *  current semantic version together with Git metadata captured at build time, and exposes helpers
- *  for formatting those values as strings.
+ *  This header defines finVersionTools, a namespace-like utility class that stores the Git metadata
+ *  captured at build time, derives an installer-friendly numeric version from it, and exposes helpers
+ *  for formatting version components as strings.
  */
 
 #ifndef FINVERSION_H
@@ -24,9 +24,15 @@
 /*! \class finVersionTools
  *  \brief Global helpers for application version and Git build metadata.
  *
- *  finVersionTools is used as a namespace. It owns the static version data compiled into the program,
- *  provides helpers to pack version components into a Version value, formats those values into display
- *  strings, and exposes the Git branch, build date, and descriptive version string injected by CMake.
+ *  finVersionTools is used as a namespace. It owns the Git metadata compiled into the program,
+ *  normalizes the git describe output into the dotted numeric form required by installers, and exposes
+ *  the Git branch, build date, and descriptive version string injected by CMake.
+ *
+ *  The normalization rule is duplicated in packaging/build_installer.ps1 so that the About dialog and
+ *  the generated installer report the same version. Both implementations must stay in sync: strip a
+ *  leading "v" and a trailing "-dirty", take the first dash-separated segment as the base version, and
+ *  append the last all-digit segment as the revision. For example, "v0.5-alpha-172-g1ed173e-dirty"
+ *  normalizes to "0.5.172".
  */
 class finVersionTools
 {
@@ -48,10 +54,6 @@ public:
     };
 
 private:
-    static Version _currentVersion;         //!< Application version compiled into the binary.
-    static QString _currentVersionPrefix;   //!< Prefix prepended when formatting the current version.
-    static QString _currentVersionSuffix;   //!< Suffix appended when formatting the current version.
-
     static QString _currentGitBranch;       //!< Git branch name captured at build time.
     static QString _currentGitDate;         //!< Git commit date string captured at build time.
     static QString _currentGitVersion;      //!< Git describe / app version string captured at build time.
@@ -73,11 +75,6 @@ public:
      *  \return A Version union whose named fields and raw packed value represent the supplied components.
      */
     static Version version(quint16 major, quint16 minor = 0, quint32 revision = 0);
-
-    /*!
-     *  \brief Returns the application version compiled into the program.
-     */
-    static Version currentVersion();
 
     /*!
      *  \brief Formats explicit version components as a string.
@@ -109,7 +106,18 @@ public:
     static QString versionString(Version ver, QString prefix = "v", QString suffix = QString());
 
     /*!
-     *  \brief Returns the formatted string for the current application version.
+     *  \brief Converts a git describe string into a dotted numeric version.
+     *
+     *  The result only contains digits and dots, which is what installers such as Qt Installer Framework
+     *  require. Strings that cannot be parsed fall back to "0.0.0".
+     *
+     *  \param description  Output of "git describe --tags --dirty".
+     *  \return Dotted numeric version, for example "0.5.172".
+     */
+    static QString normalizedVersionString(const QString &description);
+
+    /*!
+     *  \brief Returns the dotted numeric version derived from the compiled-in git describe string.
      */
     static QString currentVersionString();
 
