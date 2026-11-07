@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+  FigureItNow7 component metadata
+
+  build_installer.ps1 renders this file, substituting actual values for <Version>
+  and <ReleaseDate>. Do not spell the placeholders out inside comments, or they
+  get replaced too.
+
+  The identifier follows the io.github.<user>.<app> reverse-DNS convention used by
+  individual open-source projects, matching the io.github.yuylong namespace on
+  GitHub Pages. It must never change after the first public release, otherwise
+  installed users stop receiving updates.
+-->
+<Package>
+    <!--
+      Base metadata is English-only for now. Localized variants are added later by
+      repeating the element with an xml:lang attribute, e.g.
+        <Description xml:lang="zh_CN">...</Description>
+      The installer UI translation is configured separately in config.xml.
+    -->
+    <DisplayName>FigureItNow7</DisplayName>
+
+    <Description>Draw mathematical figures with a small script language.</Description>
+
+    <Version>@APP_VERSION@</Version>
+    <ReleaseDate>@RELEASE_DATE@</ReleaseDate>
+    <Name>io.github.yuylong.figureitnow7</Name>
+
+    <Licenses>
+        <License name="GNU General Public License v3.0" file="license.txt" />
+    </Licenses>
+
+    <Default>true</Default>
+    <ForcedInstallation>true</ForcedInstallation>
+    <RequiresAdminRights>true</RequiresAdminRights>
+</Package>

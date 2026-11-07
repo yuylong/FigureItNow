@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!--
+  FigureItNow7 installer configuration
+
+  build_installer.ps1 renders this file into packaging/build-ifw/config/ before
+  handing it to binarycreator. Three placeholders are substituted at render time:
+  the <Version> value, the release date, and the online repository block below.
+  Do not spell the placeholders out inside comments, or they get replaced too.
+-->
+<Installer>
+    <Name>FigureItNow7</Name>
+    <Version>@APP_VERSION@</Version>
+    <Title>FigureItNow7 Setup</Title>
+    <Publisher>Yulong Yu</Publisher>
+    <ProductUrl>https://github.com/yuylong/FigureItNow</ProductUrl>
+    <StartMenuDir>FigureItNow7</StartMenuDir>
+
+    <!-- Installs into Program Files, so installation requires administrator rights. -->
+    <TargetDir>@ApplicationsDir@/FigureItNow7</TargetDir>
+
+    <MaintenanceToolName>FigureItNow7Maintenance</MaintenanceToolName>
+    <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
+
+    <RunProgram>@TargetDir@/FigureItNow7.exe</RunProgram>
+    <RunProgramDescription>Start FigureItNow7</RunProgramDescription>
+
+    <!--
+      Local-only install phase: every online repository entry point is disabled so the
+      maintenance tool does not show an "Update components" action that has nothing to
+      fetch. When switching to hybrid mode the script injects the repository block and
+      flips both flags below back to true.
+    -->
+    <AllowRepositoriesForOfflineInstaller>false</AllowRepositoriesForOfflineInstaller>
+    <RepositorySettingsPageVisible>false</RepositorySettingsPageVisible>
+
+    @REPO_BLOCK@
+
+    <!--
+      Installer UI language. Before enabling, confirm that ifw_zh_CN.qm exists under
+      <IFW>/translations/; otherwise Chinese systems fall back to English (Qt dropped
+      the Chinese localization of its own installers in Qt Online Installer 4.2.0).
+      Uncomment once the file is confirmed present.
+    -->
+    <!--
+    <Translations>
+        <Translation>ifw_zh_CN</Translation>
+        <Translation>qt_zh_CN</Translation>
+    </Translations>
+    -->
+</Installer>

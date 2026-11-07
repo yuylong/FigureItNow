@@ -259,7 +259,7 @@ set(RESOURCES
     Icons.qrc
 )
 
-# 生成可执行文件
+# Build the executable
 add_executable(${PROJECT_NAME}
     ${SOURCES}
     ${HEADERS}
@@ -317,3 +317,12 @@ if(MSVC)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(${PROJECT_NAME} PRIVATE -Wno-comment)
 endif()
+
+# ---------------------------------------------------------------------------
+# Install rules: used by packaging/build_installer.ps1 to produce the staging tree
+# that is handed to Qt Installer Framework. Only the executable is declared here;
+# the Qt runtime is added afterwards by windeployqt.
+# ---------------------------------------------------------------------------
+install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION .
+    BUNDLE  DESTINATION .)

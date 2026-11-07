@@ -11,3 +11,8 @@ __pycache__/
 *.pyc
 .next/
 coverage/
+
+# Packaging output produced by packaging/build_installer.ps1
+build-release/
+packaging/build-ifw/
+packaging/repository/
