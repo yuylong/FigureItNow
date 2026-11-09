@@ -10,11 +10,15 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets svg printsupport
 system ("git status") {
     GIT_BRANCH = $$system(git rev-parse --abbrev-ref HEAD)
     GIT_TIME = $$system(git show --oneline --format=\"%ci\" -s HEAD)
-    APP_VERSION = $$system(git describe --tags --dirty)
+    # --always keeps the version non-empty in a work tree without tags, where a plain describe fails.
+    APP_VERSION = $$system(git describe --tags --dirty --always)
+    isEmpty(GIT_BRANCH): GIT_BRANCH = unknown
+    isEmpty(GIT_TIME): GIT_TIME = unknown
+    isEmpty(APP_VERSION): APP_VERSION = unknown
 } else {
-    GIT_BRANCH = None
-    GIT_TIME = None
-    APP_VERSION = None
+    GIT_BRANCH = unknown
+    GIT_TIME = unknown
+    APP_VERSION = unknown
 }
 
 DEFINES += GIT_BRANCH=\"\\\"$$GIT_BRANCH\\\"\"

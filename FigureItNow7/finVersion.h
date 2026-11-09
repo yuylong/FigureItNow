@@ -28,11 +28,12 @@
  *  normalizes the git describe output into the dotted numeric form required by installers, and exposes
  *  the Git branch, build date, and descriptive version string injected by CMake.
  *
- *  The normalization rule is duplicated in packaging/build_installer.ps1 so that the About dialog and
- *  the generated installer report the same version. Both implementations must stay in sync: strip a
- *  leading "v" and a trailing "-dirty", take the first dash-separated segment as the base version, and
- *  append the last all-digit segment as the revision. For example, "v0.5-alpha-172-g1ed173e-dirty"
- *  normalizes to "0.5.172".
+ *  The normalization rule is implemented once in cmake/BuildVersion.cmake, which feeds both this code
+ *  (through the compiled-in git describe string) and packaging/build_installer.ps1 (through its
+ *  FIN_VERSION_REPORT output). finVersionTools::normalizedVersionString() must stay in sync with that
+ *  implementation: strip a leading "v" and a trailing "-dirty", take the first dash-separated segment
+ *  as the base version, and append the last all-digit segment as the revision. For example,
+ *  "v0.5-alpha-172-g1ed173e-dirty" normalizes to "0.5.172".
  */
 class finVersionTools
 {

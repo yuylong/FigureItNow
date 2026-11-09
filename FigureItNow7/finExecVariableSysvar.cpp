@@ -12,6 +12,7 @@
 
 #include "finExecVariable.h"
 #include "finExecEnvironment.h"
+#include "finVersion.h"
 
 
 static finExecVariable *_sysvar_nil();
@@ -478,7 +479,7 @@ static finExecVariable *_sysvar_app_prime_version()
 
 static finExecVariable *_sysvar_app_version()
 {
-    return _sysvar_gen_str_var(QString("APP_VERSION"), QString("0.3"));
+    return _sysvar_gen_str_var(QString("APP_VERSION"), finVersionTools::currentVersionString());
 }
 
 static finExecVariable *_sysvar_app_author()

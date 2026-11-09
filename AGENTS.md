@@ -35,6 +35,7 @@ Binary: `FigureItNow7/build/FigureItNow7.exe`. Run GUI with no args; headless wi
 - **Do not "fix" the filename `finExecOperartorCalc.{h,cpp}`** (misspells "Operator"). It is referenced by this exact name in `CMakeLists.txt` and `FigureItNow7.pro`.
 - **Two parallel type hierarchies** — don't conflate them: lexer types (`finLexNode::Type` / `::Operator`) vs runtime value types (`finExecVariable::Type`: `TP_NUMERIC`/`TP_STRING`/`TP_IMAGE`/`TP_ARRAY`/`TP_LINK`/`TP_NULL`).
 - **Adding a builtin system function:** write a C++ function with the `finFunctionCall` prototype, add a `finExecSysFuncRegItem` entry in the matching `registSysFuncXxx()` inside `finExecFuncXxx.cpp`, and ensure that `.cpp` is listed in `CMakeLists.txt` `SOURCES` (and `FigureItNow7.pro` for qmake). Functions register statically into `_rootEnv` at startup.
+- **Version metadata has one implementation:** `cmake/BuildVersion.cmake` derives `GIT_BRANCH` / `GIT_TIME` / `APP_VERSION` / `APP_VERSION_NUMERIC` from `git describe --tags --dirty --always`. `CMakeLists.txt` (`PROJECT_VERSION` + compile definitions), the About dialog / `$APP_VERSION` sysvar (via `finVersionTools`) and `packaging/build_installer.ps1` (via `cmake -P cmake/BuildVersion.cmake`) all consume it — don't re-implement the `v0.5-alpha-173-gf4e7f21-dirty` → `0.5.173` rule elsewhere.
 
 ## Pipeline
 

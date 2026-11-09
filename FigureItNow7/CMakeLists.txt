@@ -1,5 +1,15 @@
 cmake_minimum_required(VERSION 3.16)
-project(FigureItNow7 VERSION 1.0.0 LANGUAGES CXX)
+
+# Build metadata is derived from git, which is the single source of truth for the version; see
+# cmake/BuildVersion.cmake. It is collected before project() so that PROJECT_VERSION and the version
+# compiled into the binary come from the same place instead of a stale literal.
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildVersion.cmake")
+fin_collect_build_version("${CMAKE_CURRENT_SOURCE_DIR}")
+
+# project() accepts at most four numeric components; the installer version only ever needs three.
+string(REGEX MATCH "^[0-9]+(\\.[0-9]+)?(\\.[0-9]+)?" _fin_project_version "${APP_VERSION_NUMERIC}")
+
+project(FigureItNow7 VERSION ${_fin_project_version} LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -86,47 +96,18 @@ endif()
 # Set include directories
 include_directories(${CMAKE_SOURCE_DIR})
 
-# Get Git version information
-find_package(Git QUIET)
-if(GIT_FOUND)
-    execute_process(
-        COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        OUTPUT_VARIABLE GIT_BRANCH
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        ERROR_QUIET
-    )
-    
-    execute_process(
-        COMMAND ${GIT_EXECUTABLE} show --oneline --format="%ci" -s HEAD
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        OUTPUT_VARIABLE GIT_TIME
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        ERROR_QUIET
-    )
-    
-    execute_process(
-        COMMAND ${GIT_EXECUTABLE} describe --tags --dirty
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        OUTPUT_VARIABLE APP_VERSION
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        ERROR_QUIET
-    )
-else()
-    set(GIT_BRANCH "None")
-    set(GIT_TIME "None")
-    set(APP_VERSION "None")
-endif()
-
-# Add preprocessor definitions - ensure strings in C++
-add_definitions(-DGIT_BRANCH=\"${GIT_BRANCH}\")
-add_definitions(-DGIT_TIME=${GIT_TIME})
-add_definitions(-DAPP_VERSION=\"${APP_VERSION}\")
+# Add preprocessor definitions - ensure strings in C++.
+# GIT_TIME contains spaces ("2026-11-07 23:30:31 +0800"), so the whole definition must be quoted;
+# unquoted, CMake splits it into several compiler arguments and the compile step fails.
+add_definitions("-DGIT_BRANCH=\"${GIT_BRANCH}\"")
+add_definitions("-DGIT_TIME=\"${GIT_TIME}\"")
+add_definitions("-DAPP_VERSION=\"${APP_VERSION}\"")
 
 # Output Git information for debugging
 message(STATUS "Git Branch: ${GIT_BRANCH}")
 message(STATUS "Git Time: ${GIT_TIME}")
 message(STATUS "App Version: ${APP_VERSION}")
+message(STATUS "Installer Version: ${APP_VERSION_NUMERIC}")
 
 # Collect source files
 set(SOURCES

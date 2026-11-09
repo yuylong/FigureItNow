@@ -128,34 +128,44 @@ function Fail {
     exit 1
 }
 
-# Convert git describe output into a dotted numeric version IFW accepts:
+# The version rule lives in cmake/BuildVersion.cmake, which is also what the build itself uses. Ask
+# CMake for the value instead of parsing git here, so the installer, the compiled-in version and the
+# About dialog cannot drift apart.
 # v0.5-alpha-164-g7685e8b-dirty  ->  0.5.164
 function Get-AppVersion {
-    $desc = & git -C $ProjectDir describe --tags --dirty 2>$null
-    if (-not $desc) {
-        Write-Warn 'git describe returned nothing (no tags?); falling back to 0.0.0'
-        return '0.0.0'
+    param([string] $CmakeExe)
+
+    $versionScript = Join-Path $ProjectDir 'cmake\BuildVersion.cmake'
+    if (-not (Test-Path $versionScript)) {
+        Fail "Version module not found: $versionScript"
     }
 
-    $desc = $desc.Trim()
-    $desc = $desc -replace '^v', ''
-    $desc = $desc -replace '-dirty$', ''
+    $reportFile = Join-Path ([System.IO.Path]::GetTempPath()) "figureitnow-version-$PID.txt"
+    try {
+        # Capture the output: it must not leak into this function's return value.
+        $output = & $CmakeExe -D "FIN_VERSION_SOURCE_DIR=$ProjectDir" -D "FIN_VERSION_REPORT=$reportFile" `
+                              -P $versionScript 2>&1
+        if ($LASTEXITCODE -ne 0 -or -not (Test-Path $reportFile)) {
+            Write-Host $output
+            Fail 'Could not compute the build version from cmake/BuildVersion.cmake'
+        }
 
-    $parts = $desc -split '-'
-    $base  = $parts[0]
-    if ($base -notmatch '^\d+(\.\d+)*$') {
-        Write-Warn "Cannot derive a numeric version from '$base'; falling back to 0.0.0"
-        return '0.0.0'
+        $values = @{}
+        foreach ($line in (Get-Content -Path $reportFile -Encoding UTF8)) {
+            if ($line -match '^([A-Z_]+)=(.*)$') { $values[$Matches[1]] = $Matches[2] }
+        }
+    } finally {
+        Remove-Item -Path $reportFile -Force -ErrorAction SilentlyContinue
     }
 
-    # Use the commit count since the last tag as the trailing numeric field.
-    $revision = $null
-    foreach ($part in $parts) {
-        if ($part -match '^\d+$') { $revision = $part }
+    if (-not $values.ContainsKey('APP_VERSION_NUMERIC')) {
+        Fail 'cmake/BuildVersion.cmake did not report APP_VERSION_NUMERIC'
+    }
+    if ($values['APP_VERSION_NUMERIC'] -eq '0.0.0') {
+        Write-Warn "Could not derive a numeric version from '$($values['APP_VERSION'])'; using 0.0.0"
     }
 
-    if ($revision) { return "$base.$revision" }
-    return $base
+    return $values['APP_VERSION_NUMERIC']
 }
 
 # Search the given roots for an executable and return the directory that holds it.
@@ -240,7 +250,14 @@ if ($Mode -eq 'hybrid' -and -not $RepoUrl) {
 }
 $RepoUrl = $RepoUrl.TrimEnd('/')
 
-$AppVersion  = Get-AppVersion
+# CMake derives the version and drives the build, so resolve it before the version step.
+$CmakeCmd = Get-Command 'cmake' -ErrorAction SilentlyContinue
+if (-not $CmakeCmd) {
+    Fail 'cmake not found. Install CMake and make sure it is on PATH.'
+}
+$CmakeExe = $CmakeCmd.Source
+
+$AppVersion  = Get-AppVersion -CmakeExe $CmakeExe
 $ReleaseDate = Get-Date -Format 'yyyy-MM-dd'
 
 Write-Host ''
@@ -272,10 +289,7 @@ if (-not $MingwBin) {
 }
 Write-Ok "MinGW: $MingwBin"
 
-if (-not (Get-Command 'cmake' -ErrorAction SilentlyContinue)) {
-    Fail 'cmake not found. Install CMake and make sure it is on PATH.'
-}
-Write-Ok ("CMake: " + ((& cmake --version | Select-Object -First 1)))
+Write-Ok ("CMake: " + ((& $CmakeExe --version | Select-Object -First 1)))
 
 $IfwBin = $null
 if (-not $SkipPackage) {
@@ -343,10 +357,10 @@ if ($SkipBuild) {
         "-DCMAKE_MAKE_PROGRAM=$make",
         "-DCMAKE_PREFIX_PATH=$QtPath"
     )
-    & cmake @configureArgs
+    & $CmakeExe @configureArgs
     if ($LASTEXITCODE -ne 0) { Fail 'CMake configure failed' }
 
-    & cmake --build $BuildDir --config Release --parallel
+    & $CmakeExe --build $BuildDir --config Release --parallel
     if ($LASTEXITCODE -ne 0) { Fail 'Build failed' }
     Write-Ok 'Build finished'
 }
@@ -369,7 +383,7 @@ New-Item -ItemType Directory -Path $MetaDir    -Force | Out-Null
 New-Item -ItemType Directory -Path $RenderDir  -Force | Out-Null
 New-Item -ItemType Directory -Path $DistDir    -Force | Out-Null
 
-& cmake --install $BuildDir --prefix $DataDir --config Release
+& $CmakeExe --install $BuildDir --prefix $DataDir --config Release
 if ($LASTEXITCODE -ne 0) { Fail 'cmake --install failed' }
 Write-Ok "Staging: $DataDir"
 

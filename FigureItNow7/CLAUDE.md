@@ -26,7 +26,7 @@ cmake .. -G "MinGW Makefiles" \
 cmake --build . -j4
 ```
 
-`CMakeLists.txt` auto-searches common Qt install paths (`C:/Qt/*/mingw*_64`, `/opt/Qt/*/gcc_64`, `/usr/local/Qt-*/clang_64`, etc.) if `CMAKE_PREFIX_PATH`/`QTDIR` is unset, and defines `GIT_BRANCH` / `GIT_TIME` / `APP_VERSION` from `git describe`.
+`CMakeLists.txt` auto-searches common Qt install paths (`C:/Qt/*/mingw*_64`, `/opt/Qt/*/gcc_64`, `/usr/local/Qt-*/clang_64`, etc.) if `CMAKE_PREFIX_PATH`/`QTDIR` is unset. Build metadata (`GIT_BRANCH` / `GIT_TIME` / `APP_VERSION` / `APP_VERSION_NUMERIC`) is computed by `cmake/BuildVersion.cmake` from `git describe --tags --dirty --always`; that module is the single source of the version and the only place the normalization rule (`v0.5-alpha-173-gf4e7f21-dirty` → `0.5.173`) is implemented — `PROJECT_VERSION`, the compiled-in macros, the About dialog and `packaging/build_installer.ps1` all consume it. Without git the values fall back to `unknown` / `0.0.0` instead of an empty string.
 
 ### qmake (legacy fallback)
 
