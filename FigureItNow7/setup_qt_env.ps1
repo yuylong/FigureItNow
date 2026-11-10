@@ -4,13 +4,12 @@
 
 Write-Host "Detecting Qt installation..." -ForegroundColor Green
 
-# Common Qt installation paths (auto-detect all versions)
+# Common Qt installation paths (auto-detect all versions).
+# Only MinGW builds are supported (see CMakeLists.txt / README_CMAKE.md), so MSVC packages are never probed.
 $qtPaths = @(
     "$env:QTDIR",
-    "C:\Qt\*\msvc*_64",
     "C:\Qt\*\mingw*_64",
     "C:\Qt\*\mingw_64",
-    "C:\Program Files\Qt\*\msvc*_64",
     "C:\Program Files\Qt\*\mingw*_64",
     "C:\Program Files\Qt\*\mingw_64"
 )
@@ -29,44 +28,51 @@ foreach ($path in $qtPaths) {
             }
         }
         
+            # Qt's MSVC packages ship lib\Qt6Core.lib while MinGW packages ship lib\libQt6Core.a;
+            # an MSVC Qt cannot be linked with the MinGW compiler, so skip it.
+            if (Test-Path "$path\lib\Qt6Core.lib") {
+                Write-Host "Skipping MSVC Qt installation (only MinGW is supported): $path" -ForegroundColor Yellow
+                continue
+            }
+
             # Check if it's a valid Qt installation
             if ((Test-Path "$path\bin\qmake.exe") -or (Test-Path "$path\bin\qmake6.exe")) {
                 Write-Host "Found Qt installation: $path" -ForegroundColor Yellow
                 
-                # Check if it's MinGW version
-                if ($path -match "mingw") {
-                    Write-Host "Detected MinGW version Qt" -ForegroundColor Green
-                    
-                    # Find MinGW toolchain path (might be in Qt Tools directory)
-                    $mingwPaths = @(
-                        "C:\Qt\Tools\mingw*_64\bin",
-                        "C:\Qt\Tools\mingw*\bin",
-                        "$path\bin"
-                    )
-                    
-                    $foundMinGW = $false
-                    foreach ($mp in $mingwPaths) {
-                        $mingwCandidate = $mp
-                        if ($mingwCandidate -match '\*') {
-                            $expandedMinGW = Get-ChildItem -Path $mingwCandidate -Directory -ErrorAction SilentlyContinue | Sort-Object Name -Descending | Select-Object -First 1
-                            if ($expandedMinGW) {
-                                $mingwCandidate = $expandedMinGW.FullName
-                            }
-                        }
-                        
-                        if ((Test-Path "$mingwCandidate\g++.exe") -and (Test-Path "$mingwCandidate\mingw32-make.exe")) {
-                            Write-Host "Found MinGW toolchain: $mingwCandidate" -ForegroundColor Green
-                            $mingwPath = $mingwCandidate
-                            $env:MINGW_PATH = $mingwCandidate
-                            $env:PATH = "$mingwCandidate;$env:PATH"
-                            $foundMinGW = $true
-                            break
+                Write-Host "Detected MinGW Qt installation" -ForegroundColor Green
+
+                # Find MinGW toolchain path (might be in Qt Tools directory)
+                $mingwPaths = @(
+                    "$env:MINGW_PATH",
+                    "C:\Qt\Tools\mingw*_64\bin",
+                    "C:\Qt\Tools\mingw*\bin",
+                    "$path\bin"
+                )
+
+                $foundMinGW = $false
+                foreach ($mp in $mingwPaths) {
+                    $mingwCandidate = $mp
+                    if ($mingwCandidate -and ($mingwCandidate -match '\*')) {
+                        $expandedMinGW = Get-ChildItem -Path $mingwCandidate -Directory -ErrorAction SilentlyContinue | Sort-Object Name -Descending | Select-Object -First 1
+                        if ($expandedMinGW) {
+                            $mingwCandidate = $expandedMinGW.FullName
                         }
                     }
-                    
-                    if (-not $foundMinGW) {
-                        Write-Host "Warning: Complete MinGW toolchain not found" -ForegroundColor Yellow
+
+                    if ((Test-Path "$mingwCandidate\g++.exe") -and (Test-Path "$mingwCandidate\mingw32-make.exe")) {
+                        Write-Host "Found MinGW toolchain: $mingwCandidate" -ForegroundColor Green
+                        $mingwPath = $mingwCandidate
+                        $env:MINGW_PATH = $mingwCandidate
+                        $env:PATH = "$mingwCandidate;$env:PATH"
+                        $foundMinGW = $true
+                        break
                     }
+                }
+
+                if (-not $foundMinGW) {
+                    Write-Host "MinGW toolchain (g++.exe + mingw32-make.exe) not found for $path" -ForegroundColor Red
+                    Write-Host "Install 'MinGW <version> 64-bit' via the Qt Maintenance Tool, or set MINGW_PATH, then re-run." -ForegroundColor Yellow
+                    exit 1
                 }
                 
                 # Set environment variables
@@ -94,9 +100,9 @@ foreach ($path in $qtPaths) {
 }
 
 if (-not $foundQt) {
-    Write-Host "Qt6 installation not found!" -ForegroundColor Red
-    Write-Host "Please ensure Qt6 is installed, or manually set environment variables:" -ForegroundColor Yellow
-    Write-Host '$env:QTDIR = "C:\Qt\6.x.x\msvcxxxx_64"' -ForegroundColor White
+    Write-Host "Qt6 (MinGW) installation not found!" -ForegroundColor Red
+    Write-Host "Please ensure Qt6 for MinGW is installed, or manually set environment variables:" -ForegroundColor Yellow
+    Write-Host '$env:QTDIR = "C:\Qt\6.8.0\mingw_64"' -ForegroundColor White
     Write-Host '$env:PATH = "$env:QTDIR\bin;$env:PATH"' -ForegroundColor White
     exit 1
 }

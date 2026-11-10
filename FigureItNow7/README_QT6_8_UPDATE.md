@@ -7,8 +7,7 @@
 ## 📝 修改的文件
 
 ### 1. 环境配置脚本
-- ✅ **setup_vs_env.ps1** - 优先查找Qt6.8，兼容其他Qt6版本
-- ✅ **setup_qt_env.ps1** - 更新Qt6.8路径优先级
+- ✅ **setup_qt_env.ps1** - Windows 下检测 Qt（仅 MinGW 版）与配套 MinGW 工具链，并生成 `.vscode` 配置
 - ✅ **setup_qt_env.sh** - Linux/macOS Qt6.8路径支持
 
 ### 2. CMake配置
@@ -23,9 +22,8 @@
 
 ### Windows
 ```
-C:\Qt\*\msvc2022_64\          # 自动检测所有版本
-C:\Qt\*\msvc2019_64\          # 自动检测所有版本
-C:\Program Files\Qt\*\msvc*_64\ # 程序文件安装路径
+C:\Qt\*\mingw*_64\            # 自动检测所有版本（仅支持 MinGW 版 Qt）
+C:\Program Files\Qt\*\mingw*_64\ # 程序文件安装路径
 ```
 
 ### Linux
@@ -45,7 +43,7 @@ C:\Program Files\Qt\*\msvc*_64\ # 程序文件安装路径
 ## 📋 兼容性说明
 
 - ✅ **向下兼容**: 如果找不到Qt6.8，会自动查找其他Qt6版本
-- ✅ **多编译器支持**: 支持MSVC2022、MSVC2019
+- ✅ **Windows 仅支持 MinGW**: MSVC / clang-cl 构建不受支持（CMakeLists.txt 在 configure 阶段直接拒绝）
 - ✅ **跨平台**: Windows、Linux、macOS全平台支持
 
 ## 🚀 使用方法
@@ -53,7 +51,7 @@ C:\Program Files\Qt\*\msvc*_64\ # 程序文件安装路径
 ### 快速开始
 ```powershell
 # Windows - 在VSCode终端中运行
-.\setup_vs_env.ps1
+.\setup_qt_env.ps1
 
 # Linux/macOS - 在终端中运行
 source setup_qt_env.sh
@@ -62,7 +60,7 @@ source setup_qt_env.sh
 ### 手动配置（如果自动检测失败）
 ```powershell
 # Windows（根据实际安装路径调整）
-$env:QTDIR = "C:\Qt\6.8.0\msvc2022_64"  # 替换为你的版本
+$env:QTDIR = "C:\Qt\6.8.0\mingw_64"  # 替换为你的版本
 $env:PATH = "$env:QTDIR\bin;$env:PATH"
 
 # Linux（根据实际安装路径调整）
@@ -93,7 +91,7 @@ export PATH="$QTDIR/bin:$PATH"
 & "$env:QTDIR\bin\qmake.exe" -v
 
 # 检查CMake配置
-cmake -B build -G "Visual Studio 17 2022"
+cmake -B build -G "MinGW Makefiles"
 ```
 
 ## 🆚 旧版配置 vs 新版配置

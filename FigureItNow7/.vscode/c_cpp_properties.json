@@ -17,7 +17,6 @@
                 "QT_CORE_LIB",
                 "QT_WIDGETS_LIB",
                 "QT_GUI_LIB",
-                "_CRT_SECURE_NO_WARNINGS",
                 "UNICODE",
                 "_UNICODE"
             ],

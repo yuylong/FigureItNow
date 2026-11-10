@@ -27,7 +27,9 @@ FigureItNow7/
 - CMake Tools (Microsoft)
 
 ### 3. 构建工具
-- Windows: Visual Studio 2019 或 2022 (MSVC)
+- Windows: **仅支持 MinGW-w64 GCC**（推荐使用 Qt 自带的 `C:\Qt\Tools\mingw*\bin`）。
+  本项目不提供 MSVC / clang-cl 支持：Qt 官方预编译包与 MinGW ABI 绑定，`CMakeLists.txt` 在 configure 阶段会直接
+  拒绝非 GCC 编译器
 - Linux: GCC 7+ 或 Clang 5+
 - macOS: Xcode 10+ 或 Clang 5+
 
@@ -42,7 +44,7 @@ FigureItNow7/
 
 2. **配置项目**
    - VSCode 会自动检测 CMakeLists.txt
-   - 选择工具链（如 Visual Studio 或 GCC）
+   - 选择工具链（Windows 上选择 MinGW；MSVC 工具包不受支持）
    - 等待配置完成
 
 3. **构建项目**
@@ -66,23 +68,19 @@ FigureItNow7/
    ```bash
    # Linux/macOS
    cmake ..
-   
-   # Windows (Visual Studio)
-   cmake .. -G "Visual Studio 16 2019" -A x64
-   
-   # Windows (MinGW)
-   cmake .. -G "MinGW Makefiles"
+
+   # Windows (MinGW，唯一受支持的工具链)
+   cmake .. -G "MinGW Makefiles" \
+     -DCMAKE_C_COMPILER=C:/Qt/Tools/mingw1310_64/bin/gcc.exe \
+     -DCMAKE_CXX_COMPILER=C:/Qt/Tools/mingw1310_64/bin/g++.exe \
+     -DCMAKE_MAKE_PROGRAM=C:/Qt/Tools/mingw1310_64/bin/mingw32-make.exe
    ```
 
 3. **构建**
    ```bash
    # Linux/macOS
    make -j$(nproc)
-   
-   # Windows (Visual Studio)
-   cmake --build . --config Debug
-   cmake --build . --config Release
-   
+
    # Windows (MinGW)
    mingw32-make -j4
    ```
@@ -132,10 +130,12 @@ FigureItNow7/
 
 #### Windows
 - `$QTDIR` 环境变量（最高优先级）
-- `C:\Qt\*\msvc*_64`（自动检测所有版本）
-- `C:\Qt\*\mingw*_64`
-- `C:\Program Files\Qt\*\msvc*_64`
+- `C:\Qt\*\mingw*_64`（自动检测所有版本）
+- `C:\Qt\*\mingw_64`
 - `C:\Program Files\Qt\*\mingw*_64`
+- `C:\Program Files\Qt\*\mingw_64`
+
+> 只探测 MinGW 版 Qt：`msvc*_64` / `msvc2019_64` / `msvc2022_64` 等目录不会被识别。
 
 #### Linux
 - `$QTDIR` 环境变量（最高优先级）
@@ -186,21 +186,21 @@ VSCode配置文件现在使用环境变量，支持自动检测：
 1. **运行自动配置脚本**:
    ```powershell
    # 在VSCode终端中运行
-   .\setup_vs_env.ps1
+   .\setup_qt_env.ps1
    ```
 
 2. **手动重新配置CMake**:
    - 按 `Ctrl+Shift+P`
    - 输入 "CMake: Configure" 
-   - 选择可用的工具包（Visual Studio 2022等）
+   - 选择可用的工具包（MinGW）
 
 3. **强制指定生成器**:
    ```bash
-   cmake -B build -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Debug
+   cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Debug
    ```
 
 4. **检查必要软件**:
-   - Visual Studio 2022（或Build Tools）
+   - Qt 6.x 的 MinGW 版本，以及配套的 MinGW 构建工具（Qt Maintenance Tool 中安装）
    - VSCode扩展：CMake Tools
    - VSCode扩展：C/C++
 

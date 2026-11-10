@@ -17,14 +17,19 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-# Windows specific settings
+# Windows specific settings.
+# Only MinGW-w64 GCC is supported on Windows: the prebuilt Qt packages used here are MinGW builds, so an
+# MSVC/clang-cl build would fail with runtime-library and undefined-symbol linker errors. Reject it at
+# configure time with an actionable message instead.
 if(WIN32)
-    # Set runtime library
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        message(FATAL_ERROR
+            "Windows builds require MinGW-w64 GCC, but the active C++ compiler is "
+            "${CMAKE_CXX_COMPILER_ID} (${CMAKE_CXX_COMPILER}). Configure with "
+            "-G \"MinGW Makefiles\" and the gcc/g++ shipped with the Qt MinGW toolchain; see README_CMAKE.md.")
+    endif()
     # Fix Unicode issues
     add_definitions(-D_UNICODE -DUNICODE)
-    # Fix security warnings
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
 # Automatically find Qt6
@@ -284,18 +289,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 # Compiler specific settings
-if(MSVC)
-    # Use Unicode
-    add_definitions(-DUNICODE -D_UNICODE)
-    # Sources are UTF-8 (the language menu uses native language names as literals).
-    target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
-    # Set warning level
-    if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-        string(REGEX REPLACE "/W[0-4]" "/W3" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3")
-    endif()
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+# Sources are UTF-8 (the language menu uses native language names as literals). GCC treats input as UTF-8
+# by default, so no charset flag is needed.
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(${PROJECT_NAME} PRIVATE -Wno-comment)
 endif()
 

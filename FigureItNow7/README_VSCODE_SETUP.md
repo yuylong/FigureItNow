@@ -233,7 +233,7 @@ endif()
 
 ### 4.1 路径设置
 确保Qt6的bin目录在系统PATH中：
-- Windows: `C:\Qt\[version]\[compiler]_64\bin`
+- Windows: `C:\Qt\[version]\mingw_64\bin`（只支持 MinGW 版 Qt）
 - Linux: `/opt/Qt/[version]/gcc_64/bin`
 - macOS: `/usr/local/Qt-[version]/clang_64/bin`
 
@@ -241,8 +241,8 @@ endif()
 在VSCode的终端中设置：
 ```bash
 # Windows
-export PATH="/c/Qt/[version]/[compiler]_64/bin:$PATH"
-export QTDIR="/c/Qt/[version]/[compiler]_64"
+export PATH="/c/Qt/[version]/mingw_64/bin:$PATH"
+export QTDIR="/c/Qt/[version]/mingw_64"
 
 # Linux
 export PATH="/opt/Qt/[version]/gcc_64/bin:$PATH"
@@ -272,7 +272,7 @@ set demangle-style gnu-v3
 ### 使用CMake (推荐)
 1. 打开项目根目录
 2. VSCode会提示配置CMake
-3. 选择构建工具链
+3. 选择构建工具链（Windows 上选择 MinGW）
 4. 按`Ctrl+Shift+P`，选择"CMake: Configure"
 5. 在build目录中生成项目
 6. 使用`Ctrl+Shift+B`构建项目
@@ -301,13 +301,9 @@ set demangle-style gnu-v3
             ],
             "defines": [
                 "QT_CORE_LIB",
-                "QT_WIDGETS_LIB",
-                "_CRT_SECURE_NO_WARNINGS"
+                "QT_WIDGETS_LIB"
             ],
-            "compilerPath": [
-                "C:/Qt/[version]/[compiler]_64/bin",
-                "C:/Program Files/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64"
-            ]
+            "compilerPath": "C:/Qt/Tools/mingw1310_64/bin/g++.exe"
         }
     ],
     "version": 4

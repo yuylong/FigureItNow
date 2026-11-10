@@ -192,7 +192,9 @@ function Resolve-QtDir {
         return $env:QTDIR
     }
 
-    $patterns = @('C:\Qt\*\mingw*_64', 'C:\Qt\*\msvc*_64', 'C:\Qt\*\mingw_64')
+    # Only MinGW Qt packages are considered: the build below forces "MinGW Makefiles" + gcc/g++, so an
+    # MSVC Qt would fail at configure/link time (or produce an ABI-broken package).
+    $patterns = @('C:\Qt\*\mingw*_64', 'C:\Qt\*\mingw_64')
     foreach ($pattern in $patterns) {
         $candidates = Get-ChildItem -Path $pattern -Directory -ErrorAction SilentlyContinue |
                       Sort-Object Name -Descending
@@ -277,7 +279,11 @@ Write-Step 'Detecting build environment'
 
 $QtPath = Resolve-QtDir
 if (-not $QtPath) {
-    Fail 'Qt not found. Install Qt 6.x, pass -QtDir, or set QTDIR.'
+    Fail 'Qt not found. Install Qt 6.x (MinGW build), pass -QtDir, or set QTDIR.'
+}
+# Qt's MSVC packages ship lib\Qt6Core.lib; only MinGW packages can be linked with gcc/g++ below.
+if (Test-Path (Join-Path $QtPath 'lib\Qt6Core.lib')) {
+    Fail "Qt at '$QtPath' is an MSVC build; this script only supports MinGW Qt."
 }
 Write-Ok "Qt: $QtPath"
 

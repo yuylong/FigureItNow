@@ -28,12 +28,8 @@ DEFINES += APP_VERSION=\"\\\"$$APP_VERSION\\\"\"
 TARGET = FigureItNow7
 TEMPLATE = app
 
-!msvc {
-    QMAKE_CXXFLAGS += -Wno-comment
-} else {
-    # Sources are UTF-8 (the language menu uses native language names as literals).
-    QMAKE_CXXFLAGS += /utf-8
-}
+# Only MinGW-w64 GCC is supported on Windows (see README_CMAKE.md); MSVC is not.
+QMAKE_CXXFLAGS += -Wno-comment
 
 SOURCES += main.cpp\
         MainWindow.cpp \
