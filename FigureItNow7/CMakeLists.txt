@@ -32,70 +32,40 @@ if(WIN32)
     add_definitions(-D_UNICODE -DUNICODE)
 endif()
 
-# Automatically find Qt6
-# First try common Qt installation paths
-if(WIN32)
-    # Common Windows paths
-    set(QT6_POSSIBLE_PATHS
-        $ENV{QTDIR}
-        $ENV{Qt6_DIR}
-        C:/Qt/*/mingw*_64
-        C:/Qt/*/mingw_64
-        "C:/Program Files/Qt/*/mingw*_64"
-        "C:/Program Files/Qt/*/mingw_64"
-    )
-elseif(UNIX AND NOT APPLE)
-    # Common Linux paths
-    set(QT6_POSSIBLE_PATHS
-        $ENV{QTDIR}
-        $ENV{Qt6_DIR}
-        /opt/Qt/*/gcc_64
-        /usr/local/Qt/*/gcc_64
-        /usr/include/qt6
-        /usr/local/include/qt6
-    )
-elseif(APPLE)
-    # Common macOS paths
-    set(QT6_POSSIBLE_PATHS
-        $ENV{QTDIR}
-        $ENV{Qt6_DIR}
-        /usr/local/Qt-*/clang_64
-        /opt/Qt-*/clang_64
-        /opt/homebrew/Cellar/qt@6/*/include
-        /opt/homebrew/Cellar/qt/*/include
-    )
-endif()
+# Automatically find Qt6.
+# An explicit CMAKE_PREFIX_PATH / Qt6_DIR always wins, because find_package() itself honours them.
+# Otherwise cmake/FindQtInstall.cmake probes QTDIR and the platform installation roots and picks the
+# newest Qt found there.
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindQtInstall.cmake")
 
-# Try to find Qt6 automatically
 find_package(Qt6 QUIET COMPONENTS Core Widgets Svg PrintSupport LinguistTools)
 
-# If not found, try searching possible paths
 if(NOT Qt6_FOUND)
-    message(STATUS "Qt6 not found in default locations, searching possible paths...")
-    
-    foreach(path ${QT6_POSSIBLE_PATHS})
-        if(EXISTS ${path})
-            file(GLOB qt_path_candidates LIST_DIRECTORIES true ${path})
-            foreach(qt_path ${qt_path_candidates})
-                if(EXISTS "${qt_path}/lib/cmake/Qt6")
-                    set(CMAKE_PREFIX_PATH "${qt_path}" ${CMAKE_PREFIX_PATH})
-                    message(STATUS "Found Qt6 candidate: ${qt_path}")
-                    break()
-                endif()
-            endforeach()
-        endif()
-    endforeach()
-    
-    # Try finding Qt6 again
+    fin_find_qt6(FIN_QT6_PREFIX FIN_QT6_VERSION)
+    if(FIN_QT6_PREFIX STREQUAL "")
+        message(FATAL_ERROR
+            "Qt6 was not found. Install Qt6, or point QTDIR / CMAKE_PREFIX_PATH at the Qt6 "
+            "installation directory; see README_CMAKE.md.")
+    endif()
+    message(STATUS "Qt6 not found in the default locations; selected ${FIN_QT6_PREFIX} "
+                   "(version ${FIN_QT6_VERSION})")
+    list(PREPEND CMAKE_PREFIX_PATH "${FIN_QT6_PREFIX}")
     find_package(Qt6 REQUIRED COMPONENTS Core Widgets Svg PrintSupport LinguistTools)
 endif()
 
-# Output found Qt6 information
-if(Qt6_FOUND)
-    message(STATUS "Qt6 found: ${Qt6_DIR}")
-    message(STATUS "Qt6 version: ${Qt6_VERSION}")
-else()
-    message(FATAL_ERROR "Qt6 not found. Please install Qt6 or set CMAKE_PREFIX_PATH to Qt6 directory.")
+# Report the Qt6 installation in use. Windows builds require the MinGW Qt package.
+message(STATUS "Qt6 found: ${Qt6_DIR}")
+message(STATUS "Qt6 version: ${Qt6_VERSION}")
+message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION} ${CMAKE_CXX_COMPILER}")
+if(WIN32)
+    get_filename_component(_fin_qt_prefix "${Qt6_DIR}/../../.." ABSOLUTE)
+    if(NOT EXISTS "${_fin_qt_prefix}/lib/libQt6Core.a")
+        message(FATAL_ERROR
+            "The Qt6 installation at ${_fin_qt_prefix} is not a supported MinGW build. "
+            "Install the MinGW build of Qt6; see README_CMAKE.md.")
+    endif()
+    message(STATUS "Qt6 prefix: ${_fin_qt_prefix}")
+    message(STATUS "Qt6 ABI: MinGW")
 endif()
 
 # Set include directories

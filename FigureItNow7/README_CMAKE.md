@@ -126,29 +126,46 @@ FigureItNow7/
 
 ### 支持的Qt安装路径
 
-项目会自动搜索以下常见的Qt安装位置：
+探测逻辑集中在 `cmake/FindQtInstall.cmake`，仅当 `find_package(Qt6)` 未找到 Qt 时启用，优先级为：
+
+1. 命令行传入的 `-DCMAKE_PREFIX_PATH` / `-DQt6_DIR`（由 `find_package` 直接处理）
+2. `QTDIR`（Qt 安装目录）或 `Qt6_DIR`（`lib/cmake/Qt6` 目录）环境变量
+3. 下表列出的平台默认安装根目录
+
+`QTDIR` 可以指向 Qt 安装前缀（`C:/Qt/6.8.0/mingw_64`）、包含多个版本的父目录（`C:/Qt`，会展开到 `6.8.0/mingw_64`），或通配模式（`C:/Qt/*/mingw*_64`）；反斜杠与正斜杠等价，含空格的路径同样可用。若 `QTDIR` 下找不到 Qt，会给出告警并回退到默认根目录。
+
+默认根目录下若存在多个 Qt 版本，**取版本号最高的一个**，与目录遍历顺序无关。
 
 #### Windows
-- `$QTDIR` 环境变量（最高优先级）
-- `C:\Qt\*\mingw*_64`（自动检测所有版本）
-- `C:\Qt\*\mingw_64`
-- `C:\Program Files\Qt\*\mingw*_64`
-- `C:\Program Files\Qt\*\mingw_64`
+- `C:/Qt`
+- `C:/Program Files/Qt`
 
-> 只探测 MinGW 版 Qt：`msvc*_64` / `msvc2019_64` / `msvc2022_64` 等目录不会被识别。
+> 只探测并接受 MinGW 版 Qt（`lib/libQt6Core.a`）；配置成功后会打印 `Qt6 ABI: MinGW`。
 
 #### Linux
-- `$QTDIR` 环境变量（最高优先级）
-- `/opt/Qt/*/gcc_64`（自动检测所有版本）
-- `/usr/local/Qt/*/gcc_64`
-- `/usr/include/qt6`
-- `/usr/local/include/qt6`
+- `$HOME/Qt`
+- `/opt/Qt`
+- `/usr/local/Qt`
+- `/usr/local`
+- `/usr`
 
 #### macOS
-- `$QTDIR` 环境变量（最高优先级）
-- `/usr/local/Qt-*/clang_64`（自动检测所有版本）
-- `/opt/Qt-*/clang_64`
-- `/opt/homebrew/Cellar/qt/*/lib`
+- `$HOME/Qt`
+- `/opt/Qt`
+- `/usr/local/Qt`
+- `/opt/homebrew/opt/qt`
+- `/opt/homebrew/Cellar/qt`
+- `/opt/homebrew/Cellar/qt@6`
+
+配置成功后会打印实际使用的 Qt 位置、版本、编译器与 ABI：
+
+```
+-- Qt6 found: C:/Qt/6.8.0/mingw_64/lib/cmake/Qt6
+-- Qt6 version: 6.8.0
+-- Compiler: GNU 13.1.0 C:/Qt/Tools/mingw1310_64/bin/g++.exe
+-- Qt6 prefix: C:/Qt/6.8.0/mingw_64
+-- Qt6 ABI: MinGW
+```
 
 ### VSCode智能感知配置
 

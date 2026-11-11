@@ -22,7 +22,7 @@ cmake -B build -G "MinGW Makefiles" `
 cmake --build build -j4
 ```
 
-Binary: `FigureItNow7/build/FigureItNow7.exe`. Run GUI with no args; headless with `-c` / `--console`. `CMakeLists.txt` auto-searches common Qt install paths if `QTDIR`/`CMAKE_PREFIX_PATH` is unset.
+Binary: `FigureItNow7/build/FigureItNow7.exe`. Run GUI with no args; headless with `-c` / `--console`. `cmake/FindQtInstall.cmake` probes `QTDIR` and the platform Qt roots when `CMAKE_PREFIX_PATH` is unset; the newest Qt found there wins.
 
 ## Verification
 
