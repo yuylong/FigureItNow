@@ -6,12 +6,13 @@
 
 ## 📝 修改的文件
 
-### 1. 环境配置脚本
-- ✅ **setup_qt_env.ps1** - Windows 下检测 Qt（仅 MinGW 版）与配套 MinGW 工具链，并生成 `.vscode` 配置
-- ✅ **setup_qt_env.sh** - Linux/macOS Qt6.8路径支持
+### 1. 构建环境探测
+- ✅ **cmake/FindBuildEnv.cmake** - Qt 与配套 MinGW 探测的唯一实现（CMake 构建、configure 时的 VSCode 配置生成、`packaging/build_installer.ps1` 共用）
+- ✅ **cmake/VscodeConfig.cmake** - configure 时把探测结果写成 `.vscode/settings.json` 与 `launch.json`
 
 ### 2. CMake配置
-- ✅ **CMakeLists.txt** - 优先搜索Qt6.8安装路径
+- ✅ **CMakeLists.txt** - 优先使用显式 `CMAKE_PREFIX_PATH`，否则自动探测 Qt 与配套 MinGW
+- ✅ **CMakePresets.json** - 固定生成器与构建目录
 - ✅ **.vscode/c_cpp_properties.json** - 智能感知Qt6.8头文件路径
 
 ### 3. 文档更新
@@ -50,11 +51,13 @@ C:\Program Files\Qt\*\mingw*_64\ # 程序文件安装路径
 
 ### 快速开始
 ```powershell
-# Windows - 在VSCode终端中运行
-.\setup_qt_env.ps1
+# Windows - 配置一次即写入 .vscode 配置（Qt 与配套 MinGW 自动探测）
+cmake --preset windows-mingw
+```
 
-# Linux/macOS - 在终端中运行
-source setup_qt_env.sh
+```bash
+# Linux/macOS - 直接使用预设，Qt 由 cmake/FindBuildEnv.cmake 自动探测
+cmake --preset linux        # 或 macos
 ```
 
 ### 手动配置（如果自动检测失败）
@@ -81,17 +84,17 @@ export PATH="$QTDIR/bin:$PATH"
    rmdir /s build
    mkdir build
    ```
-4. **版本优先级**: 如果安装了多个Qt版本，脚本会自动选择最新版本
+4. **版本优先级**: 如果安装了多个Qt版本，探测逻辑会自动选择最新版本
 
 ## 🔍 验证安装
 
 运行以下命令验证Qt6.8是否正确配置：
 ```powershell
-# 检查qmake版本
-& "$env:QTDIR\bin\qmake.exe" -v
+# 查看探测结果（CMake 脚本模式，打印 QT_PREFIX / MINGW_BIN）
+cmake -P cmake/FindBuildEnv.cmake
 
-# 检查CMake配置
-cmake -B build -G "MinGW Makefiles"
+# 用预设配置
+cmake --preset windows-mingw
 ```
 
 ## 🆚 旧版配置 vs 新版配置

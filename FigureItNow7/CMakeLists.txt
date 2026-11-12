@@ -1,10 +1,41 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.21)
 
 # Build metadata is derived from git, which is the single source of truth for the version; see
 # cmake/BuildVersion.cmake. It is collected before project() so that PROJECT_VERSION and the version
 # compiled into the binary come from the same place instead of a stale literal.
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildVersion.cmake")
 fin_collect_build_version("${CMAKE_CURRENT_SOURCE_DIR}")
+
+# The Qt6 installation and, on Windows, its companion MinGW toolchain are resolved by a single module,
+# cmake/FindBuildEnv.cmake, which cmake/VscodeConfig.cmake and packaging/build_installer.ps1 also call.
+# It runs before project() because the compiler has to be known when the language is enabled. An explicit
+# CMAKE_PREFIX_PATH / Qt6_DIR / CMAKE_C[XX]_COMPILER is left untouched, so the command line still wins.
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindBuildEnv.cmake")
+fin_detect_build_env(FIN_BUILD_ENV)
+
+if(NOT FIN_BUILD_ENV_QT_PREFIX STREQUAL "")
+    list(PREPEND CMAKE_PREFIX_PATH "${FIN_BUILD_ENV_QT_PREFIX}")
+endif()
+
+# Only for generators driven by a command-line toolchain: with a Visual Studio generator the compilers
+# must be left alone so the MinGW-only guard below can report the real problem.
+if(WIN32 AND NOT FIN_BUILD_ENV_MINGW_BIN STREQUAL ""
+   AND CMAKE_GENERATOR MATCHES "^(MinGW Makefiles|Unix Makefiles|Ninja|Ninja Multi-Config)$")
+    if(NOT FIN_BUILD_ENV_MINGW_EXPLICIT)
+        if(NOT DEFINED CMAKE_C_COMPILER)
+            set(CMAKE_C_COMPILER "${FIN_BUILD_ENV_MINGW_BIN}/gcc.exe")
+        endif()
+        if(NOT DEFINED CMAKE_CXX_COMPILER)
+            set(CMAKE_CXX_COMPILER "${FIN_BUILD_ENV_MINGW_BIN}/g++.exe")
+        endif()
+    endif()
+    if(CMAKE_GENERATOR STREQUAL "MinGW Makefiles" AND "${CMAKE_MAKE_PROGRAM}" STREQUAL "")
+        # mingw32-make is normally not on PATH, and the generator only looks there, so the companion
+        # toolchain has to provide it explicitly.
+        set(CMAKE_MAKE_PROGRAM "${FIN_BUILD_ENV_MINGW_BIN}/mingw32-make.exe"
+            CACHE FILEPATH "MinGW make program")
+    endif()
+endif()
 
 # project() accepts at most four numeric components; the installer version only ever needs three.
 string(REGEX MATCH "^[0-9]+(\\.[0-9]+)?(\\.[0-9]+)?" _fin_project_version "${APP_VERSION_NUMERIC}")
@@ -32,25 +63,15 @@ if(WIN32)
     add_definitions(-D_UNICODE -DUNICODE)
 endif()
 
-# Automatically find Qt6.
-# An explicit CMAKE_PREFIX_PATH / Qt6_DIR always wins, because find_package() itself honours them.
-# Otherwise cmake/FindQtInstall.cmake probes QTDIR and the platform installation roots and picks the
-# newest Qt found there.
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindQtInstall.cmake")
-
+# Automatically find Qt6. An explicit CMAKE_PREFIX_PATH / Qt6_DIR always wins; otherwise the prefix
+# selected by cmake/FindBuildEnv.cmake above (QTDIR, then the newest installation under the platform
+# roots) is already on CMAKE_PREFIX_PATH.
 find_package(Qt6 QUIET COMPONENTS Core Widgets Svg PrintSupport LinguistTools)
 
 if(NOT Qt6_FOUND)
-    fin_find_qt6(FIN_QT6_PREFIX FIN_QT6_VERSION)
-    if(FIN_QT6_PREFIX STREQUAL "")
-        message(FATAL_ERROR
-            "Qt6 was not found. Install Qt6, or point QTDIR / CMAKE_PREFIX_PATH at the Qt6 "
-            "installation directory; see README_CMAKE.md.")
-    endif()
-    message(STATUS "Qt6 not found in the default locations; selected ${FIN_QT6_PREFIX} "
-                   "(version ${FIN_QT6_VERSION})")
-    list(PREPEND CMAKE_PREFIX_PATH "${FIN_QT6_PREFIX}")
-    find_package(Qt6 REQUIRED COMPONENTS Core Widgets Svg PrintSupport LinguistTools)
+    message(FATAL_ERROR
+        "Qt6 was not found. Install Qt6, or point QTDIR / CMAKE_PREFIX_PATH at the Qt6 "
+        "installation directory; see README_CMAKE.md.")
 endif()
 
 # Report the Qt6 installation in use. Windows builds require the MinGW Qt package.
@@ -66,7 +87,21 @@ if(WIN32)
     endif()
     message(STATUS "Qt6 prefix: ${_fin_qt_prefix}")
     message(STATUS "Qt6 ABI: MinGW")
+    if(NOT FIN_BUILD_ENV_MINGW_BIN STREQUAL "")
+        message(STATUS "MinGW toolchain: ${FIN_BUILD_ENV_MINGW_BIN}")
+        get_filename_component(_fin_compiler_dir "${CMAKE_CXX_COMPILER}" DIRECTORY)
+        if(NOT _fin_compiler_dir STREQUAL FIN_BUILD_ENV_MINGW_BIN)
+            message(WARNING
+                "The active compiler (${CMAKE_CXX_COMPILER}) is not the MinGW that ships with Qt6 "
+                "(${FIN_BUILD_ENV_MINGW_BIN}); linking may fail if the two versions differ.")
+        endif()
+    endif()
 endif()
+
+# The VSCode debug/CMake settings need values that only exist on this machine (Qt prefix, MinGW bin,
+# debugger), so they are generated here instead of being maintained by a per-platform helper script.
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/VscodeConfig.cmake")
+fin_write_vscode_config("${CMAKE_CURRENT_SOURCE_DIR}/.vscode")
 
 # Set include directories
 include_directories(${CMAKE_SOURCE_DIR})

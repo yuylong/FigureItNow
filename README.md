@@ -47,7 +47,7 @@ not have much personal time to spend on it, but I will keep pushing it forward a
 
 - Qt 6 (modules: Core, Widgets, Svg, PrintSupport, LinguistTools)
 - A C++17 compiler
-- CMake 3.16 or newer
+- CMake 3.21 or newer
 
 ## Build
 
@@ -58,33 +58,32 @@ lives.
 ### Windows (MinGW)
 
 ```powershell
-cmake -B build -G "MinGW Makefiles" `
-  -DCMAKE_BUILD_TYPE=Debug `
-  -DCMAKE_C_COMPILER=C:/Qt/Tools/mingw1310_64/bin/gcc.exe `
-  -DCMAKE_CXX_COMPILER=C:/Qt/Tools/mingw1310_64/bin/g++.exe `
-  -DCMAKE_MAKE_PROGRAM=C:/Qt/Tools/mingw1310_64/bin/mingw32-make.exe
-cmake --build build -j4
+cmake --preset windows-mingw
+cmake --build --preset windows-mingw --parallel 4
 ```
+
+`CMakePresets.json` only fixes the generator and the build directory. Qt 6 and the MinGW toolchain that
+ships with it are located by `cmake/FindBuildEnv.cmake`, so no compiler path has to be passed by hand.
 
 ### Linux / macOS
 
 ```bash
-cmake -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build -j4
+cmake --preset linux          # or: cmake --preset macos
+cmake --build --preset linux --parallel 4
 ```
 
-`CMakeLists.txt` looks for Qt 6 in the default locations first, then falls back to scanning common
-installation directories on each platform. If your Qt is installed somewhere else, point the build at it
-explicitly:
+The same module is the only implementation of the search: it probes the environment (`QTDIR`, `Qt6_DIR`,
+`MINGW_PATH`) and then the platform installation roots, and picks the newest Qt found there. If your Qt
+is installed somewhere else, point the build at it explicitly:
 
 ```bash
-cmake -B build -DCMAKE_PREFIX_PATH=/path/to/Qt/6.8.0/gcc_64
+cmake --preset linux -DCMAKE_PREFIX_PATH=/path/to/Qt/6.8.0/gcc_64
 ```
 
-There is a helper script that detects the local Qt installation and writes the matching VSCode
-configuration: `setup_qt_env.ps1` on Windows, `setup_qt_env.sh` on Linux/macOS (source it in the shell).
-All of the generated files — `build/` and `.vscode/settings.json`, `.vscode/launch.json` — are build
-artifacts and are not tracked by git.
+On Windows, `.vscode/settings.json` and `.vscode/launch.json` are written by CMake at configure time
+(`cmake/VscodeConfig.cmake`) from the same detection, so F5 builds with the same Qt and MinGW that the
+command line would use. Both files are machine-specific and are not tracked by git, nor is `build/` or
+`build-release/`. Pass `-DFIN_GENERATE_VSCODE_CONFIG=OFF` to skip writing them.
 
 The executable is written to `build/FigureItNow7.exe` on Windows, or `build/FigureItNow7` elsewhere.
 

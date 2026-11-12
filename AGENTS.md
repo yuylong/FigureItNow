@@ -6,7 +6,7 @@ Guidance for OpenCode agents working in this repo. See `FigureItNow7/CLAUDE.md` 
 
 - The application source is **entirely in `FigureItNow7/`** — there is no `src/`. The repo root only holds `README.md`, `LICENSE`, `examples/`, and `FigureItNow7/`.
 - FIN script files use the **`.fsc`** extension (see `examples/*.fsc`). `main.cpp` opens any existing filename passed as an arg, but `.fsc` is the canonical one — CLAUDE.md's `.fin` references are stale.
-- `FigureItNow7/build/` and `FigureItNow7/.vscode/{settings,launch}.json` are gitignored and **generated** — don't hand-edit or commit them. Regenerate via `FigureItNow7/setup_qt_env.ps1` (Windows) / `setup_qt_env.sh` (Linux/macOS), which auto-detect Qt and write the VSCode config.
+- `FigureItNow7/build/`, `FigureItNow7/build-release/` and `FigureItNow7/.vscode/{settings,launch}.json` are gitignored and **generated** — don't hand-edit or commit them. The two VSCode files are written by CMake at configure time (`cmake/VscodeConfig.cmake`); `-DFIN_GENERATE_VSCODE_CONFIG=OFF` skips that.
 
 ## Build
 
@@ -14,15 +14,13 @@ CMake is the supported path (qmake `FigureItNow7.pro` is legacy). Toolchain pinn
 
 ```powershell
 # from FigureItNow7/
-cmake -B build -G "MinGW Makefiles" `
-  -DCMAKE_BUILD_TYPE=Debug `
-  -DCMAKE_C_COMPILER=C:/Qt/Tools/mingw1310_64/bin/gcc.exe `
-  -DCMAKE_CXX_COMPILER=C:/Qt/Tools/mingw1310_64/bin/g++.exe `
-  -DCMAKE_MAKE_PROGRAM=C:/Qt/Tools/mingw1310_64/bin/mingw32-make.exe
-cmake --build build -j4
+cmake --preset windows-mingw
+cmake --build --preset windows-mingw --parallel 4
 ```
 
-Binary: `FigureItNow7/build/FigureItNow7.exe`. Run GUI with no args; headless with `-c` / `--console`. `cmake/FindQtInstall.cmake` probes `QTDIR` and the platform Qt roots when `CMAKE_PREFIX_PATH` is unset; the newest Qt found there wins.
+`CMakePresets.json` fixes the generator and build directory only. Qt and the matching MinGW are detected by `cmake/FindBuildEnv.cmake`, the single implementation shared with `packaging/build_installer.ps1` and the configure-time VSCode config writer; an explicit `CMAKE_PREFIX_PATH` / `QT6_DIR` / compiler still wins.
+
+Binary: `FigureItNow7/build/FigureItNow7.exe`. Run GUI with no args; headless with `-c` / `--console`. `cmake/FindBuildEnv.cmake` probes `QTDIR` and the platform Qt roots when `CMAKE_PREFIX_PATH` is unset; the newest Qt found there wins, and the MinGW shipped next to that Qt is used as the compiler.
 
 ## Verification
 

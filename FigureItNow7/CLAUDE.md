@@ -14,19 +14,14 @@ The project supports both CMake (preferred, used by `.vscode/`) and qmake (legac
 
 ### CMake (default)
 
-The `.vscode/settings.json` already pins Qt 6.8.0 with MinGW 13.1.0 at `C:/Qt/`. From a shell with `QTDIR` set:
+`.vscode/settings.json` and `.vscode/launch.json` are written by CMake at configure time (`cmake/VscodeConfig.cmake`) from the detected environment; `CMakePresets.json` carries the generator and build directory, so the command line needs no compiler paths:
 
 ```bash
-mkdir -p build && cd build
-cmake .. -G "MinGW Makefiles" \
-  -DCMAKE_BUILD_TYPE=Debug \
-  -DCMAKE_C_COMPILER=C:/Qt/Tools/mingw1310_64/bin/gcc.exe \
-  -DCMAKE_CXX_COMPILER=C:/Qt/Tools/mingw1310_64/bin/g++.exe \
-  -DCMAKE_MAKE_PROGRAM=C:/Qt/Tools/mingw1310_64/bin/mingw32-make.exe
-cmake --build . -j4
+cmake --preset windows-mingw          # or: linux / macos
+cmake --build --preset windows-mingw --parallel 4
 ```
 
-`CMakeLists.txt` collects the build metadata first and then locates Qt6: an explicit `CMAKE_PREFIX_PATH`/`Qt6_DIR` wins, otherwise `cmake/FindQtInstall.cmake` probes `QTDIR` and the platform installation roots (`C:/Qt`, `C:/Program Files/Qt`, `/opt/Qt`, `/usr/local/Qt`, Homebrew, …) and picks the newest Qt found there. Build metadata (`GIT_BRANCH` / `GIT_TIME` / `APP_VERSION` / `APP_VERSION_NUMERIC`) is computed by `cmake/BuildVersion.cmake` from `git describe --tags --dirty --always`; that module is the single source of the version and the only place the normalization rule (`v0.5-alpha-173-gf4e7f21-dirty` → `0.5.173`) is implemented — `PROJECT_VERSION`, the compiled-in macros, the About dialog and `packaging/build_installer.ps1` all consume it. Without git the values fall back to `unknown` / `0.0.0` instead of an empty string.
+`CMakeLists.txt` collects the build metadata first and then locates the toolchain: an explicit `CMAKE_PREFIX_PATH`/`Qt6_DIR`/`CMAKE_C[XX]_COMPILER` wins; otherwise `cmake/FindBuildEnv.cmake` probes `QTDIR` / `MINGW_PATH` and the platform installation roots (`C:/Qt`, `C:/Program Files/Qt`, `/opt/Qt`, `/usr/local/Qt`, Homebrew, …), picks the newest Qt found there and, on Windows, that Qt's companion MinGW as the compiler. The same module is also consumed by `cmake/VscodeConfig.cmake` (configure-time VSCode config) and by `packaging/build_installer.ps1` (script mode, `cmake -P`), so all of them agree. Build metadata (`GIT_BRANCH` / `GIT_TIME` / `APP_VERSION` / `APP_VERSION_NUMERIC`) is computed by `cmake/BuildVersion.cmake` from `git describe --tags --dirty --always`; that module is the single source of the version and the only place the normalization rule (`v0.5-alpha-173-gf4e7f21-dirty` → `0.5.173`) is implemented — `PROJECT_VERSION`, the compiled-in macros, the About dialog and `packaging/build_installer.ps1` all consume it. Without git the values fall back to `unknown` / `0.0.0` instead of an empty string.
 
 ### qmake (legacy fallback)
 

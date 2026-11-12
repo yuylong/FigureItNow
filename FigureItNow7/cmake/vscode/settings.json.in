@@ -1,0 +1,14 @@
+{
+    "cmake.useCMakePresets": "always",
+    "cmake.environment": @FIN_VSCODE_CMAKE_ENVIRONMENT@,
+    "terminal.integrated.env.@FIN_VSCODE_PLATFORM_ENV_KEY@": @FIN_VSCODE_TERMINAL_ENVIRONMENT@,
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.default.cStandard": "c11",
+    "files.associations": {
+        "*.h": "cpp",
+        "*.cpp": "cpp",
+        "*.ui": "plaintext",
+        "*.qrc": "xml"
+    }
+}

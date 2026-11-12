@@ -26,6 +26,9 @@
 .PARAMETER QtDir
     Qt installation directory, e.g. C:\Qt\6.8.0\mingw_64. Auto-detected when omitted.
 
+.PARAMETER MingwBin
+    MinGW bin directory, e.g. C:\Qt\Tools\mingw1310_64\bin. Auto-detected when omitted.
+
 .PARAMETER Clean
     Delete build-release and packaging\build-ifw before building.
 
@@ -65,6 +68,8 @@ param(
     [string] $IfwRoot = '',
 
     [string] $QtDir = '',
+
+    [string] $MingwBin = '',
 
     [string] $Translations = 'zh_CN',
 
@@ -183,41 +188,56 @@ function Find-ToolDir {
     return $null
 }
 
-function Resolve-QtDir {
-    if ($QtDir) {
-        if (Test-Path (Join-Path $QtDir 'bin\windeployqt.exe')) { return $QtDir }
-        Fail "bin\windeployqt.exe not found under the given -QtDir: $QtDir"
-    }
-    if ($env:QTDIR -and (Test-Path (Join-Path $env:QTDIR 'bin\windeployqt.exe'))) {
-        return $env:QTDIR
+# Qt and the matching MinGW toolchain are reported by cmake/FindBuildEnv.cmake, the same module the
+# build itself uses, so the installer cannot package a different Qt/toolchain pair than CMake picked.
+function Get-BuildEnvReport {
+    param(
+        [string] $CmakeExe,
+        [string] $QtHint,
+        [string] $MingwHint
+    )
+
+    $envModule = Join-Path $ProjectDir 'cmake\FindBuildEnv.cmake'
+    if (-not (Test-Path $envModule)) {
+        Fail "Build environment module not found: $envModule"
     }
 
-    # Only MinGW Qt packages are considered: the build below forces "MinGW Makefiles" + gcc/g++, so an
-    # MSVC Qt would fail at configure/link time (or produce an ABI-broken package).
-    $patterns = @('C:\Qt\*\mingw*_64', 'C:\Qt\*\mingw_64')
-    foreach ($pattern in $patterns) {
-        $candidates = Get-ChildItem -Path $pattern -Directory -ErrorAction SilentlyContinue |
-                      Sort-Object Name -Descending
-        foreach ($candidate in $candidates) {
-            if (Test-Path (Join-Path $candidate.FullName 'bin\windeployqt.exe')) {
-                return $candidate.FullName
+    $report = Join-Path ([System.IO.Path]::GetTempPath()) ("fin-buildenv-{0}.txt" -f [guid]::NewGuid())
+    try {
+        $cmakeArgs = @('-D', "FIN_ENV_REPORT=$report")
+        if ($QtHint)    { $cmakeArgs += @('-D', "FIN_QT_HINT=$QtHint") }
+        if ($MingwHint) { $cmakeArgs += @('-D', "FIN_MINGW_HINT=$MingwHint") }
+        $cmakeArgs += @('-P', $envModule)
+
+        # CMake writes warnings and errors to stderr; with $ErrorActionPreference = 'Stop' a warning would
+        # otherwise abort the script even though the detection itself succeeded.
+        $previousPreference = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'
+        try {
+            $output = & $CmakeExe @cmakeArgs 2>&1
+            $exitCode = $LASTEXITCODE
+        } finally {
+            $ErrorActionPreference = $previousPreference
+        }
+        Write-CapturedOutput $output
+
+        if ($exitCode -ne 0) {
+            Fail 'Could not detect the build environment (cmake/FindBuildEnv.cmake)'
+        }
+        if (-not (Test-Path $report)) {
+            Fail 'cmake/FindBuildEnv.cmake did not report the build environment'
+        }
+
+        $values = @{}
+        foreach ($line in Get-Content $report) {
+            if ($line -match '^([^=]+)=(.*)$') {
+                $values[$matches[1].Trim()] = $matches[2].Trim()
             }
         }
+        return $values
+    } finally {
+        Remove-Item $report -Force -ErrorAction SilentlyContinue
     }
-    return $null
-}
-
-function Resolve-MingwBin {
-    if ($env:MINGW_PATH -and (Test-Path (Join-Path $env:MINGW_PATH 'g++.exe'))) {
-        return $env:MINGW_PATH
-    }
-    $hit = Get-ChildItem -Path 'C:\Qt\Tools\mingw*_64\bin\g++.exe' -ErrorAction SilentlyContinue |
-           Sort-Object FullName -Descending | Select-Object -First 1
-    if ($hit) { return $hit.DirectoryName }
-
-    $onPath = Get-Command 'g++.exe' -ErrorAction SilentlyContinue
-    if ($onPath) { return (Split-Path -Parent $onPath.Source) }
-    return $null
 }
 
 function Resolve-IfwBin {
@@ -242,6 +262,23 @@ function Write-Utf8NoBom {
     )
     $encoding = New-Object System.Text.UTF8Encoding($false)
     [System.IO.File]::WriteAllText($Path, $Content, $encoding)
+}
+
+# Native stderr lines arrive as ErrorRecord objects, and PowerShell renders the empty ones as the
+# exception type name; print their message text instead.
+function Write-CapturedOutput {
+    param([object[]] $Lines)
+
+    foreach ($line in $Lines) {
+        $text = if ($line -is [System.Management.Automation.ErrorRecord]) {
+            $line.Exception.Message
+        } else {
+            "$line"
+        }
+        if ($text) {
+            Write-Host "    $text"
+        }
+    }
 }
 
 # ---------------------------------------------------------------------------
@@ -277,21 +314,21 @@ if ($Mode -eq 'hybrid') {
 # ---------------------------------------------------------------------------
 Write-Step 'Detecting build environment'
 
-$QtPath = Resolve-QtDir
+$BuildEnv = Get-BuildEnvReport -CmakeExe $CmakeExe -QtHint $QtDir -MingwHint $MingwBin
+
+$QtPath = $BuildEnv['QT_PREFIX']
 if (-not $QtPath) {
     Fail 'Qt not found. Install Qt 6.x (MinGW build), pass -QtDir, or set QTDIR.'
 }
-# Qt's MSVC packages ship lib\Qt6Core.lib; only MinGW packages can be linked with gcc/g++ below.
-if (Test-Path (Join-Path $QtPath 'lib\Qt6Core.lib')) {
-    Fail "Qt at '$QtPath' is an MSVC build; this script only supports MinGW Qt."
-}
-Write-Ok "Qt: $QtPath"
+Write-Ok "Qt: $QtPath (version $($BuildEnv['QT_VERSION']))"
 
 $WindeployQt = Join-Path $QtPath 'bin\windeployqt.exe'
 
-$MingwBin = Resolve-MingwBin
+$MingwBin = $BuildEnv['MINGW_BIN']
 if (-not $MingwBin) {
-    Fail 'MinGW toolchain (g++.exe) not found. Set MINGW_PATH or add MinGW via the Qt installer.'
+    $message = 'MinGW toolchain (g++.exe + mingw32-make.exe) not found. Pass -MingwBin, ' +
+               'set MINGW_PATH, or add MinGW via the Qt installer.'
+    Fail $message
 }
 Write-Ok "MinGW: $MingwBin"
 

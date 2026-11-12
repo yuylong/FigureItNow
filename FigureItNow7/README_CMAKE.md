@@ -7,11 +7,17 @@
 ```
 FigureItNow7/
 ├── CMakeLists.txt              # 主构建文件
+├── CMakePresets.json           # 生成器 / 构建目录 / 构建类型（跟踪）
+├── cmake/
+│   ├── BuildVersion.cmake      # 版本号唯一实现
+│   ├── FindBuildEnv.cmake      # Qt 与配套 MinGW 探测唯一实现
+│   ├── VscodeConfig.cmake      # configure 时生成 .vscode 配置
+│   └── vscode/                 # settings.json / launch.json 模板
 ├── .vscode/                    # VSCode配置
-│   ├── settings.json           # VSCode设置
-│   ├── launch.json             # 调试配置
-│   ├── c_cpp_properties.json   # C/C++智能感知
-│   └── keybindings.json        # 快捷键绑定
+│   ├── settings.json           # 生成物（configure 时写入，不跟踪）
+│   ├── launch.json             # 生成物（configure 时写入，不跟踪）
+│   ├── c_cpp_properties.json   # C/C++智能感知（跟踪）
+│   └── keybindings.json        # 快捷键绑定（跟踪）
 ├── build/                      # 构建目录（自动创建）
 └── [所有源文件在当前目录]       # 源代码保留在根目录
 ```
@@ -43,14 +49,13 @@ FigureItNow7/
    ```
 
 2. **配置项目**
-   - VSCode 会自动检测 CMakeLists.txt
-   - 选择工具链（Windows 上选择 MinGW；MSVC 工具包不受支持）
+   - VSCode 会自动检测 CMakeLists.txt 与 CMakePresets.json
+   - 在 CMake Tools 状态栏选择 `windows-mingw` 预设（Linux/macOS 选 `linux` / `macos`）
    - 等待配置完成
 
 3. **构建项目**
    - 按 `Ctrl+Shift+P`
    - 选择 "CMake: Build" 或使用快捷键 `Ctrl+Shift+B`
-   - 选择构建类型（Debug 或 Release）
 
 4. **运行和调试**
    - 按 `F5` 开始调试
@@ -58,83 +63,66 @@ FigureItNow7/
 
 ### 方法2: 命令行构建
 
-1. **创建构建目录**
-   ```bash
-   mkdir build
-   cd build
-   ```
+```bash
+# Windows (MinGW，唯一受支持的工具链)
+cmake --preset windows-mingw
+cmake --build --preset windows-mingw --parallel 4
 
-2. **配置项目**
-   ```bash
-   # Linux/macOS
-   cmake ..
+# Linux / macOS
+cmake --preset linux            # 或 macos
+cmake --build --preset linux --parallel 4
+```
 
-   # Windows (MinGW，唯一受支持的工具链)
-   cmake .. -G "MinGW Makefiles" \
-     -DCMAKE_C_COMPILER=C:/Qt/Tools/mingw1310_64/bin/gcc.exe \
-     -DCMAKE_CXX_COMPILER=C:/Qt/Tools/mingw1310_64/bin/g++.exe \
-     -DCMAKE_MAKE_PROGRAM=C:/Qt/Tools/mingw1310_64/bin/mingw32-make.exe
-   ```
-
-3. **构建**
-   ```bash
-   # Linux/macOS
-   make -j$(nproc)
-
-   # Windows (MinGW)
-   mingw32-make -j4
-   ```
+预设只固定生成器与构建目录；Qt 与配套 MinGW 由 `cmake/FindBuildEnv.cmake` 自动探测，不需要手工传编译器路径。
 
 ## 环境配置
 
-### 自动检测Qt（推荐）
+### 自动检测 Qt 与配套 MinGW（推荐）
 
-项目现在支持自动检测Qt安装，无需手动设置路径。
+探测逻辑集中在 `cmake/FindBuildEnv.cmake`，它是全项目唯一实现：CMake 构建、configure 时的 `.vscode`
+配置生成（`cmake/VscodeConfig.cmake`）与 `packaging/build_installer.ps1`（通过 `cmake -P`）都调用它，
+因此三者不会选出不同的 Qt / 编译器。
 
-#### Windows用户
-1. **使用自动设置脚本**：
-   ```powershell
-   # 在VSCode终端中运行
-   .\setup_qt_env.ps1
-   ```
+- Qt：优先级为 `CMAKE_PREFIX_PATH` / `Qt6_DIR` > `QTDIR` 环境变量 > 平台默认根目录；同一目录下有多个版本时取版本号最高的一个。
+- MinGW（仅 Windows）：优先级为显式 `CMAKE_C_COMPILER` / `CMAKE_CXX_COMPILER` > `MINGW_PATH` 环境变量 > 与所选 Qt 同级的 `Tools/mingw*_64`（取最高版本）。
+  这样即使 PATH 上存在别的 GCC，构建也会使用与 Qt 配套的那一套，避免链接期未定义符号。
 
-2. **或手动设置环境变量**（如果自动检测失败）：
-   ```powershell
-   $env:QTDIR = "C:\Qt\[version]\[compiler]_64"
-   $env:PATH = "$env:QTDIR\bin;$env:PATH"
-   ```
+#### Windows 用户
+`.vscode/settings.json` 与 `.vscode/launch.json` **由 CMake 在 configure 时自动写入**（`cmake.environment`、
+调试器路径、运行期 Qt DLL 的 PATH 都来自这次探测），不需要额外脚本。检测失败时可手动指定后重新 configure：
+```powershell
+$env:QTDIR = "C:\Qt\6.8.0\mingw_64"
+$env:MINGW_PATH = "C:\Qt\Tools\mingw1310_64\bin"
+cmake --preset windows-mingw
+```
+不需要自动生成时加 `-DFIN_GENERATE_VSCODE_CONFIG=OFF`。
 
-#### Linux/macOS用户
-1. **使用自动设置脚本**：
-   ```bash
-   # 在终端中运行
-   source setup_qt_env.sh
-   ```
+#### Linux/macOS 用户
+```bash
+cmake --preset linux            # 或 macos：使用系统编译器，无需固定工具链
+```
+手动指定 Qt：
+```bash
+# Linux
+export QTDIR="/opt/Qt/6.8.0/gcc_64"
 
-2. **或手动设置环境变量**（如果自动检测失败）：
-   ```bash
-   # Linux
-   export QTDIR="/opt/Qt/[version]/gcc_64"
-   export PATH="$QTDIR/bin:$PATH"
-   export LD_LIBRARY_PATH="$QTDIR/lib:$LD_LIBRARY_PATH"
-   
-   # macOS
-   export QTDIR="/usr/local/Qt-[version]/clang_64"
-   export PATH="$QTDIR/bin:$PATH"
-   export DYLD_LIBRARY_PATH="$QTDIR/lib:$DYLD_LIBRARY_PATH"
-   ```
+# macOS
+export QTDIR="/usr/local/Qt-6.8.0/clang_64"
+```
 
-### 支持的Qt安装路径
+### 支持的 Qt / MinGW 安装路径
 
-探测逻辑集中在 `cmake/FindQtInstall.cmake`，仅当 `find_package(Qt6)` 未找到 Qt 时启用，优先级为：
+探测逻辑集中在 `cmake/FindBuildEnv.cmake`（全项目唯一实现），优先级为：
 
-1. 命令行传入的 `-DCMAKE_PREFIX_PATH` / `-DQt6_DIR`（由 `find_package` 直接处理）
-2. `QTDIR`（Qt 安装目录）或 `Qt6_DIR`（`lib/cmake/Qt6` 目录）环境变量
+1. 命令行传入的 `-DCMAKE_PREFIX_PATH` / `-DQt6_DIR` / `-DCMAKE_C[XX]_COMPILER`（显式指定，不再探测）
+2. `QTDIR`（Qt 安装目录）、`Qt6_DIR`（`lib/cmake/Qt6` 目录）、`MINGW_PATH`（MinGW bin 目录）环境变量
 3. 下表列出的平台默认安装根目录
 
 `QTDIR` 可以指向 Qt 安装前缀（`C:/Qt/6.8.0/mingw_64`）、包含多个版本的父目录（`C:/Qt`，会展开到 `6.8.0/mingw_64`），或通配模式（`C:/Qt/*/mingw*_64`）；反斜杠与正斜杠等价，含空格的路径同样可用。若 `QTDIR` 下找不到 Qt，会给出告警并回退到默认根目录。
 
 默认根目录下若存在多个 Qt 版本，**取版本号最高的一个**，与目录遍历顺序无关。
+
+Windows 上还会在 `C:/Qt/Tools/mingw*_64`、`C:/Program Files/Qt/Tools/mingw*_64`（以及所选 Qt 同级的 `Tools/` 目录）中寻找带 `g++.exe` 与 `mingw32-make.exe` 的工具链，并取版本最高者；找不到时回退到 PATH 上的编译器。
 
 #### Windows
 - `C:/Qt`
@@ -165,13 +153,13 @@ FigureItNow7/
 -- Compiler: GNU 13.1.0 C:/Qt/Tools/mingw1310_64/bin/g++.exe
 -- Qt6 prefix: C:/Qt/6.8.0/mingw_64
 -- Qt6 ABI: MinGW
+-- MinGW toolchain: C:/Qt/Tools/mingw1310_64/bin
 ```
 
 ### VSCode智能感知配置
 
-VSCode配置文件现在使用环境变量，支持自动检测：
-- `c_cpp_properties.json` 使用 `${env:QTDIR}` 和 `${env:Qt6_DIR}`
-- CMake 工具会自动配置包含路径
+- `c_cpp_properties.json` 通过 `configurationProvider: ms-vscode.cmake-tools` 使用 CMake Tools 生成的编译数据库（`build/compile_commands.json`），其中的 `${env:QTDIR}` / `${env:MINGW_PATH}` 只是兜底
+- `.vscode/settings.json` 由 CMake 在 configure 时生成（`cmake/VscodeConfig.cmake`），`cmake.environment` 里的 `QTDIR` / `Qt6_DIR` / `MINGW_PATH` 让 CMake Tools 的探测结果与命令行一致
 
 ### 如果自动检测失败
 
@@ -188,7 +176,7 @@ VSCode配置文件现在使用环境变量，支持自动检测：
 
 2. **或者在CMake配置时指定路径**：
    ```bash
-   cmake .. -DCMAKE_PREFIX_PATH="/path/to/your/qt"
+   cmake --preset linux -DCMAKE_PREFIX_PATH="/path/to/your/qt"
    ```
 
 ## 常见问题解决
@@ -200,20 +188,20 @@ VSCode配置文件现在使用环境变量，支持自动检测：
 
 **解决步骤**:
 
-1. **运行自动配置脚本**:
+1. **先配置一次**（configure 成功后会写入 `.vscode/settings.json` 与 `launch.json`）:
    ```powershell
-   # 在VSCode终端中运行
-   .\setup_qt_env.ps1
+   # 在VSCode终端中运行（从 FigureItNow7 目录）
+   cmake --preset windows-mingw
    ```
 
 2. **手动重新配置CMake**:
    - 按 `Ctrl+Shift+P`
    - 输入 "CMake: Configure" 
-   - 选择可用的工具包（MinGW）
+   - 在状态栏选择 `windows-mingw` 预设（Linux/macOS 选 `linux` / `macos`）
 
-3. **强制指定生成器**:
+3. **用命令行验证**:
    ```bash
-   cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Debug
+   cmake --preset windows-mingw
    ```
 
 4. **检查必要软件**:
