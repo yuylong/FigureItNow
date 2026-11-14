@@ -48,6 +48,10 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+# The generated compilation database is what IntelliSense resolves include paths and defines from (see
+# AGENTS.md), so it must be produced by every configure, not only by the presets that also set it.
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Windows specific settings.
 # Only MinGW-w64 GCC is supported on Windows: the prebuilt Qt packages used here are MinGW builds, so an
 # MSVC/clang-cl build would fail with runtime-library and undefined-symbol linker errors. Reject it at
