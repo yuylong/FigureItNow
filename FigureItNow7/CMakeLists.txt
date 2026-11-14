@@ -70,13 +70,19 @@ endif()
 # Automatically find Qt6. An explicit CMAKE_PREFIX_PATH / Qt6_DIR always wins; otherwise the prefix
 # selected by cmake/FindBuildEnv.cmake above (QTDIR, then the newest installation under the platform
 # roots) is already on CMAKE_PREFIX_PATH.
-find_package(Qt6 QUIET COMPONENTS Core Widgets Svg PrintSupport LinguistTools)
+find_package(Qt6 QUIET COMPONENTS Core Widgets Svg PrintSupport)
 
 if(NOT Qt6_FOUND)
     message(FATAL_ERROR
         "Qt6 was not found. Install Qt6, or point QTDIR / CMAKE_PREFIX_PATH at the Qt6 "
         "installation directory; see README_CMAKE.md.")
 endif()
+
+# The translation tooling is looked up separately because it is an optional part of the build: lrelease
+# ships in its own package on several Linux distributions (qt6-l10n-tools on Debian/Ubuntu), and asking
+# for it in the call above turns a missing lrelease into a "Qt6 was not found" failure that points at
+# the wrong cause. Without the tooling the application is built with the source strings.
+find_package(Qt6 QUIET COMPONENTS LinguistTools)
 
 # Report the Qt6 installation in use. Windows builds require the MinGW Qt package.
 message(STATUS "Qt6 found: ${Qt6_DIR}")
@@ -273,6 +279,8 @@ target_link_libraries(${PROJECT_NAME}
 # Multi-language support: translation source files.
 # "update_translations" extracts translatable strings from sources and .ui files via lupdate;
 # "release_translations" compiles the .ts files into .qm and embeds them under ":/i18n".
+# qt_add_translations() only exists once LinguistTools was found, and it needs both tools, so the whole
+# block is skipped when the optional find_package() above did not provide them.
 set(TS_FILES
     translations/figureitnow7_zh_CN.ts
     translations/figureitnow7_zh_TW.ts
@@ -280,10 +288,17 @@ set(TS_FILES
     translations/figureitnow7_en_US.ts
 )
 
-qt_add_translations(${PROJECT_NAME}
-    TS_FILES ${TS_FILES}
-    RESOURCE_PREFIX "/i18n"
-)
+if(TARGET Qt6::lrelease AND TARGET Qt6::lupdate)
+    qt_add_translations(${PROJECT_NAME}
+        TS_FILES ${TS_FILES}
+        RESOURCE_PREFIX "/i18n"
+    )
+else()
+    message(WARNING
+        "Qt6 LinguistTools (lupdate/lrelease) were not found: ${PROJECT_NAME} will be built without "
+        "translations and the UI stays in the source language. Install the Qt Linguist tools to get "
+        "the translated UI back.")
+endif()
 
 # Windows specific settings
 if(WIN32)
