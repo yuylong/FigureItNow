@@ -179,6 +179,16 @@ set(SOURCES
     finExecOperartorCalc.cpp
 )
 
+# The list above is maintained by hand (FigureItNow7.pro keeps its own copy), so a new file that is
+# never added to it would silently not be built and only fail at link time. Point it out at configure
+# time instead, without globbing the sources into the target.
+file(GLOB _fin_cpp_on_disk RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+foreach(_fin_cpp IN LISTS _fin_cpp_on_disk)
+    if(NOT _fin_cpp IN_LIST SOURCES)
+        message(WARNING "${_fin_cpp} exists but is not listed in SOURCES: it will not be compiled.")
+    endif()
+endforeach()
+
 # Collect header files
 set(HEADERS
     MainWindow.h
