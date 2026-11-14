@@ -314,9 +314,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 # Compiler specific settings
 # Sources are UTF-8 (the language menu uses native language names as literals). GCC treats input as UTF-8
-# by default, so no charset flag is needed.
+# by default, so no charset flag is needed. The tree compiles warning-free with -Wall -Wextra, so the
+# warning set is on by default to keep it that way; -Wno-comment silences the older comment warnings.
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-comment)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wno-comment)
 endif()
 
 # ---------------------------------------------------------------------------
