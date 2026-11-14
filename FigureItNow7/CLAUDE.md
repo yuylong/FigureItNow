@@ -27,10 +27,14 @@ cmake --build --preset windows-mingw --parallel 4
 
 `qmake FigureItNow7.pro` then `mingw32-make`. Used only if you need the older build path; CMake is the supported one and `.qtcreator/FigureItNow7.pro.user` is a stale QtCreator file.
 
+On a fresh build tree, run `mingw32-make compiler_lrelease_make_all` once before `mingw32-make`: qmake marks the
+lrelease compiler as `no_link` when translations are embedded, so the generated `.qm` files are not prerequisites
+of anything and `rcc` fails on the translation `.qrc`. The CMake build has no such step.
+
 ### Run / debug
 
 - The binary is `build/FigureItNow7.exe` (Windows) — launched with `F5` in VSCode (configs in `.vscode/launch.json`).
-- `FigureItNow7 file1.fin file2.fin` opens the listed scripts; with no args a new empty tab is created.
+- `FigureItNow7 file1.fsc file2.fsc` opens the listed scripts; with no args a new empty tab is created.
 - `FigureItNow7 -c` / `--console` runs `finUiCommandLine` non-interactively (see `main.cpp::_consoleMain`).
 
 ## High-level architecture
