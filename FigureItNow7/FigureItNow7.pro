@@ -21,14 +21,22 @@ system ("git status") {
     APP_VERSION = unknown
 }
 
-DEFINES += GIT_BRANCH=\"\\\"$$GIT_BRANCH\\\"\"
-DEFINES += GIT_TIME=\"\\\"$$GIT_TIME\\\"\"
-DEFINES += APP_VERSION=\"\\\"$$APP_VERSION\\\"\"
+# The values are compiled in as string literals. shell_quote() is required because GIT_TIME contains
+# spaces ("2026-11-14 19:19:25 +0800"): without it qmake splits the value into several words and prefixes
+# each of them with -D, which corrupts the compiled-in timestamp.
+DEFINES += "GIT_BRANCH=$$shell_quote(\"$$GIT_BRANCH\")"
+DEFINES += "GIT_TIME=$$shell_quote(\"$$GIT_TIME\")"
+DEFINES += "APP_VERSION=$$shell_quote(\"$$APP_VERSION\")"
 
 TARGET = FigureItNow7
 TEMPLATE = app
 
-# Only MinGW-w64 GCC is supported on Windows (see README_CMAKE.md); MSVC is not.
+CONFIG += c++17
+
+# Only MinGW-w64 GCC is supported on Windows (see README_CMAKE.md); MSVC is not. The CMake build
+# rejects it at configure time, so the qmake path does the same instead of failing at link time.
+win32-msvc*: error("Windows builds require MinGW-w64 GCC; MSVC is not supported. See README_CMAKE.md.")
+
 QMAKE_CXXFLAGS += -Wno-comment
 
 SOURCES += main.cpp\
@@ -155,11 +163,20 @@ RESOURCES += \
 
 # Multi-language support: translation source files.
 # "lrelease" compiles the .ts files into .qm; "embed_translations" puts them into
-# the executable's resources under ":/i18n/".
+# the executable's resources under ":/i18n/". Both are only requested when lrelease exists, matching the
+# CMake build, where the Linguist tools are an optional component (lrelease ships in its own package on
+# several Linux distributions). Without them the build still succeeds and the UI uses the source strings.
 TRANSLATIONS += \
     translations/figureitnow7_zh_CN.ts \
     translations/figureitnow7_zh_TW.ts \
     translations/figureitnow7_ja_JP.ts \
     translations/figureitnow7_en_US.ts
 
-CONFIG += lrelease embed_translations
+win32: LRELEASE_EXE = $$[QT_HOST_BINS]/lrelease.exe
+else: LRELEASE_EXE = $$[QT_HOST_BINS]/lrelease
+
+exists($$LRELEASE_EXE) {
+    CONFIG += lrelease embed_translations
+} else {
+    warning("lrelease not found at $$LRELEASE_EXE; building without translations.")
+}
