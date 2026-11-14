@@ -27,6 +27,10 @@ FigureItNow7/
 ### 1. Qt6 安装
 确保已安装 Qt6，推荐使用最新版本（Qt 6.8+）
 
+Qt Linguist Tools（`lupdate` / `lrelease`）是**可选项**。它们随 Qt 主包安装，但在部分 Linux 发行版上是独立的
+包（如 Debian/Ubuntu 的 `qt6-l10n-tools`）。缺失时 configure 只给出一条 warning 并跳过翻译，程序照常构建，
+界面使用源语言字符串；若需要多语言界面则必须安装。
+
 ### 2. VSCode 扩展
 安装以下扩展：
 - C/C++ Extension Pack (Microsoft)
