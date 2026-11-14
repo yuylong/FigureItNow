@@ -244,7 +244,7 @@ finErrorCode finPlotPolar::plot()
 
     bool goon = true, loopit = true;
     double curstep = basestep;
-    double rlen;
+    double rlen = 0.0;
     QPointF curpt;
 
     for ( double rad = this->_fromRad; loopit; rad += curstep ) {

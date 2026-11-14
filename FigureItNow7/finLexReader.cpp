@@ -284,6 +284,11 @@ finLexReader::getLexTypeOrder(finLexReader::finLexReaderOrder order,
 
     Q_ASSERT(typeorder != nullptr && typenum != nullptr);
 
+    // Leave a defined empty order behind for a value the switch below does not handle, so that the caller
+    // reports a lex error instead of walking an uninitialized array and length.
+    *typeorder = nullptr;
+    *typenum = 0;
+
     switch ( order ) {
       case ORD_NUMBER_FIRST:
         if ( typeorder != nullptr )
