@@ -63,8 +63,6 @@ if(WIN32)
             "${CMAKE_CXX_COMPILER_ID} (${CMAKE_CXX_COMPILER}). Configure with "
             "-G \"MinGW Makefiles\" and the gcc/g++ shipped with the Qt MinGW toolchain; see README_CMAKE.md.")
     endif()
-    # Fix Unicode issues
-    add_definitions(-D_UNICODE -DUNICODE)
 endif()
 
 # Automatically find Qt6. An explicit CMAKE_PREFIX_PATH / Qt6_DIR always wins; otherwise the prefix
@@ -113,17 +111,7 @@ endif()
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/VscodeConfig.cmake")
 fin_write_vscode_config("${CMAKE_CURRENT_SOURCE_DIR}/.vscode")
 
-# Set include directories
-include_directories(${CMAKE_SOURCE_DIR})
-
-# Add preprocessor definitions - ensure strings in C++.
-# GIT_TIME contains spaces ("2026-11-07 23:30:31 +0800"), so the whole definition must be quoted;
-# unquoted, CMake splits it into several compiler arguments and the compile step fails.
-add_definitions("-DGIT_BRANCH=\"${GIT_BRANCH}\"")
-add_definitions("-DGIT_TIME=\"${GIT_TIME}\"")
-add_definitions("-DAPP_VERSION=\"${APP_VERSION}\"")
-
-# Output Git information for debugging
+# Report the Git information used for the definitions below, for debugging.
 message(STATUS "Git Branch: ${GIT_BRANCH}")
 message(STATUS "Git Time: ${GIT_TIME}")
 message(STATUS "App Version: ${APP_VERSION}")
@@ -267,6 +255,25 @@ add_executable(${PROJECT_NAME}
     ${UI_FILES}
     ${RESOURCES}
 )
+
+# Preprocessor definitions. They are target scoped because only this executable consumes them.
+# GIT_BRANCH / GIT_TIME / APP_VERSION are compiled in as string literals: GIT_TIME contains spaces
+# ("2026-11-14 08:36:26 +0800"), so the quotes are part of the definition and CMake keeps the value a
+# single argument.
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    "GIT_BRANCH=\"${GIT_BRANCH}\""
+    "GIT_TIME=\"${GIT_TIME}\""
+    "APP_VERSION=\"${APP_VERSION}\""
+)
+
+# The generated ui_*.h files include the project headers by name, so the source directory has to be an
+# include directory of this target even though every source file sits next to CMakeLists.txt.
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Fix Unicode issues
+if(WIN32)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE _UNICODE UNICODE)
+endif()
 
 # Link Qt libraries
 target_link_libraries(${PROJECT_NAME} 
