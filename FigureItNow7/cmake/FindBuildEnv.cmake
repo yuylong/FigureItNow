@@ -37,7 +37,8 @@
 #
 # The search roots are patterns (C:/Qt/*/mingw*_64) or plain directories (C:/Qt, whose children are
 # 6.8.0/mingw_64), which keeps the list short and independent of the Qt version and of the compiler
-# sub-directory name.
+# sub-directory name. On Windows, Qt packages built for LLVM-MinGW (clang + libc++) are rejected during
+# the search, because this project is built with GCC and only the GCC (libstdc++) packages are usable.
 # ---------------------------------------------------------------------------
 
 # Expands one search root into Qt installation prefixes. A prefix is a directory with either
@@ -52,6 +53,13 @@ function(_fin_qt6_prefixes_from root out_var)
         file(GLOB _candidates LIST_DIRECTORIES true "${_root}" "${_root}/*" "${_root}/*/*")
         foreach(_candidate IN LISTS _candidates)
             if(WIN32 AND NOT EXISTS "${_candidate}/lib/libQt6Core.a")
+                continue()
+            endif()
+            # The Qt installer also ships an LLVM-MinGW package (clang, libc++, UCRT) next to the GCC
+            # one, and its version ties with the GCC package, so it could win the newest-wins vote. Only
+            # GCC is supported here, and a Qt built against libc++ cannot be linked with a libstdc++
+            # compiler, so those packages are never candidates.
+            if(WIN32 AND EXISTS "${_candidate}/bin/libc++.dll")
                 continue()
             endif()
             if(EXISTS "${_candidate}/lib/cmake/Qt6/Qt6Config.cmake")
