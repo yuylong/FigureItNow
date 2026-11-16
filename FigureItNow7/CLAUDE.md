@@ -27,9 +27,10 @@ cmake --build --preset windows-mingw --parallel 4
 
 `qmake FigureItNow7.pro` then `mingw32-make`. Used only if you need the older build path; CMake is the supported one and `.qtcreator/FigureItNow7.pro.user` is a stale QtCreator file.
 
-On a fresh build tree, run `mingw32-make compiler_lrelease_make_all` once before `mingw32-make`: qmake marks the
-lrelease compiler as `no_link` when translations are embedded, so the generated `.qm` files are not prerequisites
-of anything and `rcc` fails on the translation `.qrc`. The CMake build has no such step.
+A plain `mingw32-make` is enough on a fresh tree: `FigureItNow7.pro` appends `target_predeps` to the lrelease
+compiler (loading `lrelease.prf` explicitly first), because qmake marks that compiler `no_link` when translations
+are embedded and otherwise leaves the generated `.qm` files without a build-order dependency, which makes `rcc`
+fail on the translation `.qrc`. The CMake build has no such step.
 
 ### Run / debug
 

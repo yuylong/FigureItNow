@@ -175,8 +175,12 @@ TRANSLATIONS += \
 win32: LRELEASE_EXE = $$[QT_HOST_BINS]/lrelease.exe
 else: LRELEASE_EXE = $$[QT_HOST_BINS]/lrelease
 
-exists($$LRELEASE_EXE) {
-    CONFIG += lrelease embed_translations
-} else {
-    warning("lrelease not found at $$LRELEASE_EXE; building without translations.")
-}
+# lrelease.prf marks its compiler "no_link" for the embedded case, so the generated .qm files are not
+# prerequisites of anything and rcc fails on a fresh build tree. The feature is loaded explicitly before
+# target_predeps is added, because it is otherwise loaded only after this file has been parsed and its
+# "no_link" assignment would overwrite that value. Every assignment stays on the top level, so it is not
+# confined to a scope that has already been left when qmake generates the makefiles.
+exists($$LRELEASE_EXE): CONFIG += lrelease embed_translations
+exists($$LRELEASE_EXE): load(lrelease)
+exists($$LRELEASE_EXE): lrelease.CONFIG += target_predeps
+!exists($$LRELEASE_EXE): warning("lrelease not found at $$LRELEASE_EXE; building without translations.")
