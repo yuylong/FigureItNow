@@ -180,6 +180,14 @@ else: LRELEASE_EXE = $$[QT_HOST_BINS]/lrelease
 # target_predeps is added, because it is otherwise loaded only after this file has been parsed and its
 # "no_link" assignment would overwrite that value. Every assignment stays on the top level, so it is not
 # confined to a scope that has already been left when qmake generates the makefiles.
+#
+# Loading the feature this early also sets LRELEASE_DIR before qmake renames it per configuration, so the
+# release and debug sub-makes would write the same .qm files and race when make runs both in parallel.
+# Pinning the directory per configuration restores that separation; it has to happen before the feature is
+# loaded, because its output pattern and QM_FILES are expanded from LRELEASE_DIR at that point. The
+# single-configuration mode has no "build_pass", and one directory is enough there.
+exists($$LRELEASE_EXE):build_pass:CONFIG(debug, debug|release): LRELEASE_DIR = .qm/debug
+exists($$LRELEASE_EXE):build_pass:CONFIG(release, debug|release): LRELEASE_DIR = .qm/release
 exists($$LRELEASE_EXE): CONFIG += lrelease embed_translations
 exists($$LRELEASE_EXE): load(lrelease)
 exists($$LRELEASE_EXE): lrelease.CONFIG += target_predeps

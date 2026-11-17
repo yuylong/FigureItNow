@@ -30,7 +30,10 @@ cmake --build --preset windows-mingw --parallel 4
 A plain `mingw32-make` is enough on a fresh tree: `FigureItNow7.pro` appends `target_predeps` to the lrelease
 compiler (loading `lrelease.prf` explicitly first), because qmake marks that compiler `no_link` when translations
 are embedded and otherwise leaves the generated `.qm` files without a build-order dependency, which makes `rcc`
-fail on the translation `.qrc`. The CMake build has no such step.
+fail on the translation `.qrc`. The `.qm` files land in `.qm/release` and `.qm/debug`; the `.pro` pins that
+per-configuration directory, because loading the feature before qmake renames it per configuration would make the
+release and debug sub-makes share one directory and race when `make` builds both in parallel. The CMake build has
+no such step.
 
 ### Run / debug
 
