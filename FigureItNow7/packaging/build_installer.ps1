@@ -418,8 +418,10 @@ if (-not (Test-Path $BuiltExe)) {
 # ---------------------------------------------------------------------------
 Write-Step 'Installing into staging directory'
 
-if (Test-Path $DataDir) {
-    Remove-Item $DataDir -Recurse -Force
+foreach ($dir in @($DataDir, $MetaDir)) {
+    if (Test-Path $dir) {
+        Remove-Item $dir -Recurse -Force
+    }
 }
 New-Item -ItemType Directory -Path $DataDir    -Force | Out-Null
 New-Item -ItemType Directory -Path $MetaDir    -Force | Out-Null
@@ -566,7 +568,11 @@ Render-Template -SourcePath (Join-Path $ScriptDir "packages\$PackageId\meta\pack
                 -TargetPath (Join-Path $MetaDir 'package.xml') `
                 -Tokens $tokens
 
-Copy-Item (Join-Path $ScriptDir "packages\$PackageId\meta\license.txt") $MetaDir -Force
+# Everything else in the meta directory is shipped verbatim: license.txt and installscript.qs, which is how
+# the component gets its Start menu and desktop shortcuts.
+$MetaSource = Join-Path $ScriptDir "packages\$PackageId\meta"
+Get-ChildItem -Path $MetaSource -File | Where-Object { $_.Name -ne 'package.xml' } |
+    Copy-Item -Destination $MetaDir -Force
 
 if ($Mode -eq 'hybrid') {
     # In hybrid mode let users add extra repository URLs in the maintenance tool.

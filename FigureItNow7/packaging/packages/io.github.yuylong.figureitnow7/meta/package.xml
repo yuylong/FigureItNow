@@ -30,6 +30,9 @@
         <License name="GNU General Public License v3.0" file="license.txt" />
     </Licenses>
 
+    <!-- Creates the Start menu and desktop shortcuts; the file must be listed here to be packaged. -->
+    <Script>installscript.qs</Script>
+
     <Default>true</Default>
     <ForcedInstallation>true</ForcedInstallation>
     <RequiresAdminRights>true</RequiresAdminRights>
