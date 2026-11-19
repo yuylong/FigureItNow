@@ -87,6 +87,49 @@ command line would use. Both files are machine-specific and are not tracked by g
 
 The executable is written to `build/FigureItNow7.exe` on Windows, or `build/FigureItNow7` elsewhere.
 
+### qmake (legacy)
+
+`FigureItNow7.pro` keeps the old qmake path working, for tools that still drive it. It needs that Qt's
+own `qmake` and the matching `mingw32-make` on `PATH` — mixing them with another Qt or another MinGW
+does not work:
+
+```powershell
+$env:PATH = "C:\Qt\6.12.0\mingw_64\bin;C:\Qt\Tools\mingw1510_64\bin;$env:PATH"
+mkdir build-qmake
+cd build-qmake
+qmake ..\FigureItNow7.pro CONFIG+=release
+mingw32-make -j4
+```
+
+The executable lands in `build-qmake\release\FigureItNow7.exe`. Building out of source is recommended:
+without a build directory the generated `Makefile`, object files and `release\`/`debug\` folders are
+written next to the sources. A plain `mingw32-make` is enough — the `.pro` file wires the translation
+step so `lrelease` runs before `rcc` and the `.qm` files land in `build-qmake\.qm\release\`. The version
+metadata compiled in comes from the same `git describe` rule as the CMake build, and MSVC is rejected at
+qmake time.
+
+## Windows installer
+
+[`packaging/build_installer.ps1`](FigureItNow7/packaging/build_installer.ps1) turns the Release build into
+a self-contained setup executable with Qt Installer Framework:
+
+```powershell
+cd FigureItNow7\packaging
+.\build_installer.ps1 -Clean
+# -> FigureItNow7\dist\FigureItNow7-<version>-win64-setup.exe
+```
+
+The script builds Release into `build-release/`, stages it with `cmake --install`, collects the Qt
+runtime with `windeployqt`, and calls `binarycreator`. Qt, its matching MinGW and the installer
+framework are detected automatically; pass `-QtDir`, `-MingwBin` and `-IfwRoot` (or set `QTDIR`,
+`MINGW_PATH` and `QTIFWDIR`) when they live elsewhere. `-SkipBuild` repackages an existing Release build
+and `-SkipPackage` stops after the staging tree. The package installs under `Program Files` and creates
+Start menu and desktop shortcuts, so installing and uninstalling both need administrator rights.
+
+Beyond the build requirements above, the installer needs Qt Installer Framework (Qt Online Installer →
+Qt → Build tools). See [FigureItNow7/docs/README_INSTALLER.md](FigureItNow7/docs/README_INSTALLER.md)
+for the full parameter list, output layout and troubleshooting.
+
 ## Usage
 
 ### GUI
@@ -129,8 +172,9 @@ on stderr, and the failing script is skipped.
 
 - `FigureItNow7/` — the application source: CMake project, Qt UI files and translations.
 - `examples/` — sample `.fsc` scripts; `butterfly.fsc` is a good first one to render.
-- `FigureItNow7/README_CMAKE.md`, `FigureItNow7/README_VSCODE_SETUP.md` — further notes on the CMake
+- `FigureItNow7/docs/README_CMAKE.md`, `FigureItNow7/docs/README_VSCODE_SETUP.md` — further notes on the CMake
   and VSCode setup.
+- `FigureItNow7/docs/README_INSTALLER.md` — how to build the Windows installer from source with one command.
 - `FigureItNow7/CLAUDE.md` — notes on the internal architecture and the script compiler pipeline.
 
 ## License

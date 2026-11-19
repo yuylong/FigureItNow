@@ -16,3 +16,6 @@ coverage/
 build-release/
 packaging/build-ifw/
 packaging/repository/
+
+# Shadow build directory used by the qmake instructions in README.md
+build-qmake/

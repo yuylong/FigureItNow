@@ -13,13 +13,13 @@
 ### 2. CMake配置
 - ✅ **CMakeLists.txt** - 优先使用显式 `CMAKE_PREFIX_PATH`，否则自动探测 Qt 与配套 MinGW
 - ✅ **CMakePresets.json** - 固定生成器与构建目录
-- ✅ **.vscode/c_cpp_properties.json** - 智能感知Qt6.8头文件路径
+- ✅ **.vscode/c_cpp_properties.json** - 智能感知Qt6.12头文件路径
 
 ### 3. 文档更新
-- ✅ **README_CMAKE.md** - 更新所有Qt6.8路径示例
+- ✅ **README_CMAKE.md** - 更新所有Qt6.12路径示例
 - ✅ **README_VSCODE_SETUP.md** - 更新配置指南
 
-## 🔧 Qt6.8 新特性支持
+## 🔧 Qt6.12 安装路径支持
 
 ### Windows
 ```
@@ -43,7 +43,7 @@ C:\Program Files\Qt\*\mingw*_64\ # 程序文件安装路径
 
 ## 📋 兼容性说明
 
-- ✅ **向下兼容**: 如果找不到Qt6.8，会自动查找其他Qt6版本
+- ✅ **向下兼容**: 如果找不到Qt6.12，会自动查找其他Qt6版本
 - ✅ **Windows 仅支持 MinGW**: MSVC / clang-cl 构建不受支持（CMakeLists.txt 在 configure 阶段直接拒绝）
 - ✅ **跨平台**: Windows、Linux、macOS全平台支持
 
@@ -63,15 +63,15 @@ cmake --preset linux        # 或 macos
 ### 手动配置（如果自动检测失败）
 ```powershell
 # Windows（根据实际安装路径调整）
-$env:QTDIR = "C:\Qt\6.8.0\mingw_64"  # 替换为你的版本
+$env:QTDIR = "C:\Qt\6.12.0\mingw_64"  # 替换为你的版本
 $env:PATH = "$env:QTDIR\bin;$env:PATH"
 
 # Linux（根据实际安装路径调整）
-export QTDIR="/opt/Qt/6.8.0/gcc_64"       # 替换为你的版本
+export QTDIR="/opt/Qt/6.12.0/gcc_64"       # 替换为你的版本
 export PATH="$QTDIR/bin:$PATH"
 
 # macOS（根据实际安装路径调整）
-export QTDIR="/usr/local/Qt-6.8.0/clang_64" # 替换为你的版本
+export QTDIR="/usr/local/Qt-6.12.0/clang_64" # 替换为你的版本
 export PATH="$QTDIR/bin:$PATH"
 ```
 
@@ -88,7 +88,7 @@ export PATH="$QTDIR/bin:$PATH"
 
 ## 🔍 验证安装
 
-运行以下命令验证Qt6.8是否正确配置：
+运行以下命令验证Qt6.12是否正确配置：
 ```powershell
 # 查看探测结果（CMake 脚本模式，打印 QT_PREFIX / MINGW_BIN）
 cmake -P cmake/FindBuildEnv.cmake
@@ -101,7 +101,7 @@ cmake --preset windows-mingw
 
 | 特性 | 旧版（硬编码） | 新版（自动检测） |
 |------|---------------|------------------|
-| 版本支持 | 固定Qt6.8 | 任意Qt6版本 |
+| 版本支持 | 固定某个Qt版本 | 任意Qt6版本 |
 | 路径模式 | 硬编码路径 | 通配符自动匹配 |
 | 维护成本 | 更新需修改配置 | 无需手动更新 |
 | 兼容性 | 仅支持特定版本 | 支持所有Qt6版本 |
@@ -110,12 +110,12 @@ cmake --preset windows-mingw
 ## 📞 技术支持
 
 如果遇到问题：
-1. 检查Qt6.8安装路径
+1. 检查Qt6.12安装路径
 2. 验证环境变量设置
 3. 查看CMake输出日志
 4. 重启VSCode尝试
 
 ---
-*更新日期: 2024年*
+*更新日期: 2026年*
 *支持Qt版本: 6.x（自动检测任意版本）*
 *特性: 完全自动路径检测，无需硬编码*

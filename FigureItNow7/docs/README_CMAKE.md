@@ -95,8 +95,8 @@ cmake --build --preset linux --parallel 4
 `.vscode/settings.json` 与 `.vscode/launch.json` **由 CMake 在 configure 时自动写入**（`cmake.environment`、
 调试器路径、运行期 Qt DLL 的 PATH 都来自这次探测），不需要额外脚本。检测失败时可手动指定后重新 configure：
 ```powershell
-$env:QTDIR = "C:\Qt\6.8.0\mingw_64"
-$env:MINGW_PATH = "C:\Qt\Tools\mingw1310_64\bin"
+$env:QTDIR = "C:\Qt\6.12.0\mingw_64"
+$env:MINGW_PATH = "C:\Qt\Tools\mingw1510_64\bin"
 cmake --preset windows-mingw
 ```
 不需要自动生成时加 `-DFIN_GENERATE_VSCODE_CONFIG=OFF`。
@@ -108,10 +108,10 @@ cmake --preset linux            # 或 macos：使用系统编译器，无需固�
 手动指定 Qt：
 ```bash
 # Linux
-export QTDIR="/opt/Qt/6.8.0/gcc_64"
+export QTDIR="/opt/Qt/6.12.0/gcc_64"
 
 # macOS
-export QTDIR="/usr/local/Qt-6.8.0/clang_64"
+export QTDIR="/usr/local/Qt-6.12.0/clang_64"
 ```
 
 ### 支持的 Qt / MinGW 安装路径
@@ -122,7 +122,7 @@ export QTDIR="/usr/local/Qt-6.8.0/clang_64"
 2. `QTDIR`（Qt 安装目录）、`Qt6_DIR`（`lib/cmake/Qt6` 目录）、`MINGW_PATH`（MinGW bin 目录）环境变量
 3. 下表列出的平台默认安装根目录
 
-`QTDIR` 可以指向 Qt 安装前缀（`C:/Qt/6.8.0/mingw_64`）、包含多个版本的父目录（`C:/Qt`，会展开到 `6.8.0/mingw_64`），或通配模式（`C:/Qt/*/mingw*_64`）；反斜杠与正斜杠等价，含空格的路径同样可用。若 `QTDIR` 下找不到 Qt，会给出告警并回退到默认根目录。
+`QTDIR` 可以指向 Qt 安装前缀（`C:/Qt/6.12.0/mingw_64`）、包含多个版本的父目录（`C:/Qt`，会展开到 `6.12.0/mingw_64`），或通配模式（`C:/Qt/*/mingw*_64`）；反斜杠与正斜杠等价，含空格的路径同样可用。若 `QTDIR` 下找不到 Qt，会给出告警并回退到默认根目录。
 
 默认根目录下若存在多个 Qt 版本，**取版本号最高的一个**，与目录遍历顺序无关。
 
@@ -152,12 +152,12 @@ Windows 上还会在 `C:/Qt/Tools/mingw*_64`、`C:/Program Files/Qt/Tools/mingw*
 配置成功后会打印实际使用的 Qt 位置、版本、编译器与 ABI：
 
 ```
--- Qt6 found: C:/Qt/6.8.0/mingw_64/lib/cmake/Qt6
--- Qt6 version: 6.8.0
--- Compiler: GNU 13.1.0 C:/Qt/Tools/mingw1310_64/bin/g++.exe
--- Qt6 prefix: C:/Qt/6.8.0/mingw_64
+-- Qt6 found: C:/Qt/6.12.0/mingw_64/lib/cmake/Qt6
+-- Qt6 version: 6.12.0
+-- Compiler: GNU 15.1.0 C:/Qt/Tools/mingw1510_64/bin/g++.exe
+-- Qt6 prefix: C:/Qt/6.12.0/mingw_64
 -- Qt6 ABI: MinGW
--- MinGW toolchain: C:/Qt/Tools/mingw1310_64/bin
+-- MinGW toolchain: C:/Qt/Tools/mingw1510_64/bin
 ```
 
 ### VSCode智能感知配置
