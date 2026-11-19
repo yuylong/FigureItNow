@@ -19,11 +19,12 @@ FigureItNow7/
 ├── packaging/
 │   ├── build_installer.ps1          # 一键脚本
 │   ├── config/config.xml            # 安装器全局配置模板
+│   ├── config/style.qss             # 安装器向导样式表（<StyleSheet> 引用）
 │   ├── packages/<package-id>/
 │   │   ├── data/                    # 暂存目录（生成物）
 │   │   └── meta/
 │   │       ├── package.xml          # 组件元数据模板
-│   │       ├── license.txt          # GPL-3 声明
+│   │       ├── license.html         # GPL-3 声明（富文本，许可页自动按 HTML 渲染）
 │   │       └── installscript.qs     # 开始菜单 / 桌面快捷方式
 │   ├── build-ifw/                   # 渲染后的暂存树（生成物，忽略）
 │   └── repository/                  # hybrid 模式的更新仓库（生成物，忽略）
@@ -209,6 +210,10 @@ Done.
   但组件脚本还必须在 `package.xml` 里用 `<Script>` 声明，否则 `binarycreator` 会静默忽略。
 - **安装包需要管理员权限**：`package.xml` 中 `RequiresAdminRights=true`、`TargetDir` 为
   `@ApplicationsDir@/FigureItNow7`，属预期设计。
+- **向导窗口外观**：初始大小由 `config.xml` 的 `WizardDefaultWidth/Height`（800×600）控制；
+  页面四周留白来自 `WizardStyle=Classic`（IFW 默认的 ModernStyle 页边距为零，文字会贴住窗口边沿）；
+  侧边页面列表的背景与分隔线由 `config/style.qss` 提供。许可页内容按 HTML 富文本渲染
+  （`license.html` 必须以标签开头，否则退化为纯文本显示）。
 
 ## 尚未实现
 

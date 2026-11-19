@@ -26,8 +26,14 @@
     <ReleaseDate>@RELEASE_DATE@</ReleaseDate>
     <Name>io.github.yuylong.figureitnow7</Name>
 
+    <!--
+      The license page renders the file as rich text: IFW hands the file content to
+      QTextBrowser::setText(), which auto-detects HTML (the file must therefore start
+      with a tag, e.g. the DOCTYPE above). Links inside the text open in the default
+      browser. Localized variants follow the <base>_<locale>.<suffix> naming.
+    -->
     <Licenses>
-        <License name="GNU General Public License v3.0" file="license.txt" />
+        <License name="GNU General Public License v3.0" file="license.html" />
     </Licenses>
 
     <!-- Creates the Start menu and desktop shortcuts; the file must be listed here to be packaged. -->

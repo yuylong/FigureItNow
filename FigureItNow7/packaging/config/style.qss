@@ -1,0 +1,33 @@
+/*
+ * ---------------------------------------------------------------------------
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ * Author: Yulong Yu
+ * Copyright(c) 2026 Yulong Yu. All rights reserved.
+ * ---------------------------------------------------------------------------
+ *
+ * Installer wizard stylesheet, loaded through <StyleSheet> in config.xml. It only
+ * refines what the wizard style itself does not handle: the sidebar that lists the
+ * installer pages gets a background and a separating border, and the license text
+ * gets padding inside its browser. The margins around the page content come from
+ * <WizardStyle>Classic</WizardStyle> in config.xml, not from here - QSS padding
+ * cannot move the layout of plain widgets.
+ */
+
+#SideWidget {
+    background-color: #F4F4F4;
+    border-right: 1px solid #C9C9C9;
+}
+
+#PageListWidget {
+    background: transparent;
+    padding: 6px 2px 6px 0;
+}
+
+#PageListWidget::item {
+    padding: 4px 8px;
+}
+
+#LicenseTextBrowser {
+    padding: 8px;
+}

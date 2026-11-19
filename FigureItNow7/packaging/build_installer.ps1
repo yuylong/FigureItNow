@@ -564,12 +564,16 @@ Render-Template -SourcePath (Join-Path $ScriptDir 'config\config.xml') `
                 -TargetPath (Join-Path $RenderDir 'config.xml') `
                 -Tokens $tokens
 
+# <StyleSheet> in config.xml is resolved relative to the rendered config.xml, so the
+# stylesheet must be copied next to it into the render directory.
+Copy-Item (Join-Path $ScriptDir 'config\style.qss') $RenderDir -Force
+
 Render-Template -SourcePath (Join-Path $ScriptDir "packages\$PackageId\meta\package.xml") `
                 -TargetPath (Join-Path $MetaDir 'package.xml') `
                 -Tokens $tokens
 
-# Everything else in the meta directory is shipped verbatim: license.txt and installscript.qs, which is how
-# the component gets its Start menu and desktop shortcuts.
+# Everything else in the meta directory is shipped verbatim: license.html and installscript.qs, which is how
+# the component gets its rich-text license page and its Start menu / desktop shortcuts.
 $MetaSource = Join-Path $ScriptDir "packages\$PackageId\meta"
 Get-ChildItem -Path $MetaSource -File | Where-Object { $_.Name -ne 'package.xml' } |
     Copy-Item -Destination $MetaDir -Force

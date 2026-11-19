@@ -21,6 +21,18 @@
     <MaintenanceToolName>FigureItNow7Maintenance</MaintenanceToolName>
     <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
 
+    <!--
+      Wizard appearance. ClassicStyle is deliberately chosen over the default ModernStyle:
+      ModernStyle lays the page content out with zero outer margins, so the text touches
+      the window frame; ClassicStyle keeps the standard layout margins around the pages.
+      WizardDefaultWidth/Height set the initial window size (a banner image would override
+      the width and a watermark image the height; neither is used here).
+    -->
+    <WizardStyle>Classic</WizardStyle>
+    <StyleSheet>style.qss</StyleSheet>
+    <WizardDefaultWidth>800</WizardDefaultWidth>
+    <WizardDefaultHeight>500</WizardDefaultHeight>
+
     <RunProgram>@TargetDir@/FigureItNow7.exe</RunProgram>
     <RunProgramDescription>Start FigureItNow7</RunProgramDescription>
 
