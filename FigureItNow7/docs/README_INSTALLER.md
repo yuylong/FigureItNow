@@ -25,7 +25,7 @@ FigureItNow7/
 │   │   └── meta/
 │   │       ├── package.xml          # 组件元数据模板
 │   │       ├── license.html         # GPL-3 声明（富文本，许可页自动按 HTML 渲染）
-│   │       └── installscript.qs     # 开始菜单 / 桌面快捷方式
+│   │       └── installscript.qs     # 开始菜单 / 桌面快捷方式 / .fsc 文件关联
 │   ├── build-ifw/                   # 渲染后的暂存树（生成物，忽略）
 │   └── repository/                  # hybrid 模式的更新仓库（生成物，忽略）
 ├── cmake/
@@ -122,9 +122,15 @@ Start-Process .\dist\FigureItNow7-0.5.191-win64-setup.exe -Verb RunAs `
 & 'C:\Program Files\FigureItNow7\FigureItNow7Maintenance.exe' --confirm-command --accept-licenses uninstall
 ```
 
-安装后会创建开始菜单和桌面快捷方式，由
+安装后会创建开始菜单（全体用户，由脚本设置 `AllUsers=true`，与 Program Files 全局安装一致）和桌面快捷方式，
+并注册 `.fsc` 文件关联（默认打开方式 + 图标 + 「打开方式」列表），均由
 [installscript.qs](../packaging/packages/io.github.yuylong.figureitnow7/meta/installscript.qs) 负责；
-卸载时一并清理。
+卸载时一并清理（文件关联按 MSDN 惯例只移除自家 ProgID，不覆盖期间被其他程序接管时的 `.fsc` 默认值）。
+
+`.fsc` 关联写入 `HKLM\Software\Classes`（安装需要管理员权限，属全局关联），ProgID 使用 IFW 默认的
+`fsc_auto_file`（不传自定义 `ProgId=`：该参数在执行时会被从记录的参数里剥掉，卸载时 undo 找不到它就会
+清错键、留下注册表残留），升级安装不会破坏已有关联。文件图标引用 exe 的第一个内嵌图标——仓库目前还没有
+`.rc` / `.ico`（见下文「尚未实现」），在此之前显示的是 Windows 通用可执行文件图标。
 
 ## 常用参数
 
@@ -217,8 +223,7 @@ Done.
 
 ## 尚未实现
 
-- `.fsc` 文件关联（默认打开方式 / 图标）
-- EXE 元信息与安装包图标（仓库暂无 `.rc` 与 `.ico`，`icons/` 下只有 png）
+- EXE 元信息与安装包图标（仓库暂无 `.rc` 与 `.ico`，`icons/` 下只有 png；`.fsc` 文件图标暂用 exe 图标，落地后自动生效）
 - 数字签名（未签名会触发 SmartScreen 提示）
 - 32 位安装包（当前仅 MinGW 64 位）
 - CI 自动出包（GitHub Actions）
