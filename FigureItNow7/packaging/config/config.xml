@@ -30,7 +30,7 @@
     -->
     <WizardStyle>Classic</WizardStyle>
     <StyleSheet>style.qss</StyleSheet>
-    <WizardDefaultWidth>800</WizardDefaultWidth>
+    <WizardDefaultWidth>820</WizardDefaultWidth>
     <WizardDefaultHeight>500</WizardDefaultHeight>
 
     <RunProgram>@TargetDir@/FigureItNow7.exe</RunProgram>

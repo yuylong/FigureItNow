@@ -22,6 +22,13 @@
  * installing user. The variable is persisted into the maintenance tool
  * configuration, hence the uninstaller removes the keys from the same hive, and
  * the Start menu shortcuts move to the all-users location to match.
+ *
+ * The application component is mandatory but does NOT use ForcedInstallation:
+ * IFW renders forced components without any check box at all. Disabling the
+ * component instead keeps the check box visible - grayed out, checked, and
+ * immune to clicks as well as to the "reset to default" / "uncheck all" actions
+ * of the component selection page, because the model skips disabled components
+ * when it recalculates check states.
  */
 
 function Component()
@@ -30,6 +37,9 @@ function Component()
     // operations read it when they perform, and the maintenance tool persists it so
     // uninstall undoes the registry writes in the same hive.
     installer.setValue("AllUsers", "true");
+
+    // Lock the mandatory application component: grayed, checked, untouchable.
+    component.enabled = false;
 }
 
 Component.prototype.createOperations = function()

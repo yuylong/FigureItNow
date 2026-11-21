@@ -20,12 +20,17 @@ FigureItNow7/
 │   ├── build_installer.ps1          # 一键脚本
 │   ├── config/config.xml            # 安装器全局配置模板
 │   ├── config/style.qss             # 安装器向导样式表（<StyleSheet> 引用）
-│   ├── packages/<package-id>/
+│   ├── packages/io.github.yuylong.figureitnow7/          # 主程序组件（必选，脚本锁定为灰色勾选）
 │   │   ├── data/                    # 暂存目录（生成物）
 │   │   └── meta/
 │   │       ├── package.xml          # 组件元数据模板
 │   │       ├── license.html         # GPL-3 声明（富文本，许可页自动按 HTML 渲染）
 │   │       └── installscript.qs     # 开始菜单 / 桌面快捷方式 / .fsc 文件关联
+│   ├── packages/io.github.yuylong.figureitnow7examples/  # 示例脚本组件（平级、可选、默认勾选）
+│   │   ├── data/                    # examples/ 暂存目录（生成物）
+│   │   └── meta/
+│   │       ├── package.xml          # 组件元数据模板
+│   │       └── installscript.qs     # 开始菜单「Example Scripts」文件夹快捷方式
 │   ├── build-ifw/                   # 渲染后的暂存树（生成物，忽略）
 │   └── repository/                  # hybrid 模式的更新仓库（生成物，忽略）
 ├── cmake/
@@ -98,8 +103,8 @@ FigureItNow7\dist\FigureItNow7-0.5.191-win64-setup.exe
 | 5 | `cmake --install build-release --prefix <data>` 生成暂存树 |
 | 6 | `windeployqt --release --compiler-runtime` 收集 Qt 插件与 MinGW 运行库 |
 | 7 | 校验必需文件（exe、`platforms/qwindows.dll`、三个 MinGW DLL），缺失时从 MinGW 目录补拷并告警 |
-| 8 | 复制 `examples/`、`README.md`、`LICENSE` |
-| 9 | 渲染 `config.xml` / `package.xml` 模板，复制 `meta/` 下其余文件 |
+| 8 | 复制 `examples/` 到示例组件的数据目录；`README.md`、`LICENSE` 进主组件 |
+| 9 | 渲染 `config.xml` / 两个组件的 `package.xml` 模板，复制 `meta/` 下其余文件 |
 | 10 | `binarycreator` 生成安装包；hybrid 模式再调用 `repogen` 生成更新仓库 |
 
 默认模式是 **offline**（`binarycreator --offline-only`），安装后不联网更新。
@@ -122,10 +127,19 @@ Start-Process .\dist\FigureItNow7-0.5.191-win64-setup.exe -Verb RunAs `
 & 'C:\Program Files\FigureItNow7\FigureItNow7Maintenance.exe' --confirm-command --accept-licenses uninstall
 ```
 
-安装后会创建开始菜单（全体用户，由脚本设置 `AllUsers=true`，与 Program Files 全局安装一致）和桌面快捷方式，
-并注册 `.fsc` 文件关联（默认打开方式 + 图标 + 「打开方式」列表），均由
+安装包含两个平级组件：**FigureItNow7**（主程序，必选）与 **Example Scripts**（示例脚本，默认勾选、
+可在向导中取消，安装到 `examples\` 文件夹；标识符用单段名 `figureitnow7examples`——点分段会把它嵌成
+主程序的下级，连字符又是 IFW 保留给版本号的字符）。组件树按 `<SortingPriority>` 降序排列（相同优先级
+按显示名排序，因此主程序设 100、示例设 10，保证主程序在上）。主程序不使用 `ForcedInstallation`——IFW
+对必装组件不渲染任何复选框——而是在组件脚本里 `component.enabled = false` 锁定：显示为灰色、带勾、
+点击与「恢复默认 / 全部取消」都无法改变其选中状态。安装后会创建开始菜单（全体用户，由脚本设置
+`AllUsers=true`，与 Program Files 全局安装一致）和桌面快捷方式，并注册 `.fsc` 文件关联（默认打开方式 +
+图标 + 「打开方式」列表），均由主组件的
 [installscript.qs](../packaging/packages/io.github.yuylong.figureitnow7/meta/installscript.qs) 负责；
-卸载时一并清理（文件关联按 MSDN 惯例只移除自家 ProgID，不覆盖期间被其他程序接管时的 `.fsc` 默认值）。
+示例组件的
+[installscript.qs](../packaging/packages/io.github.yuylong.figureitnow7examples/meta/installscript.qs)
+另建一个指向 `examples\` 文件夹的开始菜单快捷方式「Example Scripts」；卸载时一并清理（文件关联按
+MSDN 惯例只移除自家 ProgID，不覆盖期间被其他程序接管时的 `.fsc` 默认值）。
 
 `.fsc` 关联写入 `HKLM\Software\Classes`（安装需要管理员权限，属全局关联），ProgID 使用 IFW 默认的
 `fsc_auto_file`（不传自定义 `ProgId=`：该参数在执行时会被从记录的参数里剥掉，卸载时 undo 找不到它就会
@@ -190,7 +204,7 @@ FigureItNow7 installer build
     [OK] Staging: 29 files, 50.8 MB
 
 ==> Copying bundled resources
-    [OK] examples/ (9 files)
+    [OK] examples component (19 files)
 
 ==> Rendering IFW configuration
 ==> Building installer

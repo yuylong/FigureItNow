@@ -39,7 +39,17 @@
     <!-- Creates the Start menu and desktop shortcuts; the file must be listed here to be packaged. -->
     <Script>installscript.qs</Script>
 
+    <!--
+      The application is mandatory, but ForcedInstallation is deliberately NOT used:
+      IFW renders forced components without any check box at all. Instead the script
+      locks the component with component.enabled = false, which shows a grayed,
+      always-checked check box that neither clicks nor the "reset to default" /
+      "uncheck all" actions can change. See installscript.qs.
+    -->
     <Default>true</Default>
-    <ForcedInstallation>true</ForcedInstallation>
     <RequiresAdminRights>true</RequiresAdminRights>
+
+    <!-- Root components are sorted by descending SortingPriority; a tie is broken by
+         display name, which would put "Example Scripts" above the application. -->
+    <SortingPriority>100</SortingPriority>
 </Package>

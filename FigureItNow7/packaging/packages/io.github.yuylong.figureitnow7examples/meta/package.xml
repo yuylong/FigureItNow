@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!--
+  FigureItNow7 examples component metadata
+
+  build_installer.ps1 renders this file, substituting actual values for <Version>
+  and <ReleaseDate>. Do not spell the placeholders out inside comments, or they
+  get replaced too.
+
+  The identifier is a sibling of io.github.yuylong.figureitnow7, not a child:
+  IFW nests components by the dot-separated segments of the identifier, and the
+  hyphen is reserved for the version separator, so "figureitnow7examples" is one
+  concatenated segment. The wizard therefore lists "Example Scripts" next to the
+  application, and the user may clear it to install only the application.
+
+  No <Licenses> element on purpose: the examples are part of the same GPL-3
+  project, the application component already renders the license page, and every
+  .fsc file carries its own header.
+-->
+<Package>
+    <DisplayName>Example Scripts</DisplayName>
+
+    <Description>FIN script examples demonstrating the language features, installed to the examples folder next to the application.</Description>
+
+    <Version>@APP_VERSION@</Version>
+    <ReleaseDate>@RELEASE_DATE@</ReleaseDate>
+    <Name>io.github.yuylong.figureitnow7examples</Name>
+
+    <!-- Creates the Start menu shortcut to the examples folder; the file must be listed here to be packaged. -->
+    <Script>installscript.qs</Script>
+
+    <!-- Checked by default, but optional: clearing it installs only the application. -->
+    <Default>true</Default>
+
+    <!-- The payload lands under @TargetDir@ (Program Files), so this component needs the same elevation. -->
+    <RequiresAdminRights>true</RequiresAdminRights>
+
+    <!-- Below the application in the component tree: root components are sorted by
+         descending SortingPriority, and the application carries the higher value. -->
+    <SortingPriority>10</SortingPriority>
+</Package>

@@ -88,10 +88,15 @@ Set-StrictMode -Version Latest
 # ---------------------------------------------------------------------------
 # Constants and paths
 # ---------------------------------------------------------------------------
-# Package identifier: individuals use io.github.<user>.<app>, which maps onto the
+# Package identifiers: individuals use io.github.<user>.<app>, which maps onto the
 # GitHub Pages namespace. Must match <Name> in package.xml and must never change
 # after the first public release, otherwise installed users stop receiving updates.
-$PackageId   = 'io.github.yuylong.figureitnow7'
+# The examples component is a sibling of the application, not a child: IFW nests
+# components by dot-separated identifier segments and reserves the hyphen for the
+# version separator, so the concatenated "figureitnow7examples" segment keeps it
+# top-level in the component tree.
+$PackageId        = 'io.github.yuylong.figureitnow7'
+$ExamplesPackageId = 'io.github.yuylong.figureitnow7examples'
 $AppExeName  = 'FigureItNow7.exe'
 
 $ScriptDir   = Split-Path -Parent $MyInvocation.MyCommand.Path      # packaging/
@@ -104,6 +109,8 @@ $RenderDir   = Join-Path $WorkDir    'config'
 $PackagesDir = Join-Path $WorkDir    'packages'
 $DataDir     = Join-Path $PackagesDir (Join-Path $PackageId 'data')
 $MetaDir     = Join-Path $PackagesDir (Join-Path $PackageId 'meta')
+$ExamplesDataDir = Join-Path $PackagesDir (Join-Path $ExamplesPackageId 'data')
+$ExamplesMetaDir = Join-Path $PackagesDir (Join-Path $ExamplesPackageId 'meta')
 $DistDir     = Join-Path $ProjectDir 'dist'
 $RepoOutDir  = Join-Path $ScriptDir  'repository'
 
@@ -418,13 +425,15 @@ if (-not (Test-Path $BuiltExe)) {
 # ---------------------------------------------------------------------------
 Write-Step 'Installing into staging directory'
 
-foreach ($dir in @($DataDir, $MetaDir)) {
+foreach ($dir in @($DataDir, $MetaDir, $ExamplesDataDir, $ExamplesMetaDir)) {
     if (Test-Path $dir) {
         Remove-Item $dir -Recurse -Force
     }
 }
-New-Item -ItemType Directory -Path $DataDir    -Force | Out-Null
-New-Item -ItemType Directory -Path $MetaDir    -Force | Out-Null
+New-Item -ItemType Directory -Path $DataDir        -Force | Out-Null
+New-Item -ItemType Directory -Path $MetaDir        -Force | Out-Null
+New-Item -ItemType Directory -Path $ExamplesDataDir -Force | Out-Null
+New-Item -ItemType Directory -Path $ExamplesMetaDir -Force | Out-Null
 New-Item -ItemType Directory -Path $RenderDir  -Force | Out-Null
 New-Item -ItemType Directory -Path $DistDir    -Force | Out-Null
 
@@ -502,17 +511,21 @@ $stat = Get-ChildItem $DataDir -Recurse -File | Measure-Object -Property Length 
 Write-Ok ("Staging: {0} files, {1} MB" -f $stat.Count, [math]::Round($stat.Sum / 1MB, 1))
 
 # ---------------------------------------------------------------------------
-# 7. Bundled resources: examples / LICENSE / README
+# 7. Bundled resources: examples component / LICENSE / README
 # ---------------------------------------------------------------------------
 Write-Step 'Copying bundled resources'
 
+# The examples form their own optional installer component, so the payload is
+# staged into that component's data directory, not the application's. The data
+# directory was recreated from scratch in step 4, so a plain recursive copy
+# cannot nest or carry stale files over from a previous run.
 $ExamplesDir = Join-Path $RepoRoot 'examples'
 if (Test-Path $ExamplesDir) {
-    Copy-Item $ExamplesDir (Join-Path $DataDir 'examples') -Recurse -Force
-    $count = (Get-ChildItem (Join-Path $DataDir 'examples') -Recurse -File | Measure-Object).Count
-    Write-Ok "examples/ ($count files)"
+    Copy-Item $ExamplesDir (Join-Path $ExamplesDataDir 'examples') -Recurse -Force
+    $count = (Get-ChildItem (Join-Path $ExamplesDataDir 'examples') -Recurse -File | Measure-Object).Count
+    Write-Ok "examples component ($count files)"
 } else {
-    Write-Warn "$ExamplesDir not found; skipping"
+    Write-Warn "$ExamplesDir not found; the examples component will be empty"
 }
 
 foreach ($doc in @('README.md', 'LICENSE')) {
@@ -578,6 +591,16 @@ $MetaSource = Join-Path $ScriptDir "packages\$PackageId\meta"
 Get-ChildItem -Path $MetaSource -File | Where-Object { $_.Name -ne 'package.xml' } |
     Copy-Item -Destination $MetaDir -Force
 
+# The examples component follows the same rendering path: package.xml gets the
+# tokens substituted, the rest of its meta directory ships verbatim.
+Render-Template -SourcePath (Join-Path $ScriptDir "packages\$ExamplesPackageId\meta\package.xml") `
+                -TargetPath (Join-Path $ExamplesMetaDir 'package.xml') `
+                -Tokens $tokens
+
+$ExamplesMetaSource = Join-Path $ScriptDir "packages\$ExamplesPackageId\meta"
+Get-ChildItem -Path $ExamplesMetaSource -File | Where-Object { $_.Name -ne 'package.xml' } |
+    Copy-Item -Destination $ExamplesMetaDir -Force
+
 if ($Mode -eq 'hybrid') {
     # In hybrid mode let users add extra repository URLs in the maintenance tool.
     $configPath = Join-Path $RenderDir 'config.xml'
@@ -595,11 +618,12 @@ if ($SkipPackage) {
     Write-Step 'Skipping packaging (-SkipPackage)'
 
     $manualFlags = '--offline-only'
-    if ($Mode -eq 'hybrid') { $manualFlags = "--hybrid -i $PackageId" }
+    if ($Mode -eq 'hybrid') { $manualFlags = "--hybrid -i $PackageId,$ExamplesPackageId" }
 
     Write-Host ''
     Write-Host 'Staging directory is ready:' -ForegroundColor White
     Write-Host "    $DataDir"
+    Write-Host "    $ExamplesDataDir"
     Write-Host 'To package manually, run:' -ForegroundColor White
     Write-Host "    binarycreator $manualFlags -t <IFW>\installerbase.exe -p `"$PackagesDir`" -c `"$(Join-Path $RenderDir 'config.xml')`" `"$DistDir\FigureItNow7-$AppVersion-win64-setup.exe`""
     exit 0
@@ -620,7 +644,7 @@ if ($Mode -eq 'hybrid') {
     & $BinaryCreator --hybrid -t $InstallerBase `
         -p $PackagesDir `
         -c (Join-Path $RenderDir 'config.xml') `
-        -i $PackageId `
+        -i "$PackageId,$ExamplesPackageId" `
         $OutFile
 } else {
     & $BinaryCreator --offline-only -t $InstallerBase `
