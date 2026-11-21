@@ -258,6 +258,31 @@ set(RESOURCES
     Icons.qrc
 )
 
+# Windows Explorer only shows an icon that is embedded as a Win32 resource. The .ico is not kept in
+# the repository: it is derived at build time from icons/main.png (which is drawn by
+# examples/icons/main.fsc), so the executable icon always matches the application artwork.
+if(WIN32)
+    set(FIN_APP_ICON "${CMAKE_CURRENT_BINARY_DIR}/FigureItNow7.ico")
+    add_custom_command(
+        OUTPUT "${FIN_APP_ICON}"
+        COMMAND powershell.exe -NoProfile -ExecutionPolicy Bypass
+                -File "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PngToIco.ps1"
+                -SourcePNG "${CMAKE_CURRENT_SOURCE_DIR}/icons/main.png"
+                -OutputIco "${FIN_APP_ICON}"
+        DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/icons/main.png"
+                "${CMAKE_CURRENT_SOURCE_DIR}/cmake/PngToIco.ps1"
+        COMMENT "Generating FigureItNow7.ico from icons/main.png"
+        VERBATIM)
+    # The icon path is baked into the resource script at configure time, because windres does not
+    # search the build tree on its own.
+    configure_file(FigureItNow7.rc.in "${CMAKE_CURRENT_BINARY_DIR}/FigureItNow7.rc" @ONLY)
+    set(FIN_APP_RC "${CMAKE_CURRENT_BINARY_DIR}/FigureItNow7.rc")
+    # The resource script references the generated .ico only by path, a dependency CMake cannot see,
+    # so OBJECT_DEPENDS makes its compilation wait for the custom command above.
+    set_source_files_properties("${FIN_APP_RC}" PROPERTIES OBJECT_DEPENDS "${FIN_APP_ICON}")
+    list(APPEND SOURCES "${FIN_APP_RC}" "${FIN_APP_ICON}")
+endif()
+
 # Build the executable
 add_executable(${PROJECT_NAME}
     ${SOURCES}

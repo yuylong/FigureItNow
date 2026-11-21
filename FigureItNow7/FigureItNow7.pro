@@ -161,6 +161,16 @@ DISTFILES +=
 RESOURCES += \
     Icons.qrc
 
+# Windows Explorer only shows an icon that is embedded as a Win32 resource. The .ico is not kept in
+# the repository: it is derived from icons/main.png (drawn by examples/icons/main.fsc) by the same
+# script the CMake build uses, so the executable icon always matches the application artwork. It is
+# regenerated on every qmake run, which keeps it in sync at negligible cost.
+win32 {
+    FIN_APP_ICON = $$OUT_PWD/FigureItNow7.ico
+    system("powershell -NoProfile -ExecutionPolicy Bypass -File \"$$PWD/cmake/PngToIco.ps1\" -SourcePNG \"$$PWD/icons/main.png\" -OutputIco \"$$FIN_APP_ICON\""): RC_ICONS = $$FIN_APP_ICON
+    !exists($$RC_ICONS): warning("FigureItNow7.ico could not be generated; building without an executable icon.")
+}
+
 # Multi-language support: translation source files.
 # "lrelease" compiles the .ts files into .qm; "embed_translations" puts them into
 # the executable's resources under ":/i18n/". Both are only requested when lrelease exists, matching the

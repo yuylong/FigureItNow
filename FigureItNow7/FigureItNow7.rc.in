@@ -1,0 +1,17 @@
+// -----------------------------------------------------------------------------
+// GNU GENERAL PUBLIC LICENSE, version 3
+// See LICENSE file for detail.
+//
+// Author: Yulong Yu
+// Copyright(c) 2026 Yulong Yu. All rights reserved.
+// -----------------------------------------------------------------------------
+//
+// FigureItNow7.rc.in - Windows resource script template.
+//
+// Embeds the application icon into the executable so Windows Explorer (and the taskbar /
+// installer shortcuts) can show it. The Qt resource Icons.qrc is not read by the shell: it only
+// exists inside the Qt runtime. CMake fills in @FIN_APP_ICON@ at configure time with the
+// build-tree path of the .ico generated from icons/main.png by cmake/PngToIco.ps1; qmake gets the
+// same resource through "RC_ICONS" in FigureItNow7.pro.
+
+IDI_ICON1 ICON "@FIN_APP_ICON@"
