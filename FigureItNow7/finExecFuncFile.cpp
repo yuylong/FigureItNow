@@ -99,6 +99,15 @@ static finErrorCode _sysfunc_load_numerical_csv(finExecFunction *self, finExecEn
     retvar->clearLeftValue();
     fp.close();
 
+    // A single-row file yields a one-dimensional array, as documented; only files with
+    // several rows are returned as a two-dimensional row matrix.
+    if ( currow == 1 ) {
+        finExecVariable *rowvar = retvar->getVariableItemAt(0);
+        rowvar->removeFromArray();
+        delete retvar;
+        retvar = rowvar;
+    }
+
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
@@ -152,6 +161,15 @@ static finErrorCode _sysfunc_load_string_csv(finExecFunction *self, finExecEnvir
     retvar->clearLeftValue();
     fp.close();
 
+    // A single-row file yields a one-dimensional array, as documented; only files with
+    // several rows are returned as a two-dimensional row matrix.
+    if ( currow == 1 ) {
+        finExecVariable *rowvar = retvar->getVariableItemAt(0);
+        rowvar->removeFromArray();
+        delete retvar;
+        retvar = rowvar;
+    }
+
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);
     return finErrorKits::EC_SUCCESS;
@@ -203,6 +221,15 @@ static finErrorCode _sysfunc_load_auto_csv(finExecFunction *self, finExecEnviron
     retvar->setWriteProtected();
     retvar->clearLeftValue();
     fp.close();
+
+    // A single-row file yields a one-dimensional array, as documented; only files with
+    // several rows are returned as a two-dimensional row matrix.
+    if ( currow == 1 ) {
+        finExecVariable *rowvar = retvar->getVariableItemAt(0);
+        rowvar->removeFromArray();
+        delete retvar;
+        retvar = rowvar;
+    }
 
     flowctl->setFlowNext();
     flowctl->setReturnVariable(retvar);

@@ -189,7 +189,7 @@ static finErrorCode _sysfunc_str_mid(finExecFunction *self, finExecEnvironment *
 
 static struct finExecSysFuncRegItem _funcRegItem_str_mid = {
     /*._funcName     =*/ QString("str_mid"),
-    /*._paramCsvList =*/ QString("str,len"),
+    /*._paramCsvList =*/ QString("str,pos,len"),
     /*._funcCall     =*/ _sysfunc_str_mid,
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("str_mid (str, pos, len)"),
