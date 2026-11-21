@@ -1,0 +1,44 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+// Basic drawing primitives, plus figure and graph configuration.
+//
+// Demonstrates: clear_fig, axis, write_graph_config (panel / origin / unit size),
+// write_fig_config (dot_size / border_color / fill_color), named_color, line, rect,
+// circle, ellipse, polygon, polyline, draw_text, draw_pinned_text, draw_dot.
+
+clear_fig();
+
+// Panel: 640 x 480 pixels, origin at the center, 40 pixels per unit.
+write_graph_config("panel_width", 640);
+write_graph_config("panel_height", 480);
+write_graph_config("origin_point_x", 320);
+write_graph_config("origin_point_y", 240);
+write_graph_config("unit_size", 40);
+write_graph_config("background_color", named_color("white"));
+
+axis();
+
+// Default style for the primitives below.
+write_fig_config("dot_size", 3);
+write_fig_config("border_color", named_color("black"));
+write_fig_config("fill_color", named_color("lightGray"));
+
+line(-7, -4, -4, -4);                                    // plain line
+rect(-5.5, 0, 2, 1.2);                                   // rectangle: center + size
+rect(3, 0, 2, 1.2, PI / 6);                              // ... with a slope radian
+circle(-2, -3, 1);                                       // circle: center + radius
+ellipse(1.5, -3, 2, 0.8);                                // ellipse: long / short radius
+polygon(4.5, -4, 6.5, -4.5, 7, -3, 5.5, -2, 4.5, -2.5);  // closed, filled polygon
+polyline(-7, 3, -5.5, 4.5, -4, 3.5, -2.5, 4.5, -1, 3);   // open polyline
+draw_dot(0, 0);                                          // single dot at the origin
+
+// draw_text follows the figure transform; draw_pinned_text always faces the reader.
+write_fig_config("font_color", named_color("black"));
+draw_text("line / rect / circle / ellipse / polygon / polyline", -7.5, 5.3, 0, 0.7);
+draw_pinned_text("pinned text", 6.5, 4.5, -PI / 4, 1);

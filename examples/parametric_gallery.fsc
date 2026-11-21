@@ -1,0 +1,58 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+// A gallery of the built-in parametric curves, each drawn in its own cell.
+//
+// Demonstrates: parm_astroid, parm_lissajous, parm_hypotrochoid, parm_cycloid,
+// parm_involute, parm_hyperbola, run_function, arrays as point lists,
+// polyline_mat, and draw_pinned_text labels.
+
+clear_fig();
+write_graph_config("background_color", named_color("white"));
+
+// Samples a named curve function into a point array, shifts it to a cell and
+// draws it. run_function calls the curve by its name; the four p arguments are
+// passed on to the curve (unused ones are simply ignored).
+draw_cell(funcname, p1, p2, p3, p4, t1, t2, cx, cy)
+{
+    var t, pt, i = 0, xary, yary;
+    for ( t = t1; t <= t2 + 0.0001; t = t + (t2 - t1) / 120 ) {
+        pt = run_function(funcname, t, p1, p2, p3, p4);
+        xary[i] = cx + pt[0];
+        yary[i] = cy + pt[1];
+        i++;
+    }
+    polyline_mat(xary, yary);
+}
+
+write_fig_config("border_color", named_color("black"));
+write_fig_config("font_color", named_color("black"));
+
+// Top row.
+draw_cell("parm_astroid", 1.8, 0, 0, 0, 0, 2 * PI, -5, 3);
+draw_pinned_text("parm_astroid", -5, 0.9, 0, 0.8);
+
+draw_cell("parm_lissajous", 1.8, 1.2, 3, 2, 0, 2 * PI, 0, 3);
+draw_pinned_text("parm_lissajous", 0, 0.9, 0, 0.8);
+
+draw_cell("parm_hypotrochoid", 2, 0.5, 1.2, 0, 0, 2 * PI, 5, 3);
+draw_pinned_text("parm_hypotrochoid", 5, 0.9, 0, 0.8);
+
+// Bottom row.
+draw_cell("parm_cycloid", 0.5, 0, 0, 0, -2 * PI, 2 * PI, 0, -3.2);
+draw_pinned_text("parm_cycloid", -5, -4.3, 0, 0.8);
+
+draw_cell("parm_involute", 0.25, 0, 0, 0, 0, 3 * PI, 0, -2.5);
+draw_pinned_text("parm_involute", 0, -4.3, 0, 0.8);
+
+// A hyperbola has two branches: a > 0 gives the right one, a < 0 the left one.
+draw_cell("parm_hyperbola", 1.2, 1, 0, 0, -1.1, 1.1, 5, -2.5);
+draw_cell("parm_hyperbola", -1.2, 1, 0, 0, -1.1, 1.1, 5, -2.5);
+draw_pinned_text("parm_hyperbola", 5, -4.3, 0, 0.8);
+
+draw_pinned_text("parametric curve gallery", 0, 5.5, 0, 1);

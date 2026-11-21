@@ -1,0 +1,49 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+// Expressions, operators and the string function library.
+//
+// Demonstrates: var declarations, arithmetic + - * / %, power ^, factorial !,
+// increment / decrement ++ --, bitwise ~ & | $, logic && || with comparisons,
+// str_len / str_left / str_right / str_mid / str_find / str_trim, chr_ascii /
+// ascii_chr, and joining strings with numbers by + so results can be drawn.
+
+clear_fig();
+axis();
+
+// var declares variables; several can be declared and initialized at once.
+var a = 17, b = 5;
+var sum = a + b, diff = a - b, prod = a * b, quot = a / b, rem = a % b;
+var pw = 2 ^ 10, fact = 5!;
+var bits_and = 12 & 10, bits_or = 12 | 10, bits_xor = 12 $ 10, bits_not = ~12;
+var cmp = (a > b) && (a <> b) || (a == 0);      // logic values are numbers 0 / 1
+var cnt = a;
+cnt++;                                          // increment ...
+b--;                                            // ... and decrement
+
+// String functions.
+var greet = str_trim("  Hello, FIN script!  "); // "Hello, FIN script!"
+var head = str_left(greet, 5);                  // "Hello"
+var tail = str_right(greet, 6);                 // "script!"
+var mid = str_mid(greet, 7, 3);                 // "FIN"
+var pos = str_find(greet, "FIN");               // 7, the 0-based index
+var len = str_len(greet);
+var code_a = chr_ascii("A");                    // 65
+var chr_b = ascii_chr(66);                      // "B"
+
+// Strings and numbers are joined with +, so the results can be drawn as text.
+write_fig_config("font_color", named_color("black"));
+draw_text("a = " + a + ", b = " + b + " (after b--)", -7, 5, 0, 0.8);
+draw_text("a + b = " + sum + ", a - b = " + diff + ", a * b = " + prod, -7, 4, 0, 0.8);
+draw_text("a / b = " + quot + ", a % b = " + rem, -7, 3, 0, 0.8);
+draw_text("2 ^ 10 = " + pw + ", 5! = " + fact, -7, 2, 0, 0.8);
+draw_text("12 & 10 = " + bits_and + ", 12 | 10 = " + bits_or + ", 12 $ 10 = " + bits_xor, -7, 1, 0, 0.8);
+draw_text("~12 = " + bits_not + ", (a > b) && (a <> b) || (a == 0) = " + cmp, -7, 0, 0, 0.8);
+draw_text("str_len(greet) = " + len + ", str_find(greet, FIN) = " + pos, -7, -1, 0, 0.8);
+draw_text("str_left = " + head + ", str_mid = " + mid + ", str_right = " + tail, -7, -2, 0, 0.8);
+draw_text("chr_ascii(A) = " + code_a + ", ascii_chr(66) = " + chr_b, -7, -3, 0, 0.8);

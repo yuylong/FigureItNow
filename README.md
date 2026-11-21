@@ -171,7 +171,8 @@ on stderr, and the failing script is skipped.
 ## Repository layout
 
 - `FigureItNow7/` — the application source: CMake project, Qt UI files and translations.
-- `examples/` — sample `.fsc` scripts; `butterfly.fsc` is a good first one to render.
+- `examples/` — sample `.fsc` scripts; `butterfly.fsc` is a good first one to render, and
+  `examples/README.md` indexes the full set covering the language feature by feature.
 - `FigureItNow7/docs/README_CMAKE.md`, `FigureItNow7/docs/README_VSCODE_SETUP.md` — further notes on the CMake
   and VSCode setup.
 - `FigureItNow7/docs/README_INSTALLER.md` — how to build the Windows installer from source with one command.

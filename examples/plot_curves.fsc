@@ -1,0 +1,49 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+// Function plotting: explicit, polar and parametric curves.
+//
+// Demonstrates: axis, plot_function (a user function and built-in ones, with
+// extra arguments after the function name), plot_polar, plot_parametric, and
+// the built-in parm_* curve functions.
+
+clear_fig();
+axis();
+
+// A user function plotted explicitly. Its first argument is the plotting variable.
+mysin(x)
+{
+    return 2 * sin(x);
+}
+write_fig_config("border_color", named_color("red"));
+plot_function(-6, 6, "mysin");
+
+// Built-in functions can be plotted by name; extra arguments follow the name.
+write_fig_config("border_color", named_color("blue"));
+plot_function(-6, 6, "linear", 0.5, -1);          // y = 0.5x - 1
+
+write_fig_config("border_color", named_color("darkGreen"));
+plot_function(-6, 6, "quadratic", 0.1, 0, -2);   // y = 0.1x^2 - 2
+
+// Polar: the function maps an angle to a radius.
+myrose(t)
+{
+    return 2 + 2 * cos(2 * t);
+}
+write_fig_config("border_color", named_color("magenta"));
+plot_polar(0, 2 * PI, "myrose");
+
+// Parametric: the built-in parm_* functions return (x, y) pairs.
+write_fig_config("border_color", named_color("darkCyan"));
+plot_parametric(0, 2 * PI, "parm_lissajous", 3, 2, 3, 2);
+
+write_fig_config("border_color", named_color("orange"));
+plot_parametric(0, 2 * PI, "parm_cycloid", 0.5);
+
+write_fig_config("font_color", named_color("black"));
+draw_text("plot_function / plot_polar / plot_parametric", -7, 5.3, 0, 0.7);

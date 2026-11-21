@@ -1,0 +1,61 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+// Figure styles, images and 3D lines.
+//
+// Demonstrates: named_color, switching dot_size / border_color / fill_color
+// (a transparent color disables a stroke or a fill), load_image + draw_image /
+// draw_pinned_image, and line3d.
+//
+// Note: the image path below is relative to the FigureItNow7 directory, the
+// usual working directory when launching the application. Adjust it if you run
+// the script from somewhere else.
+
+clear_fig();
+axis();
+
+// A row of color swatches from named colors.
+var colors = array(6, "red", "orange", "yellow", "green", "blue", "purple");
+var i;
+for ( i = 0; i < 6; i++ ) {
+    write_fig_config("fill_color", named_color(colors[i]));
+    rect(-6.5 + i * 2.2, 4.5, 2, 1);
+}
+
+// dot_size grows along the row of dots.
+write_fig_config("fill_color", named_color("black"));
+for ( i = 0; i < 6; i++ ) {
+    write_fig_config("dot_size", 2 + i * 2);
+    draw_dot(-6 + i * 2.4, 2.5);
+}
+
+// Border only vs fill only: the other one is transparent.
+write_fig_config("dot_size", 3);
+write_fig_config("border_color", named_color("black"));
+write_fig_config("fill_color", named_color("transparent"));
+circle(-4, -1, 1.2);                            // outline only
+
+write_fig_config("border_color", named_color("transparent"));
+write_fig_config("fill_color", named_color("steelBlue"));
+circle(-1, -1, 1.2);                            // fill only
+
+// Images: load once, then draw normally and pinned.
+var img = load_image("icons/main-thumb.png");
+draw_image(img, 3, -1, 0, 0.5, 0.5);
+draw_pinned_image(img, 5.5, -3.5, PI / 6, 0.35, 0.35);
+
+// 3D lines: a small tripod plus a helix rising along the z axis.
+write_fig_config("border_color", named_color("darkGreen"));
+line3d(0, -5, 0, 2, -5, 0);
+line3d(0, -5, 0, 0, -3, 0);
+line3d(0, -5, 0, 0, -5, 2);
+var t;
+for ( t = 0; t <= 4 * PI; t = t + 0.25 ) {
+    line3d(cos(t) * 1.5 - 4, sin(t) * 1.5 - 5, t * 0.25,
+           cos(t + 0.25) * 1.5 - 4, sin(t + 0.25) * 1.5 - 5, (t + 0.25) * 0.25);
+}

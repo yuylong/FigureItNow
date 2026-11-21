@@ -1,0 +1,51 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+// Vectors, matrices and using them to transform a polygon.
+//
+// Demonstrates: vector / matrix / array constructors, vec_norm / vec_normalize /
+// vec_dot / vec_dim, mat_transpose / mat_add / mat_sub / mat_dot, matrix2array,
+// array_size, and drawing the transformed polygon with polygon_mat.
+
+clear_fig();
+axis();
+
+// Vectors.
+var v = vector(3, 3, 4, 0);
+var n = vec_norm(v);                   // 5, the 2-norm
+var u = vec_normalize(v);              // the unit vector
+var d = vec_dot(v, u);                 // 5, the projected length
+var dim = vec_dim(v);                  // 3
+
+// Matrices.
+var I = matrix(2, 2, 1, 0, 0, 1);      // identity
+var R = matrix(2, 2, 0, -1, 1, 0);     // rotation by 90 degrees
+var A = mat_add(I, R);
+var B = mat_sub(I, R);
+var C = mat_dot(A, B);                 // (I + R) . (I - R)
+var T = mat_transpose(C);
+var flat = matrix2array(T);            // flattened to a plain array
+
+// Transform a square polygon: rotate by 30 degrees, then scale by 1.5.
+var theta = PI / 6;
+var M = mat_dot(matrix(2, 2, cos(theta), -sin(theta), sin(theta), cos(theta)),
+                matrix(2, 2, 1.5, 0, 0, 1.5));
+var square = matrix(4, 2, -1, -1, 1, -1, 1, 1, -1, 1);
+
+write_fig_config("border_color", named_color("black"));
+write_fig_config("fill_color", named_color("lightGray"));
+polygon_mat(square);                  // the original square
+
+write_fig_config("fill_color", named_color("orange"));
+polygon_mat(mat_dot(square, M));      // rotated and scaled
+
+// Annotate the results.
+write_fig_config("font_color", named_color("black"));
+draw_text("vec_norm = " + n + ", vec_dot = " + d + ", vec_dim = " + dim, -7, 5, 0, 0.8);
+draw_text("matrix2array size = " + array_size(flat), -7, 4, 0, 0.8);
+draw_text("gray: original square, orange: rotated 30 deg and scaled 1.5x", -7, -4.5, 0, 0.8);

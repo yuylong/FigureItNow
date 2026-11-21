@@ -1,0 +1,57 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+// Data plotting with arrays and a CSV file round-trip.
+//
+// Demonstrates: building coordinate arrays with ary[i] = ..., plot_dots /
+// plot_line / plot_stream / plot_scatter, and save_numerical_csv /
+// load_numerical_csv. The CSV files are written to the current working
+// directory.
+
+clear_fig();
+axis();
+
+// Sample a noisy sine into two coordinate arrays.
+var i, xary, yary;
+for ( i = 0; i < 60; i++ ) {
+    xary[i] = -6 + i * 0.2;
+    yary[i] = 2 * sin(xary[i]) + 0.3 * sin(9 * xary[i]);
+}
+
+// The same data set through two plot styles.
+write_fig_config("border_color", named_color("black"));
+write_fig_config("fill_color", named_color("red"));
+plot_dots(xary, yary);         // dots only
+
+write_fig_config("border_color", named_color("blue"));
+plot_line(xary, yary);         // one continuous line through all points
+
+// A second data set with a gap: plot_stream splits the line at invalid points.
+// 0 / 0 evaluates to NaN, which marks a missing sample.
+var xg, yg;
+for ( i = 0; i < 40; i++ ) {
+    xg[i] = -6 + i * 0.3;
+    if ( i >= 15 && i <= 24 ) {
+        yg[i] = 0 / 0;
+    } else {
+        yg[i] = -2 - 1.5 * cos(xg[i]);
+    }
+}
+write_fig_config("border_color", named_color("darkGreen"));
+plot_stream(xg, yg);
+
+// Save both columns to CSV files, load them back and plot the reloaded data.
+save_numerical_csv("plot_data_x.csv", xary);
+save_numerical_csv("plot_data_y.csv", yary);
+var xcsv = load_numerical_csv("plot_data_x.csv");
+var ycsv = load_numerical_csv("plot_data_y.csv");
+write_fig_config("border_color", named_color("magenta"));
+plot_scatter(xcsv, ycsv);      // connects neighboring points geometrically
+
+write_fig_config("font_color", named_color("black"));
+draw_text("plot_dots / plot_line / plot_stream / plot_scatter + CSV round-trip", -7, 5.3, 0, 0.7);

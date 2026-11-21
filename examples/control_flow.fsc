@@ -1,0 +1,44 @@
+/*-
+ * GNU GENERAL PUBLIC LICENSE, version 3
+ * See LICENSE file for detail.
+ *
+ * Author: Yulong Yu
+ * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ */
+
+// Branches and loops driving a small bar chart and a dot curve.
+//
+// Demonstrates: if / elif / else, for, while, break, continue, and changing
+// write_fig_config inside a loop so every bar gets its own color.
+
+clear_fig();
+axis();
+
+// Bar chart: the fill color is picked by the bar height in if / elif / else.
+write_fig_config("border_color", named_color("black"));
+var i, h;
+for ( i = 0; i < 10; i++ ) {
+    h = (i + 1) / 2;
+    if ( h < 2 ) {
+        write_fig_config("fill_color", named_color("lightGreen"));
+    } elif ( h < 4 ) {
+        write_fig_config("fill_color", named_color("yellow"));
+    } else {
+        write_fig_config("fill_color", named_color("red"));
+    }
+    rect(-7 + i * 1.5, -2 + h / 2, 1.2, h);
+}
+
+// A sine wave of dots: while + continue skips the flat part, break stops at +5.
+write_fig_config("dot_size", 2);
+write_fig_config("fill_color", named_color("blue"));
+var x = -8;
+while ( x <= 8 ) {
+    x = x + 0.25;
+    if ( x < -5 ) { continue; }
+    if ( x > 5 ) { break; }
+    draw_dot(x, sin(x) * 2 + 2.5);
+}
+
+write_fig_config("font_color", named_color("black"));
+draw_text("for + if / elif / else + while + continue / break", -7, 5.3, 0, 0.7);
