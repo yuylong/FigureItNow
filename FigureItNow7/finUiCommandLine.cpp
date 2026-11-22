@@ -164,6 +164,7 @@ finErrorCode finUiCommandLine::compileAndRunScript(const QString &filename, finF
     machine.initEnvironmentFromRoot();
     machine.setFigureContainer(outfig);
     machine.setScriptCode(scriptcode);
+    machine.setScriptFilePath(filename);
 
     errcode = machine.compile();
     if ( finErrorKits::isErrorResult(errcode) ) {

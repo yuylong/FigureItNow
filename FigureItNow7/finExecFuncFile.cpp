@@ -38,7 +38,7 @@ static finErrorCode _sysfunc_load_image(finExecFunction *self, finExecEnvironmen
     if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    QString filename = fnvar->getStringValue();
+    QString filename = machine->resolveScriptRelativePath(fnvar->getStringValue());
     QImage image = QImage(filename);
     if ( image.isNull() )
         return finErrorKits::EC_FILE_NOT_OPEN;
@@ -59,7 +59,8 @@ static struct finExecSysFuncRegItem _funcRegItem_load_image = {
     /*._funcCall     =*/ _sysfunc_load_image,
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("load_image (fn)"),
-    /*._description  =*/ QString("Load an image from the given file path."),
+    /*._description  =*/ QString("Load an image from the given file path. A relative path is resolved against the "
+                                 "directory of the running script."),
 };
 
 static finErrorCode _sysfunc_load_numerical_csv(finExecFunction *self, finExecEnvironment *env,
@@ -80,7 +81,7 @@ static finErrorCode _sysfunc_load_numerical_csv(finExecFunction *self, finExecEn
     if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    QString filename = fnvar->getStringValue();
+    QString filename = machine->resolveScriptRelativePath(fnvar->getStringValue());
     QFile fp(filename);
     if ( !fp.open(QIODevice::ReadOnly | QIODevice::Text) )
         return finErrorKits::EC_FILE_NOT_OPEN;
@@ -121,7 +122,8 @@ static struct finExecSysFuncRegItem _funcRegItem_load_numerical_csv = {
     /*._prototype    =*/ QString("load_numerical_csv (fn)"),
     /*._description  =*/ QString("Load a numerical array from a Comma-Separated Values (CSV) file. The returned array "
                                  "may be one or two dimensions based on the number of rows or columns in the file. A "
-                                 "NULL item will be placed if the corresponding data item is not a number."),
+                                 "NULL item will be placed if the corresponding data item is not a number. A relative "
+                                 "path is resolved against the directory of the running script."),
 };
 
 static finErrorCode _sysfunc_load_string_csv(finExecFunction *self, finExecEnvironment *env,
@@ -142,7 +144,7 @@ static finErrorCode _sysfunc_load_string_csv(finExecFunction *self, finExecEnvir
     if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    QString filename = fnvar->getStringValue();
+    QString filename = machine->resolveScriptRelativePath(fnvar->getStringValue());
     QFile fp(filename);
     if ( !fp.open(QIODevice::ReadOnly | QIODevice::Text) )
         return finErrorKits::EC_FILE_NOT_OPEN;
@@ -182,7 +184,8 @@ static struct finExecSysFuncRegItem _funcRegItem_load_string_csv = {
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("load_string_csv (fn)"),
     /*._description  =*/ QString("Load a text array from a Comma-Separated Values (CSV) file. The returned array may "
-                                 "be one or two dimensions based on the number of rows or columns in the file."),
+                                 "be one or two dimensions based on the number of rows or columns in the file. A "
+                                 "relative path is resolved against the directory of the running script."),
 };
 
 static finErrorCode _sysfunc_load_auto_csv(finExecFunction *self, finExecEnvironment *env,
@@ -203,7 +206,7 @@ static finErrorCode _sysfunc_load_auto_csv(finExecFunction *self, finExecEnviron
     if ( retvar == nullptr )
         return finErrorKits::EC_OUT_OF_MEMORY;
 
-    QString filename = fnvar->getStringValue();
+    QString filename = machine->resolveScriptRelativePath(fnvar->getStringValue());
     QFile fp(filename);
     if ( !fp.open(QIODevice::ReadOnly | QIODevice::Text) )
         return finErrorKits::EC_FILE_NOT_OPEN;
@@ -246,7 +249,8 @@ static struct finExecSysFuncRegItem _funcRegItem_load_auto_csv = {
                                  "one or two dimensions based on the number of rows or columns in the file. The data "
                                  "type of each array item depends on the contents of the corresponding data item in "
                                  "the file. If the data is a number, the data item will be set as a numerical "
-                                 "variable; otherwise, a string variable or a NULL variable will be set."),
+                                 "variable; otherwise, a string variable or a NULL variable will be set. A relative "
+                                 "path is resolved against the directory of the running script."),
 };
 
 static finErrorCode _sysfunc_save_numerical_csv(finExecFunction *self, finExecEnvironment *env,
@@ -264,7 +268,7 @@ static finErrorCode _sysfunc_save_numerical_csv(finExecFunction *self, finExecEn
     if ( fnvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
-    QString filename = fnvar->getStringValue();
+    QString filename = machine->resolveScriptRelativePath(fnvar->getStringValue());
     QFile fp(filename);
     if ( !fp.open(QIODevice::WriteOnly | QIODevice::Text) )
         return finErrorKits::EC_FILE_NOT_OPEN;
@@ -292,7 +296,8 @@ static struct finExecSysFuncRegItem _funcRegItem_save_numerical_csv = {
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("save_numerical_csv (fn, ary)"),
     /*._description  =*/ QString("Save a numerical array to a Comma-Separated Values (CSV) file. A NULL item will be "
-                                 "placed if the corresponding data item is not a number."),
+                                 "placed if the corresponding data item is not a number. A relative path is resolved "
+                                 "against the directory of the running script."),
 };
 
 static finErrorCode _sysfunc_save_auto_csv(finExecFunction *self, finExecEnvironment *env,
@@ -310,7 +315,7 @@ static finErrorCode _sysfunc_save_auto_csv(finExecFunction *self, finExecEnviron
     if ( fnvar->getType() != finExecVariable::TP_STRING )
         return finErrorKits::EC_INVALID_PARAM;
 
-    QString filename = fnvar->getStringValue();
+    QString filename = machine->resolveScriptRelativePath(fnvar->getStringValue());
     QFile fp(filename);
     if ( !fp.open(QIODevice::WriteOnly | QIODevice::Text) )
         return finErrorKits::EC_FILE_NOT_OPEN;
@@ -338,7 +343,8 @@ static struct finExecSysFuncRegItem _funcRegItem_save_string_csv = {
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("save_string_csv (fn, ary)"),
     /*._description  =*/ QString("Save a string array to a Comma-Separated Values (CSV) file. If an array item is not "
-                                 "string, it will be converted to string if possible before write into the file."),
+                                 "string, it will be converted to string if possible before write into the file. A "
+                                 "relative path is resolved against the directory of the running script."),
 };
 
 static struct finExecSysFuncRegItem _funcRegItem_save_auto_csv = {
@@ -348,7 +354,8 @@ static struct finExecSysFuncRegItem _funcRegItem_save_auto_csv = {
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("save_auto_csv (fn, ary)"),
     /*._description  =*/ QString("Save an array to a Comma-Separated Values (CSV) file. The data type of an array "
-                                 "item will be recognized automatically."),
+                                 "item will be recognized automatically. A relative path is resolved against the "
+                                 "directory of the running script."),
 };
 
 static struct finExecSysFuncRegItem _finSysFuncFileList[] = {

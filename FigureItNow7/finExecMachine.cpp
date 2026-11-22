@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Dec 30th, 2016
- * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
+ * Copyright(c) 2016-2026 Yulong Yu. All rights reserved.
  */
 
 /*! \file finExecMachine.cpp
@@ -16,6 +16,9 @@
 
 #include "finExecMachine.h"
 
+#include <QDir>
+#include <QFileInfo>
+
 #include "finExecVariable.h"
 #include "finExecFunction.h"
 #include "finExecEnvironment.h"
@@ -27,6 +30,7 @@ finExecMachine::finExecMachine()
     this->_baseEnv = nullptr;
     this->_baseFigContainer = nullptr;
     this->_synTree = nullptr;
+    this->_scriptFilePath = QString();
 }
 
 finExecMachine::finExecMachine(const QString &name)
@@ -35,6 +39,7 @@ finExecMachine::finExecMachine(const QString &name)
     this->_baseEnv = nullptr;
     this->_baseFigContainer = nullptr;
     this->_synTree = nullptr;
+    this->_scriptFilePath = QString();
 }
 
 finExecMachine::~finExecMachine()
@@ -159,6 +164,38 @@ finErrorCode finExecMachine::setFigureContainer(finFigureContainer *figcontainer
 void finExecMachine::setScriptCode(const QString &script)
 {
     this->_compiler.setScriptCode(script);
+}
+
+void finExecMachine::setScriptFilePath(const QString &filepath)
+{
+    if ( filepath.isEmpty() ) {
+        this->_scriptFilePath = QString();
+        return;
+    }
+    this->_scriptFilePath = QFileInfo(filepath).absoluteFilePath();
+}
+
+QString finExecMachine::getScriptFilePath() const
+{
+    return this->_scriptFilePath;
+}
+
+QString finExecMachine::getScriptDirPath() const
+{
+    if ( this->_scriptFilePath.isEmpty() )
+        return QString();
+    return QFileInfo(this->_scriptFilePath).absolutePath();
+}
+
+QString finExecMachine::resolveScriptRelativePath(const QString &filename) const
+{
+    if ( filename.isEmpty() || QDir::isAbsolutePath(filename) )
+        return filename;
+
+    QString scriptdir = this->getScriptDirPath();
+    if ( scriptdir.isEmpty() )
+        return filename;
+    return QDir(scriptdir).filePath(filename);
 }
 
 finErrorCode finExecMachine::setExecuteErrorDumper(finSyntaxErrorDump *dumper)

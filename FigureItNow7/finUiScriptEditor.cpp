@@ -333,6 +333,7 @@ finErrorCode finUiScriptEditor::drawOnPanel()
 
     finErrorCode errcode;
     this->_machine.setScriptCode(ui->pteScriptCode->toPlainText());
+    this->_machine.setScriptFilePath(this->getFilePath());
 
     errcode = this->_machine.compile();
     if ( finErrorKits::isErrorResult(errcode) ) {

@@ -569,7 +569,7 @@ static finErrorCode _sysfunc_draw_image_base(finExecFunction *self, finExecEnvir
     foimg->setIsPinned(pinned);
 
     if ( image->getType() == finExecVariable::TP_STRING ) {
-        QImage imginst = QImage(image->getStringValue());
+        QImage imginst = QImage(machine->resolveScriptRelativePath(image->getStringValue()));
         foimg->setImage(imginst);
     } else {
         foimg->setImage(image->getImageValue());
@@ -607,7 +607,8 @@ static struct finExecSysFuncRegItem _funcRegItem_draw_image = {
     /*._funcCall     =*/ _sysfunc_draw_image,
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("draw_image (image, cx, cy[, rad, sx, sy])"),
-    /*._description  =*/ QString("Draw an image at given position on the panel."),
+    /*._description  =*/ QString("Draw an image at given position on the panel. A relative file path is resolved "
+                                 "against the directory of the running script."),
 };
 
 static finErrorCode _sysfunc_draw_pinned_image(finExecFunction *self, finExecEnvironment *env,
@@ -622,7 +623,8 @@ static struct finExecSysFuncRegItem _funcRegItem_draw_pinned_image = {
     /*._funcCall     =*/ _sysfunc_draw_pinned_image,
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("draw_pinned_image (image, cx, cy[, rad, sx, sy])"),
-    /*._description  =*/ QString("Draw a pinned image at given position on the panel."),
+    /*._description  =*/ QString("Draw a pinned image at given position on the panel. A relative file path is "
+                                 "resolved against the directory of the running script."),
 };
 
 static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env,

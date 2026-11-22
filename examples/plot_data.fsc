@@ -10,8 +10,7 @@
 //
 // Demonstrates: building coordinate arrays with ary[i] = ..., plot_dots /
 // plot_line / plot_stream / plot_scatter, and save_numerical_csv /
-// load_numerical_csv. The CSV files are written to the current working
-// directory.
+// load_numerical_csv. The CSV files are written next to this script file.
 
 clear_fig();
 axis();

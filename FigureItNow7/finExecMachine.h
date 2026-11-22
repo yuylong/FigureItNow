@@ -3,7 +3,7 @@
  * See LICENSE file for detail.
  *
  * Author: Yulong Yu, Dec 30th, 2016
- * Copyright(c) 2015-2025 Yulong Yu. All rights reserved.
+ * Copyright(c) 2016-2026 Yulong Yu. All rights reserved.
  */
 /*! \file finExecMachine.h
  *  \brief Declarations of the FIN-7 runtime execution machine.
@@ -60,6 +60,8 @@ protected:
     finSyntaxTree *_synTree;               //!< Last compiled syntax tree, owned by this machine.
     finSyntaxErrorList _errList;           //!< Single shared diagnostic list for compile and execute;
                                            //!< injected into the compiler before each compile pass.
+    QString _scriptFilePath;              //!< Absolute path of the script file being run, or empty when
+                                           //!< the script text has no file of its own.
 
 public:
     /*! \name Construction And Lifetime
@@ -141,6 +143,27 @@ public:
 
     /*! \brief Replaces the script text stored in the internal compiler. */
     void setScriptCode(const QString &script);
+
+    /*! \brief Records the file path of the script being compiled and executed.
+     *
+     *  The path is normalized to an absolute one; an empty path means the script text has no file of
+     *  its own. File-access built-in functions resolve relative paths against the directory derived
+     *  from it.
+     */
+    void setScriptFilePath(const QString &filepath);
+
+    /*! \brief Returns the recorded script file path, or an empty string if the script has no file. */
+    QString getScriptFilePath() const;
+
+    /*! \brief Returns the absolute directory of the recorded script file, or an empty string if none. */
+    QString getScriptDirPath() const;
+
+    /*! \brief Resolves \a filename against the script directory when it is a relative path.
+     *
+     *  Absolute paths are returned unchanged. When no script file is recorded, \a filename is returned
+     *  unchanged as well, so it keeps being resolved against the working directory as before.
+     */
+    QString resolveScriptRelativePath(const QString &filename) const;
 
     /*! \brief Attaches a dumper for real-time execution diagnostics. */
     finErrorCode setExecuteErrorDumper(finSyntaxErrorDump *dumper);

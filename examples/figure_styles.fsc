@@ -12,9 +12,9 @@
 // (a transparent color disables a stroke or a fill), load_image + draw_image /
 // draw_pinned_image, and line3d.
 //
-// Note: the image path below is relative to the FigureItNow7 directory, the
-// usual working directory when launching the application. Adjust it if you run
-// the script from somewhere else.
+// Note: relative file paths in load_image / draw_image (and the CSV functions)
+// are resolved against the directory of this script file, so it runs correctly
+// from any working directory.
 
 clear_fig();
 axis();
@@ -45,7 +45,7 @@ write_fig_config("fill_color", named_color("steelBlue"));
 circle(-1, -1, 1.2);                            // fill only
 
 // Images: load once, then draw normally and pinned.
-var img = load_image("icons/main-thumb.png");
+var img = load_image("../FigureItNow7/icons/main-thumb.png");
 draw_image(img, 3, -1, 0, 0.5, 0.5);
 draw_pinned_image(img, 5.5, -3.5, PI / 6, 0.35, 0.35);
 
