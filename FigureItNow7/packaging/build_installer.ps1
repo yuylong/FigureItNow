@@ -581,6 +581,9 @@ Render-Template -SourcePath (Join-Path $ScriptDir 'config\config.xml') `
 # stylesheet must be copied next to it into the render directory.
 Copy-Item (Join-Path $ScriptDir 'config\style.qss') $RenderDir -Force
 
+# <ControlScript> is resolved the same way as <StyleSheet> above.
+Copy-Item (Join-Path $ScriptDir 'config\controlscript.qs') $RenderDir -Force
+
 Render-Template -SourcePath (Join-Path $ScriptDir "packages\$PackageId\meta\package.xml") `
                 -TargetPath (Join-Path $MetaDir 'package.xml') `
                 -Tokens $tokens

@@ -20,6 +20,7 @@ FigureItNow7/
 │   ├── build_installer.ps1          # 一键脚本
 │   ├── config/config.xml            # 安装器全局配置模板
 │   ├── config/style.qss             # 安装器向导样式表（<StyleSheet> 引用）
+│   ├── config/controlscript.qs      # 升级控制脚本（<ControlScript> 引用，覆盖安装前自动清理旧版）
 │   ├── packages/io.github.yuylong.figureitnow7/          # 主程序组件（必选，脚本锁定为灰色勾选）
 │   │   ├── data/                    # 暂存目录（生成物）
 │   │   └── meta/
@@ -126,6 +127,13 @@ Start-Process .\dist\FigureItNow7-0.5.191-win64-setup.exe -Verb RunAs `
 ```powershell
 & 'C:\Program Files\FigureItNow7\FigureItNow7Maintenance.exe' --confirm-command --accept-licenses uninstall
 ```
+
+升级 / 覆盖安装：对已安装的机器直接再次运行新版 `setup.exe`（同一目标目录）即可。IFW 本身拒绝向已含安装的
+目录安装（`TargetDirectoryInUse` 硬错误，`--default-answer` 也无法跳过），升级逻辑由
+[config/controlscript.qs](../packaging/config/controlscript.qs) 实现：检测到目标目录里有旧维护工具时，先静默
+调用它执行 `purge`（卸载全部组件并删除程序目录，连同快捷方式、`.fsc` 关联与「设置」中的卸载条目一并清理），
+再按全新安装继续。因此「设置」里始终只有最后一次安装、不会出现两条；旧版本里已被新版移除的文件也不会残留。
+程序正在运行时安装器会提示先关闭再重试。
 
 安装包含两个平级组件：**FigureItNow7**（主程序，必选）与 **Example Scripts**（示例脚本，默认勾选、
 可在向导中取消，安装到 `examples\` 文件夹；标识符用单段名 `figureitnow7examples`——点分段会把它嵌成

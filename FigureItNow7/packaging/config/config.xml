@@ -22,6 +22,18 @@
     <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
 
     <!--
+      Upgrade / repair path. IFW refuses to install into a directory that already contains an
+      installation (hard error TargetDirectoryInUse, not dismissible by the default-answer
+      command line option), so running a newer setup.exe over an existing installation would
+      just fail. The control script detects the old maintenance tool in the target directory,
+      silently purges the old installation with it (components, program directory, shortcuts,
+      .fsc association and the Add/Remove Programs entry) and lets the wizard continue as a
+      fresh install. Windows "Settings" therefore always shows exactly one installation -
+      the newest one.
+    -->
+    <ControlScript>controlscript.qs</ControlScript>
+
+    <!--
       Wizard appearance. ClassicStyle is deliberately chosen over the default ModernStyle:
       ModernStyle lays the page content out with zero outer margins, so the text touches
       the window frame; ClassicStyle keeps the standard layout margins around the pages.
