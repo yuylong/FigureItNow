@@ -42,6 +42,10 @@ function(_fin_normalize_version description out_var)
         list(GET _parts 0 _base)
         if(_base MATCHES "^[0-9]+(\\.[0-9]+)*$")
             set(_numeric "${_base}")
+            # _revision must be initialized: an unset variable makes the STREQUAL check below
+            # compare the literal token "_revision" instead of an empty string, which appends a
+            # trailing dot to tags without a digit segment (v0.5-alpha -> "0.5." instead of "0.5").
+            set(_revision "")
             foreach(_part IN LISTS _parts)
                 if(_part MATCHES "^[0-9]+$")
                     set(_revision "${_part}")
