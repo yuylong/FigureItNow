@@ -36,6 +36,11 @@ jobs:
           # tools_mingw1510 is the MinGW 15.1.0 toolchain paired with Qt 6.12;
           # tools_ifw provides binarycreator.exe / installerbase.exe.
           tools: 'tools_mingw1510,qt.tools.win64_mingw1510 tools_ifw'
+          # aqtinstall 3.3.0 (the latest release) looks for qt6_6120/qt6_6120/Updates.xml, but
+          # Qt 6.11+ publishes Windows kits in per-arch folders (qt6_6120/qt6_6120_mingw/),
+          # which only aqtinstall master resolves. Switch back to aqtversion once a release
+          # newer than 3.3.0 ships.
+          aqtsource: 'git+https://github.com/miurahr/aqtinstall.git@5a49f2b391ae8ee1d3c0dd87f8b33c1d49a4deb7'
 
       - name: Locate Qt Installer Framework
         shell: pwsh
