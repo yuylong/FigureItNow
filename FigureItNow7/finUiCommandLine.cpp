@@ -180,6 +180,10 @@ finErrorCode finUiCommandLine::compileAndRunScript(const QString &filename, finF
         // treats errcode < 0 as a failure) skip this file instead of drawing garbage.
         return finErrorKits::EC_READ_ERROR;
     }
+    // The compile-stage diagnostics have just been printed. Drop them here so the
+    // execute-stage loop below reports only the new runtime diagnostics; execute()
+    // itself keeps the list on purpose (its consumers may want one combined report).
+    machine.disposeExecutionError();
 
     errcode = machine.execute();
     for ( int i = 0; i < machine.getErrorCount(); i++ )
