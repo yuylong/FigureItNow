@@ -33,9 +33,10 @@ jobs:
           host: 'windows'
           target: 'desktop'
           arch: 'win64_mingw'
-          # tools_mingw1510 is the MinGW 15.1.0 toolchain paired with Qt 6.12;
-          # tools_ifw provides binarycreator.exe / installerbase.exe.
-          tools: 'tools_mingw1510,qt.tools.win64_mingw1510 tools_ifw'
+          # tools_mingw1510 is the MinGW 15.1.0 toolchain paired with Qt 6.12; tools_ifw is pinned
+          # to the 4.11 variant (the one verified locally) because the bare tool name installs
+          # every released IFW version side by side.
+          tools: 'tools_mingw1510,qt.tools.win64_mingw1510 tools_ifw,qt.tools.ifw.411'
           # aqtinstall 3.3.0 (the latest release) looks for qt6_6120/qt6_6120/Updates.xml, but
           # Qt 6.11+ publishes Windows kits in per-arch folders (qt6_6120/qt6_6120_mingw/),
           # which only aqtinstall master resolves. Switch back to aqtversion once a release
@@ -45,9 +46,10 @@ jobs:
       - name: Locate Qt Installer Framework
         shell: pwsh
         run: |
-          $ifw = Get-ChildItem -Path "$env:IQTA_TOOLS_DIR\QtInstallerFramework" -Recurse -Filter binarycreator.exe |
+          # install-qt-action exposes the tools directory as IQTA_TOOLS.
+          $ifw = Get-ChildItem -Path "$env:IQTA_TOOLS\QtInstallerFramework" -Recurse -Filter binarycreator.exe |
                  Select-Object -First 1
-          if (-not $ifw) { throw "binarycreator.exe not found under $env:IQTA_TOOLS_DIR" }
+          if (-not $ifw) { throw "binarycreator.exe not found under $env:IQTA_TOOLS" }
           Add-Content -Path $env:GITHUB_ENV -Value "IFW_BIN=$($ifw.DirectoryName)"
           Write-Host "IFW bin: $($ifw.DirectoryName)"
 
@@ -59,7 +61,7 @@ jobs:
           # cache, not C:\Qt) needs no changes to the script.
           & .\FigureItNow7\packaging\build_installer.ps1 -Clean `
               -QtDir $env:QT_ROOT_DIR `
-              -MingwBin "$env:IQTA_TOOLS_DIR\mingw1510_64\bin" `
+              -MingwBin "$env:IQTA_TOOLS\mingw1510_64\bin" `
               -IfwRoot $env:IFW_BIN
 
       - name: Upload installer artifact
