@@ -47,15 +47,15 @@ FigureItNow7/
 
 | 依赖 | 要求 | 检查方式 |
 |---|---|---|
-| Qt 6 + 配套 MinGW | 已验证 Qt 6.12.0 + MinGW 15.1.0；Qt 6.8.0 也可 | 无需配置，脚本自动探测 |
+| Qt 6 + 配套 MinGW | 已固定 Qt 6.12.0 + MinGW 15.1.0；旧工具链不再作为默认方案 | 无需配置，脚本自动探测 |
 | CMake | 3.21+（`CMakeLists.txt` 的最低要求），需在 `PATH` 中 | `cmake --version` |
 | Qt Installer Framework | 已验证 **4.11**，如 `C:\Qt\Tools\QtInstallerFramework\4.11\bin` | 无需配置，脚本自动递归查找 |
 
 IFW 若未安装：Qt Online Installer → **Qt → Build tools → Qt Installer Framework**。
 
 Qt 与配套 MinGW 的探测规则由 [cmake/FindBuildEnv.cmake](../cmake/FindBuildEnv.cmake) 统一实现（同一份逻辑
-也被 CMake 构建和 VSCode 配置生成器复用），规则是「同一安装根下最新版本胜出」。本机同时存在 6.8.0 和
-6.12.0 时会选 6.12.0；需要固定版本时显式传 `-QtDir`。
+也被 CMake 构建和 VSCode 配置生成器复用），规则是「同一安装根下最新版本胜出」。需要固定到
+Qt 6.12.0 + MinGW 15.1.0 时显式传 `-QtDir` 和 `-MingwBin`。
 
 ## 从源码生成
 
@@ -164,7 +164,7 @@ MSDN 惯例只移除自家 ProgID，不覆盖期间被其他程序接管时的 `
 .\build_installer.ps1 -SkipPackage
 
 # 显式指定工具链 / IFW（自动探测失效时）
-.\build_installer.ps1 -QtDir C:\Qt\6.8.0\mingw_64 -MingwBin C:\Qt\Tools\mingw1310_64\bin `
+.\build_installer.ps1 -QtDir C:\Qt\6.12.0\mingw_64 -MingwBin C:\Qt\Tools\mingw1510_64\bin `
                       -IfwRoot C:\Qt\Tools\QtInstallerFramework\4.11\bin
 
 # 带上 OpenGL 软件回退等全量 Qt 后端（默认排除，约省 50 MB）
@@ -182,7 +182,7 @@ MSDN 惯例只移除自家 ProgID，不覆盖期间被其他程序接管时的 `
 | `-Mode` | `offline` | `offline` 纯离线安装；`hybrid` 离线装 + 在线更新 |
 | `-RepoUrl` | 空 | hybrid 必填，IFW 会自行拼 `/Updates.xml` |
 | `-IfwRoot` | 自动探测 | IFW 的 `bin` 目录；也读环境变量 `QTIFWDIR` |
-| `-QtDir` | 自动探测 | Qt 安装目录，如 `C:\Qt\6.8.0\mingw_64` |
+| `-QtDir` | 自动探测 | Qt 安装目录，如 `C:\Qt\6.12.0\mingw_64` |
 | `-MingwBin` | 自动探测 | MinGW `bin` 目录；也读环境变量 `MINGW_PATH` |
 | `-Translations` | `zh_CN` | 逗号分隔的 Qt 内置翻译语言 |
 | `-Full` | 关 | 部署全部 Qt 图形后端 |

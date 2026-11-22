@@ -36,7 +36,7 @@
 # roots, where the newest installation wins.
 #
 # The search roots are patterns (C:/Qt/*/mingw*_64) or plain directories (C:/Qt, whose children are
-# 6.8.0/mingw_64), which keeps the list short and independent of the Qt version and of the compiler
+# 6.12.0/mingw_64), which keeps the list short and independent of the Qt version and of the compiler
 # sub-directory name. On Windows, Qt packages built for LLVM-MinGW (clang + libc++) are rejected during
 # the search, because this project is built with GCC and only the GCC (libstdc++) packages are usable.
 # ---------------------------------------------------------------------------
@@ -45,7 +45,7 @@
 # <prefix>/lib/cmake/Qt6 (Qt installer layout) or <prefix>/lib/<triplet>/cmake/Qt6 (Debian layout);
 # it may be the root itself or sit up to two levels below it.
 # Backslashes are normalized first because glob() treats them as escape characters, which would make
-# a QTDIR of C:\Qt\6.8.0\mingw_64 miss.
+# a QTDIR of C:\Qt\6.12.0\mingw_64 miss.
 function(_fin_qt6_prefixes_from root out_var)
     string(REPLACE "\\" "/" _root "${root}")
     set(_prefixes "")
@@ -191,7 +191,7 @@ function(fin_find_qt6 out_prefix_var out_version_var)
 endfunction()
 
 # Expands one MinGW search root into toolchain bin directories. The root may be the bin directory
-# itself (MINGW_PATH), a toolchain directory (C:/Qt/Tools/mingw1310_64) or a pattern matching toolchain
+# itself (MINGW_PATH), a toolchain directory (C:/Qt/Tools/mingw1510_64) or a pattern matching toolchain
 # directories (C:/Qt/Tools/mingw*_64). Backslashes are normalized for the same reason as in
 # _fin_qt6_prefixes_from.
 function(_fin_mingw_bins_from root out_var)
@@ -252,7 +252,7 @@ function(fin_find_mingw out_bin_var)
 
     if(_bins)
         list(REMOVE_DUPLICATES _bins)
-        # Natural order compares the mangled version numerically (mingw1310_64 > mingw810_64).
+        # Natural order compares the mangled toolchain version numerically.
         list(SORT _bins COMPARE NATURAL ORDER DESCENDING)
         list(GET _bins 0 _bins)
     endif()

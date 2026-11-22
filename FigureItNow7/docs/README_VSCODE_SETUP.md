@@ -303,7 +303,7 @@ set demangle-style gnu-v3
                 "QT_CORE_LIB",
                 "QT_WIDGETS_LIB"
             ],
-            "compilerPath": "C:/Qt/Tools/mingw1310_64/bin/g++.exe"
+            "compilerPath": "C:/Qt/Tools/mingw1510_64/bin/g++.exe"
         }
     ],
     "version": 4

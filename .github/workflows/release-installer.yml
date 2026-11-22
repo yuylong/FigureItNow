@@ -1,0 +1,73 @@
+name: Release installer
+
+# CI counterpart of FigureItNow7/packaging/build_installer.ps1 (issue #20): on a tag push,
+# build the Windows offline installer with the exact script used locally and attach it to
+# the GitHub Release of that tag. workflow_dispatch builds and uploads the installer as an
+# artifact without publishing, so the pipeline can be exercised before a real tag exists.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-installer:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout (full tag history)
+        uses: actions/checkout@v4
+        with:
+          # cmake/BuildVersion.cmake derives the version from `git describe --tags`, which
+          # needs the complete tag history; a shallow clone would fall back to 0.0.0.
+          fetch-depth: 0
+
+      - name: Install Qt 6.12 + MinGW 15.1 + Qt Installer Framework
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.12.0'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_mingw'
+          # tools_mingw1510 is the MinGW 15.1.0 toolchain paired with Qt 6.12;
+          # tools_ifw provides binarycreator.exe / installerbase.exe.
+          tools: 'tools_mingw1510,qt.tools.win64_mingw1510 tools_ifw'
+
+      - name: Locate Qt Installer Framework
+        shell: pwsh
+        run: |
+          $ifw = Get-ChildItem -Path "$env:IQTA_TOOLS_DIR\QtInstallerFramework" -Recurse -Filter binarycreator.exe |
+                 Select-Object -First 1
+          if (-not $ifw) { throw "binarycreator.exe not found under $env:IQTA_TOOLS_DIR" }
+          Add-Content -Path $env:GITHUB_ENV -Value "IFW_BIN=$($ifw.DirectoryName)"
+          Write-Host "IFW bin: $($ifw.DirectoryName)"
+
+      - name: Build installer
+        shell: pwsh
+        run: |
+          # -QtDir / -MingwBin / -IfwRoot become FIN_QT_HINT / FIN_MINGW_HINT and the IFW
+          # bin path inside build_installer.ps1, so the CI layout (Qt under the runner tool
+          # cache, not C:\Qt) needs no changes to the script.
+          & .\FigureItNow7\packaging\build_installer.ps1 -Clean `
+              -QtDir $env:QT_ROOT_DIR `
+              -MingwBin "$env:IQTA_TOOLS_DIR\mingw1510_64\bin" `
+              -IfwRoot $env:IFW_BIN
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FigureItNow7-win64-setup
+          path: FigureItNow7/dist/*-win64-setup.exe
+          if-no-files-found: error
+
+      - name: Attach installer to the tag release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: FigureItNow7/dist/*-win64-setup.exe
+          generate_release_notes: true
+          fail_on_unmatched_files: true

@@ -77,7 +77,7 @@ The same module is the only implementation of the search: it probes the environm
 is installed somewhere else, point the build at it explicitly:
 
 ```bash
-cmake --preset linux -DCMAKE_PREFIX_PATH=/path/to/Qt/6.8.0/gcc_64
+cmake --preset linux -DCMAKE_PREFIX_PATH=/path/to/Qt/6.12.0/gcc_64
 ```
 
 On Windows, `.vscode/settings.json` and `.vscode/launch.json` are written by CMake at configure time

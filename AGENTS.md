@@ -10,7 +10,7 @@ Guidance for OpenCode agents working in this repo. See `FigureItNow7/CLAUDE.md` 
 
 ## Build
 
-CMake is the supported path (qmake `FigureItNow7.pro` is legacy). Toolchain pinned by the committed config: **Qt 6.8.0 + MinGW 13.1.0** at `C:/Qt/`.
+CMake is the supported path (qmake `FigureItNow7.pro` is legacy). Toolchain pinned by the committed config: **Qt 6.12.0 + MinGW 15.1.0** at `C:/Qt/`.
 
 ```powershell
 # from FigureItNow7/
@@ -24,7 +24,7 @@ Binary: `FigureItNow7/build/FigureItNow7.exe`. Run GUI with no args; headless wi
 
 ## Verification
 
-**No tests, no linter, no CI.** A clean CMake build is the only correctness signal. After source edits, rebuild; for UI changes, launch via F5 (VSCode `launch.json`). `build/compile_commands.json` is the IntelliSense source of truth.
+**No tests and no linter.** A clean CMake build is the only local correctness signal. After source edits, rebuild; for UI changes, launch via F5 (VSCode `launch.json`). `build/compile_commands.json` is the IntelliSense source of truth. Tag pushes run `.github/workflows/release-installer.yml` to build and release the Windows installer.
 
 ## Conventions that differ from defaults
 

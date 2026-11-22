@@ -24,10 +24,10 @@
     and the QTIFWDIR environment variable is also consulted.
 
 .PARAMETER QtDir
-    Qt installation directory, e.g. C:\Qt\6.8.0\mingw_64. Auto-detected when omitted.
+    Qt installation directory, e.g. C:\Qt\6.12.0\mingw_64. Auto-detected when omitted.
 
 .PARAMETER MingwBin
-    MinGW bin directory, e.g. C:\Qt\Tools\mingw1310_64\bin. Auto-detected when omitted.
+    MinGW bin directory, e.g. C:\Qt\Tools\mingw1510_64\bin. Auto-detected when omitted.
 
 .PARAMETER Clean
     Delete build-release and packaging\build-ifw before building.

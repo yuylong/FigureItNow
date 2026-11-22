@@ -25,7 +25,7 @@ FigureItNow7/
 ## 前置要求
 
 ### 1. Qt6 安装
-确保已安装 Qt6，推荐使用最新版本（Qt 6.8+）
+确保已安装 Qt6，当前项目固定使用 Qt 6.12 + 配套 MinGW 15.1
 
 Qt Linguist Tools（`lupdate` / `lrelease`）是**可选项**。它们随 Qt 主包安装，但在部分 Linux 发行版上是独立的
 包（如 Debian/Ubuntu 的 `qt6-l10n-tools`）。缺失时 configure 只给出一条 warning 并跳过翻译，程序照常构建，
