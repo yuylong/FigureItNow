@@ -731,7 +731,11 @@ bool finSyntaxReader::meshArithExpress()
         optoken = token1;
         oprand2 = token0;
     } else {
-        finThrowObj(finErrorKits::EC_READ_ERROR, "Malformed token in syntax stack.");
+        // token0 is a completed construct (a statement closed by ";", a block, a function,
+        // a label, etc.) sitting on top of the stack — typically when a block's "}" arrives
+        // right after a ";". It is not part of any arithmetic expression, so stop the drain
+        // instead of reporting a spurious "Malformed token in syntax stack" warning.
+        return false;
     }
 
     oplex = optoken->getCommandLexNode();
