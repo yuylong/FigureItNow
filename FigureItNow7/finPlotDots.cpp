@@ -6,6 +6,14 @@
  * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
+/*! \file finPlotDots.cpp
+ *  \brief Implementations of the point-collection plotters.
+ *
+ *  The public API is documented in finPlotDots.h. Only the internal segmentation rules that are not
+ *  obvious from the code are commented here: where the stream plotter breaks a curve and how the
+ *  scatter plotter reconnects an unordered point cloud.
+ */
+
 #include "finPlotDots.h"
 
 #include <qmath.h>
@@ -162,6 +170,12 @@ const QPointF &finPlotDotsStream::getBreakPointAt(int idx) const
     return this->_breakPtList.at(idx);
 }
 
+/*! \brief Searches the break-point list for \a pt starting at \a fromidx.
+ *
+ *  The caller keeps \a nextidx across iterations so each break point is matched only once: on a match
+ *  it is advanced past the matched entry, so a repeated coordinate later in the stream still starts a
+ *  new polyline. When nothing matches it is left at \a fromidx.
+ */
 bool finPlotDotsStream::checkBreakPointFrom(const QPointF &pt, int fromidx, int *nextidx) const
 {
     if ( fromidx >= this->_breakPtList.count() ) {
@@ -204,6 +218,12 @@ void finPlotDotsStream::clearBreakPoints()
     this->_breakPtList.clear();
 }
 
+/*! \brief Normalizes a non-finite point so it can be plotted.
+ *
+ *  NaN points are left untouched and reported, since the caller drops them. A single infinite
+ *  coordinate is clamped to \c 65535 or \c -65535 in place, which keeps the segment direction while
+ *  staying inside the renderable range.
+ */
 bool finPlotDotsStream::checkNaNOrInfPoint(QPointF *pt)
 {
     if ( this->isNanPoint(*pt) )
@@ -226,6 +246,13 @@ bool finPlotDotsStream::isNanPoint(const QPointF &pt)
     return ( qIsNaN(pt.x()) || qIsNaN(pt.y()) || (qIsInf(pt.x()) && qIsInf(pt.y())) );
 }
 
+/*! \brief Splits the buffered points into polylines and plots each of them.
+ *
+ *  isnewline marks the next point as the start of a new polyline; it is set by a registered break
+ *  point, by a non-finite point, or by a direction reversal larger than \c 0.4999*pi radians. Points
+ *  that are still NaN after normalization are skipped, and the last point is appended before the
+ *  trailing polyline is flushed so an open end of the curve is not lost.
+ */
 finErrorCode finPlotDotsStream::plot()
 {
     if ( this->_figcontainer == nullptr )
@@ -305,6 +332,12 @@ bool finPlotDotsScatter::isNaNOrInfPoint(const QPointF &pt) const
         return false;
 }
 
+/*! \brief Finds the nearest connectable point of \a ptlist within the distance limit.
+ *
+ *  The search box is the 2*_distLimit square around \a chkpt, and \a exceptcnt trailing entries are
+ *  skipped because they were already consumed by the current pass. \a chkpt itself is rejected to
+ *  avoid a zero-length segment.
+ */
 int finPlotDotsScatter::findNearestPoint(const QPointF &chkpt, const QList<QPointF> &ptlist,
                                          int exceptcnt, QPointF *outpt)
 {
@@ -336,6 +369,12 @@ int finPlotDotsScatter::findNearestPoint(const QPointF &chkpt, const QList<QPoin
     return nearestidx;
 }
 
+/*! \brief Finds the nearest point of \a ptlist that keeps going in the current direction.
+ *
+ *  Follows the same search as findNearestPoint() but additionally rejects any candidate whose
+ *  direction from \a chkpt differs from \a prevpt -> \a chkpt by more than \c 0.4999*pi radians, so a
+ *  curve extended inside its own point list does not fold back over itself.
+ */
 int finPlotDotsScatter::findNearestPointWithRad(const QPointF &chkpt, const QPointF &prevpt,
                                                 const QList<QPointF> &ptlist, int exceptcnt, QPointF *outpt)
 {
@@ -372,6 +411,12 @@ int finPlotDotsScatter::findNearestPointWithRad(const QPointF &chkpt, const QPoi
     return nearestidx;
 }
 
+/*! \brief Extends the current curve so it visually joins the curves of earlier passes.
+ *
+ *  The head and tail of \a curptlist are matched against \a pstptlist first, which closes the gap
+ *  between curve segments produced by separate passes. If no match is found there, the curve is
+ *  extended inside itself with findNearestPointWithRad() instead.
+ */
 void finPlotDotsScatter::handleEnclosePoint(
         const QList<QPointF> &curptlist, const QList<QPointF> &pstptlist, finPlotDotsLine *lnplot)
 {
@@ -415,6 +460,12 @@ void finPlotDotsScatter::handleEnclosePoint(
     }
 }
 
+/*! \brief Reconnects the buffered points into continuous curves and plots them.
+ *
+ *  Each pass consumes the nearest unvisited point within the distance limit, producing one curve, and
+ *  then lets handleEnclosePoint() join that curve to the ones already built. Points already consumed by
+ *  a pass move into \a postpt so they stay available as connection candidates.
+ */
 finErrorCode finPlotDotsScatter::plot()
 {
     if ( this->_figcontainer == nullptr )
