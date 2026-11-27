@@ -592,7 +592,7 @@ void MainWindow::on_actPrintFig_triggered()
 void MainWindow::on_actManual_triggered()
 {
     QDesktopServices::openUrl(
-                QUrl(QString("https://github.com/yuylong/FigureItNow/wiki/FigureItNow-Script-Language")));
+                QUrl(QString("https://github.com/yuylong/FigureItNow/wiki/Script-Language")));
 }
 
 void MainWindow::on_actWiki_triggered()
