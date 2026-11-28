@@ -29,6 +29,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    # Fail with an explicit authentication error instead of letting git ask for a
+    # username that no runner can supply.
+    env:
+      GIT_TERMINAL_PROMPT: '0'
+
     steps:
       - name: Check for WIKI_SYNC_TOKEN
         id: token
@@ -52,13 +57,25 @@ jobs:
           WIKI_SYNC_TOKEN: ${{ secrets.WIKI_SYNC_TOKEN }}
         run: |
           set -euo pipefail
+          token="$(printf '%s' "$WIKI_SYNC_TOKEN" | tr -d '[:space:]')"
+          case "$token" in
+            ghp_*|github_pat_*|ghs_*|gho_*) ;;
+            *) echo "::warning title=Unexpected token format::WIKI_SYNC_TOKEN does not start with a known GitHub token prefix." ;;
+          esac
           # Keep the token out of URLs and logs: pass it as an HTTP header instead.
-          auth="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$WIKI_SYNC_TOKEN" | base64 | tr -d '\n')"
-          git -c http.extraheader="$auth" clone --quiet \
-            "https://github.com/${GITHUB_REPOSITORY}.wiki.git" wiki
+          auth="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$token" | base64 | tr -d '\n')"
+          if ! git -c http.extraheader="$auth" clone --quiet \
+                 "https://github.com/${GITHUB_REPOSITORY}.wiki.git" wiki; then
+            echo "::error title=WIKI_SYNC_TOKEN rejected::GitHub rejected the token for the wiki repository. Use a classic PAT with the repo scope (or a GitHub App token with wiki access), and re-save the secret without whitespace."
+            exit 1
+          fi
           git -C wiki config --local http.extraheader "$auth"
           git -C wiki config user.name "github-actions[bot]"
           git -C wiki config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git -C wiki push --dry-run --quiet origin HEAD:master; then
+            echo "::error title=WIKI_SYNC_TOKEN cannot write::The token can read the wiki but the push was rejected. A classic PAT needs the repo scope; fine-grained tokens may not cover wiki repositories."
+            exit 1
+          fi
 
       - name: Regenerate reference pages
         if: steps.token.outputs.present == 'true'
