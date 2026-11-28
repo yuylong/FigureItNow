@@ -6,6 +6,14 @@
  * Copyright(c) 2015-2026 Yulong Yu. All rights reserved.
  */
 
+/*! \file finPlotEquation2D.cpp
+ *  \brief Implementation of the implicit-equation plotter.
+ *
+ *  The public API is documented in finPlotEquation2D.h. Only the parts of the search that are not obvious
+ *  from the code are summarized here: how the sampling step is chosen, how a sampled point is classified as
+ *  a zero or as a sign change, and how the sign change is refined into the plotted coordinate.
+ */
+
 #include "finPlotEquation2D.h"
 
 #include <qmath.h>
@@ -174,6 +182,10 @@ bool finPlotEquation2D::checkValid() const
     return true;
 }
 
+/*! \brief Returns the sampling step in figure units, chosen as three pixels of the graph.
+ *
+ *  Without a graph configuration the step falls back to \c 0.1.
+ */
 double finPlotEquation2D::getBaseStep() const
 {
     double step = 0.1;
@@ -186,6 +198,12 @@ double finPlotEquation2D::getBaseStep() const
     return step;
 }
 
+/*! \brief Builds the argument list that is passed to the function for every sampled point.
+ *
+ *  The caller's list is copied first, then the two new numeric variables are inserted at the x and y slots.
+ *  The insertion order follows the two slot indexes, because inserting at the larger slot first would shift
+ *  the smaller one.
+ */
 finErrorCode finPlotEquation2D::buildFuncArgList(QList<finExecVariable *> *varlist,
                                                  finExecVariable **xvar, finExecVariable **yvar)
 {
@@ -227,6 +245,10 @@ finErrorCode finPlotEquation2D::buildFuncArgList(QList<finExecVariable *> *varli
 }
 
 
+/*! \brief Lists the sampling positions from \a from to \a to, with both ends included.
+ *
+ *  The last step is truncated so that \a to is always sampled exactly.
+ */
 finErrorCode finPlotEquation2D::buildSearchPositions(double from, double to, double step, QList<double> *poslist)
 {
     if ( poslist == nullptr )
@@ -263,6 +285,11 @@ finErrorCode finPlotEquation2D::disposeSearchRangeList()
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Evaluates \a func at (\a x, \a y) and extracts its numeric result.
+ *
+ *  The return variable handed out by the flow control is released here, because a new reference is produced
+ *  on every call.
+ */
 finErrorCode finPlotEquation2D::calcAPoint(
         double x, double y, finExecFunction *func, QList<finExecVariable *> *varlist,
         finExecVariable *xvar, finExecVariable *yvar, double *retval, bool *goon)
@@ -293,12 +320,21 @@ finErrorCode finPlotEquation2D::calcAPoint(
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \enum finPlotEquation2DSearchResFlag
+ *  \brief Result flags of checkOnePosition(), telling plot() where a curve passes between grid points.
+ */
 enum finPlotEquation2DSearchResFlag {
-    FIN_PE_SRF_SELF   = 0x01,
-    FIN_PE_SRF_SRCH_X = 0x02,
-    FIN_PE_SRF_SRCH_Y = 0x04,
+    FIN_PE_SRF_SELF   = 0x01, //!< The sampled point itself is a zero of the equation.
+    FIN_PE_SRF_SRCH_X = 0x02, //!< A zero lies between the point and its predecessor in the same row.
+    FIN_PE_SRF_SRCH_Y = 0x04, //!< A zero lies between the point and its predecessor in the same column.
 };
 
+/*! \brief Classifies a sampled point as a zero, or as one end of a sign change towards its predecessors.
+ *
+ *  The flags are only raised for intervals that have not been refined yet: the x direction is checked against
+ *  the point of the previous column in the same row, and the y direction against the current column's previous
+ *  row. An interval ending on an exact zero is skipped, since that zero has already been appended directly.
+ */
 finErrorCode finPlotEquation2D::checkOnePosition(int xidx, int yidx, double curretval, QList<double> *prevretval,
                                                  unsigned long *srchflags)
 {
@@ -325,6 +361,11 @@ finErrorCode finPlotEquation2D::checkOnePosition(int xidx, int yidx, double curr
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Stores \a curretval at row \a yidx, keeping \a prevretval indexed by row.
+ *
+ *  The first column grows the list up to \a yidx and inserts there, while later columns overwrite the entry
+ *  of the same row.
+ */
 finErrorCode finPlotEquation2D::updateRetValList(int xidx, int yidx, double curretval, QList<double> *prevretval)
 {
     if ( xidx == 0 ) {
@@ -337,6 +378,12 @@ finErrorCode finPlotEquation2D::updateRetValList(int xidx, int yidx, double curr
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Bisects the interval between two points of opposite sign until the zero is located.
+ *
+ *  Every recursion halves the interval and keeps the half that still changes sign. After \c 6 levels the
+ *  remaining ends are combined by linear interpolation weighted by their absolute values, which gives a
+ *  better estimate than the last midpoint.
+ */
 finErrorCode finPlotEquation2D::searchBinary(
         double x1, double y1, double retval1, double x2, double y2, double retval2,
         finExecFunction *func, QList<finExecVariable *> *varlist, finExecVariable *xvar, finExecVariable *yvar,
@@ -384,6 +431,12 @@ finErrorCode finPlotEquation2D::searchBinary(
     return finErrorKits::EC_SUCCESS;
 }
 
+/*! \brief Samples the equation over the configured ranges and plots the resulting level curves.
+ *
+ *  Points whose value is a zero are appended as they are; a sign change towards the previous row or column is
+ *  refined by searchBinary() first, so the curves cross the grid edges smoothly. The scatter plotter then
+ *  reconnects the points, with a distance limit of three sampling steps so that nearby segments join up.
+ */
 finErrorCode finPlotEquation2D::plot()
 {
     if ( !this->checkValid() )
