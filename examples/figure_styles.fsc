@@ -12,9 +12,9 @@
 // (a transparent color disables a stroke or a fill), load_image + draw_image /
 // draw_pinned_image, and line3d.
 //
-// Note: relative file paths in load_image / draw_image (and the CSV functions)
-// are resolved against the directory of this script file, so it runs correctly
-// from any working directory.
+// Note: relative paths passed to load_image and the CSV functions are resolved
+// against the directory of this script file, so it runs correctly from any
+// working directory. draw_image itself takes the image value returned by load_image.
 
 clear_fig();
 axis();

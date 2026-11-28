@@ -607,8 +607,8 @@ static struct finExecSysFuncRegItem _funcRegItem_draw_image = {
     /*._funcCall     =*/ _sysfunc_draw_image,
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("draw_image (image, cx, cy[, rad, sx, sy])"),
-    /*._description  =*/ QString("Draw an image at given position on the panel. A relative file path is resolved "
-                                 "against the directory of the running script."),
+    /*._description  =*/ QString("Draw an image at the given position on the panel. The image is the value "
+                                 "returned by load_image."),
 };
 
 static finErrorCode _sysfunc_draw_pinned_image(finExecFunction *self, finExecEnvironment *env,
@@ -623,8 +623,9 @@ static struct finExecSysFuncRegItem _funcRegItem_draw_pinned_image = {
     /*._funcCall     =*/ _sysfunc_draw_pinned_image,
     /*._category     =*/ _defFuncCtg,
     /*._prototype    =*/ QString("draw_pinned_image (image, cx, cy[, rad, sx, sy])"),
-    /*._description  =*/ QString("Draw a pinned image at given position on the panel. A relative file path is "
-                                 "resolved against the directory of the running script."),
+    /*._description  =*/ QString("Draw a pinned image at the given position on the panel. A pinned image is "
+                                 "scaled and rotated with the figure; the image is the value returned by "
+                                 "load_image."),
 };
 
 static finErrorCode _sysfunc_axis(finExecFunction *self, finExecEnvironment *env,
