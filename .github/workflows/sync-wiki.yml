@@ -1,0 +1,83 @@
+name: Sync wiki
+
+# Wiki repositories cannot run their own workflows, so the generated reference pages are
+# refreshed from a checkout of this repository. Two constraints shape this workflow:
+#
+#  * Pushing to <owner>/<repo>.wiki.git needs a token with write access to that repository.
+#    The workflow GITHUB_TOKEN is scoped to this repository only, so store a classic personal
+#    access token with the `repo` scope (or a GitHub App token) as WIKI_SYNC_TOKEN. When the
+#    secret is absent the job skips with a notice instead of failing the release.
+#  * Trigger on the tag push, not on `release: published`: release-installer.yml creates the
+#    release through action-gh-release with GITHUB_TOKEN, and events produced by GITHUB_TOKEN
+#    do not start new workflow runs.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-wiki
+  cancel-in-progress: false
+
+jobs:
+  sync-wiki:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check for WIKI_SYNC_TOKEN
+        id: token
+        env:
+          WIKI_SYNC_TOKEN: ${{ secrets.WIKI_SYNC_TOKEN }}
+        run: |
+          if [ -n "$WIKI_SYNC_TOKEN" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Wiki sync skipped::Add a WIKI_SYNC_TOKEN secret to enable it."
+          fi
+
+      - name: Checkout source
+        if: steps.token.outputs.present == 'true'
+        uses: actions/checkout@v4
+
+      - name: Checkout wiki
+        if: steps.token.outputs.present == 'true'
+        env:
+          WIKI_SYNC_TOKEN: ${{ secrets.WIKI_SYNC_TOKEN }}
+        run: |
+          set -euo pipefail
+          # Keep the token out of URLs and logs: pass it as an HTTP header instead.
+          auth="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$WIKI_SYNC_TOKEN" | base64 | tr -d '\n')"
+          git -c http.extraheader="$auth" clone --quiet \
+            "https://github.com/${GITHUB_REPOSITORY}.wiki.git" wiki
+          git -C wiki config --local http.extraheader "$auth"
+          git -C wiki config user.name "github-actions[bot]"
+          git -C wiki config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Regenerate reference pages
+        if: steps.token.outputs.present == 'true'
+        run: |
+          python3 wiki/_tools/generate_builtin_functions.py FigureItNow7 wiki/Builtin-Functions.md
+          python3 wiki/_tools/generate_builtin_constants.py FigureItNow7 wiki/Builtin-Constants.md
+
+      - name: Validate wiki
+        if: steps.token.outputs.present == 'true'
+        run: python3 wiki/_tools/check_wiki.py wiki
+
+      - name: Commit and push
+        if: steps.token.outputs.present == 'true'
+        working-directory: wiki
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Wiki already up to date."
+            exit 0
+          fi
+          git commit -m "docs(wiki): sync generated reference for ${GITHUB_REF_NAME}"
+          git push origin HEAD:master

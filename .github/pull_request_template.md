@@ -16,8 +16,9 @@
       [Built-in Constants](https://github.com/yuylong/FigureItNow/wiki/Builtin-Constants),
       [GUI Guide](https://github.com/yuylong/FigureItNow/wiki/GUI-Guide),
       [Command Line](https://github.com/yuylong/FigureItNow/wiki/Command-Line).
-- [ ] If a built-in function or a system variable changed, the wiki generators were re-run in the
-      wiki repository (`_tools/generate_builtin_functions.py`, `_tools/generate_builtin_constants.py`).
+- [ ] If a built-in function or a system variable changed, the wiki generators were re-run locally
+      (`_tools/generate_builtin_functions.py`, `_tools/generate_builtin_constants.py`); the
+      `sync-wiki` workflow re-runs them on every tag push.
 
 ## Sources
 
